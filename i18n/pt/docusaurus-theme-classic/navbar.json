@@ -1,0 +1,46 @@
+{
+  "title": {
+    "message": "Início",
+    "description": "The title in the navbar"
+  },
+  "item.label.Blog": {
+    "message": "Blog",
+    "description": "Navbar item with label Blog"
+  },
+  "item.label.Projects": {
+    "message": "Projetos",
+    "description": "Navbar item with label Projects"
+  },
+  "item.label.Volunteering": {
+    "message": "Voluntariado",
+    "description": "Navbar item with label Volunteering"
+  },
+  "item.label.Speaking": {
+    "message": "Presentações",
+    "description": "Navbar item with label Speaking"
+  },
+  "item.label.Contact": {
+    "message": "Contato",
+    "description": "Navbar item with label Contact"
+  },
+  "item.label.About": {
+    "message": "Sobre",
+    "description": "Navbar item with label About"
+  },
+  "item.label.Facebook": {
+    "message": "Facebook",
+    "description": "Navbar item with label Facebook"
+  },
+  "item.label.Twitter": {
+    "message": "Twitter",
+    "description": "Navbar item with label Twitter"
+  },
+  "item.label.LinkedIn": {
+    "message": "LinkedIn",
+    "description": "Navbar item with label LinkedIn"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}

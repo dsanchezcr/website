@@ -1,2 +1,2 @@
-# website
-David Sanchez - Website
+# David's Website
+Repository for my [website](https://dsanchezcr.com).
