@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://dsanchezcr.com/pt/blog</id>
     <title>David Sanchez Blog</title>
-    <updated>2022-08-16T06:12:58.000Z</updated>
+    <updated>2022-08-16T17:58:01.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://dsanchezcr.com/pt/blog"/>
     <subtitle>David Sanchez Blog</subtitle>
@@ -11,7 +11,7 @@
         <title type="html"><![CDATA[A new website]]></title>
         <id>website</id>
         <link href="https://dsanchezcr.com/pt/blog/website"/>
-        <updated>2022-08-16T06:12:58.000Z</updated>
+        <updated>2022-08-16T17:58:01.000Z</updated>
         <summary type="html"><![CDATA[Details about the tech behind my new website.]]></summary>
         <content type="html"><![CDATA[<p>Today I am relaunching my website based on Docusarious from Facebook. I am running it on Azure Static Web Apps and GitHub Pages (because... why not?)</p><p>Something that caught my attention about this static generator is the localization functionality, as you can see, this websites supports English, Spanish and Portuguese.</p><p>Another thing, that liked me is that it supports React, TypeScript and Markdown (including MDX).</p>]]></content>
         <author>
@@ -24,7 +24,7 @@
         <title type="html"><![CDATA[Bem-vindos]]></title>
         <id>welcome</id>
         <link href="https://dsanchezcr.com/pt/blog/welcome"/>
-        <updated>2022-08-16T06:12:58.000Z</updated>
+        <updated>2022-08-16T17:58:01.000Z</updated>
         <summary type="html"><![CDATA[Bem-vindo ao meu blog.]]></summary>
         <content type="html"><![CDATA[<p>Bem-vindo ao meu blog.</p><p>Muito obrigado pela visita.</p><p>O objetivo deste blog é compartilhar informações relevantes sobre tecnologia da minha experiência e pesquisa.</p><p>Espero que ache as informações valiosas.</p><p>Sinta-se à vontade para entrar em contato se tiver alguma dúvida ou sugestão.</p><p>Obrigada!</p>]]></content>
         <author>
