@@ -1,0 +1,36 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "David Sanchez Blog",
+    "home_page_url": "https://dsanchezcr.com/es/blog",
+    "description": "David Sanchez Blog",
+    "items": [
+        {
+            "id": "website",
+            "content_html": "<p>Today I am relaunching my website based on Docusarious from Facebook. I am running it on Azure Static Web Apps and GitHub Pages (because... why not?)</p><p>Something that caught my attention about this static generator is the localization functionality, as you can see, this websites supports English, Spanish and Portuguese.</p><p>Another thing, that liked me is that it supports React, TypeScript and Markdown (including MDX).</p>",
+            "url": "https://dsanchezcr.com/es/blog/website",
+            "title": "A new website",
+            "summary": "Details about the tech behind my new website.",
+            "date_modified": "2022-08-16T06:12:58.000Z",
+            "author": {
+                "name": "David Sanchez",
+                "url": "https://github.com/dsanchezcr"
+            },
+            "tags": [
+                "webiste"
+            ]
+        },
+        {
+            "id": "welcome",
+            "content_html": "<p>Bienvenidos a mi blog.</p><p>Gracias por visitar.</p><p>El objectivo de este blog es compartir información relevante acerca de la tecnología desde mi experiencia e investigación.</p><p>Espero que la información sea valiosa.</p><p>No dude en ponerse en contacto en caso de alguna consulta o sugerencia.</p><p>Muchas gracias!</p>",
+            "url": "https://dsanchezcr.com/es/blog/welcome",
+            "title": "Bienvidos",
+            "summary": "Bienvenidos a mi blog.",
+            "date_modified": "2022-08-16T06:12:58.000Z",
+            "author": {
+                "name": "David Sanchez",
+                "url": "https://github.com/dsanchezcr"
+            },
+            "tags": []
+        }
+    ]
+}
