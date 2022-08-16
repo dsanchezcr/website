@@ -115,10 +115,6 @@ const config = {
           },        
         ],
       },
-      footer: {
-        style: 'dark',        
-        copyright: `Copyright © ${new Date().getFullYear()} David Sanchez. Built with <a href='https://docusaurus.io' target='_blank'>Docusaurus</a>. Running on <a href='https://aka.ms/staticwebapps' target='_blank'>Azure Static Web Apps</a>.`,
-      },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,

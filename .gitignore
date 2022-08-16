@@ -4,8 +4,10 @@
 # Generated files
 .docusaurus
 .cache-loader
+build
 
 # Misc
+yarn.lock
 .DS_Store
 .env.local
 .env.development.local
