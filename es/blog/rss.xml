@@ -4,7 +4,7 @@
         <title>David Sanchez Blog</title>
         <link>https://dsanchezcr.com/es/blog</link>
         <description>David Sanchez Blog</description>
-        <lastBuildDate>Mon, 05 Sep 2022 02:52:49 GMT</lastBuildDate>
+        <lastBuildDate>Mon, 05 Sep 2022 07:11:17 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>es</language>
@@ -12,7 +12,7 @@
             <title><![CDATA[A new website]]></title>
             <link>https://dsanchezcr.com/es/blog/website</link>
             <guid>website</guid>
-            <pubDate>Mon, 05 Sep 2022 02:52:49 GMT</pubDate>
+            <pubDate>Mon, 05 Sep 2022 07:11:17 GMT</pubDate>
             <description><![CDATA[Details about the tech behind my new website.]]></description>
             <content:encoded><![CDATA[<p>Today I am relaunching my website based on Docusarious from Facebook. I am running it on Azure Static Web Apps and GitHub Pages (because... why not?)</p><p>Something that caught my attention about this static generator is the localization functionality, as you can see, this websites supports English, Spanish and Portuguese.</p><p>Another thing, that liked me is that it supports React, TypeScript and Markdown (including MDX).</p>]]></content:encoded>
             <category>webiste</category>
@@ -21,7 +21,7 @@
             <title><![CDATA[Bienvidos]]></title>
             <link>https://dsanchezcr.com/es/blog/welcome</link>
             <guid>welcome</guid>
-            <pubDate>Mon, 05 Sep 2022 02:52:49 GMT</pubDate>
+            <pubDate>Mon, 05 Sep 2022 07:11:17 GMT</pubDate>
             <description><![CDATA[Bienvenidos a mi blog.]]></description>
             <content:encoded><![CDATA[<p>Bienvenidos a mi blog.</p><p>Gracias por visitar.</p><p>El objectivo de este blog es compartir información relevante acerca de la tecnología desde mi experiencia e investigación.</p><p>Espero que la información sea valiosa.</p><p>No dude en ponerse en contacto en caso de alguna consulta o sugerencia.</p><p>Muchas gracias!</p>]]></content:encoded>
         </item>
