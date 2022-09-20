@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[535],{5641:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"I\'m joining Xpirit","permalink":"/blog/xpirit"},{"title":"I\'m leaving Microsoft","permalink":"/blog/microsoft"},{"title":"A new website","permalink":"/blog/website"}]}')}}]);

@@ -4,10 +4,21 @@
         <title>David Sanchez Blog</title>
         <link>https://dsanchezcr.com/blog</link>
         <description>David Sanchez Blog</description>
-        <lastBuildDate>Tue, 20 Sep 2022 08:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 21 Sep 2022 08:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
+        <item>
+            <title><![CDATA[I'm joining Xpirit]]></title>
+            <link>https://dsanchezcr.com/blog/xpirit</link>
+            <guid>xpirit</guid>
+            <pubDate>Wed, 21 Sep 2022 08:00:00 GMT</pubDate>
+            <description><![CDATA[Career update, I am joining Xpirit part of Xebia as Azure & DevOps Consultant]]></description>
+            <content:encoded><![CDATA[<p>Today I'm very excited to start my new job as Azure &amp; DevOps Consultant at <a href="https://xpirit.com" target="_blank" rel="noopener noreferrer">Xpirit | Part of Xebia</a>. I'm joining <a href="https://linkedin.com/in/estebangarcia" target="_blank" rel="noopener noreferrer">Esteban Garcia</a>'s team as the sixth employee in the USA. </p><p>Xpirit is a <a href="https://xpirit.com/company/partnerships" target="_blank" rel="noopener noreferrer">Microsoft Gold Partner &amp; GitHub Verified Partner</a> that started in 2014 in Netherlands and extended operations in Belgium, Germany, and in 2022 in USA.</p><p>I'm thrilled to join this team of highly experienced consultants, experts in cloud transformation using Microsoft Azure, building high performance IT teams using DevOps, and creating Cloud Native Software.
+Xpirit continues growing, come join us, check out the open positions <a href="https://www.linkedin.com/jobs/search/?currentJobId=3270399306&amp;f_C=9183026&amp;geoId=92000000" target="_blank" rel="noopener noreferrer">here</a>.</p><p><img loading="lazy" alt="Xpirit - Engineering Culture" src="/assets/images/Xpirit-8cc1591f1088d4a861787db4f597bae1.gif" width="1050" height="880" class="img_ev3q"></p>]]></content:encoded>
+            <author>davidsanchezaguilar@outlook.com (David Sanchez)</author>
+            <category>career update</category>
+        </item>
         <item>
             <title><![CDATA[I'm leaving Microsoft]]></title>
             <link>https://dsanchezcr.com/blog/microsoft</link>

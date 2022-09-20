@@ -5,6 +5,21 @@
     "description": "David Sanchez Blog",
     "items": [
         {
+            "id": "xpirit",
+            "content_html": "<p>Today I'm very excited to start my new job as Azure &amp; DevOps Consultant at <a href=\"https://xpirit.com\" target=\"_blank\" rel=\"noopener noreferrer\">Xpirit | Part of Xebia</a>. I'm joining <a href=\"https://linkedin.com/in/estebangarcia\" target=\"_blank\" rel=\"noopener noreferrer\">Esteban Garcia</a>'s team as the sixth employee in the USA. </p><p>Xpirit is a <a href=\"https://xpirit.com/company/partnerships\" target=\"_blank\" rel=\"noopener noreferrer\">Microsoft Gold Partner &amp; GitHub Verified Partner</a> that started in 2014 in Netherlands and extended operations in Belgium, Germany, and in 2022 in USA.</p><p>I'm thrilled to join this team of highly experienced consultants, experts in cloud transformation using Microsoft Azure, building high performance IT teams using DevOps, and creating Cloud Native Software.\nXpirit continues growing, come join us, check out the open positions <a href=\"https://www.linkedin.com/jobs/search/?currentJobId=3270399306&amp;f_C=9183026&amp;geoId=92000000\" target=\"_blank\" rel=\"noopener noreferrer\">here</a>.</p><p><img loading=\"lazy\" alt=\"Xpirit - Engineering Culture\" src=\"/assets/images/Xpirit-8cc1591f1088d4a861787db4f597bae1.gif\" width=\"1050\" height=\"880\" class=\"img_ev3q\"></p>",
+            "url": "https://dsanchezcr.com/blog/xpirit",
+            "title": "I'm joining Xpirit",
+            "summary": "Career update, I am joining Xpirit part of Xebia as Azure & DevOps Consultant",
+            "date_modified": "2022-09-21T08:00:00.000Z",
+            "author": {
+                "name": "David Sanchez",
+                "url": "https://github.com/dsanchezcr"
+            },
+            "tags": [
+                "career update"
+            ]
+        },
+        {
             "id": "microsoft",
             "content_html": "<p>After almost 7 years, today is my last day at Microsoft. It has been great, I cannot say thank you enough to all the teammates, managers, and mentors I've had over the years that have helped me grow and enjoy the journey.</p><p>I will be eternally grateful to Microsoft for all the opportunities, experiences, learnings, all the support I received and especially for all the awesome people I met and had the opportunity to work with.</p><p>While I am leaving Microsoft, my mission will continue. Tomorrow, I'll start a new adventure as an Azure &amp; DevOps Consultant to continue helping people to build the most innovative solutions with technology.</p><p><img loading=\"lazy\" alt=\"Leaving Microsoft\" src=\"/assets/images/LeavingMS-7501b741c9df52529c8398f85d2e1322.jpg\" width=\"1600\" height=\"1186\" class=\"img_ev3q\"></p>",
             "url": "https://dsanchezcr.com/blog/microsoft",

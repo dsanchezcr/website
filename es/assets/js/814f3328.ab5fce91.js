@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[535],{5641:e=>{e.exports=JSON.parse('{"title":"Publicaciones recientes","items":[{"title":"Hoy empiezo en Xpirit","permalink":"/es/blog/xpirit"},{"title":"Mi \xfaltimo d\xeda en Microsoft","permalink":"/es/blog/microsoft"},{"title":"Mi nuevo sitio web","permalink":"/es/blog/website"}]}')}}]);

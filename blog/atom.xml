@@ -2,11 +2,26 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://dsanchezcr.com/blog</id>
     <title>David Sanchez Blog</title>
-    <updated>2022-09-20T08:00:00.000Z</updated>
+    <updated>2022-09-21T08:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://dsanchezcr.com/blog"/>
     <subtitle>David Sanchez Blog</subtitle>
     <icon>https://dsanchezcr.com/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[I'm joining Xpirit]]></title>
+        <id>xpirit</id>
+        <link href="https://dsanchezcr.com/blog/xpirit"/>
+        <updated>2022-09-21T08:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Career update, I am joining Xpirit part of Xebia as Azure & DevOps Consultant]]></summary>
+        <content type="html"><![CDATA[<p>Today I'm very excited to start my new job as Azure &amp; DevOps Consultant at <a href="https://xpirit.com" target="_blank" rel="noopener noreferrer">Xpirit | Part of Xebia</a>. I'm joining <a href="https://linkedin.com/in/estebangarcia" target="_blank" rel="noopener noreferrer">Esteban Garcia</a>'s team as the sixth employee in the USA. </p><p>Xpirit is a <a href="https://xpirit.com/company/partnerships" target="_blank" rel="noopener noreferrer">Microsoft Gold Partner &amp; GitHub Verified Partner</a> that started in 2014 in Netherlands and extended operations in Belgium, Germany, and in 2022 in USA.</p><p>I'm thrilled to join this team of highly experienced consultants, experts in cloud transformation using Microsoft Azure, building high performance IT teams using DevOps, and creating Cloud Native Software.
+Xpirit continues growing, come join us, check out the open positions <a href="https://www.linkedin.com/jobs/search/?currentJobId=3270399306&amp;f_C=9183026&amp;geoId=92000000" target="_blank" rel="noopener noreferrer">here</a>.</p><p><img loading="lazy" alt="Xpirit - Engineering Culture" src="/assets/images/Xpirit-8cc1591f1088d4a861787db4f597bae1.gif" width="1050" height="880" class="img_ev3q"></p>]]></content>
+        <author>
+            <name>David Sanchez</name>
+            <email>davidsanchezaguilar@outlook.com</email>
+            <uri>https://github.com/dsanchezcr</uri>
+        </author>
+        <category label="career update" term="career update"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[I'm leaving Microsoft]]></title>
         <id>microsoft</id>

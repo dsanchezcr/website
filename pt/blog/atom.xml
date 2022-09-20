@@ -2,11 +2,25 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://dsanchezcr.com/pt/blog</id>
     <title>David Sanchez Blog</title>
-    <updated>2022-09-20T08:00:00.000Z</updated>
+    <updated>2022-09-21T08:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://dsanchezcr.com/pt/blog"/>
     <subtitle>David Sanchez Blog</subtitle>
     <icon>https://dsanchezcr.com/pt/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Hoje começo na Xpirit]]></title>
+        <id>xpirit</id>
+        <link href="https://dsanchezcr.com/pt/blog/xpirit"/>
+        <updated>2022-09-21T08:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Atualização de carreira, Hoje começo na Xpirit parte da Xebia como Consultor em Azure & DevOps]]></summary>
+        <content type="html"><![CDATA[<p>Hoje estou muito feliz para começar meu novo trabalho como Consultor Azure &amp; DevOps em <a href="https://xpirit.com" target="_blank" rel="noopener noreferrer">xpirit | Parte de Xebia</a>. Vou me juntar a equipe de <a href="https://linkedin.com/in/estebangarcia" target="_blank" rel="noopener noreferrer">Esteban Garcia</a> como o sexto empregado nos EUA.</p><p>Xpirit é um <a href="https://xpirit.com/company/partnerships" target="_blank" rel="noopener noreferrer">Microsoft Gold Partner &amp; GitHub Partner Verificado</a> que começou em 2014 na Holanda e estendeu as operações na Bélgica, Alemanha e em 2022 nos EUA.</p><p>Estou entusiasmado em começar com a equipe de consultores altamente experientes, especialistas em transformação de nuvem usando o Microsoft Azure, construindo equipes de TI de alto desempenho usando DevOps e criando Software Nativo em Nuvem.
+Xpirit continua crescendo, vem se juntar a nós, confira as vagas abertas <a href="https://www.linkedin.com/jobs/search/?currentJobId=3270399306%5C&amp;f_C=9183026%5C&amp;geoId=92000000" target="_blank" rel="noopener noreferrer">aqui</a>.</p><p><img loading="lazy" src="/img/Xpirit.gif" alt="Xpirit - Engineering Culture" class="img_ev3q"></p>]]></content>
+        <author>
+            <name>David Sanchez</name>
+            <uri>https://github.com/dsanchezcr</uri>
+        </author>
+        <category label="Atualização de carreira" term="Atualização de carreira"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Meu último dia na Microsoft]]></title>
         <id>microsoft</id>
