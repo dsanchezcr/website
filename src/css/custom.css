@@ -39,3 +39,8 @@
 .indexFooter{
   text-align: center;
 }
+
+#homepageImage{
+  width: 500px;
+  height: 465px;
+}

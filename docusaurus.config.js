@@ -31,9 +31,8 @@ const config = {
         },
         googleAnalytics: {
           trackingID: 'G-18J431S7WG',
-          anonymizeIP: true,
-        },
-        
+          anonymizeIP: false,
+        }        
       },
     ],
   ],
@@ -45,7 +44,7 @@ const config = {
         indexDocs: false,
         indexBlog: true,
         language: ['en', 'es', 'pt']
-      },
+      }
     ],
   ],
 
@@ -85,8 +84,7 @@ const config = {
         items: [
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/projects', label: 'Projects', position: 'left'},
-          {to: '/volunteering', label: 'Volunteering', position: 'left'},
-          {to: '/speaking', label: 'Speaking', position: 'left'},
+          {to: 'https://sessionize.com/dsanchezcr', label: 'Speaking', position: 'left'},
           {to: '/contact', label: 'Contact', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
           {
