@@ -5,32 +5,35 @@
     "description": "David Sanchez Blog",
     "items": [
         {
-            "id": "website",
-            "content_html": "<p>Today I am relaunching my website based on Docusarious from Facebook. I am running it on Azure Static Web Apps and GitHub Pages (because... why not?)</p><p>Something that caught my attention about this static generator is the localization functionality, as you can see, this websites supports English, Spanish and Portuguese.</p><p>Another thing, that liked me is that it supports React, TypeScript and Markdown (including MDX).</p>",
-            "url": "https://dsanchezcr.com/blog/website",
-            "title": "A new website",
-            "summary": "Details about the tech behind my new website.",
-            "date_modified": "2022-09-05T07:11:17.000Z",
+            "id": "microsoft",
+            "content_html": "<p>After almost 7 years, today is my last day at Microsoft. It has been great, I cannot say thank you enough to all the teammates, managers, and mentors I've had over the years that have helped me grow and enjoy the journey.</p><p>I will be eternally grateful to Microsoft for all the opportunities, experiences, learnings, all the support I received and especially for all the awesome people I met and had the opportunity to work with.</p><p>While I am leaving Microsoft, my mission will continue. Tomorrow, I'll start a new adventure as an Azure &amp; DevOps Consultant to continue helping people to build the most innovative solutions with technology.</p><p><img loading=\"lazy\" alt=\"Leaving Microsoft\" src=\"/assets/images/LeavingMS-7501b741c9df52529c8398f85d2e1322.jpg\" width=\"1600\" height=\"1186\" class=\"img_ev3q\"></p>",
+            "url": "https://dsanchezcr.com/blog/microsoft",
+            "title": "I'm leaving Microsoft",
+            "summary": "Career update, I am leaving Microsoft",
+            "date_modified": "2022-09-20T08:00:00.000Z",
             "author": {
                 "name": "David Sanchez",
                 "url": "https://github.com/dsanchezcr"
             },
             "tags": [
-                "webiste"
+                "career update"
             ]
         },
         {
-            "id": "welcome",
-            "content_html": "<p>Welcome to my blog.</p><p>Thanks for visiting.</p><p>The objective of this blog is to share relevant information about technology from my experience and research.</p><p>I hope you find the information valuable.</p><p>Thank you!</p>",
-            "url": "https://dsanchezcr.com/blog/welcome",
-            "title": "Welcome",
-            "summary": "Welcome to my blog.",
-            "date_modified": "2022-09-05T07:11:17.000Z",
+            "id": "website",
+            "content_html": "<p>Today I am relaunching my website based on <a href=\"https://docusaurus.io\" target=\"_blank\" rel=\"noopener noreferrer\">Docusarious from Facebook</a>. I am running it on Azure Static Web Apps and GitHub Pages.</p><p>A highlight from this static site generator is the localization functionality, as you can see, this websites supports English, Spanish and Portuguese.</p><p>Another thing, that liked me is the support of React, TypeScript and Markdown (including MDX).</p><p>In this blog I will be sharing tips about technology and, professional career development.</p><p>If you have any feedback or suggetion for content don't heasitate to reach out.</p><p>Thank you for reading!</p>",
+            "url": "https://dsanchezcr.com/blog/website",
+            "title": "A new website",
+            "summary": "Details about the tech behind my new website.",
+            "date_modified": "2022-09-01T08:00:00.000Z",
             "author": {
                 "name": "David Sanchez",
                 "url": "https://github.com/dsanchezcr"
             },
-            "tags": []
+            "tags": [
+                "webiste",
+                "blog"
+            ]
         }
     ]
 }

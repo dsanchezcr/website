@@ -4,26 +4,28 @@
         <title>David Sanchez Blog</title>
         <link>https://dsanchezcr.com/pt/blog</link>
         <description>David Sanchez Blog</description>
-        <lastBuildDate>Mon, 05 Sep 2022 07:11:17 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 20 Sep 2022 08:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>pt</language>
         <item>
-            <title><![CDATA[A new website]]></title>
-            <link>https://dsanchezcr.com/pt/blog/website</link>
-            <guid>website</guid>
-            <pubDate>Mon, 05 Sep 2022 07:11:17 GMT</pubDate>
-            <description><![CDATA[Details about the tech behind my new website.]]></description>
-            <content:encoded><![CDATA[<p>Today I am relaunching my website based on Docusarious from Facebook. I am running it on Azure Static Web Apps and GitHub Pages (because... why not?)</p><p>Something that caught my attention about this static generator is the localization functionality, as you can see, this websites supports English, Spanish and Portuguese.</p><p>Another thing, that liked me is that it supports React, TypeScript and Markdown (including MDX).</p>]]></content:encoded>
-            <category>webiste</category>
+            <title><![CDATA[Meu último dia na Microsoft]]></title>
+            <link>https://dsanchezcr.com/pt/blog/microsoft</link>
+            <guid>microsoft</guid>
+            <pubDate>Tue, 20 Sep 2022 08:00:00 GMT</pubDate>
+            <description><![CDATA[Atualização de carreira, meu último dia na Microsoft]]></description>
+            <content:encoded><![CDATA[<p>Depois de quase 7 anos, hoje é meu último dia na Microsoft. Tem sido ótimo, não posso agradecer o suficiente a todos os companheiros de equipe, gerentes e mentores que tive ao longo dos anos que me ajudaram a crescer e aproveitar a jornada.</p><p>Estarei eternamente grato à Microsoft por todas as oportunidades, experiências, aprendizados, todo o apoio que recebi e especialmente por todas as pessoas incríveis que conheci e tive a oportunidade de trabalhar.</p><p>Enquanto é meu último dia na Microsoft, minha missão continuará. Amanhã, começarei uma nova aventura como consultor da Azure &amp; DevOps para continuar ajudando as pessoas a construir as soluções mais inovadoras com tecnologia.</p><p><img loading="lazy" src="/img/LeavingMS.jpg" alt="Leaving Microsoft" class="img_ev3q"></p>]]></content:encoded>
+            <category>Atualização de carreira</category>
         </item>
         <item>
-            <title><![CDATA[Bem-vindos]]></title>
-            <link>https://dsanchezcr.com/pt/blog/welcome</link>
-            <guid>welcome</guid>
-            <pubDate>Mon, 05 Sep 2022 07:11:17 GMT</pubDate>
-            <description><![CDATA[Bem-vindo ao meu blog.]]></description>
-            <content:encoded><![CDATA[<p>Bem-vindo ao meu blog.</p><p>Muito obrigado pela visita.</p><p>O objetivo deste blog é compartilhar informações relevantes sobre tecnologia da minha experiência e pesquisa.</p><p>Espero que ache as informações valiosas.</p><p>Sinta-se à vontade para entrar em contato se tiver alguma dúvida ou sugestão.</p><p>Obrigada!</p>]]></content:encoded>
+            <title><![CDATA[Meu novo site]]></title>
+            <link>https://dsanchezcr.com/pt/blog/website</link>
+            <guid>website</guid>
+            <pubDate>Thu, 01 Sep 2022 08:00:00 GMT</pubDate>
+            <description><![CDATA[Detalhes sobre a tecnologia por trás do meu novo site.]]></description>
+            <content:encoded><![CDATA[<p>Hoje eu estou relançando meu site com base em <a href="https://docusaurus.io" target="_blank" rel="noopener noreferrer">Docusarious do Facebook</a>. Estou executando-o em Azure Static WebApps e GitHub Pages.</p><p>Um destaque deste gerador de site estático é a funcionalidade de localização, como você pode ver, este site suporta inglês, espanhol e português.</p><p>Outra coisa que me gostou é o suporte de React, TypeScript e Markdown (incluindo MDX).</p><p>Neste blog vou compartilhar dicas sobre tecnologia e desenvolvimento profissional de carreira.</p><p>Se você tiver algum feedback ou suggestion para conteúdo, não hesitante para entrar em contato.</p><p>Obrigado por ler!</p>]]></content:encoded>
+            <category>webiste</category>
+            <category>blog</category>
         </item>
     </channel>
 </rss>

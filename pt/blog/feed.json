@@ -5,32 +5,35 @@
     "description": "David Sanchez Blog",
     "items": [
         {
-            "id": "website",
-            "content_html": "<p>Today I am relaunching my website based on Docusarious from Facebook. I am running it on Azure Static Web Apps and GitHub Pages (because... why not?)</p><p>Something that caught my attention about this static generator is the localization functionality, as you can see, this websites supports English, Spanish and Portuguese.</p><p>Another thing, that liked me is that it supports React, TypeScript and Markdown (including MDX).</p>",
-            "url": "https://dsanchezcr.com/pt/blog/website",
-            "title": "A new website",
-            "summary": "Details about the tech behind my new website.",
-            "date_modified": "2022-09-05T07:11:17.000Z",
+            "id": "microsoft",
+            "content_html": "<p>Depois de quase 7 anos, hoje é meu último dia na Microsoft. Tem sido ótimo, não posso agradecer o suficiente a todos os companheiros de equipe, gerentes e mentores que tive ao longo dos anos que me ajudaram a crescer e aproveitar a jornada.</p><p>Estarei eternamente grato à Microsoft por todas as oportunidades, experiências, aprendizados, todo o apoio que recebi e especialmente por todas as pessoas incríveis que conheci e tive a oportunidade de trabalhar.</p><p>Enquanto é meu último dia na Microsoft, minha missão continuará. Amanhã, começarei uma nova aventura como consultor da Azure &amp; DevOps para continuar ajudando as pessoas a construir as soluções mais inovadoras com tecnologia.</p><p><img loading=\"lazy\" src=\"/img/LeavingMS.jpg\" alt=\"Leaving Microsoft\" class=\"img_ev3q\"></p>",
+            "url": "https://dsanchezcr.com/pt/blog/microsoft",
+            "title": "Meu último dia na Microsoft",
+            "summary": "Atualização de carreira, meu último dia na Microsoft",
+            "date_modified": "2022-09-20T08:00:00.000Z",
             "author": {
                 "name": "David Sanchez",
                 "url": "https://github.com/dsanchezcr"
             },
             "tags": [
-                "webiste"
+                "Atualização de carreira"
             ]
         },
         {
-            "id": "welcome",
-            "content_html": "<p>Bem-vindo ao meu blog.</p><p>Muito obrigado pela visita.</p><p>O objetivo deste blog é compartilhar informações relevantes sobre tecnologia da minha experiência e pesquisa.</p><p>Espero que ache as informações valiosas.</p><p>Sinta-se à vontade para entrar em contato se tiver alguma dúvida ou sugestão.</p><p>Obrigada!</p>",
-            "url": "https://dsanchezcr.com/pt/blog/welcome",
-            "title": "Bem-vindos",
-            "summary": "Bem-vindo ao meu blog.",
-            "date_modified": "2022-09-05T07:11:17.000Z",
+            "id": "website",
+            "content_html": "<p>Hoje eu estou relançando meu site com base em <a href=\"https://docusaurus.io\" target=\"_blank\" rel=\"noopener noreferrer\">Docusarious do Facebook</a>. Estou executando-o em Azure Static WebApps e GitHub Pages.</p><p>Um destaque deste gerador de site estático é a funcionalidade de localização, como você pode ver, este site suporta inglês, espanhol e português.</p><p>Outra coisa que me gostou é o suporte de React, TypeScript e Markdown (incluindo MDX).</p><p>Neste blog vou compartilhar dicas sobre tecnologia e desenvolvimento profissional de carreira.</p><p>Se você tiver algum feedback ou suggestion para conteúdo, não hesitante para entrar em contato.</p><p>Obrigado por ler!</p>",
+            "url": "https://dsanchezcr.com/pt/blog/website",
+            "title": "Meu novo site",
+            "summary": "Detalhes sobre a tecnologia por trás do meu novo site.",
+            "date_modified": "2022-09-01T08:00:00.000Z",
             "author": {
                 "name": "David Sanchez",
                 "url": "https://github.com/dsanchezcr"
             },
-            "tags": []
+            "tags": [
+                "webiste",
+                "blog"
+            ]
         }
     ]
 }

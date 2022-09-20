@@ -2,34 +2,36 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://dsanchezcr.com/pt/blog</id>
     <title>David Sanchez Blog</title>
-    <updated>2022-09-05T07:11:17.000Z</updated>
+    <updated>2022-09-20T08:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://dsanchezcr.com/pt/blog"/>
     <subtitle>David Sanchez Blog</subtitle>
     <icon>https://dsanchezcr.com/pt/img/favicon.ico</icon>
     <entry>
-        <title type="html"><![CDATA[A new website]]></title>
+        <title type="html"><![CDATA[Meu último dia na Microsoft]]></title>
+        <id>microsoft</id>
+        <link href="https://dsanchezcr.com/pt/blog/microsoft"/>
+        <updated>2022-09-20T08:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Atualização de carreira, meu último dia na Microsoft]]></summary>
+        <content type="html"><![CDATA[<p>Depois de quase 7 anos, hoje é meu último dia na Microsoft. Tem sido ótimo, não posso agradecer o suficiente a todos os companheiros de equipe, gerentes e mentores que tive ao longo dos anos que me ajudaram a crescer e aproveitar a jornada.</p><p>Estarei eternamente grato à Microsoft por todas as oportunidades, experiências, aprendizados, todo o apoio que recebi e especialmente por todas as pessoas incríveis que conheci e tive a oportunidade de trabalhar.</p><p>Enquanto é meu último dia na Microsoft, minha missão continuará. Amanhã, começarei uma nova aventura como consultor da Azure &amp; DevOps para continuar ajudando as pessoas a construir as soluções mais inovadoras com tecnologia.</p><p><img loading="lazy" src="/img/LeavingMS.jpg" alt="Leaving Microsoft" class="img_ev3q"></p>]]></content>
+        <author>
+            <name>David Sanchez</name>
+            <uri>https://github.com/dsanchezcr</uri>
+        </author>
+        <category label="Atualização de carreira" term="Atualização de carreira"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Meu novo site]]></title>
         <id>website</id>
         <link href="https://dsanchezcr.com/pt/blog/website"/>
-        <updated>2022-09-05T07:11:17.000Z</updated>
-        <summary type="html"><![CDATA[Details about the tech behind my new website.]]></summary>
-        <content type="html"><![CDATA[<p>Today I am relaunching my website based on Docusarious from Facebook. I am running it on Azure Static Web Apps and GitHub Pages (because... why not?)</p><p>Something that caught my attention about this static generator is the localization functionality, as you can see, this websites supports English, Spanish and Portuguese.</p><p>Another thing, that liked me is that it supports React, TypeScript and Markdown (including MDX).</p>]]></content>
+        <updated>2022-09-01T08:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Detalhes sobre a tecnologia por trás do meu novo site.]]></summary>
+        <content type="html"><![CDATA[<p>Hoje eu estou relançando meu site com base em <a href="https://docusaurus.io" target="_blank" rel="noopener noreferrer">Docusarious do Facebook</a>. Estou executando-o em Azure Static WebApps e GitHub Pages.</p><p>Um destaque deste gerador de site estático é a funcionalidade de localização, como você pode ver, este site suporta inglês, espanhol e português.</p><p>Outra coisa que me gostou é o suporte de React, TypeScript e Markdown (incluindo MDX).</p><p>Neste blog vou compartilhar dicas sobre tecnologia e desenvolvimento profissional de carreira.</p><p>Se você tiver algum feedback ou suggestion para conteúdo, não hesitante para entrar em contato.</p><p>Obrigado por ler!</p>]]></content>
         <author>
             <name>David Sanchez</name>
             <uri>https://github.com/dsanchezcr</uri>
         </author>
         <category label="webiste" term="webiste"/>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Bem-vindos]]></title>
-        <id>welcome</id>
-        <link href="https://dsanchezcr.com/pt/blog/welcome"/>
-        <updated>2022-09-05T07:11:17.000Z</updated>
-        <summary type="html"><![CDATA[Bem-vindo ao meu blog.]]></summary>
-        <content type="html"><![CDATA[<p>Bem-vindo ao meu blog.</p><p>Muito obrigado pela visita.</p><p>O objetivo deste blog é compartilhar informações relevantes sobre tecnologia da minha experiência e pesquisa.</p><p>Espero que ache as informações valiosas.</p><p>Sinta-se à vontade para entrar em contato se tiver alguma dúvida ou sugestão.</p><p>Obrigada!</p>]]></content>
-        <author>
-            <name>David Sanchez</name>
-            <uri>https://github.com/dsanchezcr</uri>
-        </author>
+        <category label="blog" term="blog"/>
     </entry>
 </feed>

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[954],{3222:e=>{e.exports=JSON.parse('[{"label":"Actualizaci\xf3n de Trabajo","permalink":"/es/blog/tags/actualizacion-de-trabajo","count":1},{"label":"webiste","permalink":"/es/blog/tags/webiste","count":1},{"label":"blog","permalink":"/es/blog/tags/blog","count":1}]')}}]);

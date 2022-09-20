@@ -4,26 +4,28 @@
         <title>David Sanchez Blog</title>
         <link>https://dsanchezcr.com/es/blog</link>
         <description>David Sanchez Blog</description>
-        <lastBuildDate>Mon, 05 Sep 2022 07:11:17 GMT</lastBuildDate>
+        <lastBuildDate>Tue, 20 Sep 2022 08:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>es</language>
         <item>
-            <title><![CDATA[A new website]]></title>
-            <link>https://dsanchezcr.com/es/blog/website</link>
-            <guid>website</guid>
-            <pubDate>Mon, 05 Sep 2022 07:11:17 GMT</pubDate>
-            <description><![CDATA[Details about the tech behind my new website.]]></description>
-            <content:encoded><![CDATA[<p>Today I am relaunching my website based on Docusarious from Facebook. I am running it on Azure Static Web Apps and GitHub Pages (because... why not?)</p><p>Something that caught my attention about this static generator is the localization functionality, as you can see, this websites supports English, Spanish and Portuguese.</p><p>Another thing, that liked me is that it supports React, TypeScript and Markdown (including MDX).</p>]]></content:encoded>
-            <category>webiste</category>
+            <title><![CDATA[Mi último día en Microsoft]]></title>
+            <link>https://dsanchezcr.com/es/blog/microsoft</link>
+            <guid>microsoft</guid>
+            <pubDate>Tue, 20 Sep 2022 08:00:00 GMT</pubDate>
+            <description><![CDATA[Actualización de trabajo, mi último día en Microsoft]]></description>
+            <content:encoded><![CDATA[<p>Después de casi 7 años, hoy es mi último día en Microsoft. Ha sido genial, no hay palabras de agradecimiento a todos los compañeros de equipo, gerentes y mentores que he tenido a lo largo de los años que me han ayudado a crecer y disfrutar de esta aventura.</p><p>Estaré eternamente agradecido con Microsoft por todas las oportunidades, experiencias, aprendizajes, todo el apoyo que recibí y especialmente por todas las personas increíbles que conocí y con las que tuve la oportunidad de trabajar.</p><p>Mientras dejo de trabajar en Microsoft, mi misión continuará. Mañana, comenzaré una nueva aventura como consultor de Azure y DevOps para continuar ayudando a las personas a crear las soluciones más innovadoras con tecnología.</p><p><img loading="lazy" src="/img/LeavingMS.jpg" alt="Leaving Microsoft" class="img_ev3q"></p>]]></content:encoded>
+            <category>Actualización de Trabajo</category>
         </item>
         <item>
-            <title><![CDATA[Bienvidos]]></title>
-            <link>https://dsanchezcr.com/es/blog/welcome</link>
-            <guid>welcome</guid>
-            <pubDate>Mon, 05 Sep 2022 07:11:17 GMT</pubDate>
-            <description><![CDATA[Bienvenidos a mi blog.]]></description>
-            <content:encoded><![CDATA[<p>Bienvenidos a mi blog.</p><p>Gracias por visitar.</p><p>El objectivo de este blog es compartir información relevante acerca de la tecnología desde mi experiencia e investigación.</p><p>Espero que la información sea valiosa.</p><p>No dude en ponerse en contacto en caso de alguna consulta o sugerencia.</p><p>Muchas gracias!</p>]]></content:encoded>
+            <title><![CDATA[Mi nuevo sitio web]]></title>
+            <link>https://dsanchezcr.com/es/blog/website</link>
+            <guid>website</guid>
+            <pubDate>Thu, 01 Sep 2022 08:00:00 GMT</pubDate>
+            <description><![CDATA[Detalles sobre la tecnología detrás de mi nuevo sitio web.]]></description>
+            <content:encoded><![CDATA[<p>Hoy estoy relanzando mi sitio web basado en <a href="https://docusaurus.io" target="_blank" rel="noopener noreferrer">Docusarious de Facebook</a>. Lo estoy ejecutando en Azure Static Web Apps y GitHub Pages.</p><p>Un punto a resaltar de este generador de sitios estáticos es la funcionalidad de localización, como pueden ver, estos sitios web soporta inglés, español y portugués.</p><p>Otra cosa que me gustó es el soporte de React, TypeScript y Markdown (incluido MDX).</p><p>En este blog compartiré consejos sobre tecnología y, desarrollo profesional.</p><p>Si tiene algún comentario o suggetion para el contenido, no dude en comunicarse conmigo.</p><p>¡Gracias por leer!</p>]]></content:encoded>
+            <category>webiste</category>
+            <category>blog</category>
         </item>
     </channel>
 </rss>
