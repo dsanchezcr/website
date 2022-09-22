@@ -88,6 +88,11 @@ const config = {
           {to: '/contact', label: 'Contact', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
           {
+            to: 'https://goodreads.com/dsanchezcr',
+            label: 'GoodReads',
+            position: 'right',
+          },
+          {
             to: 'https://fb.com/dsanchezcr',
             label: 'Facebook',
             position: 'right',
