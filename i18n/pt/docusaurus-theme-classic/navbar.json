@@ -42,5 +42,17 @@
   "item.label.GitHub": {
     "message": "GitHub",
     "description": "Navbar item with label GitHub"
+  },
+  "item.label.Sessionize": {
+    "message": "Sessionize",
+    "description": "Navbar item with label Sessionize"
+  },
+  "item.label.GoodReads": {
+    "message": "GoodReads",
+    "description": "Navbar item with label GoodReads"
+  },
+  "item.label.YouTube": {
+    "message": "YouTube",
+    "description": "Navbar item with label YouTube"
   }
 }

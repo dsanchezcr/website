@@ -37,17 +37,6 @@ const config = {
     ],
   ],
 
-  plugins: [
-    [
-      require.resolve("@cmfcmf/docusaurus-search-local"),
-      {
-        indexDocs: false,
-        indexBlog: true,
-        language: ['en', 'es', 'pt']
-      }
-    ],
-  ],
-
   i18n: {
     defaultLocale: 'en',
     locales: ['en', 'es', 'pt'],
