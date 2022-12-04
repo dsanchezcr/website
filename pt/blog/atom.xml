@@ -2,11 +2,37 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://dsanchezcr.com/pt/blog</id>
     <title>David Sanchez Blog</title>
-    <updated>2022-09-21T08:00:00.000Z</updated>
+    <updated>2022-11-30T18:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://dsanchezcr.com/pt/blog"/>
     <subtitle>David Sanchez Blog</subtitle>
     <icon>https://dsanchezcr.com/pt/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Aprovadas nas Certificações de Partners do GitHub]]></title>
+        <id>GitHub-Certifications</id>
+        <link href="https://dsanchezcr.com/pt/blog/GitHub-Certifications"/>
+        <updated>2022-11-30T18:00:00.000Z</updated>
+        <summary type="html"><![CDATA[GitHub oferece três certificações para Partners. Acabei de passar nos três exames para passar nessas certificações.]]></summary>
+        <content type="html"><![CDATA[<p>Estou muito feliz em compartilhar que acabei de ganhar as três Certificações de Parceiros do GitHub.</p><p>As Certificações de Partners do GitHub são um conjunto de três exames que cobrem a plataforma GitHub e seu ecossistema. Os exames são projetados para testar seu conhecimento do GitHub.</p><p>Os três exames são:</p><ul><li><a href="https://credly.com/badges/e8a1a5a0-f95c-4bfd-b6cb-81ea1231153f" target="_blank" rel="noopener noreferrer">Ações do GitHub</a></li><li><a href="https://credly.com/badges/79b12418-8217-4c7b-a1a0-ad6f6cf407df" target="_blank" rel="noopener noreferrer">Administrador do GitHub</a></li><li><a href="https://credly.com/badges/b32ce8d3-d9e1-423c-8d1a-958901f3d798" target="_blank" rel="noopener noreferrer">Segurança Avançada do GitHub</a></li></ul><p><a href="https://learn.microsoft.com/training/github" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="/img/GH-Certs.png" alt="GitHub Partner Certifications" class="img_ev3q"></a></p><p><a href="https://learn.microsoft.com/training/github" target="_blank" rel="noopener noreferrer">Coleções do Microsoft Learn</a> me ajudou muito a me preparar para os exames. Eu recomendo que você os verifique.</p><p>Estou ansioso para continuar aprendendo e compartilhando meu conhecimento com a comunidade.</p>]]></content>
+        <author>
+            <name>David Sanchez</name>
+            <uri>https://github.com/dsanchezcr</uri>
+        </author>
+        <category label="Certificações" term="Certificações"/>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Webinar - Do Código à Nuvem de forma segura com a Segurança Avançada do GitHub]]></title>
+        <id>Webinar-GHAS</id>
+        <link href="https://dsanchezcr.com/pt/blog/Webinar-GHAS"/>
+        <updated>2022-11-30T18:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Hoje tive a oportunidade de apresentar um webinar sobre GHAS, pode assistir aqui.]]></summary>
+        <content type="html"><![CDATA[<p>Hoje tive a oportunidade de apresentar um webinar sobre GHAS, pode assistir <a href="https://youtu.be/16bYXX5xu6U" target="_blank" rel="noopener noreferrer">aqui</a>.</p><p><a href="https://youtu.be/16bYXX5xu6U" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="/img/Webinar-GHAS.jpg" alt="Webinar - From Code to Cloud in a secure way with GitHub Advanced Security" class="img_ev3q"></a></p><p><a href="https://1drv.ms/p/s!Av3VDVKKphCYuDIMtpQF_aop_7gE" target="_blank" rel="noopener noreferrer">Você pode obter a Apresentação do PowerPoint aqui</a>.</p>]]></content>
+        <author>
+            <name>David Sanchez</name>
+            <uri>https://github.com/dsanchezcr</uri>
+        </author>
+        <category label="Webinars" term="Webinars"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Hoje começo na Xpirit]]></title>
         <id>xpirit</id>

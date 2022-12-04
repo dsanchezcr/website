@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[569],{6802:e=>{e.exports=JSON.parse('{"label":"Certificaciones","permalink":"/es/blog/tags/certificaciones","allTagsPath":"/es/blog/tags","count":1}')}}]);

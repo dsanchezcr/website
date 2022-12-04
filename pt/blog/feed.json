@@ -5,6 +5,36 @@
     "description": "David Sanchez Blog",
     "items": [
         {
+            "id": "GitHub-Certifications",
+            "content_html": "<p>Estou muito feliz em compartilhar que acabei de ganhar as três Certificações de Parceiros do GitHub.</p><p>As Certificações de Partners do GitHub são um conjunto de três exames que cobrem a plataforma GitHub e seu ecossistema. Os exames são projetados para testar seu conhecimento do GitHub.</p><p>Os três exames são:</p><ul><li><a href=\"https://credly.com/badges/e8a1a5a0-f95c-4bfd-b6cb-81ea1231153f\" target=\"_blank\" rel=\"noopener noreferrer\">Ações do GitHub</a></li><li><a href=\"https://credly.com/badges/79b12418-8217-4c7b-a1a0-ad6f6cf407df\" target=\"_blank\" rel=\"noopener noreferrer\">Administrador do GitHub</a></li><li><a href=\"https://credly.com/badges/b32ce8d3-d9e1-423c-8d1a-958901f3d798\" target=\"_blank\" rel=\"noopener noreferrer\">Segurança Avançada do GitHub</a></li></ul><p><a href=\"https://learn.microsoft.com/training/github\" target=\"_blank\" rel=\"noopener noreferrer\"><img loading=\"lazy\" src=\"/img/GH-Certs.png\" alt=\"GitHub Partner Certifications\" class=\"img_ev3q\"></a></p><p><a href=\"https://learn.microsoft.com/training/github\" target=\"_blank\" rel=\"noopener noreferrer\">Coleções do Microsoft Learn</a> me ajudou muito a me preparar para os exames. Eu recomendo que você os verifique.</p><p>Estou ansioso para continuar aprendendo e compartilhando meu conhecimento com a comunidade.</p>",
+            "url": "https://dsanchezcr.com/pt/blog/GitHub-Certifications",
+            "title": "Aprovadas nas Certificações de Partners do GitHub",
+            "summary": "GitHub oferece três certificações para Partners. Acabei de passar nos três exames para passar nessas certificações.",
+            "date_modified": "2022-11-30T18:00:00.000Z",
+            "author": {
+                "name": "David Sanchez",
+                "url": "https://github.com/dsanchezcr"
+            },
+            "tags": [
+                "Certificações"
+            ]
+        },
+        {
+            "id": "Webinar-GHAS",
+            "content_html": "<p>Hoje tive a oportunidade de apresentar um webinar sobre GHAS, pode assistir <a href=\"https://youtu.be/16bYXX5xu6U\" target=\"_blank\" rel=\"noopener noreferrer\">aqui</a>.</p><p><a href=\"https://youtu.be/16bYXX5xu6U\" target=\"_blank\" rel=\"noopener noreferrer\"><img loading=\"lazy\" src=\"/img/Webinar-GHAS.jpg\" alt=\"Webinar - From Code to Cloud in a secure way with GitHub Advanced Security\" class=\"img_ev3q\"></a></p><p><a href=\"https://1drv.ms/p/s!Av3VDVKKphCYuDIMtpQF_aop_7gE\" target=\"_blank\" rel=\"noopener noreferrer\">Você pode obter a Apresentação do PowerPoint aqui</a>.</p>",
+            "url": "https://dsanchezcr.com/pt/blog/Webinar-GHAS",
+            "title": "Webinar - Do Código à Nuvem de forma segura com a Segurança Avançada do GitHub",
+            "summary": "Hoje tive a oportunidade de apresentar um webinar sobre GHAS, pode assistir aqui.",
+            "date_modified": "2022-11-30T18:00:00.000Z",
+            "author": {
+                "name": "David Sanchez",
+                "url": "https://github.com/dsanchezcr"
+            },
+            "tags": [
+                "Webinars"
+            ]
+        },
+        {
             "id": "xpirit",
             "content_html": "<p>Hoje estou muito feliz para começar meu novo trabalho como Consultor Azure &amp; DevOps em <a href=\"https://xpirit.com\" target=\"_blank\" rel=\"noopener noreferrer\">xpirit | Parte de Xebia</a>. Vou me juntar a equipe de <a href=\"https://linkedin.com/in/estebangarcia\" target=\"_blank\" rel=\"noopener noreferrer\">Esteban Garcia</a> como o sexto empregado nos EUA.</p><p>Xpirit é um <a href=\"https://xpirit.com/company/partnerships\" target=\"_blank\" rel=\"noopener noreferrer\">Microsoft Gold Partner &amp; GitHub Partner Verificado</a> que começou em 2014 na Holanda e estendeu as operações na Bélgica, Alemanha e em 2022 nos EUA.</p><p>Estou entusiasmado em começar com a equipe de consultores altamente experientes, especialistas em transformação de nuvem usando o Microsoft Azure, construindo equipes de TI de alto desempenho usando DevOps e criando Software Nativo em Nuvem.\nXpirit continua crescendo, vem se juntar a nós, confira as vagas abertas <a href=\"https://www.linkedin.com/jobs/search/?currentJobId=3270399306%5C&amp;f_C=9183026%5C&amp;geoId=92000000\" target=\"_blank\" rel=\"noopener noreferrer\">aqui</a>.</p><p><img loading=\"lazy\" src=\"/img/Xpirit.gif\" alt=\"Xpirit - Engineering Culture\" class=\"img_ev3q\"></p>",
             "url": "https://dsanchezcr.com/pt/blog/xpirit",

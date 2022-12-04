@@ -4,10 +4,28 @@
         <title>David Sanchez Blog</title>
         <link>https://dsanchezcr.com/es/blog</link>
         <description>David Sanchez Blog</description>
-        <lastBuildDate>Wed, 21 Sep 2022 08:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Wed, 30 Nov 2022 18:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>es</language>
+        <item>
+            <title><![CDATA[Webinar - Del código a la nube de forma segura con GitHub Advanced Security]]></title>
+            <link>https://dsanchezcr.com/es/blog/Webinar-GHAS</link>
+            <guid>Webinar-GHAS</guid>
+            <pubDate>Wed, 30 Nov 2022 18:00:00 GMT</pubDate>
+            <description><![CDATA[Hoy tuve la oportunidad de presentar un webinar sobre GHAS, puedes verlo aquí.]]></description>
+            <content:encoded><![CDATA[<p>Hoy tuve la oportunidad de presentar un webinar sobre GHAS, puedes verlo <a href="https://youtu.be/16bYXX5xu6U" target="_blank" rel="noopener noreferrer">aquí</a>.</p><p><a href="https://youtu.be/16bYXX5xu6U" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="/img/Webinar-GHAS.jpg" alt="Webinar - From Code to Cloud in a secure way with GitHub Advanced Security" class="img_ev3q"></a></p><p><a href="https://1drv.ms/p/s!Av3VDVKKphCYuDIMtpQF_aop_7gE" target="_blank" rel="noopener noreferrer">Puede obtener la presentación de PowerPoint aquí</a>.</p>]]></content:encoded>
+            <category>Webinars</category>
+        </item>
+        <item>
+            <title><![CDATA[Pasé las certificaciones de socios de GitHub]]></title>
+            <link>https://dsanchezcr.com/es/blog/GitHub-Certifications</link>
+            <guid>GitHub-Certifications</guid>
+            <pubDate>Sun, 06 Nov 2022 18:00:00 GMT</pubDate>
+            <description><![CDATA[GitHub ofrece tres certificaciones para socios. Acabo de aprobar los tres exámenes para aprobar estas certificaciones.]]></description>
+            <content:encoded><![CDATA[<p>Estoy emocionado de compartir que acabo de obtener las tres certificaciones de socios de GitHub.</p><p>Las certificaciones de socios de GitHub son un conjunto de tres exámenes que cubren la plataforma GitHub y su ecosistema. Los exámenes están diseñados para poner a prueba su conocimiento de GitHub.</p><p>Los tres exámenes son:</p><ul><li><a href="https://credly.com/badges/e8a1a5a0-f95c-4bfd-b6cb-81ea1231153f" target="_blank" rel="noopener noreferrer">Acciones de GitHub</a></li><li><a href="https://credly.com/badges/79b12418-8217-4c7b-a1a0-ad6f6cf407df" target="_blank" rel="noopener noreferrer">Administrador de GitHub</a></li><li><a href="https://credly.com/badges/b32ce8d3-d9e1-423c-8d1a-958901f3d798" target="_blank" rel="noopener noreferrer">Seguridad Avanzada de GitHub</a></li></ul><p><a href="https://learn.microsoft.com/training/github" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="/img/GH-Certs.png" alt="GitHub Partner Certifications" class="img_ev3q"></a></p><p>Las <a href="https://learn.microsoft.com/training/github" target="_blank" rel="noopener noreferrer">colecciones de Microsoft Learn</a> me ayudaron mucho a prepararme para los exámenes. Te recomiendo que los revises.</p><p>Tengo muchas ganas de seguir aprendiendo y compartiendo mis conocimientos con la comunidad.</p>]]></content:encoded>
+            <category>Certificaciones</category>
+        </item>
         <item>
             <title><![CDATA[Hoy empiezo en Xpirit]]></title>
             <link>https://dsanchezcr.com/es/blog/xpirit</link>

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[154],{2010:a=>{a.exports=JSON.parse('{"label":"certifications","permalink":"/blog/tags/certifications","allTagsPath":"/blog/tags","count":1}')}}]);
