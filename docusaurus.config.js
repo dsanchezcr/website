@@ -83,10 +83,14 @@ const config = {
         },
         items: [
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/projects', label: 'Projects', position: 'left'},
-          {to: 'https://sessionize.com/dsanchezcr', label: 'Speaking', position: 'left'},
+          {to: '/projects', label: 'Projects', position: 'left'},          
           {to: '/contact', label: 'Contact', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
+          {
+            to: 'https://sessionize.com/dsanchezcr', 
+            label: 'Sessionize', 
+            position: 'right'
+          },
           {
             to: 'https://goodreads.com/dsanchezcr',
             label: 'GoodReads',
@@ -110,6 +114,11 @@ const config = {
           {
             to: 'https://github.com/dsanchezcr',
             label: 'GitHub',
+            position: 'right',
+          },
+          {
+            to: 'https://youtube.com/@dsanchezcr',
+            label: 'YouTube',
             position: 'right',
           },
           {
