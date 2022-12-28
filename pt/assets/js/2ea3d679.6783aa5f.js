@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[762],{4025:a=>{a.exports=JSON.parse('{"label":"Load Testing","permalink":"/pt/blog/tags/load-testing","allTagsPath":"/pt/blog/tags","count":1}')}}]);
