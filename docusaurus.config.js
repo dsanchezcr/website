@@ -13,6 +13,16 @@ const config = {
   organizationName: 'dsanchezcr',
   projectName: 'website',
 
+  plugins: [
+    [
+      '@docusaurus/plugin-google-gtag',
+      {
+        trackingID: 'G-18J431S7WG',
+        anonymizeIP: true,
+      },
+    ],
+  ],
+
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -28,11 +38,7 @@ const config = {
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
-        },
-        googleAnalytics: {
-          trackingID: 'G-18J431S7WG',
-          anonymizeIP: false,
-        }        
+        }      
       },
     ],
   ],
