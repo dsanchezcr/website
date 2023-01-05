@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[547],{5415:e=>{e.exports=JSON.parse('{"permalink":"/blog/tags/cost-savings","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"David Sanchez Blog","blogTitle":"Blog"}')}}]);
