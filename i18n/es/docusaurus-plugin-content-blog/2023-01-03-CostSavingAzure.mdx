@@ -1,0 +1,156 @@
+---
+title: Ahorro de costos con Azure para sus aplicaciones web
+description: aprenda a optimizar lo que paga en Azure por sus aplicaciones web con PaaS
+slug: cost-savings-with-azure
+authors: [dsanchezcr]
+tags: [Azure, Cost Savings, Web Apps, SQL Azure]
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/CostSavings/Automation.jpg
+date: 2023-01-04T18:00
+---
+# Ahorro de costos con Azure para sus aplicaciones web
+
+## Introducción
+
+Muchas de nuestras aplicaciones web hospedadas en Azure se crean sobre un servicio PaaS, como Azure App Service y SQL Azure. Estos servicios generalmente se facturan en función de la cantidad de recursos que consumen. Cuantos más recursos consumen, más pagamos. Sin embargo, hay algunas mejores prácticas que podemos seguir para reducir la cantidad de recursos consumidos y, por lo tanto, reducir la cantidad de dinero que pagamos. Especialmente si estamos ejecutando una aplicación web que no se usa 24/7 o solo se usa durante el horario comercial en la misma zona horaria.
+
+Uno de los principios de la computación en la nube es el **elasticidad**, lo que significa que podemos escalar hacia arriba o hacia abajo los recursos que consume nuestra aplicación en función de la demanda o el horario. Esta es una gran característica de la nube, pero debemos ser conscientes de las implicaciones de costos de esta característica. Si ampliamos nuestra aplicación para manejar un pico de tráfico, también debemos reducir los recursos cuando el tráfico vuelva a la normalidad.
+
+En el Servicio de aplicaciones de Azure tenemos dos formas de escalar verticalmente, verticalmente o abajo y escalar horizontalmente o entrar. Escalar hacia arriba o hacia abajo significa que podemos cambiar el tamaño de la máquina virtual en la que se ejecuta nuestra aplicación. Escalar horizontalmente o en significa que podemos agregar o quitar máquinas virtuales de nuestra aplicación. Podemos escalar hacia arriba o hacia abajo y escalar hacia afuera o hacia adentro al mismo tiempo. Por ejemplo, podemos escalar verticalmente el tamaño de las máquinas virtuales y agregar más máquinas virtuales a nuestra aplicación.
+
+Así que si tenemos una Web App de producción que no se utiliza 24/7, debemos considerar lo siguiente:
+
+*   Reduzca la aplicación y la base de datos a los recursos mínimos necesarios durante las horas de menor actividad.
+*   Escale verticalmente la aplicación y la base de datos a los recursos máximos necesarios durante las horas punta. (Además, debemos habilitar el escalado automático para escalar horizontalmente la aplicación y agregar más instancias cuando sea necesario, [a través de las reglas que defina para escalar horizontalmente o en](https://learn.microsoft.com/azure/azure-monitor/autoscale/autoscale-get-started?toc=%2Fazure%2Fapp-service%2Ftoc.json#create-your-first-autoscale-setting)).
+
+El proceso de escalado vertical y vertical se puede reducir manualmente desde el portal, como se muestra en la imagen.
+
+![](pathname:///img/CostSavings/AzurePortal-ScaleUp.jpg)
+
+Sin embargo, este proceso puede ser tedioso y propenso a errores. Podemos automatizar el proceso para escalar hacia arriba y hacia abajo la aplicación web y la base de datos durante la noche y los fines de semana. Esto reducirá la cantidad de recursos consumidos y, por lo tanto, reducirá la cantidad de dinero que pagamos.
+
+## Solución
+
+Podemos utilizar [Automatización de Azure](https://learn.microsoft.com/azure/automation/overview) para programar un script de PowerShell para reducir la escala de la aplicación web y la base de datos durante la noche y los fines de semana. También podemos programar otro script de PowerShell para escalar verticalmente la aplicación web y la base de datos antes del horario comercial.
+
+> Deberá crear la cuenta de Automatización de Azure y la cuenta de ejecución para conectarse con los recursos de Azure. Puede seguir los pasos de este [artículo](https://learn.microsoft.com/azure/automation/learn/powershell-runbook-managed-identity#assign-permissions-to-managed-identities).
+
+Exploremos los scripts de PowerShell que podemos usar:
+
+### Escalar verticalmente o reducir verticalmente la aplicación web
+
+```powershell
+$resourceGroupName = '<Your Resource Group>'
+$appServiceName = '<Your App Service>'
+$tier = '<Tier you would like to scale down - For example: Basic>'
+$ErrorActionPreference = 'stop'
+function Login() {
+	$connectionName = "AzureRunAsConnection"
+	try
+	{
+		$servicePrincipalConnection = Get-AutomationConnection -Name $connectionName   
+		Write-Verbose "Logging in to Azure..." -Verbose
+		Add-AzureRmAccount `
+			-ServicePrincipal `
+			-TenantId $servicePrincipalConnection.TenantId `
+			-ApplicationId $servicePrincipalConnection.ApplicationId `
+			-CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint | Out-Null
+	}
+	catch {
+		if (!$servicePrincipalConnection)
+		{
+			$ErrorMessage = "Connection $connectionName not found."
+			throw $ErrorMessage
+		} else{
+			Write-Error -Message $_.Exception
+			throw $_.Exception
+		}
+	}
+}
+filter timestamp {"[$(Get-Date -Format G)]: $_"}
+Write-Output "Script started." | timestamp
+Login
+Write-Verbose "Login sucessful. Proceding to update service plan..." -Verbose
+try{
+
+	Set-AzureRmAppServicePlan -ResourceGroupName $resourceGroupName -Name $appServiceName -Tier $tier
+	Write-Verbose "Service plan updated. Getting information about the update..." -Verbose
+}
+catch{
+	Write-Verbose "Error... '$_.Exception'" -Verbose
+	Write-Error -Message $_.Exception
+	throw $_.Exception
+}
+$appService = Get-AzureRmAppServicePlan -ResourceGroupName $resourceGroupName -Name $appServiceName 
+Write-Output "App Service Plan name: $($appService.Name)" | timestamp
+Write-Output "Current App Service Plan status: $($appService.Status), tier: $($appService.Sku.Name)" | timestamp
+Write-Output "Script finished."    
+```
+
+### Escalar verticalmente o reducir el SQL Azure
+
+```powershell
+$resourceGroupName = '<Your Resource Group>'
+$databaseAdminUsername = '<Your SQL Admin User>'
+$databaseAdminPassword = '<Your SQL Admin Pass>'
+$SqlServerName = '<Your SQL Azure Server Name>'
+$DatabaseName = '<Your SQL Azure DB Name>'
+$Edition = '<Tier you would like to scale down - For example: Basic>'
+$PerfLevel = '<Tier you would like to scale down - For example: Basic>'
+$ErrorActionPreference = 'stop'
+function Login() {
+    $connectionName = "AzureRunAsConnection"
+    try
+    {
+        $servicePrincipalConnection = Get-AutomationConnection -Name $connectionName   
+        Write-Verbose "Logging in to Azure..." -Verbose
+        Add-AzureRmAccount `
+    -ServicePrincipal `
+    -TenantId $servicePrincipalConnection.TenantId `
+    -ApplicationId $servicePrincipalConnection.ApplicationId `
+    -CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint | Out-Null
+    }
+    catch {
+        if (!$servicePrincipalConnection)
+        {
+            $ErrorMessage = "Connection $connectionName not found."
+            throw $ErrorMessage
+        } else{
+            Write-Error -Message $_.Exception
+            throw $_.Exception
+        }
+    }
+}
+filter timestamp {"[$(Get-Date -Format G)]: $_"}
+Write-Output "Script started." | timestamp
+Login
+Write-Verbose "Login sucessful. Proceding to update SQL Azure tier..." -Verbose
+try{     
+    $securePassword = ConvertTo-SecureString –String $databaseAdminPassword –AsPlainText -Force 
+    $creds = New-Object –TypeName System.Management.Automation.PSCredential –ArgumentList $databaseAdminUsername, $securePassword
+    Write-Output "SQL Credentials created" | timestamp
+    $sqlContext = New-AzureSqlDatabaseServerContext -ManageUrl “https://$SqlServerName.database.windows.net” -Credential $creds
+    Write-Output "SQL Context created" | timestamp
+    $Db = Get-AzureSqlDatabase $sqlContext -DatabaseName $DatabaseName
+    Write-Output "SQL Database selected" | timestamp
+    $ServiceObjective = Get-AzureSqlDatabaseServiceObjective $sqlContext -ServiceObjectiveName $PerfLevel
+    Write-Output "SQL Service Objective configured... Proceding to update edition level..." | timestamp
+    Set-AzureSqlDatabase $sqlContext -Database $Db -ServiceObjective $ServiceObjective -Edition $Edition -Force
+    Write-Output "Scaled the performance level of $DatabaseName to $Edition - $PerfLevel" | timestamp
+    $sqlazurestatus = Get-AzureSqlDatabase $sqlContext -DatabaseName $DatabaseName
+    Write-Output "Completed vertical scale." | timestamp
+}
+catch{
+    Write-Verbose "Error... '$_.Exception'" -Verbose
+    Write-Error -Message $_.Exception
+    throw $_.Exception
+}
+```
+
+Una vez creados los Runbooks en Automatización de Azure, puede crear las programaciones y vincularlas a las programaciones.
+
+![](pathname:///img/CostSavings/Automation.jpg)
+
+## Conclusión
+
+Hemos visto cómo podemos usar Azure Automation y PowerShell para programar el escalado vertical o vertical de la aplicación web y SQL Azure. Esto nos ayudará a ahorrar dinero y también a evitar el tiempo de inactividad durante el horario comercial al agregar los recursos que no usamos por la noche.
