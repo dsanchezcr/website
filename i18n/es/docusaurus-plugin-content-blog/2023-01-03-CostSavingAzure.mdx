@@ -33,7 +33,7 @@ Sin embargo, este proceso puede ser tedioso y propenso a errores. Podemos automa
 
 Podemos utilizar [Automatización de Azure](https://learn.microsoft.com/azure/automation/overview) para programar un script de PowerShell para reducir la escala de la aplicación web y la base de datos durante la noche y los fines de semana. También podemos programar otro script de PowerShell para escalar verticalmente la aplicación web y la base de datos antes del horario comercial.
 
-> Deberá crear la cuenta de Automatización de Azure y la cuenta de ejecución para conectarse con los recursos de Azure. Puede seguir los pasos de este [artículo](https://learn.microsoft.com/azure/automation/learn/powershell-runbook-managed-identity#assign-permissions-to-managed-identities).
+> Deberá configurar una identidad asignada por el sistema a la cuenta de Azure Automation para conectarse con los recursos de Azure. Puede seguir los pasos de este [artículo](https://learn.microsoft.com/azure/automation/learn/powershell-runbook-managed-identity#assign-permissions-to-managed-identities).
 
 Exploremos los scripts de PowerShell que podemos usar:
 
@@ -41,104 +41,49 @@ Exploremos los scripts de PowerShell que podemos usar:
 
 ```powershell
 $resourceGroupName = '<Your Resource Group>'
-$appServiceName = '<Your App Service>'
+$appServicePlanName = '<Your App Service>'
 $tier = '<Tier you would like to scale down - For example: Basic>'
-$ErrorActionPreference = 'stop'
-function Login() {
-	$connectionName = "AzureRunAsConnection"
-	try
-	{
-		$servicePrincipalConnection = Get-AutomationConnection -Name $connectionName   
-		Write-Verbose "Logging in to Azure..." -Verbose
-		Add-AzureRmAccount `
-			-ServicePrincipal `
-			-TenantId $servicePrincipalConnection.TenantId `
-			-ApplicationId $servicePrincipalConnection.ApplicationId `
-			-CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint | Out-Null
-	}
-	catch {
-		if (!$servicePrincipalConnection)
-		{
-			$ErrorMessage = "Connection $connectionName not found."
-			throw $ErrorMessage
-		} else{
-			Write-Error -Message $_.Exception
-			throw $_.Exception
-		}
-	}
+try
+{
+    filter timestamp {"[$(Get-Date -Format G)]: $_"}
+    Write-Output "Script started." | timestamp
+    Write-Verbose "Logging in to Azure..." -Verbose
+    Connect-AzAccount -Identity
+    Write-Verbose "Login sucessful. Proceding to update service plan..." -Verbose
+    Set-AzAppServicePlan -ResourceGroupName $resourceGroupName -Name $appServicePlanName -tier $tier
+    Write-Verbose "Service plan updated. Getting information about the update..." -Verbose
+    $appPlanService = Get-AzAppServicePlan -ResourceGroupName $resourceGroupName -Name $appServicePlanName
+    Write-Output "App Service Plan name: $($appPlanService.Name)" | timestamp
+    Write-Output "Current App Service Plan status: $($appPlanService.Status), tier: $($appPlanService.Sku.Name)" | timestamp
+    Write-Output "Script finished."
 }
-filter timestamp {"[$(Get-Date -Format G)]: $_"}
-Write-Output "Script started." | timestamp
-Login
-Write-Verbose "Login sucessful. Proceding to update service plan..." -Verbose
-try{
-
-	Set-AzureRmAppServicePlan -ResourceGroupName $resourceGroupName -Name $appServiceName -Tier $tier
-	Write-Verbose "Service plan updated. Getting information about the update..." -Verbose
+catch {
+    Write-Verbose "Error... '$_.Exception'" -Verbose
+    Write-Error -Message $_.Exception
+    throw $_.Exception
 }
-catch{
-	Write-Verbose "Error... '$_.Exception'" -Verbose
-	Write-Error -Message $_.Exception
-	throw $_.Exception
-}
-$appService = Get-AzureRmAppServicePlan -ResourceGroupName $resourceGroupName -Name $appServiceName 
-Write-Output "App Service Plan name: $($appService.Name)" | timestamp
-Write-Output "Current App Service Plan status: $($appService.Status), tier: $($appService.Sku.Name)" | timestamp
-Write-Output "Script finished."    
 ```
 
 ### Escalar verticalmente o reducir el SQL Azure
 
 ```powershell
 $resourceGroupName = '<Your Resource Group>'
-$databaseAdminUsername = '<Your SQL Admin User>'
-$databaseAdminPassword = '<Your SQL Admin Pass>'
 $SqlServerName = '<Your SQL Azure Server Name>'
 $DatabaseName = '<Your SQL Azure DB Name>'
 $Edition = '<Tier you would like to scale down - For example: Basic>'
 $PerfLevel = '<Tier you would like to scale down - For example: Basic>'
-$ErrorActionPreference = 'stop'
-function Login() {
-    $connectionName = "AzureRunAsConnection"
-    try
-    {
-        $servicePrincipalConnection = Get-AutomationConnection -Name $connectionName   
-        Write-Verbose "Logging in to Azure..." -Verbose
-        Add-AzureRmAccount `
-    -ServicePrincipal `
-    -TenantId $servicePrincipalConnection.TenantId `
-    -ApplicationId $servicePrincipalConnection.ApplicationId `
-    -CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint | Out-Null
-    }
-    catch {
-        if (!$servicePrincipalConnection)
-        {
-            $ErrorMessage = "Connection $connectionName not found."
-            throw $ErrorMessage
-        } else{
-            Write-Error -Message $_.Exception
-            throw $_.Exception
-        }
-    }
-}
-filter timestamp {"[$(Get-Date -Format G)]: $_"}
-Write-Output "Script started." | timestamp
-Login
-Write-Verbose "Login sucessful. Proceding to update SQL Azure tier..." -Verbose
-try{     
-    $securePassword = ConvertTo-SecureString –String $databaseAdminPassword –AsPlainText -Force 
-    $creds = New-Object –TypeName System.Management.Automation.PSCredential –ArgumentList $databaseAdminUsername, $securePassword
-    Write-Output "SQL Credentials created" | timestamp
-    $sqlContext = New-AzureSqlDatabaseServerContext -ManageUrl “https://$SqlServerName.database.windows.net” -Credential $creds
-    Write-Output "SQL Context created" | timestamp
-    $Db = Get-AzureSqlDatabase $sqlContext -DatabaseName $DatabaseName
-    Write-Output "SQL Database selected" | timestamp
-    $ServiceObjective = Get-AzureSqlDatabaseServiceObjective $sqlContext -ServiceObjectiveName $PerfLevel
-    Write-Output "SQL Service Objective configured... Proceding to update edition level..." | timestamp
-    Set-AzureSqlDatabase $sqlContext -Database $Db -ServiceObjective $ServiceObjective -Edition $Edition -Force
-    Write-Output "Scaled the performance level of $DatabaseName to $Edition - $PerfLevel" | timestamp
-    $sqlazurestatus = Get-AzureSqlDatabase $sqlContext -DatabaseName $DatabaseName
-    Write-Output "Completed vertical scale." | timestamp
+try{
+    filter timestamp {"[$(Get-Date -Format G)]: $_"}
+    Write-Output "Script started." | timestamp
+    Write-Verbose "Logging in to Azure..." -Verbose
+    Connect-AzAccount -Identity  
+    Write-Verbose "Login sucessful. Proceding to update SQL Server plan..." -Verbose
+    Set-AzSqlDatabase -ResourceGroupName $resourceGroupName -DatabaseName $DatabaseName -ServerName $SqlServerName -Edition $Edition -RequestedServiceObjectiveName $PerfLevel 
+    Write-Verbose "SQL Server plan updated. Getting information about the update..." -Verbose
+    $sqlServerPlan = Get-AzSqlDatabase -ResourceGroupName $resourceGroupName -DatabaseName $DatabaseName -ServerName $SqlServerName
+    Write-Output "SQL Server Edition: $($sqlServerPlan.Edition)" | timestamp
+    Write-Output "Current SQL Server Plan status: $($sqlServerPlan.Status)" | timestamp
+    Write-Output "Script finished."
 }
 catch{
     Write-Verbose "Error... '$_.Exception'" -Verbose
