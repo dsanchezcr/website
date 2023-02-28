@@ -1,0 +1,47 @@
+---
+title: List repositories with their sizes in Azure Repos
+description: Learn how to list your Azure Repos with their sizes using PowerShell.
+slug: list-azure-repos-with-sizes
+authors: [dsanchezcr]
+tags: [Azure DevOps, PowerShell]
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/ListADORepos/ListADORepos.png
+date: 2023-02-28T18:00
+---
+# List repositories with their sizes in Azure Repos
+
+In this short post, I will show you how to list the Azure Repos in an Azure DevOps Project with their sizes in MB using a PowerShell script.
+
+To follow this post, you will need to create a Personal Access Token (PAT) with the **Code (read)** permission. You can read more about PAT in the [official documentation](https://learn.microsoft.com/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate).
+
+```powershell
+$DevOpsServerName = "<YOUR AZURE DEVOPS SERVER NAME>"
+$ProjectCollection = "<YOUR PROJECT COLLECTION NAME>"
+$Project = "<YOUR PROJECT NAME>"
+$PAT = "<YOUR PERSONAL ACCESS TOKEN>"
+
+$baseUrl = https://$DevOpsServerName/$ProjectCollection/$Project/_apis/git/repositories?includeLinks={includeLinks}&includeAllUrls={includeAllUrls}&includeHidden={includeHidden}&api-version=6.0
+$base64AuthInfo= [System.Convert]::ToBase64String([System.Text.Encoding]::ASCII.GetBytes(":$($PAT)"))
+$headers = @{Authorization=("Basic {0}" -f $base64AuthInfo)}
+$repositories = Invoke-RestMethod -Uri $baseUrl -Method Get -Headers $headers
+
+foreach ($repo in $repositories.value) {
+    $repoName = $repo.name
+    $repoSize = [math]::Round(($repo.size / 1MB),2) 
+    
+    Write-Output "$repoName $repoSize MB"
+} 
+```
+
+Here is an example of the output of that script:
+```powershell
+Tailwind Traders 10.65 MB
+TailwindTraders-Backend 28.45 MB
+TailwindTraders-Website 14.04 MB 
+```
+
+The script above use the Azure DevOps Rest API to get the repositories and their sizes. You can read more about the API in the [official documentation](https://docs.microsoft.com/rest/api/azure/devops/git/repositories/list).
+
+This is helpful to know the size of your repositories in case you are planning to do a migration, or in case you would like to know if you have large files, and to know if you need to clean up some of them.
+
+Hope this helps!
