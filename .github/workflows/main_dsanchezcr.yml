@@ -1,4 +1,4 @@
-name: Build and Deploy Website and Azure Function
+name: Build and Deploy Website
 on:
   push:
     branches:
@@ -29,27 +29,3 @@ jobs:
           app_location: "/build"
           api_location: "/api"
           output_location: "build"
-  build-and-deploy-azure-function:
-    runs-on: ubuntu-latest
-    needs: build-and-deploy-website
-    steps:
-      - name: 'Checkout GitHub Action'
-        uses: actions/checkout@v2
-      - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
-      - name: 'Resolve Project Dependencies Using Dotnet'
-        shell: bash
-        run: |
-          pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-          dotnet build --configuration Release --output ./output
-          popd
-      - name: 'Deploy Azure Functions Action'
-        uses: Azure/functions-action@v1
-        id: fa
-        with:
-          app-name: 'dsanchezcr'
-          slot-name: 'Production'
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C23FC34DC543426B82EF3F665E199E5C }}
