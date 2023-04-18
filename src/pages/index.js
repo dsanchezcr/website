@@ -13,18 +13,23 @@ export default function Home() {
         fontSize: '20px',
       }}>         
       <main>
+        <br/>
         <h1>
-            <Translate id="homepage.header">Welcome to my website</Translate>
+            <Translate id="homepage.header">Hello! Welcome to my personal website.</Translate>
         </h1>
         <h2>
-          <Translate>Thank you for visiting.</Translate>
-        </h2>
-        <Translate>I'm David, a developer and tech passionated.</Translate>
-        <br/>
+          <Translate>I am </Translate><span className="intro__name" style={{ color: 'rgb(50, 50, 150)' }}>David Sanchez</span>. <Translate>A developer and technology passionated.</Translate>
+        </h2>        
         <img id="homepageImage"
           src="/img/Profile.jpg"
         />
         <br/>
+        <Link
+            className="button button--secondary button--lg"
+            to="pathname:///docs/Resume_David_sanchez.pdf">
+            Download my resume
+        </Link>
+        <br />
         <Translate
           id="homepage.visitMyBlog"
           values={{
@@ -38,7 +43,7 @@ export default function Home() {
               </Link>
             ),
           }}>
-          {'Visit my {blogLink} to read my recent posts'}
+          {'Visit my {blogLink} to read my recent posts. '}
         </Translate>        
       </main>
       </div> 

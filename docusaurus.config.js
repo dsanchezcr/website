@@ -29,12 +29,15 @@ const config = {
       { 
         docs: false,       
         blog: {
+          blogSidebarTitle: 'All posts',
+          blogSidebarCount: 'ALL',
           showReadingTime: true,
           blogDescription: 'David Sanchez Blog',
-          postsPerPage: 10,
+          postsPerPage: 'ALL',
           feedOptions: {
-            type: 'all'
-          }
+            type: 'all',
+            copyright: `Copyright © ${new Date().getFullYear()} David Sanchez.`            
+          },
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -76,6 +79,7 @@ const config = {
           alt: 'David Sanchez - Website',
           src: 'img/logo.png',
         },
+
         items: [
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/projects', label: 'Projects', position: 'left'},          
@@ -121,6 +125,10 @@ const config = {
             position: 'right',
           },        
         ],
+      },
+      footer: {
+        style: "dark",        
+        copyright: `Copyright © ${new Date().getFullYear()} David Sanchez. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,

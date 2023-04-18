@@ -31,7 +31,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "/build"
-          api_location: ""
+          api_location: "/api"
           output_location: "build"
       - name: Deploy to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v3
