@@ -26,13 +26,11 @@ namespace api
             var response = req.CreateResponse(HttpStatusCode.OK);
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var data = JsonSerializer.Deserialize<Data>(requestBody);
-            string fromEmailAddress = "<your from email address>";
-            string toEmailAddress = "<your to email address>";
             var emailClient = new EmailClient(connectionString: _config.GetConnectionString("AzureCommunicationStringConnection"));
             var sendEmailResult = await emailClient.SendAsync(
-                WaitUntil.Started,                
-                fromEmailAddress,
-                toEmailAddress,
+                WaitUntil.Started,
+                "website@dsanchezcr.com",
+                "david@dsanchezcr.com",
                 subject: $"New message in the website from {data.name} ({data.email})",
                 data.message);
             return response;
