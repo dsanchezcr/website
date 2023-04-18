@@ -1,16 +1,10 @@
-name: build-deploy-docusaurus
-
+name: Build and Deploy Website
 on:
   push:
     branches:
       - main
-  pull_request:
-    types: [closed]
-    branches:
-      - main
-
 jobs:
-  build_and_deploy:
+  build-and-deploy-website:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
@@ -33,12 +27,3 @@ jobs:
           app_location: "/build"
           api_location: "/api"
           output_location: "build"
-      - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v3
-        with:
-          target_branch: gh-pages
-          build_dir: build
-          keep_history: true
-          fqdn: github.dsanchezcr.com
-        env:
-          GH_PAT: ${{ secrets.GH_PAGES }}

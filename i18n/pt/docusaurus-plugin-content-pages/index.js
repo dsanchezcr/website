@@ -13,18 +13,23 @@ export default function Home() {
         fontSize: '20px',
       }}>         
       <main>
+        <br/>
         <h1>
-            <Translate id="homepage.header">Bem-vind@ ao meu site</Translate>
+            <Translate id="homepage.header">Olá! Bem vindo ao meu site pessoal.</Translate>
         </h1>
         <h2>
-          <Translate>Obrigado pela visita.</Translate>
-        </h2>
-        <Translate>Sou David, desenvolvedor e apaixonado por tecnologia.</Translate>
-        <br/>
+          <Translate>Eu sou </Translate><span className="intro__name" style={{ color: 'rgb(50, 50, 150)' }}>David Sanchez</span>. <Translate>um desenvolvedor apaixonado por tecnologia.</Translate>
+        </h2>        
         <img id="homepageImage"
           src="/img/Profile.jpg"
         />
         <br/>
+        <Link
+            className="button button--secondary button--lg"
+            to="pathname:///Resume_David_Sanchez.pdf">
+            Baixe meu CV (inglês)
+        </Link>
+        <br />
         <Translate
           id="homepage.visitMyBlog"
           values={{
@@ -38,7 +43,7 @@ export default function Home() {
               </Link>
             ),
           }}>
-          {'Visite meu {blogLink} para ler as postagens mais recentes.'}
+          {'Visite meu {blogLink} para ler minhas postagens mais recentes.'}
         </Translate>        
       </main>
       </div> 

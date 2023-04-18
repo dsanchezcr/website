@@ -26,7 +26,7 @@ export default function Home() {
         <br/>
         <Link
             className="button button--secondary button--lg"
-            to="pathname:///docs/Resume_David_sanchez.pdf">
+            to="pathname:///Resume_David_Sanchez.pdf">
             Download my resume
         </Link>
         <br />
