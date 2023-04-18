@@ -16,7 +16,7 @@ export default function Contact() {
       };
   
       try {
-        const response = await fetch("api/SendEmailFunction", {
+        const response = await fetch("https://dsanchezcr.azurewebsites.net/api/SendEmailFunction", {
           method: "POST",
           body: JSON.stringify(data),
           headers: { "Content-Type": "application/json" },
