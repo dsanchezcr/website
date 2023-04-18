@@ -21,12 +21,12 @@ jobs:
         shell: bash
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-          dotnet build --configuration Release --output ./build
+          dotnet build --configuration Release --output ./function
           popd
       - name: 'Deploy Azure Functions Action'
         uses: Azure/functions-action@v1
         with:
           app-name: 'dsanchezcr'
           slot-name: 'Production'
-          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/build'
+          package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/function'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C23FC34DC543426B82EF3F665E199E5C }}

@@ -11,19 +11,13 @@ namespace api
 {
     public class SendEmailFunction
     {
-        private readonly ILogger _logger;
-        private readonly IConfiguration _config;
-
-        public SendEmailFunction(ILoggerFactory loggerFactory)
-        {
-            _logger = loggerFactory.CreateLogger<SendEmailFunction>();
-        }
+        private readonly IConfiguration? _config;
 
         private class Data
         {
-            public string? name { get; set; }
-            public string? email { get; set; }
-            public string? message { get; set; }
+            public string name { get; set; }
+            public string email { get; set; }
+            public string message { get; set; }
         }
 
         [Function("SendEmailFunction")]
@@ -34,14 +28,13 @@ namespace api
             var data = JsonSerializer.Deserialize<Data>(requestBody);
             string fromEmailAddress = "<your from email address>";
             string toEmailAddress = "<your to email address>";
-            var emailClient = new EmailClient(_config.GetConnectionString("AzureCommunicationStringConnection"));
+            var emailClient = new EmailClient(connectionString: _config.GetConnectionString("AzureCommunicationStringConnection"));
             var sendEmailResult = await emailClient.SendAsync(
                 WaitUntil.Started,                
                 fromEmailAddress,
                 toEmailAddress,
-                $"New message in the website from {data.name} ({data.email})",
+                subject: $"New message in the website from {data.name} ({data.email})",
                 data.message);
-            _logger.LogInformation($"Email sent with message ID: {sendEmailResult.Id}");
             return response;
         }
     }

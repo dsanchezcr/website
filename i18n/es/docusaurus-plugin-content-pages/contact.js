@@ -40,7 +40,7 @@ export default function Contact() {
     <Layout title="Contacto" description="Página de contacto">        
         <form onSubmit={handleSubmit}>
         <br />        
-        <label>No dude en comunicarse si tiene alguna pregunta o sugerencia..</label>
+        <label>No dude en comunicarse si tiene alguna pregunta o sugerencia.</label>
         <br />
             <label>
                 Nombre:
