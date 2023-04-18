@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Azure.Communication.Email;
-using Microsoft.Extensions.Configuration;
 using Azure;
 
 namespace api
@@ -20,12 +19,6 @@ namespace api
             ILogger log)
         {
             log.LogInformation("Send email function triggered.");
-            IConfigurationRoot config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-            string connectionString = config.GetConnectionString("AzureCommunicationStringConnection");
-            if (string.IsNullOrEmpty(connectionString)) {
-                log.LogError("Connection string is empty"); 
-                return new ConflictObjectResult("Cannot connect to Azure communication Service.");
-            }
             string name = req.Query["name"];
             string email = req.Query["email"];
             string message = req.Query["message"];
@@ -34,7 +27,7 @@ namespace api
             name = name ?? data?.name;
             email = email ?? data?.email;
             message = message ?? data?.message;
-            var emailClient = new EmailClient(connectionString);
+            var emailClient = new EmailClient(System.Environment.GetEnvironmentVariable("ConnectionStrings:AzureCommunicationStringConnection"));
             try
             {
                 //Email to notify myself
