@@ -16,7 +16,7 @@ export default function Contact() {
       };
   
       try {
-        const response = await fetch("https://dsanchezcr.azurewebsites.net/api/SendEmailFunction", {
+        const response = await fetch("api/SendEmailFunction", {
           method: "POST",
           body: JSON.stringify(data),
           headers: { "Content-Type": "application/json" },
@@ -24,14 +24,12 @@ export default function Contact() {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        // Display a success message to the user, or do whatever you want here
         const result = await response.json();
         console.log(result);  
         setName('');
         setEmail('');
         setMessage('');
       } catch (error) {
-        // Display an error message to the user, or do whatever you want here
         console.error("There was an error submitting the form", error);
       }      
     };

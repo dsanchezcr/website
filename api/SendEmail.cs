@@ -18,7 +18,7 @@ namespace api
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("Send email function triggered.");
+            log.LogInformation("SendEmail Function Triggered.");
             string name = req.Query["name"];
             string email = req.Query["email"];
             string message = req.Query["message"];
@@ -27,9 +27,11 @@ namespace api
             name = name ?? data?.name;
             email = email ?? data?.email;
             message = message ?? data?.message;
+            log.LogInformation("Information collected from parameters.");
             var emailClient = new EmailClient(System.Environment.GetEnvironmentVariable("ConnectionStrings:AzureCommunicationStringConnection"));
             try
             {
+                log.LogInformation("Sending email to myself.");
                 //Email to notify myself
                 var selfEmailSendOperation = await emailClient.SendAsync(
                     wait: WaitUntil.Completed,
@@ -38,6 +40,7 @@ namespace api
                     subject: $"New message in the website from {name} ({email})",
                     htmlContent: "<html><body>" + name + " with email address " + email + " sent the following message: <br />" + message + "</body></html>");
                 log.LogInformation($"Email sent with message ID: {selfEmailSendOperation.Id} and status: {selfEmailSendOperation.Value.Status}");
+                log.LogInformation("Sending email to contact.");
                 //Email to notify the contact
                 var contactEmailSendOperation = await emailClient.SendAsync(
                     wait: WaitUntil.Completed,
