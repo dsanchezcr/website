@@ -18,7 +18,7 @@ export default function Home() {
             <Translate id="homepage.header">Hello! Welcome to my personal website.</Translate>
         </h1>
         <h2>
-          <Translate>I am </Translate><span className="intro__name" style={{ color: 'rgb(50, 50, 150)' }}>David Sanchez</span>. <Translate>A developer and technology passionated.</Translate>
+          <Translate>I am </Translate><span className="intro__name" style={{ color: 'rgb(50, 50, 150)' }}>David Sanchez</span><Translate> developer and technology passionate.</Translate>
         </h2>        
         <img id="homepageImage"
           src="/img/Profile.jpg"
