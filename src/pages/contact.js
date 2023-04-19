@@ -24,7 +24,7 @@ export default function Contact() {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        const result = await response.json();
+        const result = await response.value;
         console.log(result);  
         setName('');
         setEmail('');
@@ -42,17 +42,17 @@ export default function Contact() {
         <br />
             <label>
                 Name:
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                <input type="text" value={name} required onChange={(e) => setName(e.target.value)} />
             </label>
             <br />
             <label>
                 Email:
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                <input type="email" value={email} required onChange={(e) => setEmail(e.target.value)} />
             </label>
             <br />
             <label>
                 Message:
-                <textarea value={message} onChange={(e) => setMessage(e.target.value)} />
+                <textarea value={message} required onChange={(e) => setMessage(e.target.value)} />
             </label>
             <br />
             <button type="submit" className='button button--secondary button--lg'>Submit</button>
