@@ -1,0 +1,112 @@
+---
+title: Creación de un formulario de contacto sencillo
+description: En esta publicación, crearemos un formulario de contacto con Azure Functions y Azure Communication Services
+slug: building-a-contact-form-with-azure
+authors: [dsanchezcr]
+tags: [Azure Functions, GitHub Actions, Azure Communication Services, Azure Static Web Apps]
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/BuiltContactForm/ContactForm.jpg
+date: 2023-04-23T18:00
+---
+# Creación de un formulario de contacto sencillo con Azure
+
+En esta publicación, crearemos un formulario de contacto con Azure Functions y Azure Communication Services.
+
+## Introducción
+
+Tener un formulario de contacto funcional en su sitio web es esencial. Un formulario de contacto es una forma simple pero efectiva de recibir consultas y comentarios de sus visitantes, clientes o clientes. En esta entrada de blog, compartiré mi experiencia en la creación de un formulario de contacto con Azure Functions y el servicio de correo electrónico de Azure Communication Service.
+
+## ¿Por qué Azure Functions?
+
+[Azure Functions](https://learn.microsoft.com/azure/azure-functions/functions-overview) es un servicio informático sin servidor ofrecido por Microsoft Azure. Permite a los desarrolladores crear, ejecutar y escalar aplicaciones sin tener que administrar la infraestructura. Azure Functions admite varios lenguajes de programación, incluidos C#, Java, JavaScript, Python y PowerShell.
+
+En este caso, mi sitio web se ejecuta en una aplicación web estática, por lo que necesito usar una solución sin servidor para crear el formulario de contacto. Azure Functions es una excelente opción porque me permite crear un formulario de contacto sin tener que administrar la infraestructura o preocuparme por las complejidades de los protocolos de comunicación.
+
+## ¿Qué es Azure Communication Service?
+
+[Servicio de comunicación de Azure](https://learn.microsoft.com/azure/communication-services/overview) es una plataforma de comunicación ofrecida por Microsoft Azure. Proporciona a los desarrolladores las herramientas y servicios para integrar funciones de comunicación en tiempo real, como voz, video, chat y mensajería SMS en sus aplicaciones. Azure Communication Service también ofrece un [Servicio de correo electrónico](https://learn.microsoft.com/azure/communication-services/concepts/email/email-overview) Eso permite a los desarrolladores enviar y recibir correos electrónicos mediante programación.
+
+## Creación del formulario de contacto con Azure Functions y Azure Communication Service
+
+Para crear un formulario de contacto con Azure Functions y el servicio de correo electrónico del Servicio de comunicación de Azure, seguí estos pasos:
+
+#### 1. Creación de los recursos de Azure
+
+El primer paso fue crear los recursos de Azure. Estos son los recursos que utilicé en esta aplicación de ejemplo:
+
+*   [Servicio de comunicación de Azure](https://learn.microsoft.com/azure/communication-services/quickstarts/create-communication-resource) - para gestionar el servicio de correo electrónico.
+*   [Azure Email Service (parte de Azure Communication Service)](https://learn.microsoft.com/azure/communication-services/quickstarts/email/create-email-communication-resource) - para enviar los correos electrónicos.
+*   [Azure Function](https://learn.microsoft.com/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp) - para procesar el desencadenador HTTP enviado por el HTML y enviar los correos electrónicos mediante Azure Communication Service.
+*   [Aplicación web estática de Azure](https://learn.microsoft.com/azure/static-web-apps/getting-started) - para alojar el sitio web (Índice.html en este caso).
+
+![](pathname:///img/BuiltContactForm/AzureResourceVisualizer.jpg)
+
+#### 2. Configuración de Azure Communication Services - Servicio de correo electrónico
+
+El siguiente paso fue configurar Azure Communication Services - Email Service. Esto incluye configurar una dirección de correo electrónico para enviar correos electrónicos. Al crear este servicio, puede elegir si desea usar un subdominio de Azure o si desea configurar su propio dominio.
+
+![](pathname:///img/BuiltContactForm/AzureEmailCommunicationService.jpg)
+
+En este caso, usé la dirección de correo electrónico aprovisionada por un subdominio de Azure.
+
+![](pathname:///img/BuiltContactForm/DomainProvision.jpg)
+
+La dirección de correo electrónico se creó y configuró automáticamente:
+
+![](pathname:///img/BuiltContactForm/EmailCommunicationService.jpg)
+
+#### 3. Desarrollo de la función Azure
+
+El primer paso fue crear una función de Azure. Puede elegir entre varias plantillas basadas en el lenguaje de programación de su elección. En este caso, usé VS Code para crear la función de Azure de C# con un desencadenador HTTP. La función envía dos correos electrónicos, uno para notificar al propietario del sitio web y otro para notificar al usuario que envía el mensaje a través del sitio web para informarme que su mensaje fue enviado.
+
+> Para llamar a Azure Function, es necesario enviar tres parámetros: `name`, `email`y `message`.
+> Además, la función usa tres variables de entorno que debe crear en la configuración de Azure Function:
+
+*   `myEmailAddress`: para notificar al propietario del sitio web que se ha recibido un nuevo mensaje.
+*   `senderEmailAddress`: la dirección de correo electrónico que se aprovisionó en la configuración del Servicio de comunicación de Azure.
+*   `AzureCommunicationServicesConnectionString`: la cadena de conexión que se aprovisionó en la configuración del Servicio de comunicación de Azure.
+
+El [Cliente de correo electrónico](https://learn.microsoft.com/dotnet/api/azure.communication.email.emailclient?view=azure-dotnet) class se usa para enviar correos electrónicos mediante el servicio de correo electrónico del servicio de comunicación de Azure y se inicializa con la cadena de conexión.
+
+El siguiente fragmento de código muestra la función desencadenadora HTTP:
+
+```c reference title="Azure Function HTTP Trigger - SendEmails.cs"
+https://github.com/dsanchezcr/ContactFormWithAzure/blob/9f619eb2c8d41e45574557dbf3c2f95486391d30/api/SendEmails.cs#L17-L57
+```
+
+#### 4. Desarrolla el front-end
+
+En mi caso, creé un archivo HTML simple y agregué los campos de formulario necesarios para el formulario de contacto, nombre, correo electrónico y mensaje.
+
+```html reference title="Form to to send the email"
+https://github.com/dsanchezcr/ContactFormWithAzure/blob/9f619eb2c8d41e45574557dbf3c2f95486391d30/Index.html#L123-L137
+```
+
+Este es el código JavaScript que usé para procesar la llamada a Azure Function:
+
+```javascript reference title="JavaScript code to call the Azure Function"
+https://github.com/dsanchezcr/ContactFormWithAzure/blob/9f619eb2c8d41e45574557dbf3c2f95486391d30/Index.html#L8-L32
+```
+
+#### 5. Acciones de GitHub para compilar e implementar la solución
+
+Creé una acción de GitHub para compilar e implementar Azure Function y el sitio web. El siguiente fragmento de código muestra la acción de GitHub:
+
+```yaml reference title="GitHub Action to build and deploy the solution"
+https://github.com/dsanchezcr/ContactFormWithAzure/blob/9f619eb2c8d41e45574557dbf3c2f95486391d30/.github/workflows/main_contactformwithazure.yml#L1-L45
+```
+
+> La acción de GitHub usa dos secretos que debes configurar:
+
+*   `AZUREAPPSERVICE_PUBLISHPROFILE`: el perfil de publicación de Azure Function.
+*   `AZURE_STATIC_WEB_APPS_API_TOKEN`: el token de API de Azure Static Web App.
+
+## Prueba de la solución
+
+Probé la solución enviando un mensaje desde el formulario de contacto. La siguiente imagen muestra el correo electrónico que se envió al propietario del sitio web y el correo electrónico que se envió al usuario que publicó el mensaje.
+
+![](pathname:///img/BuiltContactForm/ContactFormResult.jpg)
+
+Puedes probar la solución [aquí](https://purple-sky-05cd51e0f.3.azurestaticapps.net/Index.html).
+
+Y echa un vistazo a mi formulario de contacto de producción [aquí](https://dsanchezcr.com/contact).

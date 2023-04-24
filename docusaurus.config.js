@@ -23,6 +23,10 @@ const config = {
     ],
   ],
 
+  themes: [
+    'docusaurus-theme-github-codeblock'
+  ],
+
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -73,6 +77,14 @@ const config = {
 
   themeConfig:
     ({
+      // github codeblock theme configuration
+      codeblock: {
+        showGithubLink: true,
+        githubLinkLabel: 'View on GitHub',
+        showRunmeLink: false,
+        runmeLinkLabel: 'Checkout via Runme'
+      },
+
       navbar: {
         title: 'Home',
         logo: {
