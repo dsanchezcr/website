@@ -36,7 +36,7 @@ To build a contact form using Azure Functions and Azure Communication Service's 
 The first step was to create the Azure resources. These are the resouces that I used in this sample application:
 
 - [Azure Communication Service](https://learn.microsoft.com/azure/communication-services/quickstarts/create-communication-resource) - to manage the Email service.
-- [Azure Email Service (Part of Azure Communication Service)](https://learn.microsoft.com/azure/communication-services/quickstarts/email/create-email-communication-resource) - to send the emails.
+- [Azure Email Service (Part of Azure Communication Service)](https://learn.microsoft.com/azure/communication-services/quickstarts/email/create-email-communication-resource) - to send emails.
 - [Azure Function](https://learn.microsoft.com/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp) - to process the HTTP trigger sent by the HTML and send the emails using Azure Communication Service.
 - [Azure Static Web App](https://learn.microsoft.com/azure/static-web-apps/getting-started) - to host the website (Index.html in this case).
 
@@ -59,9 +59,9 @@ The email address was created and configured automatically:
 
 #### 3. Develop the Azure Function
 
-The first step was to create an Azure Function. You can choose from various templates based on the programming language of your choice. In this case, I used the VS Code to create the C# Azure Function with a HTTP trigger. The Function sends two emails, one to notify the website owner and another one to notify the user who send the message throught the website to let me know that their message was sent. 
+The first step was to create an Azure Function. You can choose from various templates based on the programming language of your choice. In this case, I used the VS Code to create the C# Azure Function with a HTTP trigger. The Function sends two emails, one to notify the website owner and another one to notify the user who sends the message through the website to let me know that their message was sent. 
 
-> In order to call the Azure Function, it is required to send three parameters: `name`, `email`, and `message`. 
+> To call the Azure Function, it is required to send three parameters: `name`, `email`, and `message`. 
 Also, the Function is using three environment variables that you need to create in the Azure Function configuration: 
 - `myEmailAddress`: to notify the website owner that a new message has been received.
 - `senderEmailAddress`: the email address that was provisioned in the Azure Communication Service configuration.
@@ -79,7 +79,7 @@ https://github.com/dsanchezcr/ContactFormWithAzure/blob/9f619eb2c8d41e45574557db
 
 In my case I created a simple HTML file and added the necessary form fields for the contact form, name, email, and message.
 
-```html reference title="Form to to send the email"
+```html reference title="Form to send the email"
 https://github.com/dsanchezcr/ContactFormWithAzure/blob/9f619eb2c8d41e45574557dbf3c2f95486391d30/Index.html#L123-L137
 ```
 
