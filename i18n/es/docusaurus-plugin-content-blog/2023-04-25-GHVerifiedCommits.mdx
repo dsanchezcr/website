@@ -1,0 +1,52 @@
+---
+title: Commits verificados en GitHub
+description: En esta publicación, te mostraré cómo verificar confirmaciones en GitHub usando claves GPG
+slug: verified-commits-in-github
+authors: [dsanchezcr]
+tags: [Github, GPG, Git]
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/GHVerifiedCommits/VerifiedCommits.jpg
+date: 2023-04-25T18:00
+---
+# Commits verificados en GitHub
+
+Un commit es un cambio de código que se realiza en un repositorio. Cuando un desarrollador realiza un commits, es importante asegurarse de que los cambios de código sean realizados por una persona autorizada y que los cambios no hayan sido manipulados. Aquí es donde entran en juego los commits verificados de GitHub. Esto es útil para evitar la suplantación y para garantizar que el código que está descargando es el código que cargó el desarrollador.
+
+Los commits verificados de GitHub usan firmas digitales para garantizar la autenticidad de los cambios de código. Cuando un desarrollador realiza un commit, puede firmar el commit usando su clave GPG (GNU Privacy Guard). Esta clave es un identificador único que se utiliza para comprobar la autenticidad de los cambios de código. Una vez que se firma el commit, GitHub mostrará una insignia verde "verificada" junto al commit. Así:
+
+![](pathname:///img/GHVerifiedCommits/VerifiedCommits.jpg)
+
+Para usar commits verificados de GitHub, los desarrolladores primero deben generar una clave GPG. Esta clave es un tipo de clave de cifrado que se utiliza para firmar y verificar firmas digitales.
+
+Una vez que se genera la clave, se puede cargar en GitHub y usar para firmar los commits.
+
+Para generar una clave GPG, deberá instalar GPG en su computadora. Hay diferentes formas de generar la clave, en mi caso lo hice usando [Gpg4win](https://www.gpg4win.org) Pero también puede hacerlo usando la línea de comandos con el siguiente comando:
+
+```bash
+gpg --full-generate-key
+```
+
+En mi caso lo hice usando Kleopatra, que es un gestor de certificados y GUI para GnuPG:
+
+![](pathname:///img/GHVerifiedCommits/Kleopatra.jpg)
+
+Una vez que tenga la clave, puede exportarla y cargarla en GitHub. En la configuración, vaya a las claves SSH y GPG y haga clic en Nueva clave GPG:
+
+![](pathname:///img/GHVerifiedCommits/GHSettingsGPG.jpg)
+
+Luego debe configurar su cliente git para usar la clave. En mi caso, así es como lo hice:
+
+```bash
+git config --global user.signingkey <your key id>
+git config --global commit.gpgsign true
+```
+
+![](pathname:///img/GHVerifiedCommits/GitConfig.jpg)
+
+Ahora puede hacer un commit y firmarlo usando el siguiente comando o el cliente de [Escritorio de GitHub](https://desktop.github.com).
+
+```bash
+git commit -S -m "Your commit message"
+```
+
+Y eso es todo, ahora GitHub mostrará la insignia verificada junto a su commit.
