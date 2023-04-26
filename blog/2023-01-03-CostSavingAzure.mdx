@@ -13,7 +13,7 @@ date: 2023-01-04T18:00
 ## Introduction
 
 Many of our web app hosted on Azure are built on top of a PaaS service, such as Azure App Service and SQL Azure. These services are usually billed based on the amount of resources they consume. The more resources they consume, the more we pay. However, there are some best practices that we can follow to reduce the amount of resources consumed and, therefore, reduce the amount of money we pay. Specially if we are running a web app that is not used 24/7 or just used during business hours in the same time zone.
-
+<!--truncate-->
 One of the cloud computing principles is the **elasticity**, meaning that we can scale up or down the resources that our app consumes based on the demand or schedule. This is a great feature of the cloud, but we should be aware of the cost implications of this feature. If we scale up our app to handle a peak of traffic, we should also scale down the resources when the traffic is back to normal.
 
 In Azure App Service we have two ways to scale, scale up or down and scale out or in. Scale up or down means that we can change the size of the VM that our app is running on. Scale out or in means that we can add or remove VMs from our app. We can scale up or down and scale out or in at the same time. For example, we can scale up the size of the VMs and add more VMs to our app. 

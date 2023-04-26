@@ -13,7 +13,7 @@ date: 2023-01-04T18:00
 ## Introdução
 
 Muitos dos nossos aplicativos Web hospedados no Azure são criados sobre um serviço PaaS, como o Serviço de Aplicativo do Azure e o SQL Azure. Esses serviços geralmente são cobrados com base na quantidade de recursos que consomem. Quanto mais recursos eles consomem, mais pagamos. No entanto, existem algumas práticas recomendadas que podemos seguir para reduzir a quantidade de recursos consumidos e, portanto, reduzir a quantidade de dinheiro que pagamos. Especialmente se estivermos executando um aplicativo Web que não é usado 24 horas por dia, 7 dias por semana ou apenas usado durante o horário comercial no mesmo fuso horário.
-
+<!--truncate-->
 Um dos princípios da computação em nuvem é o **elasticidade**, o que significa que podemos aumentar ou diminuir os recursos que nosso aplicativo consome com base na demanda ou no cronograma. Esse é um ótimo recurso da nuvem, mas devemos estar cientes das implicações de custo desse recurso. Se ampliarmos nosso aplicativo para lidar com um pico de tráfego, também devemos reduzir os recursos quando o tráfego voltar ao normal.
 
 No Serviço de Aplicativo do Azure, temos duas maneiras de escalar, aumentar ou diminuir a escala e expandir para fora ou para dentro. Aumentar ou diminuir a escala significa que podemos alterar o tamanho da VM em que nosso aplicativo está sendo executado. Expandir ou aumentar significa que podemos adicionar ou remover VMs do nosso aplicativo. Podemos aumentar ou diminuir a escala e reduzir a escala para fora ou para dentro ao mesmo tempo. Por exemplo, podemos aumentar o tamanho das VMs e adicionar mais VMs ao nosso aplicativo.

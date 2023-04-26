@@ -13,7 +13,7 @@ date: 2023-01-04T18:00
 ## Introducción
 
 Muchas de nuestras aplicaciones web hospedadas en Azure se crean sobre un servicio PaaS, como Azure App Service y SQL Azure. Estos servicios generalmente se facturan en función de la cantidad de recursos que consumen. Cuantos más recursos consumen, más pagamos. Sin embargo, hay algunas mejores prácticas que podemos seguir para reducir la cantidad de recursos consumidos y, por lo tanto, reducir la cantidad de dinero que pagamos. Especialmente si estamos ejecutando una aplicación web que no se usa 24/7 o solo se usa durante el horario comercial en la misma zona horaria.
-
+<!--truncate-->
 Uno de los principios de la computación en la nube es el **elasticidad**, lo que significa que podemos escalar hacia arriba o hacia abajo los recursos que consume nuestra aplicación en función de la demanda o el horario. Esta es una gran característica de la nube, pero debemos ser conscientes de las implicaciones de costos de esta característica. Si ampliamos nuestra aplicación para manejar un pico de tráfico, también debemos reducir los recursos cuando el tráfico vuelva a la normalidad.
 
 En el Servicio de aplicaciones de Azure tenemos dos formas de escalar verticalmente, verticalmente o abajo y escalar horizontalmente o entrar. Escalar hacia arriba o hacia abajo significa que podemos cambiar el tamaño de la máquina virtual en la que se ejecuta nuestra aplicación. Escalar horizontalmente o en significa que podemos agregar o quitar máquinas virtuales de nuestra aplicación. Podemos escalar hacia arriba o hacia abajo y escalar hacia afuera o hacia adentro al mismo tiempo. Por ejemplo, podemos escalar verticalmente el tamaño de las máquinas virtuales y agregar más máquinas virtuales a nuestra aplicación.

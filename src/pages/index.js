@@ -18,7 +18,7 @@ export default function Home() {
             <Translate id="homepage.header">Hello! Welcome to my personal website.</Translate>
         </h1>
         <h2>
-          <Translate>I am </Translate><span className="intro__name" style={{ color: 'rgb(50, 50, 150)' }}>David Sanchez</span><Translate> developer and technology passionate.</Translate>
+          <Translate>I am </Translate><span className="intro__name" style={{ color: 'rgb(50, 50, 150)' }}>David Sanchez</span><Translate>, a developer and technology passionate.</Translate>
         </h2>        
         <img id="homepageImage"
           src="/img/Profile.jpg"
@@ -29,22 +29,15 @@ export default function Home() {
             to="pathname:///Resume_David_Sanchez.pdf">
             Download my resume
         </Link>
-        <br />
-        <Translate
-          id="homepage.visitMyBlog"
-          values={{
-            blogLink: (
-              <Link to="/blog">
-                <Translate
-                  id="homepage.visitMyBlog.linkLabel"
-                  description="The label for the link to my blog">
-                  blog
-                </Translate>
-              </Link>
-            ),
-          }}>
-          {'Visit my {blogLink} to read my recent posts. '}
-        </Translate>        
+        or 
+        <Link
+            className="button button--secondary button--lg"
+            to="/blog">
+            <Translate>
+            Check out my blog
+            </Translate>  
+        </Link>
+          
       </main>
       </div> 
     </Layout>
