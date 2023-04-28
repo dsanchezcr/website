@@ -3,7 +3,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 const config = {
   title: 'David Sanchez',
-  tagline: 'Helping developers building the top innovation solutions with the cloud.',
+  tagline: 'Helping people to build the most innovative solutions with technology.',
   url: 'https://dsanchezcr.com',
   staticDirectories: ['public', 'static'],
   baseUrl: '/',
