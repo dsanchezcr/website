@@ -11,10 +11,6 @@
     "message": "Proyectos",
     "description": "Navbar item with label Projects"
   },
-  "item.label.Volunteering": {
-    "message": "Voluntariado",
-    "description": "Navbar item with label Volunteering"
-  },
   "item.label.Speaking": {
     "message": "Presentaciones",
     "description": "Navbar item with label Speaking"
@@ -24,35 +20,7 @@
     "description": "Navbar item with label Contact"
   },
   "item.label.About": {
-    "message": "Sobre",
+    "message": "Acerca de",
     "description": "Navbar item with label About"
-  },
-  "item.label.Facebook": {
-    "message": "Facebook",
-    "description": "Navbar item with label Facebook"
-  },
-  "item.label.Twitter": {
-    "message": "Twitter",
-    "description": "Navbar item with label Twitter"
-  },
-  "item.label.LinkedIn": {
-    "message": "LinkedIn",
-    "description": "Navbar item with label LinkedIn"
-  },
-  "item.label.GitHub": {
-    "message": "GitHub",
-    "description": "Navbar item with label GitHub"
-  },
-  "item.label.Sessionize": {
-    "message": "Sessionize",
-    "description": "Navbar item with label Sessionize"
-  },
-  "item.label.GoodReads": {
-    "message": "GoodReads",
-    "description": "Navbar item with label GoodReads"
-  },
-  "item.label.YouTube": {
-    "message": "YouTube",
-    "description": "Navbar item with label YouTube"
   }
 }

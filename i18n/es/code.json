@@ -262,6 +262,9 @@
   "homepage.visitMyBlog": {
     "message": "Visita mi {blogLink} para leer las más recientes publicaciones."
   },
+  "siteConfig.tagline": {
+    "message": "Ayudando a las personas a construir las soluciones más innovadoras con tecnología."
+  },
   "homepage.visitMyBlog.linkLabel": {
     "message": "blog",
     "description": "The label for the link to my blog"

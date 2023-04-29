@@ -1,52 +1,103 @@
 import React from 'react';
+import clsx from 'clsx';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
-import Translate, {translate} from '@docusaurus/Translate';
+import Svg from '@site/static/img/logo.svg';
+import styles from './index.module.css';
+
+const FeatureList = [
+  {
+    title: 'Acerca de',
+    link: '/about',
+    Svg: require('@site/static/img/about.svg').default,
+    description: (
+      <>
+        Conoce sobre mi, mi carrera y mis pasatiempos.
+      </>
+    ),
+  },
+  {
+    title: 'Mira mis proyectos',
+    link: '/projects',
+    Svg: require('@site/static/img/projects.svg').default,
+    description: (
+      <>
+        Todos de código abierto y disponibles en GitHub.
+      </>
+    ),
+  },
+  {
+    title: 'Visita mi blog',
+    link: '/blog',
+    Svg: require('@site/static/img/blog.svg').default,
+    description: (
+      <>
+        Me encanta escribir y compartir sobre tecnología.
+      </>
+    ),
+  },
+];
+
+function Feature({Svg, title, link, description}) {
+  return (    
+      <div className={clsx('col col--4')}>
+        <Link to={link}>
+          <div className="text--center">
+          <Svg className={styles.featureSvgHomeFeatures} role="img" />
+          </div>
+          <div className="text--center padding-horiz--md">
+            <h3>{title}</h3>
+            <p>{description}</p>
+          </div>
+        </Link>  
+      </div>      
+  );
+}
+
+function HomepageFeatures() {
+  return (
+    <section className={styles.features}>
+      <div className="container">
+        <div className="row">
+          {FeatureList.map((props, idx) => (
+            <Feature key={idx} {...props} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HomepageHeader() {
+  const {siteConfig} = useDocusaurusContext();
+  return (
+    <header className={clsx('hero hero--primary', styles.heroBanner)}>
+      <div className="container">
+        <Svg className={styles.featureSvg} role="img" />
+        <h1 className="hero__title">Hola, soy {siteConfig.title}.</h1>
+        <p className="hero__subtitle">Desarrollador y apasionado por la tecnología. Ayudando a personas a construir soluciones innovadoras con tecnología.</p>
+        <div className={styles.buttons}>
+          <Link
+              className="button button--secondary button--lg"
+              to="pathname:///Resume_David_Sanchez.pdf">
+              Descarga mi CV (inglés) 📃
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+}
 
 export default function Home() {
   return (
-    <Layout>      
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: '20px',
-      }}>         
-      <main>
-        <br/>
-        <h1>
-            <Translate id="homepage.header">¡Hola! Bienvenido a mi sitio web personal.</Translate>
-        </h1>
-        <h2>
-          <Translate>Yo soy </Translate><span className="intro__name" style={{ color: 'rgb(50, 50, 150)' }}>David Sanchez</span>. <Translate>un desarrollador apasionado por la tecnología.</Translate>
-        </h2>        
-        <img id="homepageImage"
-          src="/img/Profile.jpg"
-        />
-        <br/>
-        <Link
-            className="button button--secondary button--lg"
-            to="pathname:///Resume_David_Sanchez.pdf">
-            Descargar mi CV (inglés)
-        </Link>
-        <br />
-        <Translate
-          id="homepage.visitMyBlog"
-          values={{
-            blogLink: (
-              <Link to="/blog">
-                <Translate
-                  id="homepage.visitMyBlog.linkLabel"
-                  description="The label for the link to my blog">
-                  blog
-                </Translate>
-              </Link>
-            ),
-          }}>
-          {'Visite mi {blogLink} para leer mis más recientes publicaciones.'}
-        </Translate>        
-      </main>
-      </div> 
-    </Layout>
+    <Layout 
+      title={`Inicio`}
+      description="David Sanchez sitio web personal"> 
+      <HomepageHeader />   
+        <main>        
+      <HomepageFeatures /> 
+      </main>   
+    </Layout>    
   );
 }

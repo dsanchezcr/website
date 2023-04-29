@@ -115,58 +115,53 @@ const config = {
         title: 'Home',
         logo: {
           alt: 'David Sanchez - Website',
-          src: 'img/logo.png',
+          src: 'img/logo.svg',
         },
 
         items: [
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/projects', label: 'Projects', position: 'left'},          
-          {to: '/contact', label: 'Contact', position: 'left'},
+          {to: '/projects', label: 'Projects', position: 'left'},        
           {to: '/about', label: 'About', position: 'left'},
-          {
-            to: 'https://sessionize.com/dsanchezcr', 
-            label: 'Sessionize', 
-            position: 'right'
-          },
-          {
-            to: 'https://goodreads.com/dsanchezcr',
-            label: 'GoodReads',
-            position: 'right',
-          },
-          {
-            to: 'https://fb.com/dsanchezcr',
-            label: 'Facebook',
-            position: 'right',
-          },
-          {
-            to: 'https://twitter.com/dsanchezcr',
-            label: 'Twitter',
-            position: 'right',
-          },
-          {
-            to: 'https://linkedin.com/in/dsanchezcr',
-            label: 'LinkedIn',
-            position: 'right',
-          },
-          {
-            to: 'https://github.com/dsanchezcr',
-            label: 'GitHub',
-            position: 'right',
-          },
-          {
-            to: 'https://youtube.com/@dsanchezcr',
-            label: 'YouTube',
-            position: 'right',
-          },
+          {to: '/contact', label: 'Contact', position: 'left'},
           {
             type: 'localeDropdown',
             position: 'right',
-          },        
+          },  
         ],
       },
       footer: {
-        style: "dark",        
-        copyright: `Copyright © ${new Date().getFullYear()} David Sanchez. Built with Docusaurus.`,
+        style: "dark",
+        links: [
+          {
+            href: 'https://sessionize.com/dsanchezcr', 
+            label: 'Sessionize', 
+          },
+          {
+            href: 'https://goodreads.com/dsanchezcr',
+            label: 'GoodReads',
+          },
+          {
+            href: 'https://fb.com/dsanchezcr',
+            label: 'Facebook',
+          },
+          {
+            href: 'https://twitter.com/dsanchezcr',
+            label: 'Twitter',
+          },        
+          {
+            href: 'https://youtube.com/@dsanchezcr',
+            label: 'YouTube',
+          },
+          {
+            href: 'https://github.com/dsanchezcr',
+            label: 'GitHub',
+          },
+          {
+            href: 'https://linkedin.com/in/dsanchezcr',
+            label: 'LinkedIn',
+          },
+        ],                      
+        copyright: `Copyright © ${new Date().getFullYear()} David Sanchez. Built with Docusaurus. Running on Azure Static Web Apps. Deployed with GitHub Actions.`,
       },
       prism: {
         theme: lightCodeTheme,

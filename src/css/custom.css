@@ -1,22 +1,24 @@
 :root {
-  --ifm-color-primary:rgb(150, 150, 150);
-  --ifm-color-primary-dark:rgb(50, 50, 100);
-  --ifm-color-primary-darker: rgb(50, 50, 50);
-  --ifm-color-primary-darkest: rgb(50, 50, 0);
-  --ifm-color-primary-light: rgb(150, 150, 150);
-  --ifm-color-primary-lighter: rgb(150, 150, 200);
-  --ifm-color-primary-lightest: rgb(150, 150, 255);
+  --ifm-color-primary: #1f4863;
+  --ifm-color-primary-dark: #1a3e54;
+  --ifm-color-primary-darker: #17364b;
+  --ifm-color-primary-darkest: #132d3e;
+  --ifm-color-primary-light: #255a80;
+  --ifm-color-primary-lighter: #296689;
+  --ifm-color-primary-lightest: #2e7b93;
   --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
 [data-theme='dark'] {
-  --ifm-color-primary: rgb(150, 150, 150);
-  --ifm-color-primary-dark: rgb(130, 130, 130);
-  --ifm-color-primary-darker: rgb(100, 100, 100);
-  --ifm-color-primary-darkest: rgb(50, 50, 50);
-  --ifm-color-primary-light: rgb(50, 50, 150);
-  --ifm-color-primary-lighter: rgb(100, 100, 200);
-  --ifm-color-primary-lightest: rgb(150, 150, 255);
+  --ifm-color-primary: #005580;
+  --ifm-color-primary-dark: #006ca9;
+  --ifm-color-primary-darker: #006198;
+  --ifm-color-primary-darkest: #005085;
+  --ifm-color-primary-light: #0089c3;
+  --ifm-color-primary-lighter: #0091c9;
+  --ifm-color-primary-lightest: #00a3d1;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
 .docusaurus-highlight-code-line {

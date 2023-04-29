@@ -1,48 +1,54 @@
 import React from 'react';
 import clsx from 'clsx';
 import styles from './styles.module.css';
+import Link from '@docusaurus/Link';
 
 const FeatureList = [
   {
     title: 'About me',
-    Svg: require('@site/static/img/logo.svg').default,
+    link: '/about',
+    Svg: require('@site/static/img/about.svg').default,
     description: (
       <>
-        In the about section you can find more information about me, my career and my hobbies.
+        Learn a bit about me, my career and my hobbies.
       </>
     ),
   },
   {
-    title: 'Learn about my projects',
-    Svg: require('@site/static/img/logo.svg').default,
+    title: 'Check out my projects',
+    link: '/projects',
+    Svg: require('@site/static/img/projects.svg').default,
     description: (
       <>
-        In the project section you can find more information about my projects, all of them are open source.
+        All of them are open source and available on GitHub.
       </>
     ),
   },
   {
     title: 'Visit my blog',
-    Svg: require('@site/static/img/logo.svg').default,
+    link: '/blog',
+    Svg: require('@site/static/img/blog.svg').default,
     description: (
       <>
-        I love to write about technology, you can find my blog posts in the blog section.
+        I love to writing and sharing about technology.
       </>
     ),
   },
 ];
 
-function Feature({Svg, title, description}) {
-  return (
-    <div className={clsx('col col--4')}>
-      <div className="text--center">
-      <Svg className={styles.featureSvg} role="img" />
-      </div>
-      <div className="text--center padding-horiz--md">
-        <h3>{title}</h3>
-        <p>{description}</p>
-      </div>
-    </div>
+function Feature({Svg, title, link, description}) {
+  return (    
+      <div className={clsx('col col--4')}>
+        <Link to={link}>
+          <div className="text--center">
+          <Svg className={styles.featureSvg} role="img" />
+          </div>
+          <div className="text--center padding-horiz--md">
+            <h3>{title}</h3>
+            <p>{description}</p>
+          </div>
+        </Link>  
+      </div>      
   );
 }
 
