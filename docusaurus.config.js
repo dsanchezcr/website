@@ -117,12 +117,12 @@ const config = {
           alt: 'David Sanchez - Website',
           src: 'img/logo.svg',
         },
-
         items: [
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/projects', label: 'Projects', position: 'left'},        
           {to: '/about', label: 'About', position: 'left'},
           {to: '/contact', label: 'Contact', position: 'left'},
+          {to: '/sponsors', label: 'Sponsors', position: 'right'},
           {
             type: 'localeDropdown',
             position: 'right',
