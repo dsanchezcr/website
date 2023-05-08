@@ -25,7 +25,7 @@ The first option is to use the Azure Boards Analytics views to get the informati
 
 ### Create the Analytics view
 
-To create the Analytics view, go to the Analytics views in the Azure DevOps portal and click on the New view button. Then, select the Work Items option, add or remove the fields that you need and make sure to add the Created Date. Click on the Continue button.
+To create the Analytics view, go to the Analytics views in the Azure DevOps portal and click on the new view button. Then, select the Work Items option, add, or remove the fields that you need and make sure to add the Created Date. Click on the Continue button.
 
 ![](../static/img/DaysOpenADO/new-view.jpg)
 
@@ -37,9 +37,9 @@ In the next screen, select the History that you need to get, you can also exclud
 
 ![](../static/img/DaysOpenADO/history.jpg)
 
-Then you can select the filters that you want to apply to the view, in this case, since this is a test project I selected all history and you can see the warning message on top about the amout of data. In this section you can also exclude the work items that were completed before the date that you choose.
+Then you can select the filters that you want to apply to the view, in this case, since this is a test project, I selected all history, and you can see the warning message on top about the amount of data. In this section you can also exclude the work items that were completed before the date that you choose.
 
-Once the view is verfied and created, we are ready to open Power BI, in my case I used the Power BI Desktop application.
+Once the view is verified and created, we are ready to open Power BI, in my case I used the Power BI Desktop application.
 
 ### Create the Power BI report
 
@@ -55,7 +55,7 @@ As a filter you can select the status that you only want, in my case I removed t
 DaysOpen = DATEDIFF(DaysOpen[Created Date],TODAY(),DAY)
 ```
 
-Once the new column is created, you just need to add it to the report and you will see the days open for each work item.
+Once the new column is created, you just need to add it to the report, and you will see the days open for each work item.
 
 ![](../static/img/DaysOpenADO/powerbi.jpg)
 
@@ -86,7 +86,7 @@ Once the process is updated with the custom field, I created a new query to get 
 
 In the Azure Portal, create the Azure Logic App and add a Recurrence trigger to run the workflow daily.
 
-I created a variable to store the Created Date for each Work Item, since I created a query in Azure Boards I used the 'Get Query Results' action to get the work items that are not closed or resolved. (You can get up to 20,000 work items)
+I created a variable to store the Created Date for each Work Item. Since I created a query in Azure Boards, I used the 'Get Query Results' action to get the work items that are not closed or resolved. (You can get up to 20,000 work items)
 
 Then, in a for each loop, I used the 'Update Work Item' action to set the custom field 'Days Open' with the following formula:
 
