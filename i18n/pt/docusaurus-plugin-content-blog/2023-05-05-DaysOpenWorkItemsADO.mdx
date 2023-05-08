@@ -1,0 +1,105 @@
+---
+title: Quantos dias os itens de trabalho foram abertos no Azure Boards
+description: Neste post, mostrarei como obter quantos dias os itens de trabalho foram abertos nos Quadros do Azure.
+slug: days-work-items-open
+authors: [dsanchezcr]
+tags: [Azure DevOps, Azure Boards, Work Items]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/daysworkitemopen.jpg
+date: 2023-05-05T18:00
+---
+# Quantos dias os itens de trabalho foram abertos nos Quadros do Azure
+
+Dependendo de como sua equipe acompanha o trabalho, eles podem querer saber quantos dias um item de trabalho ficou aberto. Por exemplo, se você tiver um item de trabalho aberto há muito tempo, convém fechá-lo ou priorizá-lo.
+
+Nesta postagem, mostrarei como obter quantos dias os itens de trabalho foram abertos nos Azure Boards.
+
+<!--truncate-->
+
+Há diferentes maneiras de fazer isso, neste post, abordarei duas maneiras de como fazer isso, a primeira é usar as exibições de análise do Azure Boards para obter um relatório no Power BI e a segunda é adicionando um campo personalizado em seu processo atual que será atualizado diariamente automaticamente com um fluxo de trabalho do Azure Logic App ou Power Automat.
+
+## Usando o Azure Boards Analytics
+
+A primeira opção é usar os modos de exibição do Azure Boards Analytics para obter as informações e, em seguida, criar um relatório no Power BI.
+
+### Criar a visualização do Google Analytics
+
+Para criar o modo de exibição do Google Analytics, vá para os modos de exibição do Google Analytics no portal do Azure DevOps e clique no botão Novo modo de exibição. Em seguida, selecione a opção Itens de Trabalho, adicione ou remova os campos necessários e certifique-se de adicionar a Data de Criação. Clique no botão Continuar.
+
+![](pathname:///img/DaysOpenADO/new-view.jpg)
+
+Na tela anterior, você também pode filtrar os itens de trabalho que não são necessários, por exemplo, onde o estado é Fechado.
+
+![](pathname:///img/DaysOpenADO/filter.jpg)
+
+Na próxima tela, selecione o Histórico que você precisa obter, você também pode excluir os itens de trabalho que foram concluídos antes de uma determinada data.
+
+![](pathname:///img/DaysOpenADO/history.jpg)
+
+Em seguida, você pode selecionar os filtros que deseja aplicar à exibição, neste caso, já que este é um projeto de teste que selecionei todo o histórico e você pode ver a mensagem de aviso no topo sobre o amout de dados. Nesta seção, você também pode excluir os itens de trabalho que foram concluídos antes da data escolhida.
+
+Depois que o modo de exibição for verificado e criado, estaremos prontos para abrir o Power BI, no meu caso usei o aplicativo Power BI Desktop.
+
+### Criar o relatório do Power BI
+
+No Power BI, clique no botão Obter Dados e selecione a opção Azure DevOps.
+
+Em seguida, insira a URL da sua organização do Azure DevOps, projeto de equipe e selecione o modo de exibição do Google Analytics que você criou na etapa anterior e clique em Carregar os dados.
+
+Em seguida, você precisa selecionar as colunas que gostaria de ver em seu relatório, no meu caso selecionei a ID do Item de Trabalho, Título, Estado e Data de Criação.
+
+Como um filtro você pode selecionar o status que você só quer, no meu caso eu removi os itens de trabalho Resolvido. Em seguida, crie uma nova coluna para calcular os dias abertos, no meu caso usei a seguinte fórmula:
+
+```
+    DaysOpen = DATEDIFF(DaysOpen[Created Date],TODAY(),DAY)
+```
+
+Depois que a nova coluna for criada, você só precisará adicioná-la ao relatório e verá os dias abertos para cada item de trabalho.
+
+![](pathname:///img/DaysOpenADO/powerbi.jpg)
+
+## Usando um campo personalizado
+
+A segunda opção é adicionar um campo personalizado em seu processo atual que será atualizado diariamente automaticamente com um fluxo de trabalho do Azure Logic App ou Power Automat.
+
+### Criar o campo personalizado
+
+Para criar o campo personalizado, vá para a seção Processo no portal de DevOps do Azure e selecione o processo que você deseja atualizar. Em seguida, clique na opção Tipos de item de trabalho e selecione o tipo de item de trabalho que você deseja atualizar, neste caso, selecionei o tipo de item de trabalho História de usuário.
+
+> - Se o processo atual for um processo padrão, você precisará criar um novo processo herdado e, em seguida, atualizar os tipos de item de trabalho.
+> - Você precisará fazer isso com todos os tipos de item de trabalho que deseja atualizar.
+
+Adicione o novo campo ao tipo de item de trabalho, nesse caso, adicionei o campo Dias Abertos como Inteiro à seção Classificação.
+
+![](pathname:///img/DaysOpenADO/user-story.jpg)
+
+> Lembre-se de atualizar o processo se você criou um processo herdado.
+
+> ![](pathname:///img/DaysOpenADO/change-process.jpg)
+
+Depois que o processo é atualizado com o campo personalizado, criei uma nova consulta para obter os itens de trabalho (histórias de usuário neste caso) que não estão fechados ou resolvidos.
+
+![](pathname:///img/DaysOpenADO/query-user-stories.jpg)
+
+### Criar o aplicativo lógico
+
+No Portal do Azure, crie o Aplicativo Lógico do Azure e adicione um gatilho de Recorrência para executar o fluxo de trabalho diariamente.
+
+Criei uma variável para armazenar a Data de Criação para cada Item de Trabalho, desde que criei uma consulta nos Quadros do Azure, usei a ação 'Obter Resultados da Consulta' para obter os itens de trabalho que não estão fechados ou resolvidos. (Você pode obter até 20.000 itens de trabalho)
+
+Em seguida, em um para cada loop, usei a ação 'Atualizar item de trabalho' para definir o campo personalizado 'Dias abertos' com a seguinte fórmula:
+
+```
+    div(sub(ticks(utcNow()), ticks(variables('CreatedDate'))), 864000000000)
+```
+
+![](pathname:///img/DaysOpenADO/logic-app.jpg)
+
+Depois que o Aplicativo Lógico for executado, você poderá ver o campo Dias Abertos atualizado nos itens de trabalho.
+
+![](pathname:///img/DaysOpenADO/query-results.jpg)
+
+## Conclusão
+
+Nesta postagem, mostrei como obter quantos dias os itens de trabalho foram abertos no Azure Boards. Espero que você ache este post útil!

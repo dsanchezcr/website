@@ -1,0 +1,105 @@
+---
+title: Cuántos días han estado abiertos los elementos de trabajo en Azure Boards
+description: En esta publicación, le mostraré cómo obtener cuántos días han estado abiertos los elementos de trabajo en Azure Boards.
+slug: days-work-items-open
+authors: [dsanchezcr]
+tags: [Azure DevOps, Azure Boards, Work Items]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/daysworkitemopen.jpg
+date: 2023-05-05T18:00
+---
+# Cuántos días han estado abiertos los elementos de trabajo en Azure Boards
+
+En función de cómo el equipo realice un seguimiento del trabajo, es posible que quieran saber cuántos días ha estado abierto un elemento de trabajo. Por ejemplo, si tiene un elemento de trabajo que ha estado abierto durante mucho tiempo, es posible que desee cerrarlo o priorizarlo.
+
+En esta publicación, le mostraré cómo obtener cuántos días han estado abiertos los elementos de trabajo en Azure Boards.
+
+<!--truncate-->
+
+Hay diferentes formas de lograr esto, en esta publicación, cubriré dos formas de cómo hacerlo, la primera es usar las vistas de análisis de Azure Boards para obtener un informe en Power BI y la segunda es agregando un campo personalizado en su proceso actual que se actualizará diariamente automáticamente con un flujo de trabajo de Azure Logic App o Power Automate.
+
+## Uso de Azure Boards Analytics
+
+La primera opción es usar las vistas de Análisis de Azure Boards para obtener la información y, a continuación, crear un informe en Power BI.
+
+### Crear la vista Analytics
+
+Para crear la vista de Analytics, vaya a las vistas de Analytics en el portal de Azure DevOps y haga clic en el botón Nueva vista. Luego, seleccione la opción Elementos de trabajo, agregue o elimine los campos que necesite y asegúrese de agregar la Fecha de creación. Haga clic en el botón Continuar.
+
+![](pathname:///img/DaysOpenADO/new-view.jpg)
+
+En la pantalla anterior también puede filtrar los elementos de trabajo que no necesita, por ejemplo, donde el estado es Cerrado.
+
+![](pathname:///img/DaysOpenADO/filter.jpg)
+
+En la siguiente pantalla, seleccione el Historial que necesita obtener, también puede excluir los elementos de trabajo que se completaron antes de una fecha determinada.
+
+![](pathname:///img/DaysOpenADO/history.jpg)
+
+Luego puede seleccionar los filtros que desea aplicar a la vista, en este caso, ya que este es un proyecto de prueba, seleccioné todo el historial y puede ver el mensaje de advertencia en la parte superior sobre la cantidad de datos. En esta sección también puede excluir los elementos de trabajo que se completaron antes de la fecha que elija.
+
+Una vez verificada y creada la vista, estamos listos para abrir Power BI, en mi caso utilicé la aplicación Power BI Desktop.
+
+### Crear el informe de Power BI
+
+En Power BI, haga clic en el botón Obtener datos y seleccione la opción Azure DevOps.
+
+A continuación, escriba la dirección URL de su organización de Azure DevOps, proyecto de equipo y seleccione la vista de Analytics que creó en el paso anterior y, a continuación, haga clic en Cargar los datos.
+
+A continuación, debe seleccionar las columnas que le gustaría ver en su informe, en mi caso seleccioné el ID del elemento de trabajo, el Título, el Estado y la Fecha de creación.
+
+Como filtro puedes seleccionar el estado que solo quieras, en mi caso eliminé los elementos de trabajo Resueltos. Luego crea una nueva columna para calcular los días abiertos, en mi caso utilicé la siguiente fórmula:
+
+```
+    DaysOpen = DATEDIFF(DaysOpen[Created Date],TODAY(),DAY)
+```
+
+Una vez creada la nueva columna, solo necesita agregarla al informe y verá los días abiertos para cada elemento de trabajo.
+
+![](pathname:///img/DaysOpenADO/powerbi.jpg)
+
+## Uso de un campo personalizado
+
+La segunda opción es agregar un campo personalizado en el proceso actual que se actualizará diariamente automáticamente con un flujo de trabajo de Azure Logic App o Power Automate.
+
+### Crear el campo personalizado
+
+Para crear el campo personalizado, vaya a la sección Proceso del portal de Azure DevOps y seleccione el proceso que desea actualizar. Luego, haga clic en la opción Tipos de elementos de trabajo y seleccione el tipo de elemento de trabajo que desea actualizar, en este caso, seleccioné el tipo de elemento de trabajo Historia de usuario.
+
+> - Si el proceso actual es un proceso predeterminado, deberá crear un nuevo proceso heredado y, a continuación, actualizar los tipos de elementos de trabajo.
+> - Deberá hacerlo con todos los tipos de elementos de trabajo que desee actualizar.
+
+Agregue el nuevo campo al tipo de elemento de trabajo, en este caso, agregué el campo Días abiertos como Entero a la sección Clasificación.
+
+![](pathname:///img/DaysOpenADO/user-story.jpg)
+
+> Recuerde actualizar el proceso si creó un proceso heredado.
+
+> ![](pathname:///img/DaysOpenADO/change-process.jpg)
+
+Una vez que el proceso se actualiza con el campo personalizado, creé una nueva consulta para obtener los elementos de trabajo (historias de usuario en este caso) que no están cerrados o resueltos.
+
+![](pathname:///img/DaysOpenADO/query-user-stories.jpg)
+
+### Crear la aplicación lógica
+
+En el Portal de Azure, cree la aplicación lógica de Azure y agregue un desencadenador de periodicidad para ejecutar el flujo de trabajo diariamente.
+
+Creé una variable para almacenar la fecha de creación para cada elemento de trabajo, ya que creé una consulta en Azure Boards, usé la acción 'Obtener resultados de consulta' para obtener los elementos de trabajo que no están cerrados o resueltos. (Puede obtener hasta 20.000 elementos de trabajo)
+
+Luego, en un para cada bucle, utilicé la acción 'Actualizar elemento de trabajo' para establecer el campo personalizado 'Días abiertos' con la siguiente fórmula:
+
+```
+    div(sub(ticks(utcNow()), ticks(variables('CreatedDate'))), 864000000000)
+```
+
+![](pathname:///img/DaysOpenADO/logic-app.jpg)
+
+Una vez ejecutada la aplicación lógica, puede ver el campo Días abiertos actualizado en los elementos de trabajo.
+
+![](pathname:///img/DaysOpenADO/query-results.jpg)
+
+## Conclusión
+
+En esta publicación, le mostré cómo obtener cuántos días han estado abiertos los elementos de trabajo en Azure Boards. ¡Espero que encuentres útil este post!
