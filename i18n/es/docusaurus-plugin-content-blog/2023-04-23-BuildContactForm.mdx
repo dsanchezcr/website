@@ -19,13 +19,13 @@ Tener un formulario de contacto funcional en su sitio web es esencial. Un formul
 <!--truncate-->
 ## ¿Por qué Azure Functions?
 
-[Azure Functions](https://learn.microsoft.com/azure/azure-functions/functions-overview) es un servicio informático sin servidor ofrecido por Microsoft Azure. Permite a los desarrolladores crear, ejecutar y escalar aplicaciones sin tener que administrar la infraestructura. Azure Functions admite varios lenguajes de programación, incluidos C#, Java, JavaScript, Python y PowerShell.
+[Azure Functions](https://learn.microsoft.com/azure/azure-functions/functions-overview?WT.mc_id=DT-MVP-5005361) es un servicio informático sin servidor ofrecido por Microsoft Azure. Permite a los desarrolladores crear, ejecutar y escalar aplicaciones sin tener que administrar la infraestructura. Azure Functions admite varios lenguajes de programación, incluidos C#, Java, JavaScript, Python y PowerShell.
 
 En este caso, mi sitio web se ejecuta en una aplicación web estática, por lo que necesito usar una solución sin servidor para crear el formulario de contacto. Azure Functions es una excelente opción porque me permite crear un formulario de contacto sin tener que administrar la infraestructura o preocuparme por las complejidades de los protocolos de comunicación.
 
 ## ¿Qué es Azure Communication Service?
 
-[Servicio de comunicación de Azure](https://learn.microsoft.com/azure/communication-services/overview) es una plataforma de comunicación ofrecida por Microsoft Azure. Proporciona a los desarrolladores las herramientas y servicios para integrar funciones de comunicación en tiempo real, como voz, video, chat y mensajería SMS en sus aplicaciones. Azure Communication Service también ofrece un [Servicio de correo electrónico](https://learn.microsoft.com/azure/communication-services/concepts/email/email-overview) Eso permite a los desarrolladores enviar y recibir correos electrónicos mediante programación.
+[Servicio de comunicación de Azure](https://learn.microsoft.com/azure/communication-services/overview?WT.mc_id=DT-MVP-5005361) es una plataforma de comunicación ofrecida por Microsoft Azure. Proporciona a los desarrolladores las herramientas y servicios para integrar funciones de comunicación en tiempo real, como voz, video, chat y mensajería SMS en sus aplicaciones. Azure Communication Service también ofrece un [Servicio de correo electrónico](https://learn.microsoft.com/azure/communication-services/concepts/email/email-overview?WT.mc_id=DT-MVP-5005361) Eso permite a los desarrolladores enviar y recibir correos electrónicos mediante programación.
 
 ## Creación del formulario de contacto con Azure Functions y Azure Communication Service
 
@@ -35,10 +35,10 @@ Para crear un formulario de contacto con Azure Functions y el servicio de correo
 
 El primer paso fue crear los recursos de Azure. Estos son los recursos que utilicé en esta aplicación de ejemplo:
 
-*   [Servicio de comunicación de Azure](https://learn.microsoft.com/azure/communication-services/quickstarts/create-communication-resource) - para gestionar el servicio de correo electrónico.
-*   [Azure Email Service (parte de Azure Communication Service)](https://learn.microsoft.com/azure/communication-services/quickstarts/email/create-email-communication-resource) - para enviar los correos electrónicos.
-*   [Azure Function](https://learn.microsoft.com/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp) - para procesar el desencadenador HTTP enviado por el HTML y enviar los correos electrónicos mediante Azure Communication Service.
-*   [Aplicación web estática de Azure](https://learn.microsoft.com/azure/static-web-apps/getting-started) - para alojar el sitio web (Índice.html en este caso).
+*   [Servicio de comunicación de Azure](https://learn.microsoft.com/azure/communication-services/quickstarts/create-communication-resource?WT.mc_id=DT-MVP-5005361) - para gestionar el servicio de correo electrónico.
+*   [Azure Email Service (parte de Azure Communication Service)](https://learn.microsoft.com/azure/communication-services/quickstarts/email/create-email-communication-resource?WT.mc_id=DT-MVP-5005361) - para enviar los correos electrónicos.
+*   [Azure Function](https://learn.microsoft.com/azure/azure-functions/functions-create-first-function-vs-code?WT.mc_id=DT-MVP-5005361&pivots=programming-language-csharp) - para procesar el desencadenador HTTP enviado por el HTML y enviar los correos electrónicos mediante Azure Communication Service.
+*   [Aplicación web estática de Azure](https://learn.microsoft.com/azure/static-web-apps/getting-started?WT.mc_id=DT-MVP-5005361) - para alojar el sitio web (Índice.html en este caso).
 
 ![](pathname:///img/BuiltContactForm/AzureResourceVisualizer.jpg)
 
@@ -67,7 +67,7 @@ El primer paso fue crear una función de Azure. Puede elegir entre varias planti
 *   `senderEmailAddress`: la dirección de correo electrónico que se aprovisionó en la configuración del Servicio de comunicación de Azure.
 *   `AzureCommunicationServicesConnectionString`: la cadena de conexión que se aprovisionó en la configuración del Servicio de comunicación de Azure.
 
-El [Cliente de correo electrónico](https://learn.microsoft.com/dotnet/api/azure.communication.email.emailclient?view=azure-dotnet) class se usa para enviar correos electrónicos mediante el servicio de correo electrónico del servicio de comunicación de Azure y se inicializa con la cadena de conexión.
+El [Cliente de correo electrónico](https://learn.microsoft.com/dotnet/api/azure.communication.email.emailclient?view=azure-dotnet?WT.mc_id=DT-MVP-5005361) class se usa para enviar correos electrónicos mediante el servicio de correo electrónico del servicio de comunicación de Azure y se inicializa con la cadena de conexión.
 
 El siguiente fragmento de código muestra la función desencadenadora HTTP:
 

@@ -61,7 +61,7 @@ O [fluxo de trabalho](https://raw.githubusercontent.com/dsanchezcr/LoadTestingDe
  	- [LoadTestingScript.jmx](https://github.com/dsanchezcr/LoadTestingDemo/blob/main/LoadTestingScript.jmx)
  	- [LoadTestingConfig.yaml](https://github.com/dsanchezcr/LoadTestingDemo/blob/main/LoadTestingConfig.yaml)
 
-O logon do Azure é necessário para se comunicar com o serviço de Teste de Carga do Azure para enviar o script JMeter e a configuração para o teste. Nesta configuração podemos definir o número de [Motores](https://learn.microsoft.com/azure/load-testing/concept-load-testing-concepts#test-engine) queremos executar o teste e os critérios de falha, neste caso temos um tempo médio de resposta inferior a 5 segundos e uma percentagem de erro inferior a 20%.
+O logon do Azure é necessário para se comunicar com o serviço de Teste de Carga do Azure para enviar o script JMeter e a configuração para o teste. Nesta configuração podemos definir o número de [Motores](https://learn.microsoft.com/azure/load-testing/concept-load-testing-concepts#test-engine?WT.mc_id=DT-MVP-5005361) queremos executar o teste e os critérios de falha, neste caso temos um tempo médio de resposta inferior a 5 segundos e uma percentagem de erro inferior a 20%.
 
 ### Os resultados
 
@@ -84,4 +84,4 @@ Na imagem acima, você pode ver de onde vieram as solicitações, neste caso, es
 
 O teste de carga <strong>não deve ser</strong> em execução em um ambiente de produção, experimente-o em um QA ou Pré-Produção. Mesmo que você esteja executando em slots de implantação, lembre-se de que o aplicativo ainda será executado no mesmo Plano de Serviço de Aplicativo, e isso pode afetar seu ambiente de produção ou causar um [Ataque de negação de serviço](https://en.wikipedia.org/wiki/Denial-of-service_attack).
 
-Se você quiser saber mais sobre o Teste de Carga do Azure, recomendo que você revise o [documentação do serviço](https://learn.microsoft.com/azure/load-testing).
+Se você quiser saber mais sobre o Teste de Carga do Azure, recomendo que você revise o [documentação do serviço](https://learn.microsoft.com/azure/load-testing?WT.mc_id=DT-MVP-5005361).

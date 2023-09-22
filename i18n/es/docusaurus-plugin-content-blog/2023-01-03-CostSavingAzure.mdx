@@ -22,7 +22,7 @@ En el Servicio de aplicaciones de Azure tenemos dos formas de escalar verticalme
 Así que si tenemos una Web App de producción que no se utiliza 24/7, debemos considerar lo siguiente:
 
 *   Reduzca la aplicación y la base de datos a los recursos mínimos necesarios durante las horas de menor actividad.
-*   Escale verticalmente la aplicación y la base de datos a los recursos máximos necesarios durante las horas punta. (Además, debemos habilitar el escalado automático para escalar horizontalmente la aplicación y agregar más instancias cuando sea necesario, [a través de las reglas que defina para escalar horizontalmente o en](https://learn.microsoft.com/azure/azure-monitor/autoscale/autoscale-get-started?toc=%2Fazure%2Fapp-service%2Ftoc.json#create-your-first-autoscale-setting)).
+*   Escale verticalmente la aplicación y la base de datos a los recursos máximos necesarios durante las horas punta. (Además, debemos habilitar el escalado automático para escalar horizontalmente la aplicación y agregar más instancias cuando sea necesario, [a través de las reglas que defina para escalar horizontalmente o en](https://learn.microsoft.com/azure/azure-monitor/autoscale/autoscale-get-started?toc=%2Fazure%2Fapp-service%2Ftoc.json#create-your-first-autoscale-setting?WT.mc_id=DT-MVP-5005361).
 
 El proceso de escalado vertical y vertical se puede reducir manualmente desde el portal, como se muestra en la imagen.
 
@@ -32,9 +32,9 @@ Sin embargo, este proceso puede ser tedioso y propenso a errores. Podemos automa
 
 ## Solución
 
-Podemos utilizar [Automatización de Azure](https://learn.microsoft.com/azure/automation/overview) para programar un script de PowerShell para reducir la escala de la aplicación web y la base de datos durante la noche y los fines de semana. También podemos programar otro script de PowerShell para escalar verticalmente la aplicación web y la base de datos antes del horario comercial.
+Podemos utilizar [Automatización de Azure](https://learn.microsoft.com/azure/automation/overview?WT.mc_id=DT-MVP-5005361) para programar un script de PowerShell para reducir la escala de la aplicación web y la base de datos durante la noche y los fines de semana. También podemos programar otro script de PowerShell para escalar verticalmente la aplicación web y la base de datos antes del horario comercial.
 
-> Deberá configurar una identidad asignada por el sistema a la cuenta de Azure Automation para conectarse con los recursos de Azure. Puede seguir los pasos de este [artículo](https://learn.microsoft.com/azure/automation/learn/powershell-runbook-managed-identity#assign-permissions-to-managed-identities).
+> Deberá configurar una identidad asignada por el sistema a la cuenta de Azure Automation para conectarse con los recursos de Azure. Puede seguir los pasos de este [artículo](https://learn.microsoft.com/azure/automation/learn/powershell-runbook-managed-identity#assign-permissions-to-managed-identities?WT.mc_id=DT-MVP-5005361).
 
 Exploremos los scripts de PowerShell que podemos usar:
 

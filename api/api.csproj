@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
     <ApplicationInsightsResourceId>/subscriptions/bd3ab3e9-938d-42d8-832f-392ce5e24d51/resourceGroups/dsanchezcr/providers/microsoft.insights/components/dsanchezcr</ApplicationInsightsResourceId>
     <UserSecretsId>d3034fae-cc5a-4200-b90d-ffc921693778</UserSecretsId>

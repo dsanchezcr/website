@@ -61,7 +61,7 @@ El [Flujo de trabajo](https://raw.githubusercontent.com/dsanchezcr/LoadTestingDe
  	- [LoadTestingScript.jmx](https://github.com/dsanchezcr/LoadTestingDemo/blob/main/LoadTestingScript.jmx)
  	- [LoadTestingConfig.yaml](https://github.com/dsanchezcr/LoadTestingDemo/blob/main/LoadTestingConfig.yaml)
 
-El inicio de sesión de Azure es necesario para comunicarse con el servicio Azure Load Testing para enviar el script de JMeter y la configuración de la prueba. En esta configuración podemos definir el número de [motores](https://learn.microsoft.com/azure/load-testing/concept-load-testing-concepts#test-engine) Queremos ejecutar la prueba y los criterios de fallo, en este caso tenemos un tiempo de respuesta promedio inferior a 5 segundos y un porcentaje de error inferior al 20%.
+El inicio de sesión de Azure es necesario para comunicarse con el servicio Azure Load Testing para enviar el script de JMeter y la configuración de la prueba. En esta configuración podemos definir el número de [motores](https://learn.microsoft.com/azure/load-testing/concept-load-testing-concepts#test-engine?WT.mc_id=DT-MVP-5005361) Queremos ejecutar la prueba y los criterios de fallo, en este caso tenemos un tiempo de respuesta promedio inferior a 5 segundos y un porcentaje de error inferior al 20%.
 
 ### Los resultados
 
@@ -84,4 +84,4 @@ En la imagen de arriba puede ver de dónde provienen las solicitudes, en este ca
 
 Las pruebas de carga <strong>no debe ser</strong> ejecutándose en un entorno de producción, pruébelo en un control de calidad o preproducción. Incluso si se ejecuta en ranuras de implementación, recuerde que la aplicación seguirá ejecutándose en el mismo plan del Servicio de aplicaciones, lo que podría afectar al entorno de producción o provocar un [Ataque de denegación de servicio](https://en.wikipedia.org/wiki/Denial-of-service_attack).
 
-Si desea obtener más información sobre Azure Load Testing, le recomiendo que revise el [Documentación de servicio](https://learn.microsoft.com/azure/load-testing).
+Si desea obtener más información sobre Azure Load Testing, le recomiendo que revise el [Documentación de servicio](https://learn.microsoft.com/azure/load-testing?WT.mc_id=DT-MVP-5005361).

@@ -13,7 +13,7 @@ date: 2023-02-28T18:00
 
 Nesta breve postagem, mostrarei como listar os Repositórios do Azure em um Projeto de DevOps do Azure com seus tamanhos em MB usando um script do PowerShell.
 <!--truncate-->
-Para acompanhar este post, você precisará criar um Token de Acesso Pessoal (PAT) com o permissão de **Código (leitura)**. Você pode ler mais sobre o PAT na [documentação oficial](https://learn.microsoft.com/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate).
+Para acompanhar este post, você precisará criar um Token de Acesso Pessoal (PAT) com o permissão de **Código (leitura)**. Você pode ler mais sobre o PAT na [documentação oficial](https://learn.microsoft.com/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?WT.mc_id=DT-MVP-5005361).
 
 ```powershell
 $DevOpsServerName = "<YOUR AZURE DEVOPS SERVER NAME>"
@@ -41,7 +41,7 @@ TailwindTraders-Backend 28.45 MB
 TailwindTraders-Website 14.04 MB 
 ```
 
-O script acima usa a API Rest do Azure DevOps para obter os repositórios e seus tamanhos. Você pode ler mais sobre a API na [documentação oficial](https://docs.microsoft.com/rest/api/azure/devops/git/repositories/list).
+O script acima usa a API Rest do Azure DevOps para obter os repositórios e seus tamanhos. Você pode ler mais sobre a API na [documentação oficial](https://learn.microsoft.com/rest/api/azure/devops/git/repositories/list?WT.mc_id=DT-MVP-5005361).
 
 Isso é útil para saber o tamanho de seus repositórios no caso de você estar planejando fazer uma migração, ou no caso de você gostaria de saber se você tem arquivos grandes, e para saber se você precisa limpar alguns deles.
 
