@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[982],{9648:a=>{a.exports=JSON.parse('{"label":"Azure Boards","permalink":"/pt/blog/tags/azure-boards","allTagsPath":"/pt/blog/tags","count":1,"unlisted":false}')}}]);

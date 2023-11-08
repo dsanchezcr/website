@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[5343],{4765:e=>{e.exports=JSON.parse('{"permalink":"/blog/tags/sql-azure","page":1,"postsPerPage":10,"totalPages":1,"totalCount":2,"blogDescription":"David Sanchez`s Blog","blogTitle":"Blog"}')}}]);

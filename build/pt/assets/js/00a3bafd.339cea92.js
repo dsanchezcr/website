@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[9089],{2663:e=>{e.exports=JSON.parse('{"permalink":"/pt/blog/tags/azure-cognitive-search","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"David Sanchez`s Blog","blogTitle":"Blog"}')}}]);

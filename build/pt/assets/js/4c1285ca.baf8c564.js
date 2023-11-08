@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[9600],{3305:e=>{e.exports=JSON.parse('{"label":"Azure Cognitive Search","permalink":"/pt/blog/tags/azure-cognitive-search","allTagsPath":"/pt/blog/tags","count":1,"unlisted":false}')}}]);

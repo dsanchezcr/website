@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[2037],{9770:s=>{s.exports=JSON.parse('{"label":"Cost Savings","permalink":"/es/blog/tags/cost-savings","allTagsPath":"/es/blog/tags","count":1,"unlisted":false}')}}]);

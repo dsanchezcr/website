@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[6150],{5946:e=>{e.exports=JSON.parse('{"permalink":"/blog/tags/colones","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"David Sanchez`s Blog","blogTitle":"Blog"}')}}]);

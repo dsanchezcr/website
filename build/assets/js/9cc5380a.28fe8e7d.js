@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[3563],{9565:e=>{e.exports=JSON.parse('{"label":"career update","permalink":"/blog/tags/career-update","allTagsPath":"/blog/tags","count":2,"unlisted":false}')}}]);

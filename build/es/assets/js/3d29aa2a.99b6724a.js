@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[9143],{217:e=>{e.exports=JSON.parse('{"permalink":"/es/blog/tags/azure-static-web-apps","page":1,"postsPerPage":10,"totalPages":1,"totalCount":2,"blogDescription":"David Sanchez`s Blog","blogTitle":"Blog"}')}}]);

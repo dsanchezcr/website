@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[1943],{6767:s=>{s.exports=JSON.parse('{"label":"Azure Functions","permalink":"/blog/tags/azure-functions","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

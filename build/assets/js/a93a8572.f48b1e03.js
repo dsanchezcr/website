@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[9264],{3876:e=>{e.exports=JSON.parse('{"label":"Exchange Rate","permalink":"/blog/tags/exchange-rate","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

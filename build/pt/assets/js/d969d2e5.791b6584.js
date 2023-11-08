@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[7383],{2145:e=>{e.exports=JSON.parse('{"label":"SQL Azure","permalink":"/pt/blog/tags/sql-azure","allTagsPath":"/pt/blog/tags","count":2,"unlisted":false}')}}]);

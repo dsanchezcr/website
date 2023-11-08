@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[2206],{1457:s=>{s.exports=JSON.parse('{"label":"Colones","permalink":"/pt/blog/tags/colones","allTagsPath":"/pt/blog/tags","count":1,"unlisted":false}')}}]);

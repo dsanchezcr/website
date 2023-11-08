@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[200],{772:e=>{e.exports=JSON.parse('{"label":"Azure DevOps","permalink":"/pt/blog/tags/azure-dev-ops","allTagsPath":"/pt/blog/tags","count":3,"unlisted":false}')}}]);

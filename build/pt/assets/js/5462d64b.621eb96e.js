@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[9690],{8377:e=>{e.exports=JSON.parse('{"label":"Certifica\xe7\xf5es","permalink":"/pt/blog/tags/certificacoes","allTagsPath":"/pt/blog/tags","count":1,"unlisted":false}')}}]);

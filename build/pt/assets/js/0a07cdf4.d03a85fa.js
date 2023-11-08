@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[3575],{6885:a=>{a.exports=JSON.parse('{"label":"Atualiza\xe7\xe3o de carreira","permalink":"/pt/blog/tags/atualizacao-de-carreira","allTagsPath":"/pt/blog/tags","count":2,"unlisted":false}')}}]);
