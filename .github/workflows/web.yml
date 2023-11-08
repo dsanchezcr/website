@@ -1,0 +1,52 @@
+name: Build and Deploy Website
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+      - '.api/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+      - '.api/**'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+      - name: Build Docusaurus Website
+        run: |
+          npm install 
+          npm run build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: website
+          path: build
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: website
+          path: build        
+      - name: Deploy to Azure Static Web Apps
+        uses: azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: 'upload'
+          app_location: 'build'
+          api_location: './api'
+          output_location: 'build'

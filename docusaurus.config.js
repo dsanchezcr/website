@@ -1,6 +1,3 @@
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
-
 const config = {
   title: 'David Sanchez',
   tagline: 'Helping people to build the most innovative solutions with technology.',
@@ -162,10 +159,6 @@ const config = {
           },
         ],                      
         copyright: `Copyright © ${new Date().getFullYear()} David Sanchez. Built with Docusaurus. Running on Azure Static Web Apps. Deployed with GitHub Actions.`,
-      },
-      prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme,
       },
     }),
 };

@@ -1,8 +1,10 @@
 {
     "extends": "@tsconfig/docusaurus/tsconfig.json",
-    "compilerOptions": {
+      "compilerOptions": {
+      "module": "NodeNext",
       "forceConsistentCasingInFileNames": true,
       "strict": true,
-      "baseUrl": "."
+      "baseUrl": ".",
+      "moduleResolution": "NodeNext"
     }
 }

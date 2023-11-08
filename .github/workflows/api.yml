@@ -1,0 +1,48 @@
+name: Build and Deploy Azure Function
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.api/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.api/**'
+  workflow_dispatch:
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Check Out Repo
+            uses: actions/checkout@v4
+          - name: Setup DotNet
+            uses: actions/setup-dotnet@v3
+            with:
+              dotnet-version: '8.0.x'
+          - name: Build Azure Function
+            working-directory: './api'
+            run: dotnet build api.csproj --configuration Release --output ./output
+          - name: Upload Artifact
+            uses: actions/upload-artifact@v3
+            with:
+              name: api
+              path: api/output
+    deploy:
+        runs-on: ubuntu-latest
+        needs: build
+        environment: Production
+        steps:
+          - name: Download Artifact
+            uses: actions/download-artifact@v3
+            with:
+              name: api
+              path: api/output  
+          - name: Deploy Azure Function
+            uses: azure/functions-action@v1
+            with:
+              app-name: 'dsanchezcr'
+              slot-name: 'Production'
+              package: 'api/output'
+              publish-profile: ${{ secrets.AzureFunction_PublishingProfile }}
