@@ -4,12 +4,12 @@ on:
     branches:
       - main
     paths:
-      - '.api/**'
+      - 'api/**'
   pull_request:
     branches:
       - main
     paths:
-      - '.api/**'
+      - 'api/**'
   workflow_dispatch:
 jobs:
     build:
