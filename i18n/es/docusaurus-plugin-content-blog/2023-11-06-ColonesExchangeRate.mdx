@@ -1,0 +1,86 @@
+---
+title: Tipo de cambio de colones - Paquete NuGet
+description: En esta publicación presento un nuevo paquete NuGet que creé para obtener el tipo de cambio de la conversión de la moneda del colon costarricense a dólares estadounidenses y euros.
+slug: colones-exchange-rate-package
+authors: [dsanchezcr]
+tags: [NuGet, .NET Standard, Colones, Exchange Rate, Costa Rica]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/ColonesExchangeRate/Icon.png
+date: 2023-11-06T18:00
+---
+
+# Tipo de cambio de colones - Paquete NuGet
+
+En este post presento [un nuevo paquete NuGet](https://nuget.org/packages/ColonesExchangeRate) que creé para obtener el tipo de cambio del Colón costarricense conversión de moneda a Dólares y Euros.
+
+<!--truncate-->
+
+## Características principales
+
+*   Obtenga el tipo de cambio del Colón costarricense de conversión a dólares estadounidenses y euros.
+*   Obtenga información sobre el tipo de cambio del día del Colón costarricense para Dólares y Euros.
+*   Consume la API del Ministerio de Hacienda de Costa Rica.
+
+## Cómo usarlo
+
+### Instalación del paquete NuGet
+
+```powershell
+Install-Package ColonesExchangeRate
+```
+
+### Obtener el tipo de cambio
+
+```csharp
+﻿var _converter = new CurrencyConverter();
+decimal amount = 1000;
+
+var dolaresAColones = await _converter.DollarsToColones(amount);
+Console.WriteLine($"{amount} dólares son {dolaresAColones} colones.");
+
+var colonesADolares = await _converter.ColonesToDollars(amount);
+Console.WriteLine($"{amount} colones son {colonesADolares} dólares.");
+
+var dolaresAEuros = await _converter.DollarsToEuros(amount);
+Console.WriteLine($"{amount} dólares son {dolaresAEuros} euros.");
+
+var eurosADolares = await _converter.EurosToDollars(amount);
+Console.WriteLine($"{amount} euros son {eurosADolares} dólares.");
+
+var colonesAEuros = await _converter.ColonesToEuros(amount);
+Console.WriteLine($"{amount} colones son {colonesAEuros} euros.");
+
+var eurosAColones = await _converter.EurosToColones(amount);
+Console.WriteLine($"{amount} euros son {eurosAColones} colones.");
+
+var (date, sale, purchase) = await _converter.GetDollarExchangeRate(true);
+Console.WriteLine($"Dólar - Fecha: {date}, Venta: {sale}, Compra: {purchase}");
+
+var (_date, dollars, colones) = await _converter.GetEuroExchangeRate(true);
+Console.WriteLine($"Euro - Fecha: {_date}, Dolares: {dollars}, Colones: {colones}");
+```
+
+El resultado será:
+
+![](pathname:///img/ColonesExchangeRate/ConsoleResult.jpg)
+
+## Código fuente
+
+El código fuente está disponible en [GitHub (en inglés)](https://github.com/dsanchezcr/ColonesExchangeRate). Siéntase libre de contribuir al proyecto.
+
+> Nota: Este repositorio también implementa el paquete NuGet en GitHub Packages.
+
+## Paquete NuGet
+
+El paquete NuGet está disponible en [nuget.org](https://nuget.org/packages/ColonesExchangeRate).
+
+## Referencias
+
+*   [Ministerio de Hacienda de Costa Rica](https://api.hacienda.go.cr/indicadores/tc)
+
+## Conclusión
+
+Espero que este paquete NuGet le resulte útil. Si tiene alguna pregunta o comentario, déjelo a continuación.
+
+¡Gracias por leer y feliz desarrollo!
