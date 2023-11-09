@@ -1,0 +1,45 @@
+---
+title: Extensión de CosmicWorks con Azure Cognitive Search y Azure OpenAI
+description: En esta publicación muestro cómo agregar Azure Cognitive Search a CosmicWorks para habilitar la búsqueda de texto completo y cómo agregar Azure OpenAI a CosmicWorks para habilitar el chat con GPT.
+slug: cosmicworks-azure-cognitive-search-azure-openai
+authors: [dsanchezcr]
+tags: [Azure Cosmos DB, Azure OpenAI, Azure Cognitive Search, ASP.NET, GitHub Actions]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/CosmicWorks/Diagram.png
+date: 2023-09-25T18:00
+---
+
+# Ampliación de CosmicWorks con Azure Cognitive Search y Azure OpenAI
+
+En esta publicación, muestro cómo agregar Azure Cognitive Search a CosmicWorks para habilitar la búsqueda de texto completo y cómo agregar Azure OpenAI a CosmicWorks para habilitar la experiencia de chat con GPT desde Azure OpenAI.
+
+<!--truncate-->
+
+## Introducción
+
+CosmicWorks es una aplicación de ejemplo con datos de demostración que muestra cómo usar Azure Cosmos DB con el SDK de .NET. Es una aplicación sencilla que permite gestionar datos de productos de muestra.
+
+Puedes consultar el repositorio original aquí: [GitHub (en inglés)](https://github.com/AzureCosmosDB/CosmicWorks).
+
+### Azure OpenAI
+
+Azure OpenAI es un servicio que proporciona una API para acceder a nuevos modelos de IA desarrollados por OpenAI. La API se encuentra actualmente en versión preliminar y puede obtener más información sobre ella en este enlace: [Microsoft Learn](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/overview?WT.mc_id=DT-MVP-5005361).
+
+### Azure Cognitive Search
+
+Azure Cognitive Search es una solución en la nube de búsqueda como servicio que ofrece a los desarrolladores API y herramientas para agregar una experiencia de búsqueda enriquecida sobre los datos en aplicaciones web, móviles y empresariales. Es un servicio totalmente administrado que elimina la necesidad de administrar y escalar su propia infraestructura de búsqueda.
+
+Para usar Azure OpenAI con los datos, puede consumir datos de Azure Cognitive Search para proporcionar la experiencia de chat. Puedes conocer más al respecto en este enlace: [Microsoft Learn](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/use-your-data#data-source-options?WT.mc_id=DT-MVP-5005361) - Actualmente se encuentra en versión preliminar.
+
+![](pathname:///img/CosmicWorks/Diagram.png)
+
+## Repositorio de código abierto
+
+Puedes encontrar el repositorio con los cambios aquí: [GitHub (en inglés)](https://github.com/dsanchezcr/CosmicWorksSampleApp)
+
+## Prerrequisitos
+
+Para ejecutar esta aplicación, deberá tener acceso al servicio Azure OpenAI, puede aplicar [aquí](https://aka.ms/oai/access).
+
+También necesitará una instancia de Azure Cognitive Search, puede crear una siguiendo esto [guiar](https://docs.microsoft.com/en-us/azure/search/search-create-service-portal?WT.mc_id=DT-MVP-5005361).
