@@ -25,9 +25,9 @@ namespace api
             string message = req.Query["message"];
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
-            email = email ?? data?.email;
-            message = message ?? data?.message;
+            name ??= data?.name;
+            email ??= data?.email;
+            message ??= data?.message;
             var emailClient = new EmailClient(Environment.GetEnvironmentVariable("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING"));
             try
             {
