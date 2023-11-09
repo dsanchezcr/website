@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[5991],{4113:a=>{a.exports=JSON.parse('{"label":"Azure Static Web Apps","permalink":"/blog/tags/azure-static-web-apps","allTagsPath":"/blog/tags","count":2,"unlisted":false}')}}]);

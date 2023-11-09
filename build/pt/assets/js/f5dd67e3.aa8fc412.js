@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[9777],{5339:s=>{s.exports=JSON.parse('{"label":"Azure Cosmos DB","permalink":"/pt/blog/tags/azure-cosmos-db","allTagsPath":"/pt/blog/tags","count":1,"unlisted":false}')}}]);

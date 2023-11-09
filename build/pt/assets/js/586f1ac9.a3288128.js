@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[7044],{2931:e=>{e.exports=JSON.parse('{"label":"Azure","permalink":"/pt/blog/tags/azure","allTagsPath":"/pt/blog/tags","count":2,"unlisted":false}')}}]);

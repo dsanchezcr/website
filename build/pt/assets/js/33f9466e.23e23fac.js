@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[2494],{5464:e=>{e.exports=JSON.parse('{"label":"Azure Communication Services","permalink":"/pt/blog/tags/azure-communication-services","allTagsPath":"/pt/blog/tags","count":1,"unlisted":false}')}}]);

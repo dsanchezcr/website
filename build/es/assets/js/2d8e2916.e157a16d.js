@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[4328],{5710:s=>{s.exports=JSON.parse('{"label":"Web Apps","permalink":"/es/blog/tags/web-apps","allTagsPath":"/es/blog/tags","count":1,"unlisted":false}')}}]);

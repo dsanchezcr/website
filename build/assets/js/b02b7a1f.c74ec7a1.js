@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[1718],{7785:a=>{a.exports=JSON.parse('{"label":".NET Standard","permalink":"/blog/tags/net-standard","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

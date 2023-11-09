@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[8566],{9695:s=>{s.exports=JSON.parse('{"label":"ASP.NET","permalink":"/blog/tags/asp-net","allTagsPath":"/blog/tags","count":1,"unlisted":false}')}}]);

@@ -13,6 +13,10 @@ on:
       - '.github/**'
       - '.api/**'
   workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -32,10 +36,12 @@ jobs:
         with:
           name: website
           path: build
-  deploy:
+  deploy-azure:
     runs-on: ubuntu-latest
     needs: build
-    environment: Production
+    environment: 
+      name: Production
+      url: https://dsanchezcr.com
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@v3
@@ -51,3 +57,28 @@ jobs:
           app_location: 'build'
           api_location: './api'
           output_location: 'build'
+  deploy-github-pages:
+    environment:
+      name: github-pages
+      url: https://github.dsanchezcr.com
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'latest'
+      - name: Build Docusaurus Website
+        run: |
+          npm install 
+          npm run build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'build'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

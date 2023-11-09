@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[1058],{2673:a=>{a.exports=JSON.parse('{"label":"Costa Rica","permalink":"/pt/blog/tags/costa-rica","allTagsPath":"/pt/blog/tags","count":1,"unlisted":false}')}}]);

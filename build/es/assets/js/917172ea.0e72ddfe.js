@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[3499],{5381:e=>{e.exports=JSON.parse('{"label":"webiste","permalink":"/es/blog/tags/webiste","allTagsPath":"/es/blog/tags","count":1,"unlisted":false}')}}]);

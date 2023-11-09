@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkdsanchezcr=self.webpackChunkdsanchezcr||[]).push([[8731],{8245:e=>{e.exports=JSON.parse('{"permalink":"/blog/tags/exchange-rate","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"David Sanchez`s Blog","blogTitle":"Blog"}')}}]);
