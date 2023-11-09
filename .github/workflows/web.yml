@@ -58,23 +58,17 @@ jobs:
           api_location: './api'
           output_location: 'build'
   deploy-github-pages:
+    needs: build
     environment:
       name: github-pages
       url: https://github.dsanchezcr.com
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
         with:
-          node-version: 'latest'
-      - name: Build Docusaurus Website
-        run: |
-          npm install 
-          npm run build
+          name: website
+          path: build    
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
