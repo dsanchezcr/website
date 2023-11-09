@@ -60,7 +60,7 @@ jobs:
   deploy-github-pages:
     needs: build
     environment:
-      name: github-pages
+      name: Production
       url: https://github.dsanchezcr.com
     runs-on: ubuntu-latest
     steps:
@@ -69,7 +69,7 @@ jobs:
         with:
           name: website
           path: build    
-      - name: Upload artifact
+      - name: Upload GitHub Page artifact
         uses: actions/upload-pages-artifact@v2
         with:
           path: 'build'
