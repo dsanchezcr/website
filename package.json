@@ -19,6 +19,7 @@
     "@docusaurus/plugin-google-analytics": "3.0.0",
     "@docusaurus/plugin-google-gtag": "3.0.0",
     "@docusaurus/preset-classic": "3.0.0",
+    "@dsanchezcr/colonesexchangerate": "^2.0.1",
     "@giscus/react": "^2.2.8",
     "@mdx-js/react": "3.0.0",
     "clsx": "^2.0.0",
@@ -47,7 +48,7 @@
   },
   "overrides": {
     "@cmfcmf/docusaurus-search-local": {
-        "@docusaurus/core": "^3.0.0-rc.0"
+      "@docusaurus/core": "^3.0.0-rc.0"
     }
-}
+  }
 }
