@@ -1,6 +1,6 @@
 ---
-title: Taxa de câmbio Colones - NuGet
-description: Neste post estou apresentando um novo NuGet que criei para obter a taxa de câmbio da conversão da moeda Costa Rica Colón para dólares americanos e euros.
+title: Taxa de câmbio Colones - NuGet & npm Packages
+description: Neste post estou apresentando um novo NuGet & npm pacotes que criei para obter a taxa de câmbio da conversão da moeda Costa Rica Colón para dólares americanos e euros.
 slug: colones-exchange-rate-package
 authors: [dsanchezcr]
 tags: [NuGet, .NET Standard, Colones, Exchange Rate, Costa Rica]
@@ -10,9 +10,9 @@ image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/Colo
 date: 2023-11-06T18:00
 ---
 
-# Taxa de câmbio Colones - NuGet
+# Taxa de câmbio Colones - NuGet & npm Packages
 
-Neste post estou apresentando [um novo NuGet](https://nuget.org/packages/ColonesExchangeRate) que eu criei para obter a taxa de câmbio da conversão de moeda Colón da Costa Rica para dólares americanos e euros.
+Neste post estou apresentando um novo [NuGet](https://nuget.org/packages/ColonesExchangeRate) & [npm](https://www.npmjs.com/package/@dsanchezcr/colonesexchangerate) pacotes que criei para obter a taxa de câmbio da conversão da moeda Costa Rica Colón para dólares americanos e euros.
 
 <!--truncate-->
 
@@ -22,65 +22,26 @@ Neste post estou apresentando [um novo NuGet](https://nuget.org/packages/Colones
 *   Obtenha a taxa de câmbio de hoje das informações da moeda Colón da Costa Rica para Dólares americanos e euros.
 *   Consome a API do Ministerio de Hacienda de Costa Rica.
 
-## Como usá-lo
-
-### Instalar o NuGet
-
-```powershell
-Install-Package ColonesExchangeRate
-```
-
-### Obter a taxa de câmbio
-
-```csharp
-﻿var _converter = new CurrencyConverter();
-decimal amount = 1000;
-
-var dolaresAColones = await _converter.DollarsToColones(amount);
-Console.WriteLine($"{amount} dólares son {dolaresAColones} colones.");
-
-var colonesADolares = await _converter.ColonesToDollars(amount);
-Console.WriteLine($"{amount} colones son {colonesADolares} dólares.");
-
-var dolaresAEuros = await _converter.DollarsToEuros(amount);
-Console.WriteLine($"{amount} dólares son {dolaresAEuros} euros.");
-
-var eurosADolares = await _converter.EurosToDollars(amount);
-Console.WriteLine($"{amount} euros son {eurosADolares} dólares.");
-
-var colonesAEuros = await _converter.ColonesToEuros(amount);
-Console.WriteLine($"{amount} colones son {colonesAEuros} euros.");
-
-var eurosAColones = await _converter.EurosToColones(amount);
-Console.WriteLine($"{amount} euros son {eurosAColones} colones.");
-
-var (date, sale, purchase) = await _converter.GetDollarExchangeRate(true);
-Console.WriteLine($"Dólar - Fecha: {date}, Venta: {sale}, Compra: {purchase}");
-
-var (_date, dollars, colones) = await _converter.GetEuroExchangeRate(true);
-Console.WriteLine($"Euro - Fecha: {_date}, Dolares: {dollars}, Colones: {colones}");
-```
-
-A saída será:
-
-![](pathname:///img/ColonesExchangeRate/ConsoleResult.jpg)
-
 ## Código Fonte
 
 O código-fonte está disponível em [GitHub](https://github.com/dsanchezcr/ColonesExchangeRate). Sinta-se à vontade para contribuir com o projeto.
 
-> Nota: Este repositório também implementa o NuGet em GitHub Packages.
+> Nota: Este repositório também implanta os pacotes NuGet & npm em pacotes do GitHub.
 
-## NuGet
+## Pacote NuGet
 
-O NuGet está disponível em [nuget.org](https://nuget.org/packages/ColonesExchangeRate).
+O pacote NuGet está disponível em [nuget.org](https://nuget.org/packages/ColonesExchangeRate).
+
+## Pacote npm
+
+O pacote npm está disponível em [npmjs.com](https://www.npmjs.com/package/@dsanchezcr/colonesexchangerate).
 
 ## Referências
 
-*   [Ministerio de Hacienda de Costa Rica](https://api.hacienda.go.cr/indicadores/tc)
+*   [Ministerio de Hacienda de Costa Rica API](https://api.hacienda.go.cr/indicadores/tc)
 
 ## Conclusão
 
-Espero que você ache este NuGet útil. Se você tiver alguma dúvida ou comentário, por favor, deixe-os abaixo.
+Espero que você ache esses pacotes úteis. Se você tiver alguma dúvida ou comentário, por favor, deixe-os abaixo.
 
-Obrigado pela leitura e feliz desenvolvimento!
+Obrigado pela leitura e feliz codificação!
