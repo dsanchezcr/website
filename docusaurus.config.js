@@ -1,6 +1,6 @@
 const config = {
   title: 'David Sanchez',
-  tagline: 'Helping people to build the most innovative solutions with technology.',
+  tagline: 'Helping people to build innovative solutions with technology. 🚀',
   url: 'https://dsanchezcr.com',
   staticDirectories: ['public', 'static'],
   baseUrl: '/',
