@@ -24,7 +24,6 @@ GitHub Copilot es un programador asistente con IA que te ayuda a escribir códig
 
 Este es un consejo genial que puede ayudarte a aprovechar al máximo GitHub Copilot:
 
-> [!TIP]
 > En el chat, usa los comandos de barra diagonal `/` para obtener sugerencias de finalización de código y fragmentos. Por ejemplo `/explain` proporcionará una explicación del código, `/fix` sugerirá una solución para el código, y `/test` generará una prueba para el código, `/tests` generará una prueba para el código.
 > También puedes combinarlo con referencias como `@workspace` para obtener sugerencias para su espacio de trabajo.
 
@@ -45,7 +44,6 @@ Sin embargo, a veces estas implementaciones requerían estar en un entorno aisla
 
 Una solución es usar el método [Ejecutores autohospedados de GitHub Actions](https://docs.github.com/es/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners) Pero si no desea administrar la infraestructura, puedes usar el siguiente consejo:
 
-> [!TIP]
 > Puedes usar **[Redes privadas](https://docs.github.com/es/actions/using-github-hosted-runners/connecting-to-a-private-network/about-private-networking-with-github-hosted-runners)** para conectar los ejecutores hospedados en GitHub a los recursos de una red privada, incluidos los registros de paquetes o contenedores, los administradores de secretos y otros servicios, incluso locales.
 
 ![GitHub Actions](pathname:///img/GitHubDeMayo/GitHubActionsVnet.jpg)
@@ -54,7 +52,6 @@ Una solución es usar el método [Ejecutores autohospedados de GitHub Actions](h
 
 Las características de seguridad avanzada de GitHub te ayudan a proteger tu código y tu cadena de suministro de software. Incluye Secret Scanning, en este servicio puedes usar tus propios patrones de secretos y GitHub Copilot puede ayudarte a generar el RegEx a partir de tus secretos.
 
-> [!TIP]
 > Supongamos que quieres evitar números de tarjeta de crédito en cualquier parte de tu código fuente (incluida la documentación o los comentarios), puedes pedirle a GitHub Copilot que genere una expresión regular o usar el comando `Generate with AI` y, a continuación, regístralo como un patrón secreto en tu repositorio o en una organización de GitHub.
 
 Más información sobre [Escaneo de secretos aquí](https://docs.github.com/es/code-security/secret-security/about-secret-scanning).
