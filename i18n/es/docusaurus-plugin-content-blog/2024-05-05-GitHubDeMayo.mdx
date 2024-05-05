@@ -37,13 +37,16 @@ Estos son algunos recursos para obtener más información sobre GitHub Copilot:
 *   [Introducción a GitHub Copilot](https://www.youtube.com/playlist?list=PLlrxD0HtieHgr23PS05FIncnih4dH9Na5)
 *   [Dominar GitHub Copilot para la programación emparejada con IA](https://github.com/microsoft/Mastering-GitHub-Copilot-for-Paired-Programming)
 
-## 2. Acciones de GitHub
+## 2. GitHub Actions - Redes privadas
 
 GitHub Actions facilita la automatización de todos los flujos de trabajo de software, ahora con CI/CD de clase mundial. Compila, prueba e implementa tu código directamente desde GitHub.
 
 Sin embargo, a veces estas implementaciones requerían estar en un entorno aislado, no de la red pública de Internet, ya que no desea exponer la aplicación a la red pública de Internet.
 
-Una solución es usar el método [Ejecutores autohospedados de GitHub Actions](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners) Pero si no desea administrar la infraestructura, el consejo aquí es usar **[Redes informáticas alojadas](https://docs.github.com/en/actions/using-github-hosted-runners/connecting-to-a-private-network/about-private-networking-with-github-hosted-runners)** para conectar los ejecutores hospedados en GitHub a los recursos de una red privada, incluidos los registros de paquetes o contenedores, los administradores de secretos y otros servicios, incluso locales.
+Una solución es usar el método [Ejecutores autohospedados de GitHub Actions](https://docs.github.com/es/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners) Pero si no desea administrar la infraestructura, puedes usar el siguiente consejo:
+
+> [!TIP]
+> Puedes usar **[Redes privadas](https://docs.github.com/es/actions/using-github-hosted-runners/connecting-to-a-private-network/about-private-networking-with-github-hosted-runners)** para conectar los ejecutores hospedados en GitHub a los recursos de una red privada, incluidos los registros de paquetes o contenedores, los administradores de secretos y otros servicios, incluso locales.
 
 ![GitHub Actions](pathname:///img/GitHubDeMayo/GitHubActionsVnet.jpg)
 
@@ -51,9 +54,10 @@ Una solución es usar el método [Ejecutores autohospedados de GitHub Actions](h
 
 Las características de seguridad avanzada de GitHub te ayudan a proteger tu código y tu cadena de suministro de software. Incluye Secret Scanning, en este servicio puedes usar tus propios patrones de secretos y GitHub Copilot puede ayudarte a generar el RegEx a partir de tus secretos.
 
-Supongamos que quieres evitar los correos electrónicos en cualquier parte de tu código fuente (incluida la documentación o los comentarios), puedes pedirle a GitHub Copilot que genere una expresión regular o usar el comando `Generate with AI` y, a continuación, regístralo como un patrón secreto en tu repositorio o en una organización de GitHub.
+> [!TIP]
+> Supongamos que quieres evitar números de tarjeta de crédito en cualquier parte de tu código fuente (incluida la documentación o los comentarios), puedes pedirle a GitHub Copilot que genere una expresión regular o usar el comando `Generate with AI` y, a continuación, regístralo como un patrón secreto en tu repositorio o en una organización de GitHub.
 
-Más información sobre [Escaneo de secretos aquí](https://docs.github.com/en/code-security/secret-security/about-secret-scanning).
+Más información sobre [Escaneo de secretos aquí](https://docs.github.com/es/code-security/secret-security/about-secret-scanning).
 
 ![GitHub Advanced Security](pathname:///img/GitHubDeMayo/GitHubAdvancedSecurityTip.jpg)
 
