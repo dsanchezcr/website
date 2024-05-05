@@ -1,0 +1,62 @@
+---
+title: GitHub de Mayo - Consejos sobre GitHub
+description: En este post comparto algunos consejos sobre GitHub para celebrar el "GitHub de Mayo".
+slug: github-de-mayo
+authors: [dsanchezcr]
+tags: [GitHub, Copilot, Actions, Security]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/GitHubdeMayo.png
+date: 2024-05-05T18:00
+---
+
+# GitHub de Mayo - Consejos sobre GitHub
+
+En este post comparto algunos consejos sobre GitHub para celebrar el "GitHub de Mayo". Espero que estos consejos te resulten útiles:
+
+<!--truncate-->
+
+![GitHub de Mayo](pathname:///img/GitHubdeMayo.png)
+
+## 1. Copiloto de GitHub
+
+GitHub Copilot es un programador asistente con IA que te ayuda a escribir código más rápido. Funciona con OpenAI Codex. GitHub Copilot sugiere líneas enteras o funciones enteras dentro de tu IDE.
+
+Este es un consejo genial que puede ayudarte a aprovechar al máximo GitHub Copilot:
+
+> [!TIP]
+> En el chat, usa los comandos de barra diagonal `/` para obtener sugerencias de finalización de código y fragmentos. Por ejemplo `/explain` proporcionará una explicación del código, `/fix` sugerirá una solución para el código, y `/test` generará una prueba para el código, `/tests` generará una prueba para el código.
+> También puedes combinarlo con referencias como `@workspace` para obtener sugerencias para su espacio de trabajo.
+
+![GitHub Copilot](pathname:///img/GitHubDeMayo/GitHubCopilotTip.jpg)
+
+Estos son algunos recursos para obtener más información sobre GitHub Copilot:
+
+*   [Ruta de aprendizaje de MS Learn de GitHub Copilot Fundamentals](https://learn.microsoft.com/training/paths/copilot)
+*   [Aspectos básicos de GitHub Copilot](https://resources.github.com/learn/pathways/copilot/essentials/essentials-of-github-copilot)
+*   [Introducción a GitHub Copilot](https://www.youtube.com/playlist?list=PLlrxD0HtieHgr23PS05FIncnih4dH9Na5)
+*   [Dominar GitHub Copilot para la programación emparejada con IA](https://github.com/microsoft/Mastering-GitHub-Copilot-for-Paired-Programming)
+
+## 2. Acciones de GitHub
+
+GitHub Actions facilita la automatización de todos los flujos de trabajo de software, ahora con CI/CD de clase mundial. Compila, prueba e implementa tu código directamente desde GitHub.
+
+Sin embargo, a veces estas implementaciones requerían estar en un entorno aislado, no de la red pública de Internet, ya que no desea exponer la aplicación a la red pública de Internet.
+
+Una solución es usar el método [Ejecutores autohospedados de GitHub Actions](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners) Pero si no desea administrar la infraestructura, el consejo aquí es usar **[Redes informáticas alojadas](https://docs.github.com/en/actions/using-github-hosted-runners/connecting-to-a-private-network/about-private-networking-with-github-hosted-runners)** para conectar los ejecutores hospedados en GitHub a los recursos de una red privada, incluidos los registros de paquetes o contenedores, los administradores de secretos y otros servicios, incluso locales.
+
+![GitHub Actions](pathname:///img/GitHubDeMayo/GitHubActionsVnet.jpg)
+
+## 3. GitHub Advanced Security - Patrones personalizados
+
+Las características de seguridad avanzada de GitHub te ayudan a proteger tu código y tu cadena de suministro de software. Incluye Secret Scanning, en este servicio puedes usar tus propios patrones de secretos y GitHub Copilot puede ayudarte a generar el RegEx a partir de tus secretos.
+
+Supongamos que quieres evitar los correos electrónicos en cualquier parte de tu código fuente (incluida la documentación o los comentarios), puedes pedirle a GitHub Copilot que genere una expresión regular o usar el comando `Generate with AI` y, a continuación, regístralo como un patrón secreto en tu repositorio o en una organización de GitHub.
+
+Más información sobre [Escaneo de secretos aquí](https://docs.github.com/en/code-security/secret-security/about-secret-scanning).
+
+![GitHub Advanced Security](pathname:///img/GitHubDeMayo/GitHubAdvancedSecurityTip.jpg)
+
+## Conclusión
+
+Espero que estos consejos te resulten útiles. Si tiene alguna pregunta o comentario, déjelo a continuación.
