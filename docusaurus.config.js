@@ -16,8 +16,16 @@ const config = {
       {
         trackingID: 'G-18J431S7WG',
         anonymizeIP: true,
-      },
+      },      
     ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'disneyworld',
+        path: 'disneyworld',
+        routeBasePath: 'disneyworld'
+      },
+    ]
   ],
 
   themes: [
@@ -28,7 +36,11 @@ const config = {
     [
       '@docusaurus/preset-classic',
       { 
-        docs: false,       
+        docs: {
+          id: 'universalstudios',
+          path: 'universalstudios',
+          routeBasePath: 'universalstudios'
+        },      
         blog: {
           blogSidebarTitle: 'Recent posts',
           blogSidebarCount: 0,
@@ -43,7 +55,7 @@ const config = {
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         }      
-      },
+      }      
     ],
   ],
 
@@ -96,12 +108,6 @@ const config = {
         // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
         externalUrlRegex: 'external\\.com|dsanchezcr\\.com',
   
-        // Optional: Replace parts of the item URLs from Algolia. Useful when using the same search index for multiple deployments using a different baseUrl. You can use regexp or string in the `from` param. For example: localhost:3000 vs myCompany.com/docs
-        replaceSearchResultPathname: {
-          from: '/docs/', // or as RegExp: /\/docs\//
-          to: '/',
-        },
-  
         // Optional: Algolia search parameters
         searchParameters: {},
   
@@ -116,7 +122,9 @@ const config = {
         },
         items: [
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/projects', label: 'Projects', position: 'left'},        
+          {to: '/projects', label: 'Projects', position: 'left'},
+          {to: '/disneyworld', label: 'Disney', position: 'left'},  
+          {to: '/universalstudios', label: 'Universal', position: 'left'},      
           {to: '/about', label: 'About', position: 'left'},
           {to: '/contact', label: 'Contact', position: 'left'},
           {to: '/sponsors', label: 'Sponsors', position: 'right'},
