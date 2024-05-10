@@ -80,13 +80,6 @@ function HomepageHeader() {
         <p className="hero__subtitle">Global Black Belt Sales Specialist - Azure Developer Audience en Microsoft.</p>
         <p className="hero__subtitle">Ayudando a personas a construir soluciones innovadoras con tecnología. 🚀</p>
         <p className="hero__subtitle">Las opiniones expresadas en este sitio son mías y no reflejan necesariamente las opiniones de mi empleador.</p>
-        <div className={styles.buttons}>
-          <Link
-              className="button button--secondary button--lg"
-              to="pathname:///Resume_David_Sanchez.pdf">
-              Descarga mi CV (inglés) 📃
-          </Link>
-        </div>
       </div>
     </header>
   );
