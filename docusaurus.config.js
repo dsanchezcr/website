@@ -122,9 +122,7 @@ const config = {
         },
         items: [
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/projects', label: 'Projects', position: 'left'},
-          {to: '/disneyworld', label: 'Disney', position: 'left'},  
-          {to: '/universalstudios', label: 'Universal', position: 'left'},      
+          {to: '/projects', label: 'Projects', position: 'left'},    
           {to: '/about', label: 'About', position: 'left'},
           {to: '/contact', label: 'Contact', position: 'left'},
           {to: '/sponsors', label: 'Sponsors', position: 'right'},
