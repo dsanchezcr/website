@@ -1,0 +1,70 @@
+---
+title: Ambientes de Desenvolvimento em Nuvem
+description: Neste post vou falar sobre as diferentes opções que temos para criar um ambiente de desenvolvimento em nuvem.
+slug: cloud-development-environments
+authors: [dsanchezcr]
+tags: [GitHub Codespaces, Microsoft DevBox, Cloud Development Environments]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/CloudDevelopmentEnvironments/cde.jpeg
+date: 2024-07-03T18:00
+---
+
+# Ambientes de desenvolvimento em nuvem
+
+Neste post vou falar sobre as diferentes opções que temos para criar um ambiente de desenvolvimento em nuvem oferecido pela Microsoft & GitHub.
+
+<!--truncate-->
+
+Comecemos pela definição dele:
+
+## O que é um ambiente de desenvolvimento em nuvem?
+
+É um ambiente de desenvolvimento completo que está hospedado na nuvem, inclui tudo o que você precisa para escrever, executar e depurar seu código. É acessível a partir de qualquer lugar e a partir de qualquer dispositivo.
+
+## Por que devemos usá-lo?
+
+Há muitas razões para usá-lo. Alguns dos principais benefícios incluem:
+
+*   **Conveniência**: acessível de qualquer lugar e de qualquer dispositivo. Isso significa que você pode trabalhar em seu código de qualquer lugar, esteja você em casa, no escritório ou em qualquer lugar.
+*   **Escalabilidade**: adicionar ou remover recursos conforme necessário. Isso significa que você pode aumentar rapidamente a escala para atender ao aumento da demanda ou reduzir a escala para economizar custos quando a demanda é baixa.
+*   **Flexibilidade**: personalize-o para atender às suas necessidades específicas. Isso significa que você pode escolher as ferramentas e recursos que funcionam melhor para você, e você pode alterá-los facilmente conforme necessário.
+*   **Colaboração**: compartilhe suas definições com outras pessoas e trabalhe em conjunto na mesma base de código. Isso significa que você pode colaborar facilmente com membros da equipe, parceiros ou clientes, independentemente de sua localização.
+*   **Segurança**: mantenha seu código e dados seguros. Isso significa que você pode confiar no provedor de nuvem para manter a segurança do seu ambiente de desenvolvimento e pode se concentrar em escrever código sem se preocupar com a segurança.
+*   **Custo-benefício**: pague apenas pelo que usar. Isso significa que você pode evitar os custos iniciais de compra de hardware e software, e você pode economizar dinheiro pagando apenas pelos recursos que você precisa.
+*   **Produtividade**: concentre-se em escrever código, não em gerenciar a infraestrutura. Isso significa que você pode gastar mais tempo escrevendo código e menos tempo configurando e mantendo seu ambiente de desenvolvimento.
+*   **Sustentabilidade**: Reduza sua pegada de carbono. Isso significa que você pode ajudar a proteger o meio ambiente usando os recursos de nuvem de forma mais eficiente e pode contribuir para um futuro mais sustentável para todos.
+
+## Opções em nuvem em GitHub & Microsoft:
+
+### 1. Espaços de código do GitHub
+
+Disponível em seus repositórios do GitHub. Você pode usá-lo para escrever, executar e depurar seu código com um ambiente de desenvolvimento completo em seu navegador ou abri-lo no Visual Studio Code. Uma das maiores vantagens do GitHub Codespaces é que você pode personalizar o ambiente e a configuração para atender às suas necessidades específicas, e você pode compartilhá-lo facilmente com outras pessoas. Por exemplo, por [adicionando um `devcontainer.json` para seu repositório](https://docs.github.com/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/introduction-to-dev-containers#using-the-default-dev-container-configuration), você pode definir o ambiente de desenvolvimento que deseja usar, incluindo as ferramentas, extensões e configurações necessárias.
+
+![GitHub Codespaces Logo](pathname:///img/CloudDevelopmentEnvironments/GitHubCodespaces.png)
+
+#### Como criar um Codespace do GitHub?
+
+1.  Vá para o repositório do GitHub.
+2.  Clique no botão "Código".
+3.  Clique no botão "Abrir com Codespaces".
+4.  Aguarde até que o Codespace seja criado.
+5.  Comece a escrever, executar e depurar seu código.
+
+![GitHub Codespaces Example](pathname:///img/CloudDevelopmentEnvironments/CreateGHCodespaces.jpg)
+
+### 2. Caixa de Desenvolvimento da Microsoft
+
+Disponível por meio do Microsoft Azure, é uma estação de trabalho na nuvem que inclui tudo o que você precisa para desenvolver, testar e depurar seus aplicativos. Uma das maiores vantagens do Microsoft DevBox é que você pode escolher entre uma variedade de ambientes pré-configurados (imagens) ou você pode facilmente personalizá-los e criar uma galeria para atender às suas necessidades específicas. Aqui está como você pode [criar um novo DevBox](https://docs.microsoft.com/azure/dev-box/quickstart-create-dev-box) Depois de criado e provisionado, você pode começar rapidamente a desenvolver seus aplicativos sem precisar configurar o ambiente. Além disso, você pode criar muitas definições com base no projeto em que está trabalhando.
+
+![Microsoft DevBox Logo](pathname:///img/CloudDevelopmentEnvironments/DevBox.png)
+
+## Quando usar o Microsoft DevBox ou GitHub Codespaces?
+
+Sempre que precisar de uma estação de trabalho de desenvolvimento, você pode usar o Microsoft DevBox. Isso permite que você instale aplicativos de área de trabalho e é otimizado para executar o Visual Studio, você também pode [instalar o WSL](https://learn.microsoft.com/windows/wsl/install) para suportar Ambientes de Desenvolvimento Linux. Por outro lado, se você precisar de um ambiente de desenvolvimento leve baseado em [Containers de Desenvolvimento](https://containers.dev), você pode usar o GitHub Codespaces.
+
+![Chose when to use GitHub Codespaces or Microsoft Dev Box](pathname:///img/CloudDevelopmentEnvironments/ChoseCDE.jpg)
+
+## Conclusão
+
+Neste post, falei sobre as diferentes opções que temos para criar um ambiente de desenvolvimento em nuvem. Espero que tenha achado útil. Se você tiver alguma dúvida, sinta-se à vontade para perguntar na seção de comentários abaixo.

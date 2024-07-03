@@ -1,0 +1,70 @@
+---
+title: Entornos de desarrollo en la nube
+description: En este post voy a hablar de las diferentes opciones que tenemos para crear un entorno de desarrollo en la nube.
+slug: cloud-development-environments
+authors: [dsanchezcr]
+tags: [GitHub Codespaces, Microsoft DevBox, Cloud Development Environments]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/CloudDevelopmentEnvironments/cde.jpeg
+date: 2024-07-03T18:00
+---
+
+# Entornos de desarrollo en la nube
+
+En este post voy a hablar de las diferentes opciones que tenemos para crear un entorno de desarrollo en la nube que ofrecen Microsoft y GitHub.
+
+<!--truncate-->
+
+Empecemos por la definición de la misma:
+
+## ¿Qué es un entorno de desarrollo en la nube?
+
+Es un entorno de desarrollo completo que está alojado en la nube, incluye todo lo que necesita para escribir, ejecutar y depurar su código. Es accesible desde cualquier lugar y desde cualquier dispositivo.
+
+## ¿Por qué deberíamos usarlo?
+
+Hay muchas razones para usarlo. Algunos de los principales beneficios incluyen:
+
+*   **Conveniencia**: accesible desde cualquier lugar y desde cualquier dispositivo. Esto significa que puede trabajar en su código desde cualquier lugar, ya sea que esté en casa, en la oficina o mientras viaja.
+*   **Escalabilidad**: agregue o elimine recursos según sea necesario. Esto significa que puede escalar rápidamente para satisfacer el aumento de la demanda o reducir para ahorrar costos cuando la demanda es baja.
+*   **Flexibilidad**: personalícelo para satisfacer sus necesidades específicas. Esto significa que puede elegir las herramientas y los recursos que mejor se adapten a sus necesidades, y puede cambiarlos fácilmente según sea necesario.
+*   **Colaboración**: comparta sus definiciones con otros y trabajen juntos en la misma base de código. Esto significa que puede colaborar fácilmente con miembros del equipo, socios o clientes, independientemente de su ubicación.
+*   **Seguridad**: Mantenga su código y datos seguros. Esto significa que puede confiar en el proveedor de la nube para mantener la seguridad de su entorno de desarrollo y puede concentrarse en escribir código sin preocuparse por la seguridad.
+*   **Rentabilidad**: paga solo por lo que usas. Esto significa que puede evitar los costos iniciales de comprar hardware y software, y puede ahorrar dinero pagando solo por los recursos que necesita.
+*   **Productividad**: centrarse en la escritura de código, no en la gestión de la infraestructura. Esto significa que puede dedicar más tiempo a escribir código y menos tiempo a configurar y mantener su entorno de desarrollo.
+*   **Sostenibilidad**: Reduce tu huella de carbono. Esto significa que puede ayudar a proteger el medio ambiente mediante el uso más eficiente de los recursos en la nube y puede contribuir a un futuro más sostenible para todos.
+
+## Opciones en GitHub y Microsoft:
+
+### 1. Espacios de código de GitHub
+
+Disponible en tus repositorios de GitHub. Puede usarlo para escribir, ejecutar y depurar el código con un entorno de desarrollo completo en el explorador o abrirlo en Visual Studio Code. Una de las mayores ventajas de GitHub Codespaces es que puedes personalizar el entorno y la configuración para satisfacer tus necesidades específicas, y puedes compartirlo fácilmente con otras personas. Por ejemplo, por [Adición de un `devcontainer.json` archivo a tu repositorio](https://docs.github.com/codespaces/setting-up-your-project-for-codespaces/adding-a-dev-container-configuration/introduction-to-dev-containers#using-the-default-dev-container-configuration), puede definir el entorno de desarrollo que desea utilizar, incluidas las herramientas, las extensiones y la configuración que necesita.
+
+![GitHub Codespaces Logo](pathname:///img/CloudDevelopmentEnvironments/GitHubCodespaces.png)
+
+#### ¿Cómo crear un GitHub Codespace?
+
+1.  Ve a tu repositorio de GitHub.
+2.  Haga clic en el botón "Código".
+3.  Haz clic en el botón "Abrir con Codespaces".
+4.  Espera a que se cree el Codespace.
+5.  Comience a escribir, ejecutar y depurar el código.
+
+![GitHub Codespaces Example](pathname:///img/CloudDevelopmentEnvironments/CreateGHCodespaces.jpg)
+
+### 2. Microsoft DevBox
+
+Disponible a través de Microsoft Azure, es una estación de trabajo en la nube que incluye todo lo necesario para desarrollar, probar y depurar sus aplicaciones. Una de las mayores ventajas de Microsoft DevBox es que puede elegir entre una variedad de entornos preconfigurados (imágenes) o puede personalizarlos fácilmente y crear una galería para satisfacer sus necesidades específicas. A continuación te explicamos cómo puedes [crear un nuevo DevBox](https://docs.microsoft.com/azure/dev-box/quickstart-create-dev-box) Una vez creadas y aprovisionadas, puede empezar a desarrollar rápidamente sus aplicaciones sin tener que instalar y configurar el entorno. También puede crear muchas definiciones basadas en el proyecto en el que está trabajando.
+
+![Microsoft DevBox Logo](pathname:///img/CloudDevelopmentEnvironments/DevBox.png)
+
+## ¿Cuándo usar Microsoft DevBox o GitHub Codespaces?
+
+Siempre que necesite una estación de trabajo de desarrollo, puede usar Microsoft DevBox. Esto le permite instalar aplicaciones de escritorio y está optimizado para ejecutar Visual Studio, también puede [instalación de WSL](https://learn.microsoft.com/windows/wsl/install) para dar soporte a los entornos de desarrollo de Linux. Por otro lado, si necesitas un entorno de desarrollo ligero basado en [Contenedores de desarrollo](https://containers.dev), puedes usar GitHub Codespaces.
+
+![Chose when to use GitHub Codespaces or Microsoft Dev Box](pathname:///img/CloudDevelopmentEnvironments/ChoseCDE.jpg)
+
+## Conclusión
+
+En este post, hablé sobre las diferentes opciones que tenemos para crear un entorno de desarrollo en la nube. Espero que te haya sido útil. Si tiene alguna pregunta, no dude en preguntar en la sección de comentarios a continuación.
