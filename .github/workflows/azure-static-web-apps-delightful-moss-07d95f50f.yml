@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: 'latest'
       - name: NPM Install Dependencies
-        run: npm ci
+        run: npm install
       - name: NPM Build Docusaurus Website
         run: npm run build
       - name: Upload Artifact
