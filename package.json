@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.4.0",
-    "@docusaurus/types": "^3.4.0",
+    "@docusaurus/types": "^3.5.1",
     "@tsconfig/docusaurus": "^2.0.3",
     "babel-plugin-module-resolver": "^5.0.2",
     "typescript": "^5.5.3"
