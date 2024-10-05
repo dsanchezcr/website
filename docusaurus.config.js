@@ -21,9 +21,9 @@ const config = {
     [
       '@docusaurus/plugin-content-docs',
       {
-        id: 'disneyworld',
-        path: 'disneyworld',
-        routeBasePath: 'disneyworld'
+        id: 'disney',
+        path: 'disney',
+        routeBasePath: 'disney'
       },
     ]
   ],
@@ -37,9 +37,9 @@ const config = {
       '@docusaurus/preset-classic',
       { 
         docs: {
-          id: 'universalstudios',
-          path: 'universalstudios',
-          routeBasePath: 'universalstudios'
+          id: 'universal',
+          path: 'universal',
+          routeBasePath: 'universal'
         },      
         blog: {
           blogSidebarTitle: 'Recent posts',
@@ -122,7 +122,9 @@ const config = {
         },
         items: [
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/projects', label: 'Projects', position: 'left'},    
+          {to: '/projects', label: 'Projects', position: 'left'},
+          {to: '/disney', label: 'Disney', position: 'left'},
+          {to: '/universal', label: 'Universal', position: 'left'},    
           {to: '/about', label: 'About', position: 'left'},
           {to: '/contact', label: 'Contact', position: 'left'},
           {to: '/sponsors', label: 'Sponsors', position: 'right'},
