@@ -6,22 +6,10 @@ export default function Contact() {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
 
-    var myVar;
-
-    function loadForm() {
-      myVar = setTimeout(showForm, 5000);
-    }
-
     function showDiv() {
       document.getElementById("loader").style.display = "none";
       document.getElementById("emailForm").style.display = "none";
       document.getElementById("myDiv").style.display = "block";
-    }
-
-    function showForm() {
-      document.getElementById("loader").style.display = "none";
-      document.getElementById("emailForm").style.display = "block";
-      document.getElementById("myDiv").style.display = "none";
     }
 
     function showLoader() {
@@ -33,19 +21,29 @@ export default function Contact() {
     const handleSubmit = async (e) => {
       e.preventDefault();
   
-      const data = {
+      const params = new URLSearchParams({
         name: name,
         email: email,
         message: message
-      };
+      });
   
       try {
         showLoader();
-        const response = await fetch("https://dsanchezcr.azurewebsites.net/api/SendEmailFunction", {
+        console.log("Sending data:", params.toString());
+        const response = await fetch(`https://dsanchezcr.azurewebsites.net/api/SendEmailFunction?${params.toString()}`, {
           method: "POST",
-          body: JSON.stringify(data),
-          headers: { "Content-Type": "application/json" },
         });
+        console.log("Response status:", response.status);
+
+        const contentType = response.headers.get("Content-Type");
+        let responseData;
+        if (contentType && contentType.includes("application/json")) {
+          responseData = await response.json();
+        } else {
+          responseData = await response.text();
+        }
+        console.log("Response data:", responseData);
+
         if (!response.ok) {          
           document.getElementById("myDiv").style.display = "block";
           document.getElementById("myDiv").value = "There was an error submitting the form";
@@ -55,9 +53,10 @@ export default function Contact() {
         setName('');
         setEmail('');
         setMessage('');
-        loadForm();
       } catch (error) {
         console.error("There was an error submitting the form", error);
+        document.getElementById("myDiv").style.display = "block";
+        document.getElementById("myDiv").innerText = "There was an error submitting the form. Please try again later.";
       }      
     };
 
