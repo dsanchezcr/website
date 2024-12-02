@@ -6,7 +6,7 @@ authors: [dsanchezcr]
 tags: [Azure Functions, GitHub Actions, Azure Communication Services, Azure Static Web Apps]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/BuiltContactForm/ContactForm.jpg
+image: ../../../static/img/blog/2023-04-23-BuildContactForm/ContactForm.jpg
 date: 2023-04-23T18:00
 ---
 # Criando um formulário de contato simples com o Azure
@@ -19,13 +19,13 @@ Ter um formulário de contato funcional em seu site é essencial. Um formulário
 
 ## Por que o Azure Functions?
 
-[Funções do Azure](https://learn.microsoft.com/azure/azure-functions/functions-overview?WT.mc_id=DT-MVP-5005361) é um serviço de computação sem servidor oferecido pelo Microsoft Azure. Ele permite que os desenvolvedores criem, executem e dimensionem aplicativos sem precisar gerenciar a infraestrutura. O Azure Functions dá suporte a várias linguagens de programação, incluindo C#, Java, JavaScript, Python e PowerShell.
+[Funções do Azure](https://learn.microsoft.com/azure/azure-functions/functions-overview) é um serviço de computação sem servidor oferecido pelo Microsoft Azure. Ele permite que os desenvolvedores criem, executem e dimensionem aplicativos sem precisar gerenciar a infraestrutura. O Azure Functions dá suporte a várias linguagens de programação, incluindo C#, Java, JavaScript, Python e PowerShell.
 
 Nesse caso, meu site está sendo executado em um aplicativo Web estático, portanto, preciso usar uma solução sem servidor para criar o formulário de contato. O Azure Functions é uma ótima opção porque me permite criar um formulário de contato sem ter que gerenciar a infraestrutura ou me preocupar com as complexidades dos protocolos de comunicação.
 
 ## O que é o Serviço de Comunicação do Azure?
 
-[Serviço de Comunicação do Azure](https://learn.microsoft.com/azure/communication-services/overview?WT.mc_id=DT-MVP-5005361) é uma plataforma de comunicação oferecida pelo Microsoft Azure. Ele fornece aos desenvolvedores as ferramentas e serviços para integrar recursos de comunicação em tempo real, como voz, vídeo, bate-papo e mensagens SMS em seus aplicativos. O Serviço de Comunicação do Azure também oferece um [Serviço de e-mail](https://learn.microsoft.com/azure/communication-services/concepts/email/email-overview?WT.mc_id=DT-MVP-5005361) que permite que os desenvolvedores enviem e recebam e-mails programaticamente.
+[Serviço de Comunicação do Azure](https://learn.microsoft.com/azure/communication-services/overview) é uma plataforma de comunicação oferecida pelo Microsoft Azure. Ele fornece aos desenvolvedores as ferramentas e serviços para integrar recursos de comunicação em tempo real, como voz, vídeo, bate-papo e mensagens SMS em seus aplicativos. O Serviço de Comunicação do Azure também oferece um [Serviço de e-mail](https://learn.microsoft.com/azure/communication-services/concepts/email/email-overview) que permite que os desenvolvedores enviem e recebam e-mails programaticamente.
 
 ## Criando o Formulário de Contato usando o Azure Functions e o Serviço de Comunicação do Azure
 
@@ -35,26 +35,26 @@ Para criar um formulário de contato usando o Azure Functions e o Serviço de Em
 
 A primeira etapa foi criar os recursos do Azure. Estes são os recursos que usei neste aplicativo de exemplo:
 
-*   [Serviço de Comunicação do Azure](https://learn.microsoft.com/azure/communication-services/quickstarts/create-communication-resource?WT.mc_id=DT-MVP-5005361) - para gerenciar o serviço de e-mail.
-*   [Serviço de Email do Azure (Parte do Serviço de Comunicação do Azure)](https://learn.microsoft.com/azure/communication-services/quickstarts/email/create-email-communication-resource?WT.mc_id=DT-MVP-5005361) - para enviar os e-mails.
-*   [Função do Azure](https://learn.microsoft.com/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp?WT.mc_id=DT-MVP-5005361) - para processar o gatilho HTTP enviado pelo HTML e enviar os emails usando o Serviço de Comunicação do Azure.
-*   [Aplicativo Web Estático do Azure](https://learn.microsoft.com/azure/static-web-apps/getting-started?WT.mc_id=DT-MVP-5005361) - para hospedar o site (Índice.html neste caso).
+*   [Serviço de Comunicação do Azure](https://learn.microsoft.com/azure/communication-services/quickstarts/create-communication-resource) - para gerenciar o serviço de e-mail.
+*   [Serviço de Email do Azure (Parte do Serviço de Comunicação do Azure)](https://learn.microsoft.com/azure/communication-services/quickstarts/email/create-email-communication-resource) - para enviar os e-mails.
+*   [Função do Azure](https://learn.microsoft.com/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp) - para processar o gatilho HTTP enviado pelo HTML e enviar os emails usando o Serviço de Comunicação do Azure.
+*   [Aplicativo Web Estático do Azure](https://learn.microsoft.com/azure/static-web-apps/getting-started) - para hospedar o site (Índice.html neste caso).
 
-![](pathname:///img/BuiltContactForm/AzureResourceVisualizer.jpg)
+![](pathname:///img/blog/2023-04-23-BuildContactForm/AzureResourceVisualizer.jpg)
 
 #### 2. Configurar os Serviços de Comunicação do Azure - Serviço de Email
 
 A próxima etapa foi configurar os Serviços de Comunicação do Azure - Serviço de Email. Isso inclui a configuração de um endereço de e-mail para enviar e-mails. Ao criar esse serviço, você pode escolher se deseja usar um subdomínio do Azure ou se deseja configurar seu próprio domínio.
 
-![](pathname:///img/BuiltContactForm/AzureEmailCommunicationService.jpg)
+![](pathname:///img/blog/2023-04-23-BuildContactForm/AzureEmailCommunicationService.jpg)
 
 Nesse caso, usei o endereço de email provisionado por um subdomínio do Azure.
 
-![](pathname:///img/BuiltContactForm/DomainProvision.jpg)
+![](pathname:///img/blog/2023-04-23-BuildContactForm/DomainProvision.jpg)
 
 O endereço de e-mail foi criado e configurado automaticamente:
 
-![](pathname:///img/BuiltContactForm/EmailCommunicationService.jpg)
+![](pathname:///img/blog/2023-04-23-BuildContactForm/EmailCommunicationService.jpg)
 
 #### 3. Desenvolver a função do Azure
 
@@ -67,7 +67,7 @@ A primeira etapa foi criar uma Função do Azure. Você pode escolher entre vár
 *   `senderEmailAddress`: o endereço de email que foi provisionado na configuração do Serviço de Comunicação do Azure.
 *   `AzureCommunicationServicesConnectionString`: a cadeia de conexão que foi provisionada na configuração do Serviço de Comunicação do Azure.
 
-O [Cliente de e-mail](https://learn.microsoft.com/dotnet/api/azure.communication.email.emailclient?WT.mc_id=DT-MVP-5005361&view=azure-dotnet) classe é usada para enviar emails usando o Serviço de Email do Serviço de Comunicação do Azure e é inicializada com a cadeia de conexão.
+O [Cliente de e-mail](https://learn.microsoft.com/dotnet/api/azure.communication.email.emailclient&view=azure-dotnet) classe é usada para enviar emails usando o Serviço de Email do Serviço de Comunicação do Azure e é inicializada com a cadeia de conexão.
 
 O trecho de código a seguir mostra a função de gatilho HTTP:
 
@@ -106,7 +106,7 @@ https://github.com/dsanchezcr/ContactFormWithAzure/blob/9f619eb2c8d41e45574557db
 
 Testei a solução enviando uma mensagem do formulário de contato. A imagem a seguir mostra o email que foi enviado ao proprietário do site e o email que foi enviado para o usuário que postou a mensagem.
 
-![](pathname:///img/BuiltContactForm/ContactFormResult.jpg)
+![](pathname:///img/blog/2023-04-23-BuildContactForm/ContactFormResult.jpg)
 
 Você pode tentar a solução [aqui](https://purple-sky-05cd51e0f.3.azurestaticapps.net/Index.html).
 

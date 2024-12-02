@@ -6,7 +6,7 @@ authors: [dsanchezcr]
 tags: [Azure DevOps, Azure Boards, Work Items]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/daysworkitemopen.jpg
+image: ../../../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/daysworkitemopen.jpg
 date: 2023-05-05T18:00
 ---
 # Quantos dias os itens de trabalho foram abertos nos Quadros do Azure
@@ -27,15 +27,15 @@ A primeira opção é usar os modos de exibição do Azure Boards Analytics para
 
 Para criar o modo de exibição do Google Analytics, vá para os modos de exibição do Google Analytics no portal do Azure DevOps e clique no botão Novo modo de exibição. Em seguida, selecione a opção Itens de Trabalho, adicione ou remova os campos necessários e certifique-se de adicionar a Data de Criação. Clique no botão Continuar.
 
-![](pathname:///img/DaysOpenADO/new-view.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/new-view.jpg)
 
 Na tela anterior, você também pode filtrar os itens de trabalho que não são necessários, por exemplo, onde o estado é Fechado.
 
-![](pathname:///img/DaysOpenADO/filter.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/filter.jpg)
 
 Na próxima tela, selecione o Histórico que você precisa obter, você também pode excluir os itens de trabalho que foram concluídos antes de uma determinada data.
 
-![](pathname:///img/DaysOpenADO/history.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/history.jpg)
 
 Em seguida, você pode selecionar os filtros que deseja aplicar à exibição, neste caso, já que este é um projeto de teste que selecionei todo o histórico e você pode ver a mensagem de aviso no topo sobre o amout de dados. Nesta seção, você também pode excluir os itens de trabalho que foram concluídos antes da data escolhida.
 
@@ -57,7 +57,7 @@ Como um filtro você pode selecionar o status que você só quer, no meu caso eu
 
 Depois que a nova coluna for criada, você só precisará adicioná-la ao relatório e verá os dias abertos para cada item de trabalho.
 
-![](pathname:///img/DaysOpenADO/powerbi.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/powerbi.jpg)
 
 ## Usando um campo personalizado
 
@@ -72,15 +72,15 @@ Para criar o campo personalizado, vá para a seção Processo no portal de DevOp
 
 Adicione o novo campo ao tipo de item de trabalho, nesse caso, adicionei o campo Dias Abertos como Inteiro à seção Classificação.
 
-![](pathname:///img/DaysOpenADO/user-story.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/user-story.jpg)
 
 > Lembre-se de atualizar o processo se você criou um processo herdado.
 
-> ![](pathname:///img/DaysOpenADO/change-process.jpg)
+> ![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/change-process.jpg)
 
 Depois que o processo é atualizado com o campo personalizado, criei uma nova consulta para obter os itens de trabalho (histórias de usuário neste caso) que não estão fechados ou resolvidos.
 
-![](pathname:///img/DaysOpenADO/query-user-stories.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/query-user-stories.jpg)
 
 ### Criar o aplicativo lógico
 
@@ -94,11 +94,11 @@ Em seguida, em um para cada loop, usei a ação 'Atualizar item de trabalho' par
     div(sub(ticks(utcNow()), ticks(variables('CreatedDate'))), 864000000000)
 ```
 
-![](pathname:///img/DaysOpenADO/logic-app.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/logic-app.jpg)
 
 Depois que o Aplicativo Lógico for executado, você poderá ver o campo Dias Abertos atualizado nos itens de trabalho.
 
-![](pathname:///img/DaysOpenADO/query-results.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/query-results.jpg)
 
 ## Conclusão
 

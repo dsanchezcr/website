@@ -21,9 +21,9 @@ const config = {
     [
       '@docusaurus/plugin-content-docs',
       {
-        id: 'disneyworld',
-        path: 'disneyworld',
-        routeBasePath: 'disneyworld'
+        id: 'disney',
+        path: 'disney',
+        routeBasePath: 'disney'
       },
     ]
   ],
@@ -37,9 +37,9 @@ const config = {
       '@docusaurus/preset-classic',
       { 
         docs: {
-          id: 'universalstudios',
-          path: 'universalstudios',
-          routeBasePath: 'universalstudios'
+          id: 'universal',
+          path: 'universal',
+          routeBasePath: 'universal'
         },      
         blog: {
           blogSidebarTitle: 'Recent posts',
@@ -50,7 +50,7 @@ const config = {
           feedOptions: {
             type: 'all',
             copyright: `Copyright © ${new Date().getFullYear()} David Sanchez.`            
-          },
+          }
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -86,7 +86,6 @@ const config = {
 
   themeConfig:
     ({
-      // github codeblock theme configuration
       codeblock: {
         showGithubLink: true,
         githubLinkLabel: 'View on GitHub',
@@ -94,24 +93,12 @@ const config = {
         runmeLinkLabel: 'Checkout via Runme'
       },
       algolia: {
-        // The application ID provided by Algolia
-        appId: 'LWWNAESQKU',
-  
-        // Public API key: it is safe to commit it
-        apiKey: 'a5655e2fc0273d04024cc3d290bf2664',
-  
-        indexName: 'dsanchezcr',
-  
-        // Optional: see doc section below
-        contextualSearch: true,
-  
-        // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
+        appId: 'LWWNAESQKU',  
+        apiKey: 'a5655e2fc0273d04024cc3d290bf2664',  
+        indexName: 'dsanchezcr',  
+        contextualSearch: true,  
         externalUrlRegex: 'external\\.com|dsanchezcr\\.com',
-  
-        // Optional: Algolia search parameters
         searchParameters: {},
-  
-        // Optional: path for search page that enabled by default (`false` to disable it)
         searchPagePath: 'search',
       },
       navbar: {
@@ -162,9 +149,9 @@ const config = {
           {
             href: 'https://linkedin.com/in/dsanchezcr',
             label: 'LinkedIn',
-          },
+          }
         ],                      
-        copyright: `Copyright © ${new Date().getFullYear()} David Sanchez. Built with Docusaurus. Running on Azure Static Web Apps. Deployed with GitHub Actions.`,
+        copyright: `Copyright © ${new Date().getFullYear()} David Sanchez. Built with Docusaurus. Running on Azure Static Web Apps. Deployed with GitHub Actions. <br />The views expressed on this site are my own and do not necessarily reflect the views of my employer.`,
       },
     }),
 };

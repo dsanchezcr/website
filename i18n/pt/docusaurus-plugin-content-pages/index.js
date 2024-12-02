@@ -10,7 +10,7 @@ const FeatureList = [
   {
     title: 'Sobre',
     link: '/about',
-    Svg: require('@site/static/img/about.svg').default,
+    Svg: require('@site/static/img/home/about.svg').default,
     description: (
       <>
         Saiba sobre mim, minha carreira e meus hobbies.
@@ -20,7 +20,7 @@ const FeatureList = [
   {
     title: 'Confira meus projetos',
     link: '/projects',
-    Svg: require('@site/static/img/projects.svg').default,
+    Svg: require('@site/static/img/home/projects.svg').default,
     description: (
       <>
         Todos de código aberto e disponíveis no GitHub.
@@ -30,7 +30,7 @@ const FeatureList = [
   {
     title: 'Visite meu blog',
     link: '/blog',
-    Svg: require('@site/static/img/blog.svg').default,
+    Svg: require('@site/static/img/home/blog.svg').default,
     description: (
       <>
         Adoro escrever e compartilhar sobre tecnologia.
@@ -76,10 +76,8 @@ function HomepageHeader() {
       <div className="container">
         <Svg className={styles.featureSvg} role="img" />
         <h1 className="hero__title">Oi, eu sou {siteConfig.title}.</h1>
-        <p className="hero__subtitle">Desenvolvedor e apaixonado por tecnologia.</p>
-        <p className="hero__subtitle">Global Black Belt Sales Specialist - Azure Developer Audience na Microsoft.</p>
+        <p className="hero__subtitle">Global Black Belt - Azure Developer Productivity na Microsoft.</p>
         <p className="hero__subtitle">Ajudar as pessoas a construir soluções inovadoras com tecnologia. 🚀</p>
-        <p className="hero__subtitle">As opiniões expressas neste site são minhas e não refletem necessariamente as opiniões do meu empregador.</p>
       </div>
     </header>
   );

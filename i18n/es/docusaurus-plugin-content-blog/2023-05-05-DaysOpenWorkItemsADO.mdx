@@ -6,7 +6,7 @@ authors: [dsanchezcr]
 tags: [Azure DevOps, Azure Boards, Work Items]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/daysworkitemopen.jpg
+image: ../../../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/daysworkitemopen.jpg
 date: 2023-05-05T18:00
 ---
 # Cuántos días han estado abiertos los elementos de trabajo en Azure Boards
@@ -27,15 +27,15 @@ La primera opción es usar las vistas de Análisis de Azure Boards para obtener 
 
 Para crear la vista de Analytics, vaya a las vistas de Analytics en el portal de Azure DevOps y haga clic en el botón Nueva vista. Luego, seleccione la opción Elementos de trabajo, agregue o elimine los campos que necesite y asegúrese de agregar la Fecha de creación. Haga clic en el botón Continuar.
 
-![](pathname:///img/DaysOpenADO/new-view.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/new-view.jpg)
 
 En la pantalla anterior también puede filtrar los elementos de trabajo que no necesita, por ejemplo, donde el estado es Cerrado.
 
-![](pathname:///img/DaysOpenADO/filter.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/filter.jpg)
 
 En la siguiente pantalla, seleccione el Historial que necesita obtener, también puede excluir los elementos de trabajo que se completaron antes de una fecha determinada.
 
-![](pathname:///img/DaysOpenADO/history.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/history.jpg)
 
 Luego puede seleccionar los filtros que desea aplicar a la vista, en este caso, ya que este es un proyecto de prueba, seleccioné todo el historial y puede ver el mensaje de advertencia en la parte superior sobre la cantidad de datos. En esta sección también puede excluir los elementos de trabajo que se completaron antes de la fecha que elija.
 
@@ -57,7 +57,7 @@ Como filtro puedes seleccionar el estado que solo quieras, en mi caso eliminé l
 
 Una vez creada la nueva columna, solo necesita agregarla al informe y verá los días abiertos para cada elemento de trabajo.
 
-![](pathname:///img/DaysOpenADO/powerbi.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/powerbi.jpg)
 
 ## Uso de un campo personalizado
 
@@ -72,15 +72,15 @@ Para crear el campo personalizado, vaya a la sección Proceso del portal de Azur
 
 Agregue el nuevo campo al tipo de elemento de trabajo, en este caso, agregué el campo Días abiertos como Entero a la sección Clasificación.
 
-![](pathname:///img/DaysOpenADO/user-story.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/user-story.jpg)
 
 > Recuerde actualizar el proceso si creó un proceso heredado.
 
-> ![](pathname:///img/DaysOpenADO/change-process.jpg)
+> ![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/change-process.jpg)
 
 Una vez que el proceso se actualiza con el campo personalizado, creé una nueva consulta para obtener los elementos de trabajo (historias de usuario en este caso) que no están cerrados o resueltos.
 
-![](pathname:///img/DaysOpenADO/query-user-stories.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/query-user-stories.jpg)
 
 ### Crear la aplicación lógica
 
@@ -94,11 +94,11 @@ Luego, en un para cada bucle, utilicé la acción 'Actualizar elemento de trabaj
     div(sub(ticks(utcNow()), ticks(variables('CreatedDate'))), 864000000000)
 ```
 
-![](pathname:///img/DaysOpenADO/logic-app.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/logic-app.jpg)
 
 Una vez ejecutada la aplicación lógica, puede ver el campo Días abiertos actualizado en los elementos de trabajo.
 
-![](pathname:///img/DaysOpenADO/query-results.jpg)
+![](pathname:///img/blog/2023-05-05-DaysOpenWorkItemsADO/query-results.jpg)
 
 ## Conclusión
 

@@ -6,7 +6,7 @@ authors: [dsanchezcr]
 tags: [Azure DevOps, Azure Boards, Work Items]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/daysworkitemopen.jpg
+image: ../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/daysworkitemopen.jpg
 date: 2023-05-05T18:00
 ---
 # How many days work items have been open in Azure Boards
@@ -27,15 +27,15 @@ The first option is to use the Azure Boards Analytics views to get the informati
 
 To create the Analytics view, go to the Analytics views in the Azure DevOps portal and click on the new view button. Then, select the Work Items option, add, or remove the fields that you need and make sure to add the Created Date. Click on the Continue button.
 
-![](../static/img/DaysOpenADO/new-view.jpg)
+![](../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/new-view.jpg)
 
 In the previous screen you can also filter the work items that you do not need, for example where the state is Closed.  
 
-![](../static/img/DaysOpenADO/filter.jpg)
+![](../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/filter.jpg)
 
 In the next screen, select the History that you need to get, you can also exclude the work items that were completed before a given date.
 
-![](../static/img/DaysOpenADO/history.jpg)
+![](../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/history.jpg)
 
 Then you can select the filters that you want to apply to the view, in this case, since this is a test project, I selected all history, and you can see the warning message on top about the amount of data. In this section you can also exclude the work items that were completed before the date that you choose.
 
@@ -57,7 +57,7 @@ DaysOpen = DATEDIFF(DaysOpen[Created Date],TODAY(),DAY)
 
 Once the new column is created, you just need to add it to the report, and you will see the days open for each work item.
 
-![](../static/img/DaysOpenADO/powerbi.jpg)
+![](../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/powerbi.jpg)
 
 ## Using a custom field
 
@@ -72,15 +72,15 @@ To create the custom field, go to the Process section in the Azure DevOps portal
 
 Add the new field to the work item type, in this case, I added the Days Open field as Integer to the Classification section.
 
-![](../static/img/DaysOpenADO/user-story.jpg)
+![](../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/user-story.jpg)
 
 > Remember to update the process if you created an inherited process.
 
-> ![](../static/img/DaysOpenADO/change-process.jpg)
+> ![](../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/change-process.jpg)
 
 Once the process is updated with the custom field, I created a new query to get the work items (user stories in this case) that are not closed or resolved.
 
-![](../static/img/DaysOpenADO/query-user-stories.jpg)
+![](../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/query-user-stories.jpg)
 
 ### Create the Logic App
 
@@ -94,11 +94,11 @@ Then, in a for each loop, I used the 'Update Work Item' action to set the custom
 div(sub(ticks(utcNow()), ticks(variables('CreatedDate'))), 864000000000)
 ```
 
-![](../static/img/DaysOpenADO/logic-app.jpg)
+![](../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/logic-app.jpg)
 
 Once the Logic App ran, you can see the Days Open field updated in the work items.
 
-![](../static/img/DaysOpenADO/query-results.jpg)
+![](../static/img/blog/2023-05-05-DaysOpenWorkItemsADO/query-results.jpg)
 
 ## Conclusion
 
