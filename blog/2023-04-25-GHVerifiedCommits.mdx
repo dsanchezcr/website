@@ -6,7 +6,7 @@ authors: [dsanchezcr]
 tags: [Github, Git]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/GHVerifiedCommits/VerifiedCommits.jpg
+image: pathname:///img/blog/2023-04-25-GHVerifiedCommits/VerifiedCommits.jpg
 date: 2023-04-25T18:00
 ---
 # Verified Commits in GitHub
@@ -15,7 +15,7 @@ A commit is a code change that is made to a repository. When a developer makes a
 <!--truncate-->
 GitHub verified commits use digital signatures to ensure the authenticity of code changes. When a developer makes a commit, they can sign the commit using their GPG (GNU Privacy Guard) key. This key is a unique identifier that is used to verify the authenticity of the code changes. Once the commit is signed, GitHub will display a green "verified" badge next to the commit. Like this:
 
-![](../static/img/GHVerifiedCommits/VerifiedCommits.jpg)
+![](../static/img/blog/2023-04-25-GHVerifiedCommits/VerifiedCommits.jpg)
 
 To use GitHub verified commits, developers must first generate a GPG key. This key is a type of encryption key that is used to sign and verify digital signatures. 
 
@@ -29,11 +29,11 @@ gpg --full-generate-key
 
 In my case I did it using Kleopatra, which is a certificate manager and GUI for GnuPG:
 
-![](../static/img/GHVerifiedCommits/Kleopatra.jpg)
+![](../static/img/blog/2023-04-25-GHVerifiedCommits/Kleopatra.jpg)
 
 Once you have the key, you can export it and upload it to GitHub. In settings, go to SSH and GPG keys and click on New GPG key:
 
-![](../static/img/GHVerifiedCommits/GHSettingsGPG.jpg)
+![](../static/img/blog/2023-04-25-GHVerifiedCommits/GHSettingsGPG.jpg)
 
 Then you need to configure your git client to use the key. In my case, this is how I did it:
 
@@ -42,7 +42,7 @@ git config --global user.signingkey <your key id>
 git config --global commit.gpgsign true
 ```
 
-![](../static/img/GHVerifiedCommits/GitConfig.jpg)
+![](../static/img/blog/2023-04-25-GHVerifiedCommits/GitConfig.jpg)
 
 Now you can make a commit and sign it using the following command or the [GitHub Desktop](https://desktop.github.com) client.
 

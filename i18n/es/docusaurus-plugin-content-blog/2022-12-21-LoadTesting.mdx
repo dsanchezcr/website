@@ -3,10 +3,10 @@ title: Agregar pruebas de carga a los flujos de trabajo de CI/CD
 description: Obtenga información sobre Azure Load Testing y cómo incluirlo en sus acciones de GitHub
 slug: adding-load-testing-to-your-workflows
 authors: [dsanchezcr]
-tags: [Azure, Load Testing, GitHub Actions]
+tags: [Azure Load Testing, GitHub Actions]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/LoadTesting/LoadTestingWebApp.jpg
+image: pathname:///img/blog/2022-12-21-LoadTesting/LoadTestingWebApp.jpg
 date: 2022-12-21T18:00
 ---
 
@@ -24,7 +24,7 @@ Además de una suscripción de Azure y una cuenta de GitHub, necesitaremos un [A
 
 [Aquí puedes encontrar el script que creé como parte de esta demo](https://raw.githubusercontent.com/dsanchezcr/LoadTestingDemo/main/LoadTestingScript.jmx)
 
-[![Here you can find the script I created as part of this demo](pathname:///img/LoadTesting/JMeterScript.jpg)](https://raw.githubusercontent.com/dsanchezcr/LoadTestingDemo/main/LoadTestingScript.jmx)
+[![Here you can find the script I created as part of this demo](pathname:///img/blog/2022-12-21-LoadTesting/JMeterScript.jpg)](https://raw.githubusercontent.com/dsanchezcr/LoadTestingDemo/main/LoadTestingScript.jmx)
 
 ## Empezando
 
@@ -36,13 +36,13 @@ Una vez definido el escenario de prueba de carga, podemos revisar los resultados
 
 Desarrollé un simple [Aplicación Web](https://loadtestingweb.azurewebsites.net) compilado con ASP.NET Core con .NET 7 que se conecta a Azure Cosmos DB y agrega un registro de cada visita a la página y recupera los datos de todas las visitas.
 
-[![Load Testing Sample Web App](pathname:///img/LoadTesting/LoadTestingWebApp.jpg)](https://loadtestingweb.azurewebsites.net)
+[![Load Testing Sample Web App](pathname:///img/blog/2022-12-21-LoadTesting/LoadTestingWebApp.jpg)](https://loadtestingweb.azurewebsites.net)
 
 ### El entorno
 
 Esta aplicación web se ejecuta en un Servicio de aplicaciones <strong>Básico</strong> y tiene Applications Insights para supervisar el rendimiento de la aplicación. Cosmos DB se establece con el comando <strong>Nivel gratuito </strong>(1000 RU/s y 25 GB). Quiero averiguar si la aplicación que se ejecuta en este entorno puede admitir hasta 100 usuarios simultáneos.
 (https://loadtestingweb.azurewebsites.net)
-![Azure Portal for Load Testing](pathname:///img/LoadTesting/AzurePortal.jpg)
+![Azure Portal for Load Testing](pathname:///img/blog/2022-12-21-LoadTesting/AzurePortal.jpg)
 
 ### El repositorio
 
@@ -52,7 +52,7 @@ Puedes consultar el **Repositorio de GitHub** [aquí](https://github.com/dsanche
 
 Este repositorio tiene un [Acción de GitHub](https://github.com/dsanchezcr/LoadTestingDemo/actions/runs/3745714572) que compilan e implementan la aplicación y ejecutan la prueba de carga en Azure Load Testing.
 
-[![GitHub Action Run for Load Testing](pathname:///img/LoadTesting/GitHubActionRun.jpg)](https://github.com/dsanchezcr/LoadTestingDemo/actions/runs/3745714572)
+[![GitHub Action Run for Load Testing](pathname:///img/blog/2022-12-21-LoadTesting/GitHubActionRun.jpg)](https://github.com/dsanchezcr/LoadTestingDemo/actions/runs/3745714572)
 
 ### La acción de GitHub
 
@@ -67,21 +67,21 @@ El inicio de sesión de Azure es necesario para comunicarse con el servicio Azur
 
 Como puedes ver en la imagen de arriba, la prueba de carga <strong>fracasado</strong> dado que el tiempo de respuesta promedio fue superior al umbral (5 segundos), podemos obtener más detalles sobre la ejecución de la prueba en el Portal de Azure. [Puedes descargar los resultados aquí](https://raw.githubusercontent.com/dsanchezcr/LoadTestingDemo/main/engine1_results.csv).
 
-![Test Results from Azure Load Testing](pathname:///img/LoadTesting/TestResult.jpg)
+![Test Results from Azure Load Testing](pathname:///img/blog/2022-12-21-LoadTesting/TestResult.jpg)
 
 En el Servicio de aplicaciones de Azure, podemos ver las métricas con los tiempos de respuesta (superiores a 5 segundos) y el número de solicitudes con los datos de entrada y salida.
-![Azure App Service Metrics](pathname:///img/LoadTesting/AppServiceMetrics.jpg)
+![Azure App Service Metrics](pathname:///img/blog/2022-12-21-LoadTesting/AppServiceMetrics.jpg)
 
 Además, agregué Application Insights para monitorear la aplicación web, en el Portal de Azure podemos ver los problemas y errores de rendimiento.
 
-![Application Insights](pathname:///img/LoadTesting/AppInsightsPerformance.jpg)
+![Application Insights](pathname:///img/blog/2022-12-21-LoadTesting/AppInsightsPerformance.jpg)
 
 En la imagen de arriba puede ver de dónde provienen las solicitudes, en este caso estoy ejecutando Azure Load Testing en la región Este de EE. UU. (Virginia).
 
-![App Insights Failures](pathname:///img/LoadTesting/AppInsightsFailures.jpg)
+![App Insights Failures](pathname:///img/blog/2022-12-21-LoadTesting/AppInsightsFailures.jpg)
 
 ## Conclusiones
 
 Las pruebas de carga <strong>no debe ser</strong> ejecutándose en un entorno de producción, pruébelo en un control de calidad o preproducción. Incluso si se ejecuta en ranuras de implementación, recuerde que la aplicación seguirá ejecutándose en el mismo plan del Servicio de aplicaciones, lo que podría afectar al entorno de producción o provocar un [Ataque de denegación de servicio](https://en.wikipedia.org/wiki/Denial-of-service_attack).
 
-Si desea obtener más información sobre Azure Load Testing, le recomiendo que revise el [Documentación de servicio](https://learn.microsoft.com/azure/load-testing?WT.mc_id=DT-MVP-5005361).
+Si desea obtener más información sobre Azure Load Testing, le recomiendo que revise el [Documentación de servicio](https://learn.microsoft.com/azure/load-testing).

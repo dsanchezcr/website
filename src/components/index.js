@@ -7,7 +7,7 @@ const FeatureList = [
   {
     title: 'About me',
     link: '/about',
-    Svg: require('@site/static/img/about.svg').default,
+    Svg: require('@site/static/img/home/about.svg').default,
     description: (
       <>
         Learn a bit about me, my career and my hobbies.
@@ -17,7 +17,7 @@ const FeatureList = [
   {
     title: 'Check out my projects',
     link: '/projects',
-    Svg: require('@site/static/img/projects.svg').default,
+    Svg: require('@site/static/img//home/projects.svg').default,
     description: (
       <>
         All of them are open source and available on GitHub.
@@ -27,7 +27,7 @@ const FeatureList = [
   {
     title: 'Visit my blog',
     link: '/blog',
-    Svg: require('@site/static/img/blog.svg').default,
+    Svg: require('@site/static/img/home/blog.svg').default,
     description: (
       <>
         I love to writing and sharing about technology.

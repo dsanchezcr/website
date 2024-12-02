@@ -6,7 +6,7 @@ authors: [dsanchezcr]
 tags: [Azure DevOps, GitHub, Migration]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/ADOGHRepoMigration/ADOtoGH.jpg
+image: pathname:///img/blog/2023-04-14-ADOGHRepoMigration/ADOtoGH.jpg
 date: 2023-04-14T12:00
 ---
 # Azure DevOps to GitHub – Repo Migration
@@ -16,14 +16,14 @@ Migrating a repository from one platform to another can be a challenging task, b
 
 We used the [Azure DevOps Demo Generator](https://azuredevopsdemogenerator.azurewebsites.net) to create a sample project with multiple repositories that contain multiple branches. We will start the migration with the [TailwindTraders-Backend](https://github.com/microsoft/tailwindTraders-backend) repository.
 
-![](../static/img/ADOGHRepoMigration/ADORepo.png)
+![](../static/img/blog/2023-04-14-ADOGHRepoMigration/ADORepo.png)
 
 ## 2. Create a new repository in GitHub.
 
 Go to your GitHub account or organization and click on the "New repository" button. Give your repository a name and description and choose the appropriate visibility settings. 
 In this case we are using the following naming structure: ```<ADOProjectName>.<ADORepoName>```.
 
-![](../static/img/ADOGHRepoMigration/GHRepo.png)
+![](../static/img/blog/2023-04-14-ADOGHRepoMigration/GHRepo.png)
 
 ## 3. Import the repository to GitHub.
 
@@ -31,28 +31,28 @@ Now that you have your new GitHub repository, it's time to import your repositor
 
 In the "Your old repository's clone URL" field, enter the URL you found in your Azure DevOps repository in Step 1. Click “Begin Import”
 
-![](../static/img/ADOGHRepoMigration/ADORepoURL.png)
+![](../static/img/blog/2023-04-14-ADOGHRepoMigration/ADORepoURL.png)
 
-![](../static/img/ADOGHRepoMigration/GHImportCode.png)
+![](../static/img/blog/2023-04-14-ADOGHRepoMigration/GHImportCode.png)
 
-![](../static/img/ADOGHRepoMigration/GHImportRepo.png)
+![](../static/img/blog/2023-04-14-ADOGHRepoMigration/GHImportRepo.png)
 
 ## 4. Authenticate to your Azure DevOps project.
 
 To authenticate to Azure DevOps, you can use a [personal access token](https://learn.microsoft.com/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?WT.mc_id=DT-MVP-5005361&view=azure-devops&tabs=Windows#create-a-pat) with read access to code. And enter your username and PAT in GitHub, then click “Submit”.
 
-![](../static/img/ADOGHRepoMigration/ADOPAT.png)
+![](../static/img/blog/2023-04-14-ADOGHRepoMigration/ADOPAT.png)
 
-![](../static/img/ADOGHRepoMigration/GHAuth.png)
+![](../static/img/blog/2023-04-14-ADOGHRepoMigration/GHAuth.png)
 
 Depending on the size of your repository, the import process can take some time. You'll receive an email notification once the import process is complete. 
 
-![](../static/img/ADOGHRepoMigration/GHMigration.png)
+![](../static/img/blog/2023-04-14-ADOGHRepoMigration/GHMigration.png)
 
 ## 5. Verify your repository in GitHub.
 
 Once the import process is complete, go to your new GitHub repository and verify that all your branches, tags, and commits have been imported correctly. You can also check that your repository's history has been preserved by looking at the commit history.
 
-![](../static/img/ADOGHRepoMigration/RepoMigrated.png)
+![](../static/img/blog/2023-04-14-ADOGHRepoMigration/RepoMigrated.png)
 
 Congratulations! You've successfully migrated your repository from Azure DevOps to GitHub using the import code option.

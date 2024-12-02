@@ -6,7 +6,7 @@ authors: [dsanchezcr]
 tags: [Azure Functions, GitHub Actions, Azure Communication Services, Azure Static Web Apps]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/BuiltContactForm/ContactForm.jpg
+image: pathname:///img/blog/2023-04-23-BuildContactForm/ContactForm.jpg
 date: 2023-04-23T18:00
 ---
 
@@ -20,13 +20,13 @@ Having a functional contact form on your website is essential. A contact form is
 
 ## Why Azure Functions?
 
-[Azure Functions](https://learn.microsoft.com/azure/azure-functions/functions-overview?WT.mc_id=DT-MVP-5005361) is a serverless computing service offered by Microsoft Azure. It allows developers to build, run, and scale applications without having to manage infrastructure. Azure Functions support multiple programming languages, including C#, Java, JavaScript, Python, and PowerShell.
+[Azure Functions](https://learn.microsoft.com/azure/azure-functions/functions-overview) is a serverless computing service offered by Microsoft Azure. It allows developers to build, run, and scale applications without having to manage infrastructure. Azure Functions support multiple programming languages, including C#, Java, JavaScript, Python, and PowerShell.
 
 In this case my website is running on a static web app, so I need to use a serverless solution to build the contact form. Azure Functions is a great option because it allows me to build a contact form without having to manage infrastructure or worry about the complexities of communication protocols.
 
 ## What is Azure Communication Service?
 
-[Azure Communication Service](https://learn.microsoft.com/azure/communication-services/overview?WT.mc_id=DT-MVP-5005361) is a communication platform offered by Microsoft Azure. It provides developers with the tools and services to integrate real-time communication features such as voice, video, chat, and SMS messaging into their applications. Azure Communication Service also offers an [Email Service](https://learn.microsoft.com/azure/communication-services/concepts/email/email-overview) that allows developers to send and receive emails programmatically.
+[Azure Communication Service](https://learn.microsoft.com/azure/communication-services/overview) is a communication platform offered by Microsoft Azure. It provides developers with the tools and services to integrate real-time communication features such as voice, video, chat, and SMS messaging into their applications. Azure Communication Service also offers an [Email Service](https://learn.microsoft.com/azure/communication-services/concepts/email/email-overview) that allows developers to send and receive emails programmatically.
 
 ## Building the Contact Form using Azure Functions and Azure Communication Service
 
@@ -36,26 +36,26 @@ To build a contact form using Azure Functions and Azure Communication Service's 
 
 The first step was to create the Azure resources. These are the resouces that I used in this sample application:
 
-- [Azure Communication Service](https://learn.microsoft.com/azure/communication-services/quickstarts/create-communication-resource?WT.mc_id=DT-MVP-5005361) - to manage the Email service.
-- [Azure Email Service (Part of Azure Communication Service)](https://learn.microsoft.com/azure/communication-services/quickstarts/email/create-email-communication-resource?WT.mc_id=DT-MVP-5005361) - to send emails.
-- [Azure Function](https://learn.microsoft.com/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp?WT.mc_id=DT-MVP-5005361) - to process the HTTP trigger sent by the HTML and send the emails using Azure Communication Service.
-- [Azure Static Web App](https://learn.microsoft.com/azure/static-web-apps/getting-started?WT.mc_id=DT-MVP-5005361) - to host the website (Index.html in this case).
+- [Azure Communication Service](https://learn.microsoft.com/azure/communication-services/quickstarts/create-communication-resource) - to manage the Email service.
+- [Azure Email Service (Part of Azure Communication Service)](https://learn.microsoft.com/azure/communication-services/quickstarts/email/create-email-communication-resource) - to send emails.
+- [Azure Function](https://learn.microsoft.com/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp) - to process the HTTP trigger sent by the HTML and send the emails using Azure Communication Service.
+- [Azure Static Web App](https://learn.microsoft.com/azure/static-web-apps/getting-started) - to host the website (Index.html in this case).
 
-![](../static/img/BuiltContactForm/AzureResourceVisualizer.jpg)
+![](../static/img/blog/2023-04-23-BuildContactForm/AzureResourceVisualizer.jpg)
 
 #### 2. Configure the Azure Communication Services - Email Service
 
 The next step was to configure the Azure Communication Services - Email Service. This includes setting up an email address to send emails. When you create this service you can choose if you want to use an Azure subdomain or if you want to setup your own domain.
 
-![](../static/img/BuiltContactForm/AzureEmailCommunicationService.jpg)
+![](../static/img/blog/2023-04-23-BuildContactForm/AzureEmailCommunicationService.jpg)
 
 In this case, I used the email address provisioned by an Azure subdomain. 
 
-![](../static/img/BuiltContactForm/DomainProvision.jpg)
+![](../static/img/blog/2023-04-23-BuildContactForm/DomainProvision.jpg)
 
 The email address was created and configured automatically:
 
-![](../static/img/BuiltContactForm/EmailCommunicationService.jpg)
+![](../static/img/blog/2023-04-23-BuildContactForm/EmailCommunicationService.jpg)
 
 
 #### 3. Develop the Azure Function
@@ -68,7 +68,7 @@ Also, the Function is using three environment variables that you need to create 
 - `senderEmailAddress`: the email address that was provisioned in the Azure Communication Service configuration.
 - `AzureCommunicationServicesConnectionString`: the connection string that was provisioned in the Azure Communication Service configuration.
 
-The [EmailClient](https://learn.microsoft.com/dotnet/api/azure.communication.email.emailclient?view=azure-dotnet&WT.mc_id=DT-MVP-5005361) class is used to send emails using the Azure Communication Service Email Service and it is initialized with the connection string.
+The [EmailClient](https://learn.microsoft.com/dotnet/api/azure.communication.email.emailclient?view=azure-dotnet) class is used to send emails using the Azure Communication Service Email Service and it is initialized with the connection string.
 
 The following code snippet shows the HTTP trigger function:
 
@@ -106,7 +106,7 @@ https://github.com/dsanchezcr/ContactFormWithAzure/blob/9f619eb2c8d41e45574557db
 
 I tested the solution by sending a message from the contact form. The following image shows the email that was sent to the website owner and the email that was sent to the user who posted the message.
 
-![](../static/img/BuiltContactForm/ContactFormResult.jpg)
+![](../static/img/blog/2023-04-23-BuildContactForm/ContactFormResult.jpg)
 
 You can try the solution [here](https://purple-sky-05cd51e0f.3.azurestaticapps.net/Index.html).
 

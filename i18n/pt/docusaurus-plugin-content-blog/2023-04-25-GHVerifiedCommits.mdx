@@ -6,7 +6,7 @@ authors: [dsanchezcr]
 tags: [Github, Git]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/main/static/img/GHVerifiedCommits/VerifiedCommits.jpg
+image: pathname:///img/blog/2023-04-25-GHVerifiedCommits/VerifiedCommits.jpg
 date: 2023-04-25T18:00
 ---
 # Commits verificados no GitHub
@@ -15,7 +15,7 @@ Um commit é uma alteração de código feita em um repositório. Quando um dese
 <!--truncate-->
 Os commits verificados do GitHub usam assinaturas digitais para garantir a autenticidade das alterações de código. Quando um desenvolvedor faz um commit, ele pode assinar ao commit usando sua chave GPG (GNU Privacy Guard). Essa chave é um identificador exclusivo que é usado para verificar a autenticidade das alterações de código. Depois que o commit for assinado, o GitHub exibirá um selo verde "verificado" ao lado do commit. Assim:
 
-![](pathname:///img/GHVerifiedCommits/VerifiedCommits.jpg)
+![](pathname:///img/blog/2023-04-25-GHVerifiedCommits/VerifiedCommits.jpg)
 
 Para usar aos commits verificados do GitHub, os desenvolvedores devem primeiro gerar uma chave GPG. Essa chave é um tipo de chave de criptografia usada para assinar e verificar assinaturas digitais.
 
@@ -29,11 +29,11 @@ gpg --full-generate-key
 
 No meu caso eu fiz isso usando Kleopatra, que é um gerenciador de certificados e GUI para GnuPG:
 
-![](pathname:///img/GHVerifiedCommits/Kleopatra.jpg)
+![](pathname:///img/blog/2023-04-25-GHVerifiedCommits/Kleopatra.jpg)
 
 Depois de ter a chave, você pode exportá-la e enviá-la para o GitHub. Nas configurações, vá para as teclas SSH e GPG e clique em Nova chave GPG:
 
-![](pathname:///img/GHVerifiedCommits/GHSettingsGPG.jpg)
+![](pathname:///img/blog/2023-04-25-GHVerifiedCommits/GHSettingsGPG.jpg)
 
 Em seguida, você precisa configurar seu cliente git para usar a chave. No meu caso, foi assim que eu fiz:
 
@@ -42,7 +42,7 @@ git config --global user.signingkey <your key id>
 git config --global commit.gpgsign true
 ```
 
-![](pathname:///img/GHVerifiedCommits/GitConfig.jpg)
+![](pathname:///img/blog/2023-04-25-GHVerifiedCommits/GitConfig.jpg)
 
 Agora você pode fazer um commit e assiná-la usando o seguinte comando ou o [Área de trabalho do GitHub](https://desktop.github.com) cliente.
 
