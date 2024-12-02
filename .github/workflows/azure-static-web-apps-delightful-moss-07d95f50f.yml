@@ -6,13 +6,13 @@ on:
       - main
     paths-ignore:
       - '.github/**'
-      - '.api/**'
+      - 'api/**'
   pull_request:
     branches:
       - main
     paths-ignore:
       - '.github/**'
-      - '.api/**'
+      - 'api/**'
   workflow_dispatch:
 
 permissions:
