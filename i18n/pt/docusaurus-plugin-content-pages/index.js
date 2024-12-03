@@ -8,12 +8,12 @@ import styles from './index.module.css';
 
 const FeatureList = [
   {
-    title: 'Sobre',
-    link: '/about',
-    Svg: require('@site/static/img/home/about.svg').default,
+    title: 'Visite meu blog',
+    link: '/blog',
+    Svg: require('@site/static/img/home/blog.svg').default,
     description: (
       <>
-        Saiba sobre mim, minha carreira e meus hobbies.
+        Adoro escrever e compartilhar sobre tecnologia.
       </>
     ),
   },
@@ -27,13 +27,13 @@ const FeatureList = [
       </>
     ),
   },
-  {
-    title: 'Visite meu blog',
-    link: '/blog',
-    Svg: require('@site/static/img/home/blog.svg').default,
+  {  
+    title: 'Sobre',
+    link: '/about',
+    Svg: require('@site/static/img/home/about.svg').default,
     description: (
       <>
-        Adoro escrever e compartilhar sobre tecnologia.
+        Saiba sobre mim, minha carreira e meus hobbies.
       </>
     ),
   },
