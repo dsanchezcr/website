@@ -10,7 +10,7 @@ const FeatureList = [
     Svg: require('@site/static/img/home/blog.svg').default,
     description: (
       <>
-        I love to writing and sharing about technology.
+        I love writing and sharing about technology.
       </>
     ),
   },
