@@ -151,7 +151,7 @@ const config = {
             label: 'LinkedIn',
           }
         ],                      
-        copyright: `Copyright © <script>document.write(new Date().getFullYear());</script> David Sanchez. Built with <a href='https://docusaurus.io' target='_blank'>Docusaurus</a>. Running on <a href='https://learn.microsoft.com/azure/static-web-apps/overview' target='_blank'>Azure Static Web Apps</a>. Deployed with <a href='https://github.com/dsanchezcr/website/actions/workflows/azure-static-web-apps-delightful-moss-07d95f50f.yml' target='_blank'>GitHub Actions</a>. <br />The views expressed on this site are my own and do not necessarily reflect the views of my employer.`,
+        copyright: `Copyright © ${new Date().getFullYear()} David Sanchez. Built with <a href='https://docusaurus.io' target='_blank'>Docusaurus</a>. Running on <a href='https://learn.microsoft.com/azure/static-web-apps/overview' target='_blank'>Azure Static Web Apps</a>. Deployed with <a href='https://github.com/dsanchezcr/website/actions/workflows/azure-static-web-apps-delightful-moss-07d95f50f.yml' target='_blank'>GitHub Actions</a>. <br />The views expressed on this site are my own and do not necessarily reflect the views of my employer.`,
       },
     }),
 };
