@@ -1,0 +1,9 @@
+{
+  "name": "Docusaurus Dev Container",
+  "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:0-14",
+  "extensions": [
+    "docusaurus.docusaurus",
+    "esbenp.prettier-vscode"
+  ],
+  "postCreateCommand": "npm install"
+}
