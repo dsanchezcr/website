@@ -1,0 +1,6 @@
+{
+    "copyright": {
+      "message": "Direitos autorais © <script>document.write(new Date().getFullYear());</script> David Sanchez. Construído com <a href='https://docusaurus.io' target='_blank'>Docusaurus</a>. Executando no <a href='https://learn.microsoft.com/azure/static-web-apps/overview' target='_blank'>Azure Static Web Apps</a>. Implantado com <a href='https://github.com/dsanchezcr/website/actions/workflows/azure-static-web-apps-delightful-moss-07d95f50f.yml' target='_blank'>GitHub Actions</a>. <br />As opiniões expressas neste site são minhas e não refletem necessariamente as opiniões do meu empregador.",
+      "description": "The footer copyright notice"
+    }
+  }

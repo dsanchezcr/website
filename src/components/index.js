@@ -5,12 +5,12 @@ import Link from '@docusaurus/Link';
 
 const FeatureList = [
   {
-    title: 'About me',
-    link: '/about',
-    Svg: require('@site/static/img/home/about.svg').default,
+    title: 'Visit my blog',
+    link: '/blog',
+    Svg: require('@site/static/img/home/blog.svg').default,
     description: (
       <>
-        Learn a bit about me, my career and my hobbies.
+        I love writing and sharing about technology.
       </>
     ),
   },
@@ -25,15 +25,15 @@ const FeatureList = [
     ),
   },
   {
-    title: 'Visit my blog',
-    link: '/blog',
-    Svg: require('@site/static/img/home/blog.svg').default,
+    title: 'About me',
+    link: '/about',
+    Svg: require('@site/static/img/home/about.svg').default,
     description: (
       <>
-        I love to writing and sharing about technology.
+        Learn a bit about me, my career and my hobbies.
       </>
     ),
-  },
+  }, 
 ];
 
 function Feature({Svg, title, link, description}) {
