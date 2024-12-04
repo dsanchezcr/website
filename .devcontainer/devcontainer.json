@@ -1,0 +1,24 @@
+{
+  "name": "David Sanchez Website Dev Container Definition",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-18",
+  "remoteUser": "codespace",
+  "features": {
+      "ghcr.io/devcontainers/features/azure-cli:1": {},
+      "ghcr.io/devcontainers/features/powershell:1": {},
+      "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+      "vscode": {
+          "extensions": [
+              "GitHub.copilot",
+              "Github.copilot-chat",
+              "GitHub.vscode-pull-request-github",
+              "streetsidesoftware.code-spell-checker",
+              "streetsidesoftware.code-spell-checker-spanish",
+              "streetsidesoftware.code-spell-checker-portuguese-brazilian"
+          ]
+      }
+  },
+  "forwardPorts": [3000],
+  "postCreateCommand": "npm install"
+}
