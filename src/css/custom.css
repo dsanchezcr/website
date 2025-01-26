@@ -9,7 +9,9 @@
   --ifm-color-primary-lighter: #3b72b5;
   --ifm-color-primary-lightest: #4488d4;
   
-  /* ...existing code... */
+  --content-background: #ffffff;
+  --text-color: #000000;
+  --border-color: #cccccc;
 }
 
 /* Dark theme overrides - softer colors */
@@ -76,6 +78,7 @@ label {
   font-size: 1rem;
   font-weight: 600;
   color: var(--text-color);
+  margin-bottom: 0.5rem;
 }
 
 input,
@@ -87,6 +90,8 @@ textarea {
   background-color: var(--content-background);
   color: var(--text-color);
   transition: border-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 input:focus,
@@ -94,6 +99,21 @@ textarea:focus {
   border-color: var(--ifm-color-primary);
   outline: none;
   box-shadow: 0 0 0 2px rgba(var(--ifm-color-primary-rgb), 0.2);
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  background-color: var(--ifm-color-primary);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: var(--ifm-color-primary-dark);
 }
 
 /* Loading spinner */
