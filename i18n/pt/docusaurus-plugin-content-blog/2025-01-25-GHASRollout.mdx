@@ -1,0 +1,70 @@
+---
+title: Aproveitando a GitHub Advanced Security e Microsoft Defender for Cloud em Escala
+description: Dicas e truques para distribuir o GitHub Advanced Security (GHAS) e integrá-lo ao Microsoft Defender for Cloud.
+slug: ghas-rollout
+authors: [dsanchezcr]
+tags: [GitHub Advanced Security, Microsoft Defender for Cloud, DevSecOps]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2025-01-25-GHASRollout/DevSecOps.jpg
+date: 2025-01-25T18:00
+---
+
+# Aproveitando a GitHub Advanced Security e Microsoft Defender for Cloud
+
+## Introdução
+
+Lançamento [GitHub Advanced Security (GHAS)](https://github.com/enterprise/advanced-security) entre as equipes de desenvolvimento pode ser uma tarefa complexa. Esta postagem do blog fornece dicas e truques para ajudá-lo a implementar o GHAS com sucesso e integrá-lo ao [Microsoft Defender para Nuvem](https://azure.microsoft.com/products/defender-for-cloud), garantindo que suas equipes não fiquem sobrecarregadas e possam maximizar os recursos de Varredura de Código, Varredura Secreta, Varredura da Cadeia de Suprimentos e Infraestrutura como Varredura de Código.
+
+<!--truncate-->
+
+![DevSecOps](pathname:///img/blog/2025-01-25-GHASRollout/DevSecOps.jpg)
+
+## Práticas recomendadas para implantação de GHAS
+
+### 1. Comece com um projeto piloto
+
+Comece implementando o GHAS em um projeto piloto pequeno e gerenciável. Isso permite que você identifique possíveis problemas e colete feedback da equipe antes de expandir para projetos maiores. Certifique-se de que o projeto piloto inclua uma amostra representativa de sua base de código e práticas de desenvolvimento.
+
+### 2. Comunique os benefícios
+
+Comunique claramente os benefícios do GHAS às suas equipes de desenvolvimento. Enfatize como isso pode ajudá-los não apenas a identificar, mas corrigir vulnerabilidades de segurança, reduzir o risco de violações de dados e melhorar a segurança geral e a qualidade de seu código. Forneça exemplos de [como o GHAS ajudou outras equipes dentro de sua organização ou setor](https://github.com/customer-stories/all).
+
+### 3. Forneça treinamento e suporte
+
+Ofereça sessões de treinamento e recursos para ajudar suas equipes a se familiarizarem com o GHAS. Isso pode incluir workshops, webinars, documentação e suporte individual. Certifique-se de que suas equipes saibam como usar os vários recursos do GHAS, como Varredura de Código, Varredura Secreta e Dependabot. Certifique-se de fornecer orientação para as diferentes funções envolvidas no processo de segurança, como desenvolvedores, equipes de segurança e equipes de operações.
+
+### 4. Integre com fluxos de trabalho existentes
+
+Integre o GHAS em seus fluxos de trabalho e ferramentas de desenvolvimento existentes. Isso pode ajudar a minimizar a interrupção e garantir que suas equipes possam continuar trabalhando com eficiência. Por exemplo, você pode configurar o GHAS para executar a Varredura de código como parte do pipeline de CI/CD e usar o Dependabot para atualizar automaticamente as dependências.
+
+### 5. Monitore e meça o sucesso
+
+Acompanhe a adoção e a eficácia do GHAS em toda a sua organização. Ao distribuir o GHAS para vários repositórios, use [O painel de segurança da organização](https://docs.github.com/enterprise-cloud@latest/code-security/security-overview/viewing-security-insights#viewing-the-security-overview-dashboard-for-your-organization) para monitorar a postura geral de segurança de seus repositórios. Use os insights como o número de vulnerabilidades identificadas e corrigidas, o tempo necessário para resolver problemas, segredos bloqueados ou ignorados, etc.
+Compartilhe essas métricas com suas equipes para demonstrar o valor do GHAS e incentivar a adoção contínua. Aumentando a cobertura e minimizando o risco em sua base de código.
+
+### 6. Corrigindo alertas de segurança em escala
+
+Quando você tem um grande número de repositórios, pode ser um desafio acompanhar todos os alertas de segurança gerados e também pode ser um processo sobrecarregado para as equipes de desenvolvimento, especialmente se elas trabalham em vários repositórios com os mesmos alertas. Para ajudá-lo a gerenciar isso, você pode usar o [Campanhas de segurança](https://docs.github.com/enterprise-cloud@latest/code-security/securing-your-organization/fixing-security-alerts-at-scale/best-practice-fix-alerts-at-scale#selecting-security-alerts-for-remediation) para automatizar o processo de triagem e correção de alertas de segurança.
+
+![Security Campaign](pathname:///img/blog/2025-01-25-GHASRollout/sec-campaign.jpg)
+
+## Estendendo o GHAS com o Microsoft Defender para Segurança de DevOps na Nuvem
+
+### 1. Habilitar o Defender para Nuvem
+
+Habilite o Microsoft Defender para Nuvem em sua Assinatura do Azure para estender os recursos de Segurança de DevOps do GHAS ou GHAzDO (GitHub Advanced Security for Azure DevOps). O Defender para Nuvem fornece proteção avançada contra ameaças para seus recursos de nuvem (não apenas para o Azure, mas também para AWS ou GCP, caso você tenha um ambiente de várias nuvens), ajudando você a identificar e mitigar mais riscos de segurança potenciais.
+
+### 2. Integrar o GHAS ao Defender para Segurança de DevOps na Nuvem
+
+O componente DevOps Security do Defender para Nuvem permite que você crie conexões com GitHub, Azure DevOps ou GitLab para importar automaticamente seus alertas de segurança. Essa integração pode ajudá-lo a obter uma visão abrangente de sua postura de segurança e simplificar suas operações de segurança em várias plataformas. Isso pode ajudá-lo a obter um painel centralizado de seus alertas de segurança e gerenciá-los com mais eficiência. Este painel também inclui alertas de infraestrutura como código para proteger seus recursos de nuvem.
+
+![DevOps Security in Defender for Cloud](pathname:///img/blog/2025-01-25-GHASRollout/devops-security-overview.jpg)
+
+### 3. Automatize os processos de correção de segurança
+
+Com o Defender para Nuvem, você pode criar fluxos de trabalho de automação para ajudá-lo a corrigir alertas de segurança mais rapidamente. Você pode usar os guias estratégicos internos ou criar seus próprios usando os Aplicativos Lógicos do Azure ou o Azure Functions. Ao automatizar os processos de correção de segurança, você pode reduzir a carga sobre suas equipes de desenvolvimento e garantir que os problemas de segurança sejam resolvidos em tempo hábil.
+
+## Conclusão
+
+Implantar o GitHub Advanced Security e integrá-lo ao Microsoft Defender para Nuvem pode ajudá-lo a criar uma solução de segurança robusta para suas equipes de desenvolvimento. Seguindo essas dicas e práticas recomendadas, você pode garantir uma distribuição tranquila e maximizar os benefícios do GHAS e do Defender para Nuvem.
