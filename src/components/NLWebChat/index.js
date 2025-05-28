@@ -32,27 +32,44 @@ export default function NLWebChat() {
     setIsLoading(true);
 
     try {
-      // TODO: Replace with actual NLWeb API call
-      // For now, simulate a response
+      // Try to call the NLWeb API backend
+      const apiUrl = process.env.NODE_ENV === 'development' 
+        ? 'http://localhost:8080/api/chat'
+        : '/api/chat';
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: userMessage.text }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const botMessage = {
+          id: Date.now() + 1,
+          text: data.response,
+          sender: 'bot',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, botMessage]);
+      } else {
+        throw new Error(`API response: ${response.status}`);
+      }
+    } catch (error) {
+      console.warn('NLWeb API not available, using fallback response:', error);
+      
+      // Fallback to simulated response if API is not available
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const botMessage = {
+      const fallbackMessage = {
         id: Date.now() + 1,
-        text: `I received your message: "${userMessage.text}". The NLWeb backend integration is in progress. Once connected to Azure OpenAI, I'll be able to provide intelligent responses about David's website content.`,
+        text: `Thanks for your question about "${userMessage.text}". The NLWeb backend is currently being set up with Azure OpenAI integration. Meanwhile, you can explore David's blog for insights on Azure technologies, developer productivity, and his latest projects. Check out the blog, projects, and about sections to learn more!`,
         sender: 'bot',
         timestamp: new Date()
       };
-
-      setMessages(prev => [...prev, botMessage]);
-    } catch (error) {
-      console.error('Error sending message:', error);
-      const errorMessage = {
-        id: Date.now() + 1,
-        text: 'Sorry, I encountered an error. Please try again.',
-        sender: 'bot',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev => [...prev, fallbackMessage]);
     } finally {
       setIsLoading(false);
     }
