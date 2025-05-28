@@ -4,6 +4,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import Svg from '@site/static/img/logo.svg';
+import NLWebChat from '@site/src/components/NLWebChat';
 import styles from './index.module.css';
 
 const FeatureList = [
@@ -90,7 +91,8 @@ export default function Home() {
       description="David Sanchez sitio web personal"> 
       <HomepageHeader />   
         <main>        
-      <HomepageFeatures /> 
+      <HomepageFeatures />
+      <NLWebChat />
       </main>   
     </Layout>    
   );
