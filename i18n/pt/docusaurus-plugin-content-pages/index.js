@@ -4,6 +4,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import Svg from '@site/static/img/logo.svg';
+import WeatherWidget from '@site/src/components/WeatherWidget';
 import styles from './index.module.css';
 
 const FeatureList = [
@@ -90,7 +91,10 @@ export default function Home() {
       description="David Sanchez website pessoal"> 
       <HomepageHeader />   
         <main>        
-      <HomepageFeatures /> 
+      <HomepageFeatures />
+      <div className="container">
+        <WeatherWidget />
+      </div>
       </main>   
     </Layout>    
   );
