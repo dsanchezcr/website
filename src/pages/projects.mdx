@@ -1,10 +1,33 @@
 ---
 hide_table_of_contents: true
 ---
-
 import ExchangeRates from './exchangerates';
 
 # Projects
+
+## New GitHub Action: Issue Importer
+In a world where AI coding agents and prompt engineering are becoming the new normal, issues remain the cornerstone of productive software development.
+
+That’s why I’m excited to share something I built for the community:
+
+🎯 A GitHub Action that lets you bulk import issues from a CSV or JSON file directly into your repository, perfect for assigning structured tasks to GitHub Copilot.
+
+Whether you're managing a sprint, migrating from another system, or setting up a new repo with Copilot Agent Mode, this tool bridges the gap between planning and automated execution.
+
+✨ What makes this even more special?
+I created this GitHub Action from scratch using the single structured prompt below, defining the tech stack, structure, and automation I wanted, and let GitHub Copilot help bring it to life.
+This experience reminded me how accessible and empowering today's tools have become for developers of all levels.
+
+```text
+create a complete repository for a reusable github action that imports issues from a csv or json file into a repository. the action should support both formats and accept three inputs: file path, file format (csv or json), and github token. use node.js for the core logic and make the action publishable to the github marketplace. include an action.yml file with properly documented inputs, outputs, and usage metadata. also include a readme.md that explains the usage, configuration, and example workflow. the base project must include a .github folder with a ci-cd workflow file using actions/checkout and actions/setup-node, install dependencies, run tests, and optionally publish the action to the marketplace or tag the release. add a codeql analysis workflow with javascript configuration. add a basic issue template under .github/ISSUE_TEMPLATE including title, description, and reproduction steps. include a dependabot.yml file to keep the node dependencies up to date weekly. include a minimal package.json and ensure the index.js file contains working logic to read the file, parse the content based on format, and create issues via the github rest api. add basic unit tests in a tests folder. ensure the repository is ready to be pushed and used as an open-source github action with all best practices. do not scaffold a sample repository using hello world, start from scratch using the issue importer concept.
+```
+
+🔗 [The Action is now live](https://github.com/dsanchezcr/issue-importer-action)
+
+👉🏻 [Here is a demo on how to use it](https://github.com/dsanchezcr/issue-importer-action-demo)
+
+If this helps you or your team move faster with automation, I’d love to hear how you use it. 
+Let’s keep building — smarter, faster, and together. 🚀
 
 ## Colones Exchange Rate - NuGet & npm Packages (GitHub Actions, GitHub Packages, NuGet.org & npmjs.com)
 
