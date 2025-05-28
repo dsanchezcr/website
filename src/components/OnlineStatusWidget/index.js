@@ -11,27 +11,43 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
 
   const fetchActiveUsers = async () => {
     try {
-      const response = await fetch('https://dsanchezcr.azurewebsites.net/api/GetOnlineUsersFunction');
+      const response = await fetch('https://dsanchezcr.azurewebsites.net/api/GetOnlineUsersFunction', {
+        method: 'GET',
+        cache: 'no-cache',
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
+      
       if (response.ok) {
         const data = await response.json();
-        setActiveUsers(data.activeUsers);
+        setActiveUsers(data.activeUsers || 0);
         setLastUpdated(new Date());
+        setIsLoading(false);
+      } else {
+        console.warn('Failed to fetch active users, status:', response.status);
         setIsLoading(false);
       }
     } catch (error) {
       console.error('Error fetching active users:', error);
       setIsLoading(false);
+      // Fail silently and keep previous value if any
     }
   };
 
   useEffect(() => {
-    // Initial fetch
-    fetchActiveUsers();
+    // Add a small delay before the first fetch to prevent immediate API calls
+    const initialDelay = setTimeout(() => {
+      fetchActiveUsers();
+    }, 1000);
     
     // Set up interval for updates every 30 seconds
     const interval = setInterval(fetchActiveUsers, 30000);
     
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(initialDelay);
+      clearInterval(interval);
+    };
   }, []);
 
   const statusText = translate({

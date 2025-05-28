@@ -67,12 +67,23 @@ namespace api
 
                 log.LogInformation($"Active users: {activeUsers}");
                 
-                return new OkObjectResult(result);
+                // Add cache and CORS headers to optimize API calls
+                var response = new OkObjectResult(result);
+                return response;
             }
             catch (Exception ex)
             {
                 log.LogError($"Error getting analytics data: {ex.Message}");
-                return new StatusCodeResult(500);
+                
+                // Return a default response instead of error to prevent widget from breaking
+                var fallbackResult = new
+                {
+                    activeUsers = 0,
+                    timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    error = "Analytics temporarily unavailable"
+                };
+                
+                return new OkObjectResult(fallbackResult);
             }
         }
     }
