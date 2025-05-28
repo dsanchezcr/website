@@ -28,6 +28,10 @@ const config = {
     ]
   ],
 
+  clientModules: [
+    require.resolve('./src/client/onlineStatusWidget.js'),
+  ],
+
   themes: [
     'docusaurus-theme-github-codeblock'
   ],

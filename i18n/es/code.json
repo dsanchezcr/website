@@ -286,5 +286,13 @@
   "theme.tags.tagsPageTitle": {
     "message": "Etiquetas",
     "description": "The title of the tag list page"
+  },
+  "onlineStatus.usersOnline": {
+    "message": "{count} en línea",
+    "description": "Number of users currently online"
+  },
+  "onlineStatus.loading": {
+    "message": "Cargando...",
+    "description": "Loading text for online status widget"
   }
 }
