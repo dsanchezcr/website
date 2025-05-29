@@ -88,7 +88,17 @@
 }
 
 /* Mobile responsive */
+@media (max-width: 996px) {
+  .compact-weather {
+    display: none; /* Hide on mobile to avoid navbar overcrowding */
+  }
+}
+
 @media (max-width: 768px) {
+  .compact-weather {
+    display: none; /* Hide on mobile to avoid navbar overcrowding */
+  }
+  
   .compact-weather-location {
     display: none;
   }
