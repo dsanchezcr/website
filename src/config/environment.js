@@ -4,6 +4,7 @@ export const config = {
   api: {
     production: 'https://dsanchezcr.azurewebsites.net',
     qa: 'https://dsanchezcr-qa.azurewebsites.net',
+    local: 'http://localhost:7071',
   },
   
   // Production domains
@@ -18,6 +19,9 @@ export const config = {
     if (typeof window !== 'undefined') {
       // Hostname-based detection only (avoid process.env in browser)
       const hostname = window.location.hostname;
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return config.api.local;
+      }
       const isProduction = config.productionDomains.includes(hostname);
       return isProduction ? config.api.production : config.api.qa;
     }

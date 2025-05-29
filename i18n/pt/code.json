@@ -283,5 +283,17 @@
   "theme.tags.tagsPageTitle": {
     "message": "Marcadores",
     "description": "The title of the tag list page"
+  },
+  "onlineStatus.usersOnline": {
+    "message": "{count} online",
+    "description": "Number of users currently online"
+  },
+  "onlineStatus.usersLastHour": {
+    "message": "{count} usuários na última hora",
+    "description": "Número de usuários que visitaram na última hora"
+  },
+  "onlineStatus.loading": {
+    "message": "Carregando...",
+    "description": "Loading text for online status widget"
   }
 }
