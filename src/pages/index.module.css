@@ -55,7 +55,7 @@
       position: static;
       margin: 10px auto;
       width: fit-content;
-
+    }
 
     .weatherWidgetContainer {
       position: static;
@@ -89,7 +89,7 @@
     width: 270px;
   }
 
-    .featureSvgHomeFeatures {
+  .featureSvgHomeFeatures {
     height: 170px;
     width: 170px;
     margin: 0 auto 1rem auto;
