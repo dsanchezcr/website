@@ -13,8 +13,54 @@ public class SendEmail
     private readonly ILogger<SendEmail> _logger;
     private static readonly EmailClient _emailClient = new(Environment.GetEnvironmentVariable("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING"));
 
-    // Input model for request validation
-    private record ContactRequest(string Name, string Email, string Message);
+    // Localization dictionaries
+    private static readonly Dictionary<string, Dictionary<string, string>> Localizations = new()
+    {
+        ["en"] = new()
+        {
+            ["notificationSubject"] = "New website message from {0}",
+            ["notificationTitle"] = "New Contact Form Submission",
+            ["confirmationSubject"] = "Thank you for contacting David Sanchez",
+            ["confirmationGreeting"] = "Hello {0},",
+            ["confirmationMessage"] = "Thank you very much for your message. I will try to get back to you as soon as possible.",
+            ["confirmationSignature"] = "Best regards,<br/>David Sanchez",
+            ["successMessage"] = "Emails sent successfully.",
+            ["partialErrorMessage"] = "Some emails could not be sent. Please try again.",
+            ["fieldLabels"] = "Name:|Email:|Message:"
+        },
+        ["es"] = new()
+        {
+            ["notificationSubject"] = "Nuevo mensaje del sitio web de {0}",
+            ["notificationTitle"] = "Nueva Consulta del Formulario de Contacto",
+            ["confirmationSubject"] = "Gracias por contactar a David Sanchez",
+            ["confirmationGreeting"] = "Hola {0},",
+            ["confirmationMessage"] = "Muchas gracias por tu mensaje. Trataré de responderte lo antes posible.",
+            ["confirmationSignature"] = "Saludos cordiales,<br/>David Sanchez",
+            ["successMessage"] = "Correos enviados exitosamente.",
+            ["partialErrorMessage"] = "Algunos correos no pudieron ser enviados. Por favor intenta de nuevo.",
+            ["fieldLabels"] = "Nombre:|Correo:|Mensaje:"
+        },
+        ["pt"] = new()
+        {
+            ["notificationSubject"] = "Nova mensagem do site de {0}",
+            ["notificationTitle"] = "Nova Submissão do Formulário de Contato",
+            ["confirmationSubject"] = "Obrigado por entrar em contato com David Sanchez",
+            ["confirmationGreeting"] = "Olá {0},",
+            ["confirmationMessage"] = "Muito obrigado pela sua mensagem. Tentarei responder o mais breve possível.",
+            ["confirmationSignature"] = "Atenciosamente,<br/>David Sanchez",
+            ["successMessage"] = "E-mails enviados com sucesso.",
+            ["partialErrorMessage"] = "Alguns e-mails não puderam ser enviados. Por favor, tente novamente.",
+            ["fieldLabels"] = "Nome:|E-mail:|Mensagem:"
+        }
+    };
+
+    private static string GetLocalizedText(string language, string key, params object[] args)
+    {
+        var lang = Localizations.ContainsKey(language) ? language : "en";
+        var text = Localizations[lang].GetValueOrDefault(key, Localizations["en"][key]);
+        return args.Length > 0 ? string.Format(text, args) : text;
+    }// Input model for request validation
+    private record ContactRequest(string Name, string Email, string Message, string Language = "en");
 
     public SendEmail(ILogger<SendEmail> logger)
     {
@@ -54,17 +100,17 @@ public class SendEmail
             };
 
             var results = await Task.WhenAll(tasks);
-            
-            if (results.All(r => r.HasCompleted))
+              if (results.All(r => r.HasCompleted))
             {
                 _logger.LogInformation("Both emails sent successfully for {Email}", contactRequest.Email);
-                return await CreateSuccessResponseAsync(req, "Emails sent successfully.");
+                var successMessage = GetLocalizedText(contactRequest.Language, "successMessage");
+                return await CreateSuccessResponseAsync(req, successMessage);
             }
             else
             {
                 _logger.LogWarning("Some emails failed to send for {Email}", contactRequest.Email);
-                return await CreateErrorResponseAsync(req, HttpStatusCode.PartialContent, 
-                    "Some emails could not be sent. Please try again.");
+                var errorMessage = GetLocalizedText(contactRequest.Language, "partialErrorMessage");
+                return await CreateErrorResponseAsync(req, HttpStatusCode.PartialContent, errorMessage);
             }
         }
         catch (OperationCanceledException)
@@ -126,27 +172,30 @@ public class SendEmail
         {
             return false;
         }
-    }
-
-    private async Task<EmailSendOperation> SendNotificationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
+    }    private async Task<EmailSendOperation> SendNotificationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
     {
         try
         {
+            var fieldLabels = GetLocalizedText(contact.Language, "fieldLabels").Split('|');
+            var subject = GetLocalizedText(contact.Language, "notificationSubject", contact.Name);
+            var title = GetLocalizedText(contact.Language, "notificationTitle");
+
             var operation = await _emailClient.SendAsync(
                 wait: WaitUntil.Completed,
                 senderAddress: "DoNotReply@dsanchezcr.com",
                 recipientAddress: "david@dsanchezcr.com",
-                subject: $"New website message from {contact.Name}",
+                subject: subject,
                 htmlContent: $"""
                     <html>
                         <body style="font-family: Arial, sans-serif;">
-                            <h2>New Contact Form Submission</h2>
-                            <p><strong>Name:</strong> {System.Net.WebUtility.HtmlEncode(contact.Name)}</p>
-                            <p><strong>Email:</strong> {System.Net.WebUtility.HtmlEncode(contact.Email)}</p>
-                            <p><strong>Message:</strong></p>
+                            <h2>{title}</h2>
+                            <p><strong>{fieldLabels[0]}</strong> {System.Net.WebUtility.HtmlEncode(contact.Name)}</p>
+                            <p><strong>{fieldLabels[1]}</strong> {System.Net.WebUtility.HtmlEncode(contact.Email)}</p>
+                            <p><strong>{fieldLabels[2]}</strong></p>
                             <div style="background-color: #f5f5f5; padding: 10px; border-left: 4px solid #007acc;">
                                 {System.Net.WebUtility.HtmlEncode(contact.Message)}
                             </div>
+                            <p><em>Language: {contact.Language}</em></p>
                         </body>
                     </html>
                     """,
@@ -162,24 +211,29 @@ public class SendEmail
             _logger.LogError(ex, "Failed to send notification email. Error: {ErrorCode}", ex.ErrorCode);
             throw;
         }
-    }
-
-    private async Task<EmailSendOperation> SendConfirmationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
+    }    private async Task<EmailSendOperation> SendConfirmationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
     {
         try
         {
+            var subject = GetLocalizedText(contact.Language, "confirmationSubject");
+            var greeting = GetLocalizedText(contact.Language, "confirmationGreeting", contact.Name);
+            var message = GetLocalizedText(contact.Language, "confirmationMessage");
+            var signature = GetLocalizedText(contact.Language, "confirmationSignature");
+
             var operation = await _emailClient.SendAsync(
                 wait: WaitUntil.Completed,
                 senderAddress: "DoNotReply@dsanchezcr.com",
                 recipientAddress: contact.Email,
-                subject: "Thank you for contacting David Sanchez",
+                subject: subject,
                 htmlContent: $"""
                     <html>
                         <body style="font-family: Arial, sans-serif;">
-                            <h2>Thank you for reaching out!</h2>
-                            <p>Hello {System.Net.WebUtility.HtmlEncode(contact.Name)},</p>
-                            <p>Thank you very much for your message. I will try to get back to you as soon as possible.</p>
-                            <p>Best regards,<br/>David Sanchez</p>
+                            <h2>{(contact.Language == "es" ? "¡Gracias por comunicarte!" : 
+                                  contact.Language == "pt" ? "Obrigado por entrar em contato!" : 
+                                  "Thank you for reaching out!")}</h2>
+                            <p>{greeting}</p>
+                            <p>{message}</p>
+                            <p>{signature}</p>
                         </body>
                     </html>
                     """,
@@ -210,22 +264,6 @@ public class SendEmail
     {
         var response = req.CreateResponse(statusCode);
         response.Headers.Add("Content-Type", "application/json");
-        await response.WriteStringAsync(JsonSerializer.Serialize(new { success = false, error = message }));
-        return response;
-    }
-
-    [Function("HealthCheck")]
-    public static HttpResponseData Health(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")] HttpRequestData req)
-    {
-        var response = req.CreateResponse(HttpStatusCode.OK);
-        response.Headers.Add("Content-Type", "application/json");
-        response.WriteString(JsonSerializer.Serialize(new 
-        { 
-            status = "healthy", 
-            timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-            version = "1.0.0"
-        }));
-        return response;
+        await response.WriteStringAsync(JsonSerializer.Serialize(new { success = false, error = message }));        return response;
     }
 }

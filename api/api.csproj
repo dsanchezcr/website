@@ -1,5 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">  <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
     <OutputType>Exe</OutputType>
@@ -8,6 +7,7 @@
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors />
+    <NoWarn>$(NoWarn);CS8892</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Communication.Email" Version="1.0.1" />

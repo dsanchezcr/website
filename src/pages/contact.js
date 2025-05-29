@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
 import Layout from '@theme/Layout';
 import { config } from '../config/environment';
+import { useLocation } from '@docusaurus/router';
 
 export default function Contact() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const location = useLocation();
+    
+    // Extract language from URL path
+    const getLanguage = () => {
+        const pathname = location.pathname;
+        if (pathname.startsWith('/es/')) return 'es';
+        if (pathname.startsWith('/pt/')) return 'pt';
+        return 'en'; // default
+    };
 
     function showDiv() {
       document.getElementById("loader").style.display = "none";
@@ -17,22 +27,27 @@ export default function Contact() {
       document.getElementById("loader").style.display = "block";
       document.getElementById("emailForm").style.display = "none";
       document.getElementById("myDiv").style.display = "none";
-    }
-  
-    const handleSubmit = async (e) => {
+    }    const handleSubmit = async (e) => {
       e.preventDefault();
   
-      const params = new URLSearchParams({
+      const requestData = {
         name: name,
         email: email,
-        message: message
-      });      try {
+        message: message,
+        language: getLanguage()
+      };
+      
+      try {
         showLoader();
         const apiEndpoint = config.getApiEndpoint();
         console.log("Using API endpoint:", apiEndpoint);
-        console.log("Sending data:", params.toString());
-        const response = await fetch(`${apiEndpoint}/api/SendEmailFunction?${params.toString()}`, {
+        console.log("Sending data:", requestData);
+        const response = await fetch(`${apiEndpoint}/api/contact`, {
           method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
         });
         console.log("Response status:", response.status);
 

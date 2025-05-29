@@ -65,7 +65,6 @@ jobs:
           slot-name: 'qa'
           package: './function-app.zip'
           publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
-          respect-funcignore: true
 
   deploy-production:
     runs-on: ubuntu-latest
@@ -86,4 +85,3 @@ jobs:
           slot-name: 'production'
           package: './function-app.zip'
           publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
-          respect-funcignore: true
