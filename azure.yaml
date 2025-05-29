@@ -1,0 +1,22 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: dsanchezcr-website
+metadata:
+  template: dsanchezcr-website@0.0.1-beta
+services:
+  web:
+    project: ./
+    dist: build
+    language: js
+    host: staticwebapp
+  api:
+    project: ./api
+    language: dotnet
+    host: function
+infra:
+  provider: bicep
+  path: infra
+  parameters:
+    namePrefix: dsanchezcr
+    repositoryUrl: https://github.com/dsanchezcr/website
+    repositoryBranch: main
