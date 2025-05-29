@@ -31,7 +31,10 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Build Azure Function
         working-directory: './api'
-        run: dotnet build api.csproj --configuration Release --output ./output
+        run: dotnet build api.csproj --configuration Release
+      - name: Publish Azure Function
+        working-directory: './api'
+        run: dotnet publish api.csproj --configuration Release --output ./output --no-build
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -76,6 +79,6 @@ jobs:
         uses: azure/functions-action@v1
         with:
           app-name: 'dsanchezcr'
-          slot-name: 'Production'
+          slot-name: 'production'
           package: 'api/output'
           publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
