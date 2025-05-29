@@ -5,6 +5,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import Svg from '@site/static/img/logo.svg';
 import CompactWeatherWidget from '@site/src/components/WeatherWidget/CompactWeatherWidget';
+import OnlineStatusWidget from '@site/src/components/OnlineStatusWidget';
 import styles from './index.module.css';
 
 const FeatureList = [
@@ -92,10 +93,13 @@ export default function Home() {
     <Layout 
       title={`Inicio`}
       description="David Sanchez website pessoal"> 
-      <HomepageHeader />   
+      <div className={styles.homePageContainer}>
+        <OnlineStatusWidget />
+        <HomepageHeader />   
         <main>        
-      <HomepageFeatures />
-      </main>   
+          <HomepageFeatures />
+        </main>   
+      </div>
     </Layout>    
   );
 }
