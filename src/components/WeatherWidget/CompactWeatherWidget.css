@@ -1,0 +1,118 @@
+.compact-weather {
+  display: flex;
+  align-items: center;
+  margin: 0 0.5rem;
+  color: var(--ifm-navbar-link-color);
+}
+
+.compact-weather-items {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.compact-weather-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  background: var(--ifm-color-emphasis-100);
+  transition: background-color 0.2s ease;
+  cursor: help;
+}
+
+[data-theme='dark'] .compact-weather-item {
+  background: var(--ifm-color-emphasis-200);
+}
+
+.compact-weather-item:hover {
+  background: var(--ifm-color-emphasis-200);
+}
+
+[data-theme='dark'] .compact-weather-item:hover {
+  background: var(--ifm-color-emphasis-300);
+}
+
+.compact-weather-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.compact-weather-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+}
+
+.compact-weather-location {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1;
+}
+
+.compact-weather-temp {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ifm-navbar-link-color);
+  line-height: 1;
+}
+
+.compact-weather-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+}
+
+.compact-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--ifm-color-emphasis-300);
+  border-top: 2px solid var(--ifm-color-primary);
+  border-radius: 50%;
+  animation: compact-spin 1s linear infinite;
+}
+
+@keyframes compact-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.compact-weather-error {
+  font-size: 1rem;
+  color: var(--ifm-color-danger);
+  padding: 0.25rem;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .compact-weather-location {
+    display: none;
+  }
+  
+  .compact-weather-info {
+    align-items: center;
+  }
+  
+  .compact-weather-items {
+    gap: 0.5rem;
+  }
+  
+  .compact-weather-item {
+    padding: 0.2rem 0.4rem;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .compact-spinner {
+    animation: none;
+  }
+  
+  .compact-weather-item {
+    transition: none;
+  }
+}

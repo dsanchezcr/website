@@ -3,7 +3,7 @@ import { useLocation } from '@docusaurus/router';
 import translations from './translations';
 import './WeatherWidget.css';
 
-const WeatherWidget = ({ showUserLocation = true, locations = ['orlando', 'sanjose'] }) => {
+const WeatherWidget = ({ showUserLocation = false, locations = ['orlando', 'sanjose'] }) => {
   const [weatherData, setWeatherData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
