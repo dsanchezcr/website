@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Layout from '@theme/Layout';
+import { config } from '../config/environment';
 
 export default function Contact() {
     const [name, setName] = useState('');
@@ -25,12 +26,12 @@ export default function Contact() {
         name: name,
         email: email,
         message: message
-      });
-  
-      try {
+      });      try {
         showLoader();
+        const apiEndpoint = config.getApiEndpoint();
+        console.log("Using API endpoint:", apiEndpoint);
         console.log("Sending data:", params.toString());
-        const response = await fetch(`https://dsanchezcr.azurewebsites.net/api/SendEmailFunction?${params.toString()}`, {
+        const response = await fetch(`${apiEndpoint}/api/SendEmailFunction?${params.toString()}`, {
           method: "POST",
         });
         console.log("Response status:", response.status);

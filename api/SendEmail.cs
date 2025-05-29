@@ -1,36 +1,63 @@
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
+using System.Net;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Azure.Communication.Email;
 using Azure;
-using System;
+using System.Text.Json;
 
 namespace api
 {
-    public static class SendEmail
+    public class SendEmail
     {
-        [FunctionName("SendEmailFunction")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+        private readonly ILogger _logger;
+
+        public SendEmail(ILoggerFactory loggerFactory)
         {
-            log.LogInformation("SendEmail Function Triggered.");
+            _logger = loggerFactory.CreateLogger<SendEmail>();
+        }
+
+        [Function("SendEmailFunction")]
+        public async Task<HttpResponseData> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData req)
+        {
+            _logger.LogInformation("SendEmail Function Triggered.");
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
+            
+            string? name = null;
+            string? email = null;
+            string? message = null;
 
-            string name = req.Query["name"].ToString() ?? data?.name;
-            string email = req.Query["email"].ToString() ?? data?.email;
-            string message = req.Query["message"].ToString() ?? data?.message;
+            // Try to parse JSON if request body is not empty
+            if (!string.IsNullOrEmpty(requestBody))
+            {
+                try
+                {
+                    var data = JsonSerializer.Deserialize<JsonElement>(requestBody);
+                    if (data.TryGetProperty("name", out var nameProperty))
+                        name = nameProperty.GetString();
+                    if (data.TryGetProperty("email", out var emailProperty))
+                        email = emailProperty.GetString();
+                    if (data.TryGetProperty("message", out var messageProperty))
+                        message = messageProperty.GetString();
+                }
+                catch (JsonException)
+                {
+                    _logger.LogWarning("Failed to parse JSON request body");
+                }
+            }
+
+            // Fall back to query parameters if not found in body
+            var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
+            name ??= query["name"];
+            email ??= query["email"];
+            message ??= query["message"];
 
             if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(message))
             {
-                return new BadRequestObjectResult("Please provide name, email, and message.");
+                var response = req.CreateResponse(HttpStatusCode.BadRequest);
+                await response.WriteStringAsync("Please provide name, email, and message.");
+                return response;
             }
 
             var emailClient = new EmailClient(Environment.GetEnvironmentVariable("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING"));
@@ -42,7 +69,7 @@ namespace api
                     recipientAddress: "david@dsanchezcr.com",
                     subject: $"New message in the website from {name} ({email})",
                     htmlContent: $"<html><body>{name} with email address {email} sent the following message: <br />{message}</body></html>");
-                log.LogInformation($"Email sent with message ID: {selfEmailSendOperation.Id} and status: {selfEmailSendOperation.Value.Status}");
+                _logger.LogInformation($"Email sent with message ID: {selfEmailSendOperation.Id} and status: {selfEmailSendOperation.Value.Status}");
 
                 var contactEmailSendOperation = await emailClient.SendAsync(
                     wait: WaitUntil.Completed,
@@ -50,14 +77,18 @@ namespace api
                     recipientAddress: email,
                     subject: "Email sent to David Sanchez. Thank you for reaching out.",
                     htmlContent: $"Hello {name}, thank you very much for your message. I will try to get back to you as soon as possible.");
-                log.LogInformation($"Email sent with message ID: {contactEmailSendOperation.Id} and status: {contactEmailSendOperation.Value.Status}");
+                _logger.LogInformation($"Email sent with message ID: {contactEmailSendOperation.Id} and status: {contactEmailSendOperation.Value.Status}");
 
-                return new OkObjectResult("Emails sent.");
+                var okResponse = req.CreateResponse(HttpStatusCode.OK);
+                await okResponse.WriteStringAsync("Emails sent.");
+                return okResponse;
             }
             catch (RequestFailedException ex)
             {
-                log.LogError($"Email send operation failed with error code: {ex.ErrorCode}, message: {ex.Message}");
-                return new ConflictObjectResult("Error sending email");
+                _logger.LogError($"Email send operation failed with error code: {ex.ErrorCode}, message: {ex.Message}");
+                var errorResponse = req.CreateResponse(HttpStatusCode.Conflict);
+                await errorResponse.WriteStringAsync("Error sending email");
+                return errorResponse;
             }
         }
     }
