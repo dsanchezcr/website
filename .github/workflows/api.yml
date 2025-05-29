@@ -1,4 +1,5 @@
 name: Build and Deploy Azure Function
+
 on:
   push:
     branches:
@@ -6,45 +7,75 @@ on:
     paths:
       - 'api/**'
   pull_request:
+    types: [opened, synchronize, reopened, closed]
     branches:
       - main
     paths:
       - 'api/**'
   workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Check Out Repo
-            uses: actions/checkout@v4
-          - name: Setup .NET
-            uses: actions/setup-dotnet@v4
-            with:
-              dotnet-version: '8.0.x'
-          - name: Build Azure Function
-            working-directory: './api'
-            run: dotnet build api.csproj --configuration Release --output ./output
-          - name: Upload Artifact
-            if: github.ref == 'refs/heads/main'
-            uses: actions/upload-artifact@v4
-            with:
-              name: api
-              path: api/output
-    deploy:
-        runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/main'
-        needs: build
-        environment: Production
-        steps:
-          - name: Download Artifact
-            uses: actions/download-artifact@v4
-            with:
-              name: api
-              path: api/output  
-          - name: Deploy Azure Function
-            uses: azure/functions-action@v1
-            with:
-              app-name: 'dsanchezcr'
-              slot-name: 'Production'
-              package: 'api/output'
-              publish-profile: ${{ secrets.AzureFunction_PublishingProfile }}
+  build:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build Azure Function
+        working-directory: './api'
+        run: dotnet build api.csproj --configuration Release --output ./output
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api
+          path: api/output
+
+  deploy-qa:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    needs: build
+    environment: 
+      name: QA
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api
+          path: api/output  
+      - name: Deploy to QA Azure Function
+        id: deploy-qa
+        uses: azure/functions-action@v1
+        with:
+          app-name: 'dsanchezcr-qa'
+          slot-name: 'Production'
+          package: 'api/output'
+          publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build
+    environment: 
+      name: Production
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: api
+          path: api/output  
+      - name: Deploy to Production Azure Function
+        id: deploy-prod
+        uses: azure/functions-action@v1
+        with:
+          app-name: 'dsanchezcr'
+          slot-name: 'Production'
+          package: 'api/output'
+          publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
