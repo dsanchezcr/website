@@ -1,0 +1,23 @@
+.custom-navbar-wrapper {
+  position: relative;
+}
+
+.navbar-weather-widget {
+  position: absolute;
+  top: 50%;
+  right: 160px; /* Position to the left of the locale dropdown and sponsors link */
+  transform: translateY(-50%);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.navbar-weather-widget > * {
+  pointer-events: auto;
+}
+
+/* Hide on smaller screens to prevent navbar overcrowding */
+@media (max-width: 996px) {
+  .navbar-weather-widget {
+    display: none;
+  }
+}
