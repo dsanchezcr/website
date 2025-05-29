@@ -1,15 +1,13 @@
 using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using System.Net.Http;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
+using System.Net;
 
 namespace api
 {
@@ -32,13 +30,20 @@ namespace api
         public DateTime LastUpdated { get; set; }
     }
 
-    public static class GetWeather
+    public class GetWeather
     {
         private static readonly HttpClient httpClient = new HttpClient();
         private static readonly MemoryCache cache = new MemoryCache(new MemoryCacheOptions
         {
             SizeLimit = 100
         });
+
+        private readonly ILogger<GetWeather> _logger;
+
+        public GetWeather(ILogger<GetWeather> logger)
+        {
+            _logger = logger;
+        }
 
         private static readonly Dictionary<string, WeatherLocation> locations = new Dictionary<string, WeatherLocation>
         {
@@ -96,16 +101,16 @@ namespace api
             { 99, ("Thunderstorm with heavy hail", "⛈️") }
         };
 
-        [FunctionName("GetWeatherFunction")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-            ILogger log)
+        [Function("GetWeatherFunction")]
+        public async Task<HttpResponseData> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
         {
-            log.LogInformation("GetWeather Function Triggered.");
+            _logger.LogInformation("GetWeather Function Triggered.");
 
-            string location = req.Query["location"];
-            string latStr = req.Query["lat"];
-            string lonStr = req.Query["lon"];
+            var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
+            string location = query["location"];
+            string latStr = query["lat"];
+            string lonStr = query["lon"];
 
             try
             {
@@ -114,7 +119,7 @@ namespace api
                 // Get weather for specified location or all predefined locations
                 if (!string.IsNullOrEmpty(location) && locations.ContainsKey(location.ToLower()))
                 {
-                    var weatherData = await GetWeatherForLocation(locations[location.ToLower()], log);
+                    var weatherData = await GetWeatherForLocation(locations[location.ToLower()]);
                     if (weatherData != null)
                         weatherDataList.Add(weatherData);
                 }
@@ -129,7 +134,7 @@ namespace api
                         Longitude = lon,
                         Timezone = "auto"
                     };
-                    var weatherData = await GetWeatherForLocation(userLocation, log);
+                    var weatherData = await GetWeatherForLocation(userLocation);
                     if (weatherData != null)
                         weatherDataList.Add(weatherData);
                 }
@@ -138,29 +143,33 @@ namespace api
                     // Get weather for all predefined locations
                     foreach (var loc in locations.Values)
                     {
-                        var weatherData = await GetWeatherForLocation(loc, log);
+                        var weatherData = await GetWeatherForLocation(loc);
                         if (weatherData != null)
                             weatherDataList.Add(weatherData);
                     }
                 }
 
-                return new OkObjectResult(weatherDataList);
+                var response = req.CreateResponse(HttpStatusCode.OK);
+                response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                await response.WriteStringAsync(JsonSerializer.Serialize(weatherDataList));
+                return response;
             }
             catch (Exception ex)
             {
-                log.LogError($"Error fetching weather data: {ex.Message}");
-                return new StatusCodeResult(500);
+                _logger.LogError($"Error fetching weather data: {ex.Message}");
+                var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
+                return errorResponse;
             }
         }
 
-        private static async Task<WeatherData> GetWeatherForLocation(WeatherLocation location, ILogger log)
+        private async Task<WeatherData> GetWeatherForLocation(WeatherLocation location)
         {
             string cacheKey = $"weather_{location.Name}_{DateTime.UtcNow:yyyyMMddHH}";
 
             // Check cache first (cache for 1 hour)
             if (cache.TryGetValue(cacheKey, out WeatherData cachedData))
             {
-                log.LogInformation($"Weather data for {location.Name} retrieved from cache.");
+                _logger.LogInformation($"Weather data for {location.Name} retrieved from cache.");
                 return cachedData;
             }
 
@@ -169,10 +178,10 @@ namespace api
                 string url = $"https://api.open-meteo.com/v1/forecast?latitude={location.Latitude}&longitude={location.Longitude}&current=temperature_2m,relative_humidity_2m,weather_code&timezone={location.Timezone}";
                 
                 var response = await httpClient.GetStringAsync(url);
-                dynamic data = JsonConvert.DeserializeObject(response);
-
-                var current = data.current;
-                int weatherCode = current.weather_code;
+                using var doc = JsonDocument.Parse(response);
+                var current = doc.RootElement.GetProperty("current");
+                
+                int weatherCode = current.GetProperty("weather_code").GetInt32();
                 
                 var (description, icon) = weatherCodes.ContainsKey(weatherCode) 
                     ? weatherCodes[weatherCode] 
@@ -181,8 +190,8 @@ namespace api
                 var weatherData = new WeatherData
                 {
                     Location = location.Name,
-                    Temperature = current.temperature_2m,
-                    Humidity = current.relative_humidity_2m,
+                    Temperature = current.GetProperty("temperature_2m").GetDouble(),
+                    Humidity = current.GetProperty("relative_humidity_2m").GetInt32(),
                     WeatherCode = weatherCode,
                     Description = description,
                     Icon = icon,
@@ -192,12 +201,12 @@ namespace api
                 // Cache for 1 hour
                 cache.Set(cacheKey, weatherData, TimeSpan.FromHours(1));
                 
-                log.LogInformation($"Weather data for {location.Name} fetched and cached.");
+                _logger.LogInformation($"Weather data for {location.Name} fetched and cached.");
                 return weatherData;
             }
             catch (Exception ex)
             {
-                log.LogError($"Error fetching weather data for {location.Name}: {ex.Message}");
+                _logger.LogError($"Error fetching weather data for {location.Name}: {ex.Message}");
                 return null;
             }
         }
