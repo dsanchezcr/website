@@ -20,7 +20,6 @@ permissions:
 
 jobs:
   build:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
@@ -43,7 +42,6 @@ jobs:
 
   deploy-qa:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
     needs: build
     environment: 
       name: QA
@@ -63,7 +61,7 @@ jobs:
 
   deploy-production:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main'
     needs: build
     environment: 
       name: Production
