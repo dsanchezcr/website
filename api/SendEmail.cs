@@ -59,7 +59,9 @@ public class SendEmail
         var lang = Localizations.ContainsKey(language) ? language : "en";
         var text = Localizations[lang].GetValueOrDefault(key, Localizations["en"][key]);
         return args.Length > 0 ? string.Format(text, args) : text;
-    }// Input model for request validation
+    }
+
+    // Input model for request validation
     private record ContactRequest(string Name, string Email, string Message, string Language = "en");
 
     public SendEmail(ILogger<SendEmail> logger)
@@ -67,7 +69,7 @@ public class SendEmail
         _logger = logger;
     }
 
-    [Function("SendEmailFunction")]
+    [Function("SendEmail")]
     public async Task<HttpResponseData> Run(
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "contact")] HttpRequestData req,
         CancellationToken cancellationToken = default)
@@ -97,10 +99,9 @@ public class SendEmail
             {
                 SendNotificationEmailAsync(contactRequest, cancellationToken),
                 SendConfirmationEmailAsync(contactRequest, cancellationToken)
-            };
-
-            var results = await Task.WhenAll(tasks);
-              if (results.All(r => r.HasCompleted))
+            };            var results = await Task.WhenAll(tasks);
+            
+            if (results.All(r => r.HasCompleted))
             {
                 _logger.LogInformation("Both emails sent successfully for {Email}", contactRequest.Email);
                 var successMessage = GetLocalizedText(contactRequest.Language, "successMessage");
@@ -157,8 +158,7 @@ public class SendEmail
         catch (JsonException ex)
         {
             _logger.LogWarning(ex, "Failed to parse JSON request body");
-            return null;
-        }
+            return null;        }
     }
 
     private static bool IsValidEmail(string email)
@@ -170,9 +170,10 @@ public class SendEmail
         }
         catch
         {
-            return false;
-        }
-    }    private async Task<EmailSendOperation> SendNotificationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
+            return false;        }
+    }
+
+    private async Task<EmailSendOperation> SendNotificationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
     {
         try
         {
@@ -209,9 +210,10 @@ public class SendEmail
         catch (RequestFailedException ex)
         {
             _logger.LogError(ex, "Failed to send notification email. Error: {ErrorCode}", ex.ErrorCode);
-            throw;
-        }
-    }    private async Task<EmailSendOperation> SendConfirmationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
+            throw;        }
+    }
+
+    private async Task<EmailSendOperation> SendConfirmationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
     {
         try
         {
@@ -264,6 +266,7 @@ public class SendEmail
     {
         var response = req.CreateResponse(statusCode);
         response.Headers.Add("Content-Type", "application/json");
-        await response.WriteStringAsync(JsonSerializer.Serialize(new { success = false, error = message }));        return response;
+        await response.WriteStringAsync(JsonSerializer.Serialize(new { success = false, error = message }));
+        return response;
     }
 }
