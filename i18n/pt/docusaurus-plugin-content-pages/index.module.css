@@ -1,35 +1,43 @@
-.heroBanner {
-  padding: 1rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
+ .heroBanner {
+    padding: 1rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
   }
-}
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  .weatherWidgetContainer {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    max-width: 300px;
+  }
+  
+  @media screen and (max-width: 996px) {
+    .heroBanner {
+      padding: 2rem;
+    }
 
-.featureSvg {
-  height: 170px;
-  width: 170px;
-}
+    .weatherWidgetContainer {
+      position: static;
+      max-width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
 
-.features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
-  width: 100%;
-}
-
-.featureSvgHomeFeatures {
-  height: 150px;
-  width: 150px;
-}
+  @media screen and (max-width: 768px) {
+    .weatherWidgetContainer {
+      max-width: 100%;
+    }
+  }
+  
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .featureSvg {
+    height: 170px;
+    width: 170px;
+  }

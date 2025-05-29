@@ -4,7 +4,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import Svg from '@site/static/img/logo.svg';
-import WeatherWidget from '@site/src/components/WeatherWidget';
+import CompactWeatherWidget from '@site/src/components/WeatherWidget/CompactWeatherWidget';
 import styles from './index.module.css';
 
 const FeatureList = [
@@ -75,6 +75,9 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
+        <div className={styles.weatherWidgetContainer}>
+          <CompactWeatherWidget />
+        </div>
         <Svg className={styles.featureSvg} role="img" />
         <h1 className="hero__title">Oi, eu sou {siteConfig.title}.</h1>
         <p className="hero__subtitle">Global Black Belt - Azure Developer Productivity na Microsoft.</p>
@@ -92,9 +95,6 @@ export default function Home() {
       <HomepageHeader />   
         <main>        
       <HomepageFeatures />
-      <div className="container">
-        <WeatherWidget />
-      </div>
       </main>   
     </Layout>    
   );
