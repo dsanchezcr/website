@@ -5,11 +5,8 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Net;
-using Google.Apis.AnalyticsReporting.v4;
-using Google.Apis.AnalyticsReporting.v4.Data;
+using Google.Analytics.Data.V1Beta;
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using System.IO;
 
 namespace api
 {
@@ -31,81 +28,57 @@ namespace api
             try
             {
                 // Get Google Analytics settings from environment variables
-                var analyticsViewId = Environment.GetEnvironmentVariable("GOOGLE_ANALYTICS_VIEW_ID");
+                var propertyId = Environment.GetEnvironmentVariable("GOOGLE_ANALYTICS_PROPERTY_ID");
                 var credentialsJson = Environment.GetEnvironmentVariable("GOOGLE_ANALYTICS_CREDENTIALS_JSON");
 
-                int activeUsers = 0;
+                int usersLastHour = 0;
 
-                if (!string.IsNullOrEmpty(analyticsViewId) && !string.IsNullOrEmpty(credentialsJson))
+                if (!string.IsNullOrEmpty(propertyId) && !string.IsNullOrEmpty(credentialsJson))
                 {
-                    // Initialize Google Analytics service
-                    var credential = GoogleCredential.FromJson(credentialsJson)
-                        .CreateScoped(AnalyticsReportingService.Scope.AnalyticsReadonly);
-
-                    var service = new AnalyticsReportingService(new BaseClientService.Initializer()
+                    // Authenticate using service account credentials
+                    var credential = GoogleCredential.FromJson(credentialsJson);
+                    var client = new BetaAnalyticsDataClientBuilder
                     {
-                        HttpClientInitializer = credential,
-                        ApplicationName = "DavidSanchezCR-Website",
-                    });
+                        Credential = credential
+                    }.Build();
 
-                    // Build request for real-time active users
-                    var request = new GetReportsRequest
+                    // The GA4 API does not provide a direct way to filter for "last hour" in the standard report API.
+                    // The correct way is to use the Realtime API with the "activeUsers" metric, which returns the count for the last 60 minutes.
+                    var realtimeRequest = new RunRealtimeReportRequest
                     {
-                        ReportRequests = new[]
-                        {
-                            new ReportRequest
-                            {
-                                ViewId = analyticsViewId,
-                                DateRanges = new[] { new DateRange { StartDate = "today", EndDate = "today" } },
-                                Metrics = new[] { new Metric { Expression = "rt:activeUsers" } }
-                            }
-                        }
+                        Property = $"properties/{propertyId}",
+                        Metrics = { new Metric { Name = "activeUsers" } }
                     };
-
-                    // Execute the request
-                    var analyticsResponse = await service.Reports.BatchGet(request).ExecuteAsync();
-                    
-                    if (analyticsResponse.Reports != null && analyticsResponse.Reports.Count > 0)
+                    var realtimeResponse = await client.RunRealtimeReportAsync(realtimeRequest);
+                    if (realtimeResponse.Rows.Count > 0 && realtimeResponse.Rows[0].MetricValues.Count > 0)
                     {
-                        var report = analyticsResponse.Reports[0];
-                        if (report.Data?.Rows != null && report.Data.Rows.Count > 0)
-                        {
-                            var firstRow = report.Data.Rows[0];
-                            if (firstRow.Metrics != null && firstRow.Metrics.Count > 0)
-                            {
-                                var metric = firstRow.Metrics[0];
-                                if (metric.Values != null && metric.Values.Count > 0)
-                                {
-                                    int.TryParse(metric.Values[0], out activeUsers);
-                                }
-                            }
-                        }
+                        int.TryParse(realtimeResponse.Rows[0].MetricValues[0].Value, out usersLastHour);
                     }
 
-                    _logger.LogInformation($"Retrieved {activeUsers} active users from Google Analytics");
+                    _logger.LogInformation($"Retrieved {usersLastHour} users in the last hour from Google Analytics 4");
                 }
                 else
                 {
                     _logger.LogWarning("Google Analytics credentials not configured. Using fallback value.");
-                    activeUsers = 1; // Fallback value when credentials are not configured
+                    usersLastHour = 1; // Fallback value when credentials are not configured
                 }
 
                 var result = new
                 {
-                    activeUsers = activeUsers,
+                    usersLastHour = usersLastHour,
                     timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                    source = !string.IsNullOrEmpty(analyticsViewId) && !string.IsNullOrEmpty(credentialsJson) 
-                        ? "Google Analytics" 
+                    source = !string.IsNullOrEmpty(propertyId) && !string.IsNullOrEmpty(credentialsJson)
+                        ? "Google Analytics 4"
                         : "Fallback"
                 };
 
-                _logger.LogInformation($"Returning {result.activeUsers} active users from {result.source}");
-                
+                _logger.LogInformation($"Returning {result.usersLastHour} users in the last hour from {result.source}");
+
                 var response = req.CreateResponse(HttpStatusCode.OK);
                 response.Headers.Add("Content-Type", "application/json; charset=utf-8");
                 response.Headers.Add("Access-Control-Allow-Origin", "*");
                 response.Headers.Add("Cache-Control", "public, max-age=30");
-                
+
                 await response.WriteStringAsync(JsonSerializer.Serialize(result));
                 return response;
             }
@@ -116,16 +89,16 @@ namespace api
                 // Return a default response instead of error to prevent widget from breaking
                 var fallbackResult = new
                 {
-                    activeUsers = 0,
+                    usersLastHour = 0,
                     timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
                     error = "Analytics temporarily unavailable",
                     source = "Fallback"
                 };
-                
+
                 var response = req.CreateResponse(HttpStatusCode.OK);
                 response.Headers.Add("Content-Type", "application/json; charset=utf-8");
                 response.Headers.Add("Access-Control-Allow-Origin", "*");
-                
+
                 await response.WriteStringAsync(JsonSerializer.Serialize(fallbackResult));
                 return response;
             }
