@@ -69,16 +69,6 @@ public class NLWebChat
         }
     }
 
-    [Function("HealthCheck")]
-    public async Task<HttpResponseData> HealthCheck(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")] HttpRequestData req)
-    {
-        _logger.LogInformation("Health check requested");
-        
-        var healthResponse = new { status = "healthy", service = "nlweb-api" };
-        return await CreateSuccessResponseAsync(req, healthResponse);
-    }
-
     private async Task<ChatRequest?> ParseRequestAsync(HttpRequestData req, CancellationToken cancellationToken)
     {
         try
