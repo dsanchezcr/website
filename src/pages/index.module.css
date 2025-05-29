@@ -4,6 +4,14 @@
     position: relative;
     overflow: hidden;
   }
+
+  .weatherWidgetContainer {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    max-width: 300px;
+  }
   
   .homePageContainer {
     position: relative;
@@ -32,6 +40,7 @@
     .heroBanner {
       padding: 2rem;
     }
+
     
     .homePageContainer .onlineStatusWidget {
       top: 10px;
@@ -46,6 +55,19 @@
       position: static;
       margin: 10px auto;
       width: fit-content;
+
+
+    .weatherWidgetContainer {
+      position: static;
+      max-width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .weatherWidgetContainer {
+      max-width: 100%;
+
     }
   }
   
@@ -55,7 +77,21 @@
     justify-content: center;
   }
   
+  .features {
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+    width: 100%;
+  }
+  
   .featureSvg {
+    height: 270px;
+    width: 270px;
+  }
+
+    .featureSvgHomeFeatures {
     height: 170px;
     width: 170px;
+    margin: 0 auto 1rem auto;
+    display: block;
   }
