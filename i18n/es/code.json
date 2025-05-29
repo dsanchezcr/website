@@ -291,6 +291,10 @@
     "message": "{count} en línea",
     "description": "Number of users currently online"
   },
+  "onlineStatus.usersLastHour": {
+    "message": "{count} usuarios en la última hora",
+    "description": "Número de usuarios que visitaron en la última hora"
+  },
   "onlineStatus.loading": {
     "message": "Cargando...",
     "description": "Loading text for online status widget"

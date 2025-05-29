@@ -46,23 +46,12 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.statusDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--ifm-color-emphasis-500);
-  transition: background-color 0.2s ease;
-}
 
-.statusDot.active {
-  background-color: #22c55e;
-  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
-  animation: pulse 2s infinite;
-}
-
-.onlineIndicator.loading .statusDot {
-  background-color: var(--ifm-color-emphasis-400);
-  animation: loadingPulse 1.5s ease-in-out infinite;
+.userEmoji {
+  font-size: 1.2em;
+  margin-right: 0.4em;
+  display: inline-flex;
+  align-items: center;
 }
 
 .statusText {
@@ -98,23 +87,22 @@
   .onlineStatusWidget {
     margin-left: 0.5rem;
   }
-  
+
   .navbarWidget {
     margin-left: 0.25rem;
     margin-right: 0.25rem;
   }
-  
+
   .onlineIndicator {
     padding: 0.2rem 0.5rem;
     font-size: 0.8rem;
   }
-  
+
+  /* Always show the user count on mobile */
   .statusText {
-    display: none;
-  }
-  
-  .navbarWidget .statusText {
-    display: none;
+    display: inline;
+    font-size: 0.9em;
+    margin-left: 0.2em;
   }
 }
 
@@ -125,14 +113,16 @@
     display: flex;
     justify-content: center;
   }
-  
+
   .homePageWidget {
     position: static;
     margin: 10px auto;
     width: fit-content;
   }
-  
-  .homePageWidget .statusText {
+
+  .statusText {
     display: inline;
+    font-size: 1em;
+    margin-left: 0.2em;
   }
 }

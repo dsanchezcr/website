@@ -2,34 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { useColorMode } from '@docusaurus/theme-common';
 import { translate } from '@docusaurus/Translate';
 import styles from './styles.module.css';
+import { config } from '../../config/environment';
 
 const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
-  const [activeUsers, setActiveUsers] = useState(0);
+  const [usersLastHour, setUsersLastHour] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
   const { colorMode } = useColorMode();
 
-  const fetchActiveUsers = async () => {
+  const fetchUsersLastHour = async () => {
     try {
-      const response = await fetch('https://dsanchezcr.azurewebsites.net/api/GetOnlineUsersFunction', {
+      const apiEndpoint = config.getApiEndpoint();
+      const response = await fetch(`${apiEndpoint}/api/GetOnlineUsersFunction`, {
         method: 'GET',
         cache: 'no-cache',
         headers: {
           'Accept': 'application/json',
         },
       });
-      
       if (response.ok) {
         const data = await response.json();
-        setActiveUsers(data.activeUsers || 0);
+        setUsersLastHour(data.usersLastHour || 0);
         setLastUpdated(new Date());
         setIsLoading(false);
       } else {
-        console.warn('Failed to fetch active users, status:', response.status);
+        console.warn('Failed to fetch users in last hour, status:', response.status);
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Error fetching active users:', error);
+      console.error('Error fetching users in last hour:', error);
       setIsLoading(false);
       // Fail silently and keep previous value if any
     }
@@ -38,12 +39,10 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
   useEffect(() => {
     // Add a small delay before the first fetch to prevent immediate API calls
     const initialDelay = setTimeout(() => {
-      fetchActiveUsers();
+      fetchUsersLastHour();
     }, 1000);
-    
     // Set up interval for updates every 30 seconds
-    const interval = setInterval(fetchActiveUsers, 30000);
-    
+    const interval = setInterval(fetchUsersLastHour, 30000);
     return () => {
       clearTimeout(initialDelay);
       clearInterval(interval);
@@ -51,10 +50,10 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
   }, []);
 
   const statusText = translate({
-    id: 'onlineStatus.usersOnline',
-    message: '{count} online',
-    description: 'Number of users currently online'
-  }, { count: activeUsers });
+    id: 'onlineStatus.usersLastHour',
+    message: '{count} users in the last hour',
+    description: 'Number of users who visited in the last hour'
+  }, { count: usersLastHour });
 
   const loadingText = translate({
     id: 'onlineStatus.loading',
@@ -62,15 +61,16 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
     description: 'Loading text for online status widget'
   });
 
+  // Use only the main class for homepage context to avoid CSS specificity issues
   const widgetClass = isNavbarWidget ? 
     `${styles.onlineStatusWidget} ${styles.navbarWidget}` : 
-    `${styles.onlineStatusWidget} ${styles.homePageWidget}`;
+    styles.onlineStatusWidget;
 
   if (isLoading) {
     return (
       <div className={widgetClass}>
         <div className={`${styles.onlineIndicator} ${styles.loading}`}>
-          <span className={styles.statusDot}></span>
+          <span className={styles.userEmoji} role="img" aria-label="user">👤</span>
           <span className={styles.statusText}>{loadingText}</span>
         </div>
       </div>
@@ -80,7 +80,7 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
   return (
     <div className={widgetClass}>
       <div className={styles.onlineIndicator}>
-        <span className={`${styles.statusDot} ${styles.active}`}></span>
+        <span className={styles.userEmoji} role="img" aria-label="user">👤</span>
         <span className={styles.statusText}>{statusText}</span>
       </div>
     </div>
