@@ -64,7 +64,7 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
 
   const widgetClass = isNavbarWidget ? 
     `${styles.onlineStatusWidget} ${styles.navbarWidget}` : 
-    styles.onlineStatusWidget;
+    `${styles.onlineStatusWidget} ${styles.homePageWidget}`;
 
   if (isLoading) {
     return (

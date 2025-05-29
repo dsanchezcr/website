@@ -10,6 +10,13 @@
   margin-right: 0.5rem;
 }
 
+.homePageWidget {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .onlineIndicator {
   display: flex;
   align-items: center;
@@ -25,6 +32,18 @@
 [data-theme='dark'] .onlineIndicator {
   background-color: var(--ifm-color-emphasis-200);
   border-color: var(--ifm-color-emphasis-400);
+}
+
+.homePageWidget .onlineIndicator {
+  background-color: var(--ifm-background-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .homePageWidget .onlineIndicator {
+  background-color: var(--ifm-background-color);
+  border-color: var(--ifm-color-emphasis-300);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .statusDot {
@@ -93,10 +112,27 @@
   .statusText {
     display: none;
   }
+  
+  .navbarWidget .statusText {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
   .onlineStatusWidget:not(.navbarWidget) {
-    display: none;
+    position: static;
+    margin: 10px auto;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .homePageWidget {
+    position: static;
+    margin: 10px auto;
+    width: fit-content;
+  }
+  
+  .homePageWidget .statusText {
+    display: inline;
   }
 }

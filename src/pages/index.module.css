@@ -5,9 +5,47 @@
     overflow: hidden;
   }
   
+  .homePageContainer {
+    position: relative;
+  }
+  
+  .homePageContainer .onlineStatusWidget {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    background: var(--ifm-background-color);
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 0.85rem;
+  }
+  
+  [data-theme='dark'] .homePageContainer .onlineStatusWidget {
+    background: var(--ifm-background-color);
+    border-color: var(--ifm-color-emphasis-300);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
   @media screen and (max-width: 996px) {
     .heroBanner {
       padding: 2rem;
+    }
+    
+    .homePageContainer .onlineStatusWidget {
+      top: 10px;
+      left: 10px;
+      font-size: 0.8rem;
+      padding: 6px 10px;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .homePageContainer .onlineStatusWidget {
+      position: static;
+      margin: 10px auto;
+      width: fit-content;
     }
   }
   

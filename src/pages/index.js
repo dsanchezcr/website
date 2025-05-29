@@ -4,6 +4,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Svg from '@site/static/img/logo.svg';
 import HomepageFeatures from '@site/src/components/index';
+import OnlineStatusWidget from '@site/src/components/OnlineStatusWidget';
 
 import styles from './index.module.css';
 
@@ -26,10 +27,13 @@ export default function Home() {
     <Layout 
       title={`Home`}
       description="David Sanchez personal website"> 
-      <HomepageHeader />   
+      <div className={styles.homePageContainer}>
+        <OnlineStatusWidget />
+        <HomepageHeader />   
         <main>        
-      <HomepageFeatures /> 
-      </main>   
+          <HomepageFeatures /> 
+        </main>
+      </div>   
     </Layout>    
   );
 }
