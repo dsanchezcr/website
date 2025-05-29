@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from '@docusaurus/router';
 import translations from './translations';
 import './CompactWeatherWidget.css';
+import { config } from '../../config/environment';
 
 const CompactWeatherWidget = () => {
   const [weatherData, setWeatherData] = useState([]);
@@ -24,8 +25,9 @@ const CompactWeatherWidget = () => {
       setError(null);
       
       try {
+        const apiEndpoint = config.getApiEndpoint();
         const weatherPromises = locations.map(location => 
-          fetch(`/api/GetWeatherFunction?location=${location}`)
+          fetch(`${apiEndpoint}/api/GetWeatherFunction?location=${location}`)
             .catch(() => null) // Handle individual request failures
         );
         

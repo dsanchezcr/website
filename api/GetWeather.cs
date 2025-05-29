@@ -151,6 +151,7 @@ namespace api
 
                 var response = req.CreateResponse(HttpStatusCode.OK);
                 response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                response.Headers.Add("Access-Control-Allow-Origin", "*");
                 await response.WriteStringAsync(JsonSerializer.Serialize(weatherDataList));
                 return response;
             }
@@ -158,6 +159,7 @@ namespace api
             {
                 _logger.LogError($"Error fetching weather data: {ex.Message}");
                 var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
+                errorResponse.Headers.Add("Access-Control-Allow-Origin", "*");
                 return errorResponse;
             }
         }
