@@ -55,7 +55,7 @@ jobs:
         uses: azure/functions-action@v1
         with:
           app-name: 'dsanchezcr'
-          slot-name: 'dsanchezcr-qa'
+          slot-name: 'qa'
           package: 'api/output'
           publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
 
