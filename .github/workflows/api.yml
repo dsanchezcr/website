@@ -69,8 +69,8 @@ jobs:
           publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
 
   deploy-production:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     needs: build
     environment: 
       name: Production
