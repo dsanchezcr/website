@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
 import Layout from '@theme/Layout';
+import { config } from '../../../src/config/environment';
+import { useLocation } from '@docusaurus/router';
 
 export default function Contact() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const location = useLocation();
+    
+    // Extract language from URL path
+    const getLanguage = () => {
+        const pathname = location.pathname;
+        if (pathname.startsWith('/es/')) return 'es';
+        if (pathname.startsWith('/pt/')) return 'pt';
+        return 'en'; // default
+    };
 
     var myVar;
 
@@ -29,35 +40,52 @@ export default function Contact() {
       document.getElementById("emailForm").style.display = "none";
       document.getElementById("myDiv").style.display = "none";
     }
-  
     const handleSubmit = async (e) => {
       e.preventDefault();
   
-      const data = {
+      const requestData = {
         name: name,
         email: email,
-        message: message
+        message: message,
+        language: getLanguage()
       };
   
       try {
         showLoader();
-        const response = await fetch("https://dsanchezcr.azurewebsites.net/api/SendEmailFunction", {
+        const apiEndpoint = config.getApiEndpoint();
+        console.log("Using API endpoint:", apiEndpoint);
+        console.log("Sending data:", requestData);
+        const response = await fetch(`${apiEndpoint}/api/contact`, {
           method: "POST",
-          body: JSON.stringify(data),
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestData),
         });
+        console.log("Response status:", response.status);
+
+        const contentType = response.headers.get("Content-Type");
+        let responseData;
+        if (contentType && contentType.includes("application/json")) {
+          responseData = await response.json();
+        } else {
+          responseData = await response.text();
+        }
+        console.log("Response data:", responseData);
+
         if (!response.ok) {          
           document.getElementById("myDiv").style.display = "block";
-          document.getElementById("myDiv").value = "Ocorreu um erro ao enviar o formulário. Por favor, tente novamente.";
+          document.getElementById("myDiv").innerText = "Ocorreu um erro ao enviar o formulário. Por favor, tente novamente.";
           throw new Error("Network response was not ok");
         }
         showDiv();
         setName('');
         setEmail('');
         setMessage('');
-        loadForm();
       } catch (error) {
-        console.error("There was an error submitting the form", error);
+        console.error("Ocorreu um erro ao enviar o formulário", error);
+        document.getElementById("myDiv").style.display = "block";
+        document.getElementById("myDiv").innerText = "Ocorreu um erro ao enviar o formulário. Por favor, tente novamente.";
       }      
     };
 
