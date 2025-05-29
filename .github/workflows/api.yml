@@ -35,12 +35,17 @@ jobs:
         run: |
           dotnet restore
           dotnet build api.csproj --configuration Release --no-restore
-          dotnet publish api.csproj --configuration Release --output ./output --no-build 
+          dotnet publish api.csproj --configuration Release --output ./publish --no-build --self-contained false
+      - name: Zip published function app
+        working-directory: './api'
+        run: |
+          cd publish
+          zip -r ../function-app.zip .
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: api
-          path: api/output
+          name: function-app
+          path: api/function-app.zip
 
   deploy-qa:
     runs-on: ubuntu-latest
@@ -51,15 +56,16 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
-          name: api
-          path: api/output          
+          name: function-app
+          path: ./
       - name: Deploy to QA Azure Function
         uses: azure/functions-action@v1
         with:
           app-name: 'dsanchezcr'
           slot-name: 'qa'
-          package: 'api/output'
+          package: './function-app.zip'
           publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
+          respect-funcignore: true
 
   deploy-production:
     runs-on: ubuntu-latest
@@ -71,12 +77,13 @@ jobs:
       - name: Download Artifact
         uses: actions/download-artifact@v4
         with:
-          name: api
-          path: api/output          
+          name: function-app
+          path: ./
       - name: Deploy to Production Azure Function
         uses: azure/functions-action@v1
         with:
           app-name: 'dsanchezcr'
           slot-name: 'production'
-          package: 'api/output'
+          package: './function-app.zip'
           publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
+          respect-funcignore: true
