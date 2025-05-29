@@ -3,7 +3,7 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  z-index: 9999;
+  z-index: 999999;
 }
 
 .chatBubbleIcon {
@@ -21,17 +21,29 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  z-index: 10001;
+  z-index: 999999;
+  animation: subtlePulse 3s ease-in-out infinite;
+}
+
+@keyframes subtlePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
 }
 
 .chatBubbleIcon:hover {
   background: var(--ifm-color-primary-dark);
-  transform: scale(1.05);
+  transform: scale(1.05) !important;
   box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+  animation: none;
 }
 
 .chatBubbleIcon.chatOpen {
   background: var(--ifm-color-danger);
+  animation: none;
 }
 
 .chatBubbleIcon.chatOpen:hover {
