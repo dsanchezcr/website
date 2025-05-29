@@ -54,8 +54,8 @@ jobs:
         id: deploy-qa
         uses: azure/functions-action@v1
         with:
-          app-name: 'dsanchezcr-qa'
-          slot-name: 'Production'
+          app-name: 'dsanchezcr'
+          slot-name: 'dsanchezcr-qa'
           package: 'api/output'
           publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
 
