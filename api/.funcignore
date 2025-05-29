@@ -1,0 +1,18 @@
+# Azure Functions ignore file
+.git/
+.gitignore
+.vscode/
+local.settings.json
+test/
+tests/
+*.Tests/
+*.md
+*.yml
+*.yaml
+.github/
+obj/
+bin/Debug/
+TestResults/
+*.log
+.DS_Store
+Thumbs.db
