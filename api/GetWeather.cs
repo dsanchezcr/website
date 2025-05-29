@@ -13,20 +13,20 @@ namespace api
 {
     public class WeatherLocation
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public string Timezone { get; set; }
+        public required string Timezone { get; set; }
     }
 
     public class WeatherData
     {
-        public string Location { get; set; }
+        public required string Location { get; set; }
         public double Temperature { get; set; }
         public int Humidity { get; set; }
         public int WeatherCode { get; set; }
-        public string Description { get; set; }
-        public string Icon { get; set; }
+        public required string Description { get; set; }
+        public required string Icon { get; set; }
         public DateTime LastUpdated { get; set; }
     }
 
@@ -108,9 +108,9 @@ namespace api
             _logger.LogInformation("GetWeather Function Triggered.");
 
             var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
-            string location = query["location"];
-            string latStr = query["lat"];
-            string lonStr = query["lon"];
+            string? location = query["location"];
+            string? latStr = query["lat"];
+            string? lonStr = query["lon"];
 
             try
             {
@@ -164,12 +164,12 @@ namespace api
             }
         }
 
-        private async Task<WeatherData> GetWeatherForLocation(WeatherLocation location)
+        private async Task<WeatherData?> GetWeatherForLocation(WeatherLocation location)
         {
             string cacheKey = $"weather_{location.Name}_{DateTime.UtcNow:yyyyMMddHH}";
 
             // Check cache first (cache for 1 hour)
-            if (cache.TryGetValue(cacheKey, out WeatherData cachedData))
+            if (cache.TryGetValue(cacheKey, out WeatherData? cachedData) && cachedData != null)
             {
                 _logger.LogInformation($"Weather data for {location.Name} retrieved from cache.");
                 return cachedData;
