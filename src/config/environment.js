@@ -16,18 +16,11 @@ export const config = {
   getApiEndpoint: () => {
     // Check if we're in a browser environment
     if (typeof window !== 'undefined') {
-      // Method 1: Environment variable approach (recommended)
-      if (process.env.REACT_APP_API_ENDPOINT) {
-        return process.env.REACT_APP_API_ENDPOINT;
-      }
-      
-      // Method 2: Hostname-based detection
+      // Hostname-based detection only (avoid process.env in browser)
       const hostname = window.location.hostname;
       const isProduction = config.productionDomains.includes(hostname);
-      
       return isProduction ? config.api.production : config.api.qa;
     }
-    
     // Fallback for server-side rendering
     return config.api.production;
   }
