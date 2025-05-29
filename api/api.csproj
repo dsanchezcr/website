@@ -1,5 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">  <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
     <OutputType>Exe</OutputType>
@@ -9,6 +8,8 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <NoWarn>$(NoWarn);CS8892</NoWarn>
+    <_FunctionsSkipCleanOutput>true</_FunctionsSkipCleanOutput>
+    <EnableWorkerIndexing>true</EnableWorkerIndexing>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Azure.Communication.Email" Version="1.0.1" />
