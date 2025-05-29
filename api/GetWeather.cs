@@ -198,8 +198,12 @@ namespace api
                     LastUpdated = DateTime.UtcNow
                 };
 
-                // Cache for 1 hour
-                cache.Set(cacheKey, weatherData, TimeSpan.FromHours(1));
+                // Cache for 1 hour, specify size since SizeLimit is set
+                cache.Set(cacheKey, weatherData, new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1),
+                    Size = 1
+                });
                 
                 _logger.LogInformation($"Weather data for {location.Name} fetched and cached.");
                 return weatherData;
