@@ -4,7 +4,8 @@ import { config } from '../config/environment';
 
 export default function Contact() {
     const [name, setName] = useState('');
-    const [email, setEmail] = useState('');    const [message, setMessage] = useState('');
+    const [email, setEmail] = useState('');
+    const [message, setMessage] = useState('');
 
     function showDiv() {
       document.getElementById("loader").style.display = "none";
