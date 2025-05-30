@@ -10,7 +10,7 @@ import { config } from '../../config/environment';
 const localizedContent = {
   en: {
     chatTitle: "Ask me about my website",
-    chatSubtitle: "Powered by Azure & NLWeb",
+    chatSubtitle: "Powered by Azure OpenAI",
     welcomeTitle: "👋 Hello Friend!",
     welcomeDescription: "You can ask me about:",
     welcomeItems: [
@@ -25,7 +25,7 @@ const localizedContent = {
   // Spanish translation
   es: {
       chatTitle: "Pregúntame sobre mi sitio web",
-      chatSubtitle: "Impulsado por Azure & NLWeb",
+      chatSubtitle: "Impulsado por Azure OpenAI",
       welcomeTitle: "👋 ¡Hola Amig@!",
       welcomeDescription: "Puedes preguntarme sobre:",
       welcomeItems: [
@@ -40,7 +40,7 @@ const localizedContent = {
   // Portuguese translation
   pt: {
       chatTitle: "Pergunte-me sobre meu site",
-      chatSubtitle: "Desenvolvido com Azure & NLWeb",
+      chatSubtitle: "Desenvolvido com Azure OpenAI",
       welcomeTitle: "👋 Olá amig@!",
       welcomeDescription: "Você pode me perguntar sobre:",
       welcomeItems: [
