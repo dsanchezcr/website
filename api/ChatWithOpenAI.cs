@@ -18,6 +18,7 @@ namespace api
         private readonly OpenAIClient _openAIClient;
         private readonly string _deploymentName;
 
+        private readonly string _systemPrompt;
         public ChatWithOpenAI(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<ChatWithOpenAI>();
@@ -25,6 +26,7 @@ namespace api
             string? endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
             string? key = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY");
             _deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT") ?? string.Empty;
+            _systemPrompt = Environment.GetEnvironmentVariable("AZURE_OPENAI_SYSTEM_PROMPT") ?? "You are an online assistant for the website https://dsanchezcr.com answer only questions relevant to the content of the website.";
             if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key) || string.IsNullOrEmpty(_deploymentName))
             {
                 throw new InvalidOperationException("Azure OpenAI configuration is missing. Please set AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_KEY, and AZURE_OPENAI_DEPLOYMENT environment variables.");
@@ -62,7 +64,11 @@ namespace api
                     return badRequest;
                 }
 
-                var messages = new List<ChatRequestMessage>();
+
+                var messages = new List<ChatRequestMessage>
+                {
+                    new ChatRequestSystemMessage(_systemPrompt)
+                };
                 if (!string.IsNullOrWhiteSpace(chatRequest.Prev))
                 {
                     messages.Add(new ChatRequestUserMessage(chatRequest.Prev));
