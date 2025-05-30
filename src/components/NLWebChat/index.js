@@ -1,51 +1,53 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
 import { useLocation } from '@docusaurus/router';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './styles.module.css';
+import { config } from '../../config/environment';
 
 // Localized content
 const localizedContent = {
   en: {
-    chatTitle: "Ask me about David's website",
+    chatTitle: "Ask me about my website",
     chatSubtitle: "Powered by Azure & NLWeb",
-    welcomeTitle: "👋 Hello! I'm here to help you learn about this website.",
+    welcomeTitle: "👋 Hello Friend!",
     welcomeDescription: "You can ask me about:",
     welcomeItems: [
       "Blog posts or technical articles.",
       "Projects and contributions.",     
       "Speaking topics and presentations",
-      "Tech behind the website with GitHub & Azure."
+      "Tech behind the website."
     ],
     inputPlaceholder: "Ask me anything about this website...",
     chatIconTooltip: "Chat with David's AI Assistant"
   },
   // Spanish translation
   es: {
-      chatTitle: "Pregúntame sobre el sitio web de David",
+      chatTitle: "Pregúntame sobre mi sitio web",
       chatSubtitle: "Impulsado por Azure & NLWeb",
-      welcomeTitle: "👋 ¡Hola! Estoy aquí para ayudarte a conocer este sitio web.",
+      welcomeTitle: "👋 ¡Hola Amig@!",
       welcomeDescription: "Puedes preguntarme sobre:",
       welcomeItems: [
         "Publicaciones de blog o artículos técnicos.",
         "Proyectos y contribuciones.",
         "Temas de charlas y presentaciones",
-        "Tecnología detrás del sitio web con GitHub y Azure."
+        "Tecnología detrás del sitio web."
       ],
       inputPlaceholder: "Pregúntame cualquier cosa sobre este sitio web...",
       chatIconTooltip: "Chatea con el Asistente de IA de David"
   },
   // Portuguese translation
   pt: {
-      chatTitle: "Pergunte-me sobre o site do David",
-      chatSubtitle: "Desenvolvido por Azure & NLWeb",
-      welcomeTitle: "👋 Olá! Estou aqui para ajudar você a conhecer este site.",
+      chatTitle: "Pergunte-me sobre meu site",
+      chatSubtitle: "Desenvolvido com Azure & NLWeb",
+      welcomeTitle: "👋 Olá amig@!",
       welcomeDescription: "Você pode me perguntar sobre:",
       welcomeItems: [
         "Posts no blog ou artigos técnicos.",
         "Projetos e contribuições.",
         "Tópicos de palestras e apresentações",
-        "Tecnologia por trás do site com GitHub e Azure."
+        "Tecnologia por trás do site."
       ],
       inputPlaceholder: "Pergunte-me qualquer coisa sobre este site...",
       chatIconTooltip: "Converse com o Assistente de IA do David"
@@ -102,11 +104,8 @@ export default function NLWebChat() {
     setIsLoading(true);
 
     try {
-      // Try to call the NLWeb API backend
-      const apiUrl = process.env.NODE_ENV === 'development' 
-        ? 'http://localhost:8080/api/chat'
-        : '/api/chat';
-      
+      // Use environment.js config to get the API endpoint
+      const apiUrl = config.getApiEndpoint() + '/api/chat';
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
