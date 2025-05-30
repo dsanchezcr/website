@@ -7,47 +7,49 @@ import styles from './styles.module.css';
 // Localized content
 const localizedContent = {
   en: {
-    chatTitle: "Ask me about David's work and interests",
-    chatSubtitle: "Powered by NLWeb and Azure OpenAI",
-    welcomeTitle: "👋 Hello! I'm here to help you learn about David Sanchez.",
+    chatTitle: "Ask me about David's website",
+    chatSubtitle: "Powered by Azure & NLWeb",
+    welcomeTitle: "👋 Hello! I'm here to help you learn about this website.",
     welcomeDescription: "You can ask me about:",
     welcomeItems: [
-      "His blog posts and technical articles",
-      "His projects and contributions", 
-      "His experience with Azure and Microsoft technologies",
-      "Speaking topics and presentations"
+      "Blog posts or technical articles.",
+      "Projects and contributions.",     
+      "Speaking topics and presentations",
+      "Tech behind the website with GitHub & Azure."
     ],
-    inputPlaceholder: "Ask me anything about David...",
+    inputPlaceholder: "Ask me anything about this website...",
     chatIconTooltip: "Chat with David's AI Assistant"
   },
+  // Spanish translation
   es: {
-    chatTitle: "Pregúntame sobre el trabajo e intereses de David",
-    chatSubtitle: "Powered by NLWeb and Azure OpenAI",
-    welcomeTitle: "👋 ¡Hola! Estoy aquí para ayudarte a conocer sobre David Sanchez.",
-    welcomeDescription: "Puedes preguntarme sobre:",
-    welcomeItems: [
-      "Sus artículos técnicos y posts del blog",
-      "Sus proyectos y contribuciones",
-      "Su experiencia con Azure y tecnologías de Microsoft", 
-      "Temas de charlas y presentaciones"
-    ],
-    inputPlaceholder: "Pregúntame lo que quieras sobre David...",
-    chatIconTooltip: "Chatea con el Asistente IA de David"
+      chatTitle: "Pregúntame sobre el sitio web de David",
+      chatSubtitle: "Impulsado por Azure & NLWeb",
+      welcomeTitle: "👋 ¡Hola! Estoy aquí para ayudarte a conocer este sitio web.",
+      welcomeDescription: "Puedes preguntarme sobre:",
+      welcomeItems: [
+        "Publicaciones de blog o artículos técnicos.",
+        "Proyectos y contribuciones.",
+        "Temas de charlas y presentaciones",
+        "Tecnología detrás del sitio web con GitHub y Azure."
+      ],
+      inputPlaceholder: "Pregúntame cualquier cosa sobre este sitio web...",
+      chatIconTooltip: "Chatea con el Asistente de IA de David"
   },
+  // Portuguese translation
   pt: {
-    chatTitle: "Pergunte-me sobre o trabalho e interesses do David", 
-    chatSubtitle: "Powered by NLWeb and Azure OpenAI",
-    welcomeTitle: "👋 Olá! Estou aqui para ajudá-lo a conhecer sobre David Sanchez.",
-    welcomeDescription: "Você pode me perguntar sobre:",
-    welcomeItems: [
-      "Seus artigos técnicos e posts do blog",
-      "Seus projetos e contribuições",
-      "Sua experiência com Azure e tecnologias Microsoft",
-      "Tópicos de palestras e apresentações"
-    ],
-    inputPlaceholder: "Pergunte-me qualquer coisa sobre David...",
-    chatIconTooltip: "Converse com o Assistente IA do David"
-  }
+      chatTitle: "Pergunte-me sobre o site do David",
+      chatSubtitle: "Desenvolvido por Azure & NLWeb",
+      welcomeTitle: "👋 Olá! Estou aqui para ajudar você a conhecer este site.",
+      welcomeDescription: "Você pode me perguntar sobre:",
+      welcomeItems: [
+        "Posts no blog ou artigos técnicos.",
+        "Projetos e contribuições.",
+        "Tópicos de palestras e apresentações",
+        "Tecnologia por trás do site com GitHub e Azure."
+      ],
+      inputPlaceholder: "Pergunte-me qualquer coisa sobre este site...",
+      chatIconTooltip: "Converse com o Assistente de IA do David"
+    },
 };
 
 export default function NLWebChat() {
