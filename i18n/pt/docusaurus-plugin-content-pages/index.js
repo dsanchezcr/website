@@ -96,7 +96,7 @@ export default function Home() {
       <div className={styles.homePageContainer}>
         <OnlineStatusWidget />
         <HomepageHeader />   
-        <main>        
+        <main> 
           <HomepageFeatures />
         </main>   
       </div>
