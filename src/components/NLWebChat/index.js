@@ -105,7 +105,7 @@ export default function NLWebChat() {
 
     try {
       // Use environment.js config to get the API endpoint
-      const apiUrl = config.getApiEndpoint() + '/api/chat';
+      const apiUrl = config.getApiEndpoint() + '/api/nlweb/ask';
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
