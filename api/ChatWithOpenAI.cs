@@ -34,9 +34,21 @@ namespace api
 
         [Function("ChatWithOpenAI")]
         public async Task<HttpResponseData> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "nlweb/ask")] HttpRequestData req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", "options", Route = "nlweb/ask")] HttpRequestData req)
         {
             _logger.LogInformation("ChatWithOpenAI Function Triggered.");
+
+            // Handle CORS preflight request
+            if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
+            {
+                var corsResponse = req.CreateResponse(HttpStatusCode.OK);
+                corsResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+                corsResponse.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS");
+                corsResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+                corsResponse.Headers.Add("Access-Control-Max-Age", "86400");
+                return corsResponse;
+            }
+
             try
             {
                 using var reader = new StreamReader(req.Body);
@@ -45,6 +57,7 @@ namespace api
                 if (chatRequest == null || string.IsNullOrWhiteSpace(chatRequest.Query))
                 {
                     var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
+                    badRequest.Headers.Add("Access-Control-Allow-Origin", "*");
                     await badRequest.WriteStringAsync("Missing or invalid 'query' in request body.");
                     return badRequest;
                 }

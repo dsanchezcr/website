@@ -111,14 +111,14 @@ export default function NLWebChat() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: userMessage.text }),
+        body: JSON.stringify({ query: userMessage.text }),
       });
 
       if (response.ok) {
         const data = await response.json();
         const botMessage = {
           id: Date.now() + 1,
-          text: data.response,
+          text: data.result,
           sender: 'bot',
           timestamp: new Date()
         };
