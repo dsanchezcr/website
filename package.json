@@ -41,7 +41,7 @@
     ]
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.8.0",
+    "@docusaurus/module-type-aliases": "^3.8.1",
     "@docusaurus/types": "^3.8.0",
     "@tsconfig/docusaurus": "^2.0.3",
     "babel-plugin-module-resolver": "^5.0.2",
