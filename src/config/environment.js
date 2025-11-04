@@ -14,7 +14,7 @@ export const config = {
   ],
 
   // reCAPTCHA v3 site key
-  recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', // This is Google's test key - replace with actual key in production
+  recaptchaSiteKey: '6LcGaAIsAAAAALzUAxzGFx5R1uJ2Wgxn4RmNsy2I',
 
   // Get the appropriate API endpoint based on environment
   getApiEndpoint: () => {

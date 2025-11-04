@@ -128,6 +128,16 @@ function ContactForm() {
                 <textarea value={message} required onChange={(e) => setMessage(e.target.value)} />
             </label>
             <br />
+            <div className="recaptcha-notice" style={{ 
+              fontSize: '12px', 
+              color: '#666', 
+              marginBottom: '10px',
+              textAlign: 'center'
+            }}>
+              Este sitio está protegido por reCAPTCHA y se aplican la{' '}
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Política de privacidad</a> y los{' '}
+              <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">Términos de servicio</a> de Google.
+            </div>
             <button type="submit" className='button button--secondary button--lg'>Enviar</button>
             <br />
             <label>Gracias.</label>
