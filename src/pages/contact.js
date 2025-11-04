@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import Layout from '@theme/Layout';
 import { config } from '../config/environment';
 import { useLocation } from '@docusaurus/router';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
-export default function Contact() {
+function ContactForm() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
     const location = useLocation();
+    const { executeRecaptcha } = useGoogleReCaptcha();
     
     // Extract language from URL path
     const getLanguage = () => {
@@ -27,17 +29,28 @@ export default function Contact() {
       document.getElementById("loader").style.display = "block";
       document.getElementById("emailForm").style.display = "none";
       document.getElementById("myDiv").style.display = "none";
-    }    const handleSubmit = async (e) => {
+    }
+    
+    const handleSubmit = async (e) => {
       e.preventDefault();
-  
-      const requestData = {
-        name: name,
-        email: email,
-        message: message,
-        language: getLanguage()
-      };
-      
+
+      if (!executeRecaptcha) {
+        console.log('reCAPTCHA is not yet available. Please try again.');
+        return;
+      }
+
       try {
+        // Get reCAPTCHA token
+        const token = await executeRecaptcha('contact_form');
+  
+        const requestData = {
+          name: name,
+          email: email,
+          message: message,
+          language: getLanguage(),
+          recaptchaToken: token
+        };
+      
         showLoader();
         const apiEndpoint = config.getApiEndpoint();
         console.log("Using API endpoint:", apiEndpoint);
@@ -103,10 +116,28 @@ export default function Contact() {
                 <textarea value={message} required onChange={(e) => setMessage(e.target.value)} />
             </label>
             <br />
+            <div className="recaptcha-notice" style={{ 
+              fontSize: '12px', 
+              color: '#666', 
+              marginBottom: '10px',
+              textAlign: 'center'
+            }}>
+              This site is protected by reCAPTCHA and the Google{' '}
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and{' '}
+              <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">Terms of Service</a> apply.
+            </div>
             <button type="submit" className='button button--secondary button--lg'>Submit</button>
             <br />
             <label>Thanks.</label>
         </form>
     </Layout>
+  );
+}
+
+export default function Contact() {
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey={config.recaptchaSiteKey}>
+      <ContactForm />
+    </GoogleReCaptchaProvider>
   );
 }
