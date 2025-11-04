@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import Layout from '@theme/Layout';
 import { config } from '../../../src/config/environment';
 import { useLocation } from '@docusaurus/router';
+import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
-export default function Contact() {
+function ContactForm() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
     const location = useLocation();
+    const { executeRecaptcha } = useGoogleReCaptcha();
     
     // Extract language from URL path
     const getLanguage = () => {
@@ -40,17 +42,27 @@ export default function Contact() {
       document.getElementById("emailForm").style.display = "none";
       document.getElementById("myDiv").style.display = "none";
     }
+    
     const handleSubmit = async (e) => {
       e.preventDefault();
-  
-      const requestData = {
-        name: name,
-        email: email,
-        message: message,
-        language: getLanguage()
-      };
-  
+
+      if (!executeRecaptcha) {
+        console.log('Execute recaptcha not yet available');
+        return;
+      }
+
       try {
+        // Get reCAPTCHA token
+        const token = await executeRecaptcha('contact_form');
+  
+        const requestData = {
+          name: name,
+          email: email,
+          message: message,
+          language: getLanguage(),
+          recaptchaToken: token
+        };
+  
         showLoader();
         const apiEndpoint = config.getApiEndpoint();
         console.log("Using API endpoint:", apiEndpoint);
@@ -121,5 +133,13 @@ export default function Contact() {
             <label>Gracias.</label>
         </form>
     </Layout>
+  );
+}
+
+export default function Contact() {
+  return (
+    <GoogleReCaptchaProvider reCaptchaKey={config.recaptchaSiteKey}>
+      <ContactForm />
+    </GoogleReCaptchaProvider>
   );
 }

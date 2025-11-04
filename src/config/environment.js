@@ -13,6 +13,9 @@ export const config = {
     'www.dsanchezcr.com'
   ],
 
+  // reCAPTCHA v3 site key
+  recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', // This is Google's test key - replace with actual key in production
+
   // Get the appropriate API endpoint based on environment
   getApiEndpoint: () => {
     // Check if we're in a browser environment
