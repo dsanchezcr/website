@@ -35,7 +35,7 @@ function ContactForm() {
       e.preventDefault();
 
       if (!executeRecaptcha) {
-        console.log('Execute recaptcha not yet available');
+        console.log('reCAPTCHA is not yet available. Please try again.');
         return;
       }
 
