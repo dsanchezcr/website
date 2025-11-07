@@ -8,6 +8,7 @@ function ContactForm() {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const [website, setWebsite] = useState(''); // Honeypot field
     const location = useLocation();
     const { executeRecaptcha } = useGoogleReCaptcha();
     
@@ -30,6 +31,13 @@ function ContactForm() {
       document.getElementById("emailForm").style.display = "none";
       document.getElementById("myDiv").style.display = "none";
     }
+
+    function showError(errorMsg) {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("emailForm").style.display = "block";
+      document.getElementById("errorDiv").style.display = "block";
+      document.getElementById("errorDiv").innerText = errorMsg;
+    }
     
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -48,7 +56,8 @@ function ContactForm() {
           email: email,
           message: message,
           language: getLanguage(),
-          recaptchaToken: token
+          recaptchaToken: token,
+          website: website // Honeypot field
         };
       
         showLoader();
@@ -73,19 +82,21 @@ function ContactForm() {
         }
         console.log("Response data:", responseData);
 
-        if (!response.ok) {          
-          document.getElementById("myDiv").style.display = "block";
-          document.getElementById("myDiv").value = "There was an error submitting the form";
-          throw new Error("Network response was not ok");
+        if (!response.ok) {
+          const errorMessage = responseData?.error || "There was an error submitting the form";
+          showError(errorMessage);
+          throw new Error(errorMessage);
         }
         showDiv();
         setName('');
         setEmail('');
         setMessage('');
+        setWebsite(''); // Reset honeypot
       } catch (error) {
         console.error("There was an error submitting the form", error);
-        document.getElementById("myDiv").style.display = "block";
-        document.getElementById("myDiv").innerText = "There was an error submitting the form. Please try again later.";
+        if (!document.getElementById("errorDiv").style.display || document.getElementById("errorDiv").style.display === "none") {
+          showError("There was an error submitting the form. Please try again later.");
+        }
       }      
     };
 
@@ -94,9 +105,11 @@ function ContactForm() {
         <div id="loader"></div>
         <div id="myDiv" className="animate-bottom">
           <br />
-          <h2>Email sent!</h2>
-          <p>I will try to get back to you as soon as possible.</p>
-        </div>        
+          <h2>Email verification sent!</h2>
+          <p>Please check your email and click the verification link to complete your contact request.</p>
+          <p>If you don't see it, please check your spam folder.</p>
+        </div>
+        <div id="errorDiv" style={{ display: 'none', backgroundColor: '#fee', padding: '10px', margin: '10px 0', borderRadius: '5px', color: '#c00' }}></div>
         <form id="emailForm" onSubmit={handleSubmit}>
         <br />        
         <label>Feel free to reach out if you have any question or suggestion.</label>
@@ -111,6 +124,20 @@ function ContactForm() {
                 <input type="email" value={email} required onChange={(e) => setEmail(e.target.value)} />
             </label>
             <br />
+            {/* Honeypot field - hidden from real users but visible to bots */}
+            <div style={{ position: 'absolute', left: '-9999px' }}>
+                <label>
+                    Website:
+                    <input 
+                        type="text" 
+                        name="website" 
+                        value={website} 
+                        onChange={(e) => setWebsite(e.target.value)}
+                        tabIndex="-1"
+                        autoComplete="off"
+                    />
+                </label>
+            </div>
             <label>
                 Message:
                 <textarea value={message} required onChange={(e) => setMessage(e.target.value)} />
