@@ -93,7 +93,16 @@ public partial class SendEmail
     }
 
     // Data models
-    private record ContactRequest(string Name, string Email, string Message, string Language = "en", string RecaptchaToken = "", string Website = "");
+    private class ContactRequest
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+        public string Language { get; set; } = "en";
+        public string RecaptchaToken { get; set; } = string.Empty;
+        public string Website { get; set; } = string.Empty;
+    }
+    
     private record VerificationData(string Name, string Email, string Message, string Language);
     private record SpamCheckResult(bool IsValid, string Reason);
     private record RecaptchaResponse(bool Success, double Score, string Action, DateTime ChallengeTs, string Hostname, string[] ErrorCodes);
@@ -304,6 +313,7 @@ public partial class SendEmail
             var contactRequest = await ParseRequestAsync(req, cancellationToken);
             if (contactRequest == null)
             {
+                _logger.LogWarning("Failed to parse contact request, returning 400");
                 return await CreateErrorResponseAsync(req, HttpStatusCode.BadRequest, 
                     "Invalid request. Please provide name, email, and message in JSON format.");
             }
@@ -383,8 +393,13 @@ public partial class SendEmail
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync(cancellationToken);
             
+            _logger.LogInformation("Request body received: {RequestBody}", requestBody);
+            
             if (string.IsNullOrWhiteSpace(requestBody))
+            {
+                _logger.LogWarning("Request body is empty");
                 return null;
+            }
 
             var options = new JsonSerializerOptions
             {
@@ -394,11 +409,31 @@ public partial class SendEmail
 
             var data = JsonSerializer.Deserialize<ContactRequest>(requestBody, options);
             
-            // Validate required fields
-            if (string.IsNullOrWhiteSpace(data?.Name) || 
-                string.IsNullOrWhiteSpace(data?.Email) || 
-                string.IsNullOrWhiteSpace(data?.Message))
+            if (data == null)
             {
+                _logger.LogWarning("Deserialization returned null");
+                return null;
+            }
+            
+            _logger.LogInformation("Parsed contact request - Name: {Name}, Email: {Email}, HasMessage: {HasMessage}, Language: {Language}, HasRecaptcha: {HasRecaptcha}", 
+                data.Name, data.Email, !string.IsNullOrWhiteSpace(data.Message), data.Language, !string.IsNullOrWhiteSpace(data.RecaptchaToken));
+            
+            // Validate required fields
+            if (string.IsNullOrWhiteSpace(data.Name))
+            {
+                _logger.LogWarning("Name is missing");
+                return null;
+            }
+            
+            if (string.IsNullOrWhiteSpace(data.Email))
+            {
+                _logger.LogWarning("Email is missing");
+                return null;
+            }
+            
+            if (string.IsNullOrWhiteSpace(data.Message))
+            {
+                _logger.LogWarning("Message is missing");
                 return null;
             }
 
@@ -406,8 +441,14 @@ public partial class SendEmail
         }
         catch (JsonException ex)
         {
-            _logger.LogWarning(ex, "Failed to parse JSON request body");
-            return null;        }
+            _logger.LogError(ex, "Failed to parse JSON request body");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unexpected error parsing request");
+            return null;
+        }
     }
 
     private static bool IsValidEmail(string email)
