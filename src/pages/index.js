@@ -4,9 +4,8 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import Svg from '@site/static/img/logo.svg';
-import OnlineStatusWidget from '@site/src/components/OnlineStatusWidget';
 import CompactWeatherWidget from '@site/src/components/WeatherWidget/CompactWeatherWidget';
-
+import OnlineStatusWidget from '@site/src/components/OnlineStatusWidget';
 import styles from './index.module.css';
 
 const FeatureList = [
@@ -97,10 +96,10 @@ export default function Home() {
       <div className={styles.homePageContainer}>
         <OnlineStatusWidget />
         <HomepageHeader />   
-        <main>        
+        <main>
           <HomepageFeatures /> 
         </main>
-      </div>   
+      </div> 
     </Layout>    
   );
 }

@@ -13,9 +13,11 @@
     <EnableWorkerIndexing>true</EnableWorkerIndexing>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.16" />
     <PackageReference Include="Azure.Communication.Email" Version="1.0.1" />
     <PackageReference Include="Google.Analytics.Data.V1Beta" Version="2.0.0-beta09" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />                  
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
+    <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />                  
     <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="2.0.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.0.4" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.3.0" />
