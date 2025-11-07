@@ -9,29 +9,32 @@ using Microsoft.Extensions.Logging;
 using Azure.AI.OpenAI;
 using System.Collections.Generic;
 using Azure;
+using OpenAI.Chat;
 
 namespace api
 {
     public class ChatWithOpenAI
     {
         private readonly ILogger _logger;
-        private readonly OpenAIClient _openAIClient;
-        private readonly string _deploymentName;
-
+        private readonly ChatClient _chatClient;
         private readonly string _systemPrompt;
+        
         public ChatWithOpenAI(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<ChatWithOpenAI>();
             // Use environment variables for configuration
             string? endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
             string? key = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY");
-            _deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT") ?? string.Empty;
+            string? deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT");
             _systemPrompt = Environment.GetEnvironmentVariable("AZURE_OPENAI_SYSTEM_PROMPT") ?? "You are an online assistant for the website https://dsanchezcr.com answer only questions relevant to the content of the website.";
-            if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key) || string.IsNullOrEmpty(_deploymentName))
+            
+            if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key) || string.IsNullOrEmpty(deploymentName))
             {
                 throw new InvalidOperationException("Azure OpenAI configuration is missing. Please set AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_KEY, and AZURE_OPENAI_DEPLOYMENT environment variables.");
             }
-            _openAIClient = new OpenAIClient(new Uri(endpoint), new AzureKeyCredential(key));
+            
+            AzureOpenAIClient azureClient = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(key));
+            _chatClient = azureClient.GetChatClient(deploymentName);
         }
 
         [Function("ChatWithOpenAI")]
@@ -64,25 +67,25 @@ namespace api
                     return badRequest;
                 }
 
-
-                var messages = new List<ChatRequestMessage>
+                var messages = new List<ChatMessage>
                 {
-                    new ChatRequestSystemMessage(_systemPrompt)
+                    new SystemChatMessage(_systemPrompt)
                 };
+                
                 if (!string.IsNullOrWhiteSpace(chatRequest.Prev))
                 {
-                    messages.Add(new ChatRequestUserMessage(chatRequest.Prev));
+                    messages.Add(new UserChatMessage(chatRequest.Prev));
                 }
-                messages.Add(new ChatRequestUserMessage(chatRequest.Query));
+                messages.Add(new UserChatMessage(chatRequest.Query));
 
-                var options = new ChatCompletionsOptions(_deploymentName, messages)
+                var options = new ChatCompletionOptions
                 {
-                    MaxTokens = 1024,
+                    MaxOutputTokenCount = 1024,
                     Temperature = 0.7f
                 };
 
-                var response = await _openAIClient.GetChatCompletionsAsync(options);
-                var result = response.Value.Choices[0].Message.Content;
+                var completion = await _chatClient.CompleteChatAsync(messages, options);
+                var result = completion.Value.Content[0].Text;
 
                 var responseObj = new
                 {
