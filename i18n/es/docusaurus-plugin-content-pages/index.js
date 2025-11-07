@@ -4,6 +4,8 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import Svg from '@site/static/img/logo.svg';
+import CompactWeatherWidget from '@site/src/components/WeatherWidget/CompactWeatherWidget';
+import OnlineStatusWidget from '@site/src/components/OnlineStatusWidget';
 import styles from './index.module.css';
 
 const FeatureList = [
@@ -74,6 +76,9 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
+        <div className={styles.weatherWidgetContainer}>
+          <CompactWeatherWidget />
+        </div>
         <Svg className={styles.featureSvg} role="img" />
         <h1 className="hero__title">Hola, soy {siteConfig.title}.</h1>
         <p className="hero__subtitle">Global Black Belt - Azure Developer Productivity en Microsoft.</p>
@@ -88,10 +93,13 @@ export default function Home() {
     <Layout 
       title={`Inicio`}
       description="David Sanchez sitio web personal"> 
-      <HomepageHeader />   
+      <div className={styles.homePageContainer}>
+        <OnlineStatusWidget />
+        <HomepageHeader />   
         <main>        
-      <HomepageFeatures /> 
-      </main>   
+          <HomepageFeatures />
+        </main>   
+      </div>
     </Layout>    
   );
 }

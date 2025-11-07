@@ -1,35 +1,97 @@
-.heroBanner {
-  padding: 1rem 0;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
+ .heroBanner {
+    padding: 1rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
   }
-}
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+  .weatherWidgetContainer {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    max-width: 300px;
+  }
+  
+  .homePageContainer {
+    position: relative;
+  }
+  
+  .homePageContainer .onlineStatusWidget {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
+    background: var(--ifm-background-color);
+    border: 1px solid var(--ifm-color-emphasis-300);
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 0.85rem;
+  }
+  
+  [data-theme='dark'] .homePageContainer .onlineStatusWidget {
+    background: var(--ifm-background-color);
+    border-color: var(--ifm-color-emphasis-300);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  @media screen and (max-width: 996px) {
+    .heroBanner {
+      padding: 2rem;
+    }
 
-.featureSvg {
-  height: 170px;
-  width: 170px;
-}
+    
+    .homePageContainer .onlineStatusWidget {
+      top: 10px;
+      left: 10px;
+      font-size: 0.8rem;
+      padding: 6px 10px;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .homePageContainer .onlineStatusWidget {
+      position: static;
+      margin: 10px auto;
+      width: fit-content;
+    }
 
-.features {
-  display: flex;
-  align-items: center;
-  padding: 2rem 0;
-  width: 100%;
-}
+    .weatherWidgetContainer {
+      position: static;
+      max-width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
 
-.featureSvgHomeFeatures {
-  height: 150px;
-  width: 150px;
-}
+  @media screen and (max-width: 768px) {
+    .weatherWidgetContainer {
+      max-width: 100%;
+
+    }
+  }
+  
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .features {
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+    width: 100%;
+  }
+  
+  .featureSvg {
+    height: 270px;
+    width: 270px;
+  }
+
+  .featureSvgHomeFeatures {
+    height: 170px;
+    width: 170px;
+    margin: 0 auto 1rem auto;
+    display: block;
+  }

@@ -184,3 +184,10 @@ button:hover {
   color: #ffffff;
   text-decoration: none;
 }
+
+/* reCAPTCHA badge positioning */
+.grecaptcha-badge {
+  z-index: 9999 !important;
+  bottom: 80px !important;
+  right: 16px !important;
+}

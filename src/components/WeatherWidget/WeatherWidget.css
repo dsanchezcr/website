@@ -1,0 +1,231 @@
+.weather-widget {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--content-background);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+[data-theme='dark'] .weather-widget {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.weather-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.weather-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.weather-card {
+  background: var(--content-background);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.weather-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ifm-color-primary), var(--ifm-color-primary-light));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.weather-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.weather-card:hover::before {
+  opacity: 1;
+}
+
+[data-theme='dark'] .weather-card:hover {
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+.weather-location {
+  margin-bottom: 0.75rem;
+}
+
+.weather-location h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.weather-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.weather-temp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-color);
+}
+
+.temp-celsius {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.temp-fahrenheit {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--ifm-color-emphasis-600);
+  line-height: 1;
+  margin-top: 0.25rem;
+}
+
+.weather-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.weather-condition {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-color);
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.weather-humidity {
+  font-size: 0.9rem;
+  color: var(--ifm-color-primary);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.weather-updated {
+  font-size: 0.75rem;
+  color: var(--ifm-color-emphasis-600);
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  padding-top: 0.5rem;
+}
+
+.weather-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  gap: 1rem;
+}
+
+.weather-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--ifm-color-primary);
+  border-radius: 50%;
+  animation: weather-spin 1s linear infinite;
+}
+
+@keyframes weather-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.weather-loading p {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.weather-error {
+  text-align: center;
+  padding: 2rem;
+}
+
+.weather-error p {
+  margin: 0;
+  color: var(--ifm-color-danger);
+  font-size: 1rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .weather-widget {
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+  
+  .weather-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .weather-card {
+    padding: 1rem;
+  }
+  
+  .weather-temp {
+    font-size: 2rem;
+  }
+  
+  .weather-icon {
+    font-size: 2.5rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .weather-card {
+    border-width: 2px;
+  }
+  
+  .weather-widget {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .weather-card {
+    transition: none;
+  }
+  
+  .weather-card:hover {
+    transform: none;
+  }
+  
+  .weather-spinner {
+    animation: none;
+  }
+}

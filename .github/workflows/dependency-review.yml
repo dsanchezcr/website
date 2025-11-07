@@ -1,0 +1,28 @@
+name: 'Dependency Review'
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  dependency-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          # Fail the action if any vulnerabilities are found
+          fail-on-severity: moderate
+          # Block pull requests that introduce packages with any of the below licenses
+          deny-licenses: GPL-1.0-only, GPL-1.0-or-later, GPL-2.0-only, GPL-2.0-or-later, GPL-3.0-only, GPL-3.0-or-later, LGPL-2.0-only, LGPL-2.0-or-later, LGPL-2.1-only, LGPL-2.1-or-later, LGPL-3.0-only, LGPL-3.0-or-later
+          # Show all vulnerabilities in the summary, not just the ones introduced in this PR
+          show-openssf-scorecard: true
+          # Include vulnerability summary in PR comment
+          comment-summary-in-pr: always
