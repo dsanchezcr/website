@@ -1,6 +1,6 @@
 {
   "name": "dsanchezcr",
-  "version": "3.4.5",
+  "version": "3.4.12",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
