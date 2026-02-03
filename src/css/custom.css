@@ -238,6 +238,37 @@ button:hover {
   flex-shrink: 0;
 }
 
+/* Color mode toggle button - show sun/moon emoji icons */
+[class*='colorModeToggle'] button,
+button[class*='toggleButton'] {
+  background: transparent !important;
+  border: none !important;
+  font-size: 1.25rem;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+[class*='colorModeToggle'] button::before,
+button[class*='toggleButton']::before {
+  content: '☀️';
+}
+
+[data-theme='dark'] [class*='colorModeToggle'] button::before,
+[data-theme='dark'] button[class*='toggleButton']::before {
+  content: '🌙';
+}
+
+/* Hide the default SVG icons */
+[class*='colorModeToggle'] button svg,
+button[class*='toggleButton'] svg {
+  display: none !important;
+}
+
 /* Ensure search doesn't overflow on smaller screens */
 @media (max-width: 996px) {
   .navbar .DocSearch-Button {
