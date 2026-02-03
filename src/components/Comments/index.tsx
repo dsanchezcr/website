@@ -5,7 +5,7 @@ import { useLocale } from "@site/src/hooks";
 
 export default function Comments(): JSX.Element {
   const { colorMode } = useColorMode();
-  const { locale } = useLocale();
+  const locale = useLocale();
   
   // Map locale to Giscus supported language codes
   const giscusLang = locale === 'pt' ? 'pt-BR' : locale;

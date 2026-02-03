@@ -89,7 +89,7 @@ param azureOpenAISystemPrompt string = 'You are an online assistant for the webs
 @description('Google Analytics Property ID for the online users widget.')
 param googleAnalyticsPropertyId string = ''
 
-@description('Google Analytics credentials JSON (base64 encoded or JSON string).')
+@description('Google Analytics credentials JSON string.')
 @secure()
 param googleAnalyticsCredentialsJson string = ''
 
@@ -215,8 +215,8 @@ output staticWebAppId string = staticWebApp.id
 @description('The default hostname of the Static Web App.')
 output defaultHostname string = staticWebApp.properties.defaultHostname
 
-@description('The deployment token for GitHub Actions (keep this secret!).')
-output deploymentToken string = staticWebApp.listSecrets().properties.apiKey
+// NOTE: Deployment token should be retrieved via: az staticwebapp secrets list --name <app-name>
+// Do not output secrets in Bicep as they are visible in deployment history.
 
 @description('The Application Insights connection string.')
 output appInsightsConnectionString string = appInsights.properties.ConnectionString

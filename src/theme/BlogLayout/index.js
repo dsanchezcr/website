@@ -4,8 +4,6 @@ import Layout from '@theme/Layout';
 import BlogSidebar from '@theme/BlogSidebar';
 import { useLocation } from '@docusaurus/router';
 
-import styles from './styles.module.css';
-
 export default function BlogLayout(props) {
   const { sidebar, toc, children, ...layoutProps } = props;
   const location = useLocation();

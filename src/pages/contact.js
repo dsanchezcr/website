@@ -86,7 +86,7 @@ function ContactForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
   
-  const { locale: lang } = useLocale();
+  const lang = useLocale();
   const { executeRecaptcha } = useGoogleReCaptcha();
   
   const t = translations[lang] || translations.en;
