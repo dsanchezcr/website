@@ -31,7 +31,7 @@ export default function ExchangeRatesWidget() {
   }, []);
 
   const formatRate = (rate) => {
-    if (!rate) return 'N/A';
+    if (rate == null) return 'N/A';
     return new Intl.NumberFormat('es-CR', { 
       style: 'currency', 
       currency: 'CRC',

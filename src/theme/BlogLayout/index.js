@@ -10,11 +10,16 @@ export default function BlogLayout(props) {
   
   // Check if we're on an individual blog post page (not the listing page)
   // Blog listing pages are typically /blog, /blog/page/2, /blog/tags/*, /blog/archive
+  const isListingSegment = (path) => {
+    const segments = path.split('/').filter(Boolean);
+    return segments.includes('page') || 
+           segments.includes('tags') || 
+           segments.includes('archive') || 
+           segments.includes('authors');
+  };
+
   const isPostPage = location.pathname.startsWith('/blog/') && 
-    !location.pathname.includes('/page/') &&
-    !location.pathname.includes('/tags/') &&
-    !location.pathname.includes('/archive') &&
-    !location.pathname.includes('/authors/') &&
+    !isListingSegment(location.pathname) &&
     location.pathname !== '/blog/' &&
     location.pathname !== '/blog';
   
@@ -23,14 +28,8 @@ export default function BlogLayout(props) {
     location.pathname.startsWith('/es/blog/') || 
     location.pathname.startsWith('/pt/blog/')
   ) && 
-    !location.pathname.includes('/page/') &&
-    !location.pathname.includes('/tags/') &&
-    !location.pathname.includes('/archive') &&
-    !location.pathname.includes('/authors/') &&
-    location.pathname !== '/es/blog/' &&
-    location.pathname !== '/es/blog' &&
-    location.pathname !== '/pt/blog/' &&
-    location.pathname !== '/pt/blog';
+    !isListingSegment(location.pathname) &&
+    !['/es/blog/', '/es/blog', '/pt/blog/', '/pt/blog'].includes(location.pathname);
 
   const shouldHideSidebar = isPostPage || isLocalizedPostPage;
   const hasSidebar = sidebar && sidebar.items && sidebar.items.length > 0 && !shouldHideSidebar;

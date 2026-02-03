@@ -28,7 +28,7 @@ export default function ExchangeRates() {
   }, []);
 
   const formatRate = (rate) => {
-    if (!rate) return 'N/A';
+    if (rate == null) return 'N/A';
     return new Intl.NumberFormat('es-CR', { 
       style: 'currency', 
       currency: 'CRC',

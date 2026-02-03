@@ -181,7 +181,7 @@ resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2023-12-01' = {
     
     // Website configuration
     WEBSITE_URL: websiteUrl
-    API_URL: 'https://${staticWebApp.properties.defaultHostname}'
+    API_URL: websiteUrl
     
     // Application Insights
     APPLICATIONINSIGHTS_CONNECTION_STRING: appInsights.properties.ConnectionString
