@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from '@docusaurus/router';
 import translations from './translations';
 import './WeatherWidget.css';
+import { config } from '../../config/environment';
 
 const WeatherWidget = ({ showUserLocation = false, locations = ['orlando', 'sanjose'] }) => {
   const [weatherData, setWeatherData] = useState([]);
@@ -39,11 +40,12 @@ const WeatherWidget = ({ showUserLocation = false, locations = ['orlando', 'sanj
       setError(null);
       
       try {
+        const apiEndpoint = config.getApiEndpoint();
         const weatherPromises = [];
         
         // Fetch user location weather if available
         if (userLocation) {
-          const userWeatherUrl = `/api/GetWeatherFunction?lat=${userLocation.lat}&lon=${userLocation.lon}`;
+          const userWeatherUrl = `${apiEndpoint}/api/weather?lat=${userLocation.lat}&lon=${userLocation.lon}`;
           weatherPromises.push(
             fetch(userWeatherUrl).catch(() => null) // Handle individual request failures
           );
@@ -51,7 +53,7 @@ const WeatherWidget = ({ showUserLocation = false, locations = ['orlando', 'sanj
         
         // Fetch predefined locations weather
         for (const location of locations) {
-          const locationWeatherUrl = `/api/GetWeatherFunction?location=${location}`;
+          const locationWeatherUrl = `${apiEndpoint}/api/weather?location=${location}`;
           weatherPromises.push(
             fetch(locationWeatherUrl).catch(() => null) // Handle individual request failures
           );

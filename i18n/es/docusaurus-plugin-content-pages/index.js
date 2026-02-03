@@ -6,6 +6,7 @@ import Link from '@docusaurus/Link';
 import Svg from '@site/static/img/logo.svg';
 import CompactWeatherWidget from '@site/src/components/WeatherWidget/CompactWeatherWidget';
 import OnlineStatusWidget from '@site/src/components/OnlineStatusWidget';
+import ErrorBoundary from '@site/src/components/ErrorBoundary';
 import styles from './index.module.css';
 
 const FeatureList = [
@@ -77,7 +78,9 @@ function HomepageHeader() {
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <div className={styles.weatherWidgetContainer}>
-          <CompactWeatherWidget />
+          <ErrorBoundary>
+            <CompactWeatherWidget />
+          </ErrorBoundary>
         </div>
         <Svg className={styles.featureSvg} role="img" />
         <h1 className="hero__title">Hola, soy {siteConfig.title}.</h1>
@@ -94,7 +97,9 @@ export default function Home() {
       title={`Inicio`}
       description="David Sanchez sitio web personal"> 
       <div className={styles.homePageContainer}>
-        <OnlineStatusWidget />
+        <ErrorBoundary>
+          <OnlineStatusWidget />
+        </ErrorBoundary>
         <HomepageHeader />   
         <main>        
           <HomepageFeatures />

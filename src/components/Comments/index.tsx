@@ -1,9 +1,19 @@
 import React from "react";
 import Giscus from "@giscus/react";
 import { useColorMode } from "@docusaurus/theme-common";
+import { useLocation } from "@docusaurus/router";
 
 export default function Comments(): JSX.Element {
   const { colorMode } = useColorMode();
+  const location = useLocation();
+  
+  // Detect locale from URL path
+  const getLocale = (): string => {
+    const pathname = location.pathname;
+    if (pathname.startsWith('/es/') || pathname === '/es') return 'es';
+    if (pathname.startsWith('/pt/') || pathname === '/pt') return 'pt-BR';
+    return 'en';
+  };
 
   return (
     <div>
@@ -19,7 +29,7 @@ export default function Comments(): JSX.Element {
         emitMetadata="1"
         inputPosition="top"
         theme={colorMode}
-        lang="en"
+        lang={getLocale()}
         loading="lazy"
         crossorigin="anonymous"
         async

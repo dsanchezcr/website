@@ -5,10 +5,6 @@ import './CompactWeatherWidget.css';
 import { config } from '../../config/environment';
 
 const CompactWeatherWidget = () => {
-  // Feature flag check - return null if feature is disabled
-  if (!config.features.weather) {
-    return null;
-  }
   const [weatherData, setWeatherData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,11 +15,19 @@ const CompactWeatherWidget = () => {
                 location.pathname.startsWith('/pt') ? 'pt' : 'en';
   const t = translations[locale] || translations.en;
 
+  // Feature flag check - moved after hooks to comply with Rules of Hooks
+  const isFeatureEnabled = config.features.weather;
+
   // Only fetch predefined locations (Orlando, FL and San José, CR)
   const locations = ['orlando', 'sanjose'];
 
   // Fetch weather data
   useEffect(() => {
+    if (!isFeatureEnabled) {
+      setLoading(false);
+      return;
+    }
+
     const fetchWeatherData = async () => {
       setLoading(true);
       setError(null);
@@ -31,7 +35,7 @@ const CompactWeatherWidget = () => {
       try {
         const apiEndpoint = config.getApiEndpoint();
         const weatherPromises = locations.map(location => 
-          fetch(`${apiEndpoint}/api/GetWeatherFunction?location=${location}`)
+          fetch(`${apiEndpoint}/api/weather?location=${location}`)
             .catch(() => null) // Handle individual request failures
         );
         
@@ -67,7 +71,12 @@ const CompactWeatherWidget = () => {
     };
 
     fetchWeatherData();
-  }, [t]);
+  }, [t, isFeatureEnabled]);
+
+  // Return null after hooks if feature is disabled
+  if (!isFeatureEnabled) {
+    return null;
+  }
 
   if (loading) {
     return (

@@ -1,6 +1,7 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 import WeatherWidget from '@site/src/components/WeatherWidget';
+import ErrorBoundary from '@site/src/components/ErrorBoundary';
 
 export default function Weather() {
   return (
@@ -17,7 +18,9 @@ export default function Weather() {
               para Orlando, Florida y San José, Costa Rica. Si permites el acceso a la ubicación, 
               también mostraremos el clima de tu ubicación actual.
             </p>
-            <WeatherWidget showUserLocation={true} locations={['orlando', 'sanjose']} />
+            <ErrorBoundary showMessage errorMessage="Los datos meteorológicos no están disponibles temporalmente. Por favor, inténtelo de nuevo más tarde.">
+              <WeatherWidget showUserLocation={true} locations={['orlando', 'sanjose']} />
+            </ErrorBoundary>
             
             <div className="margin-top--lg">
               <h2>Acerca de los Datos Meteorológicos</h2>

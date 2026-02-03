@@ -55,11 +55,6 @@ const localizedContent = {
 };
 
 export default function NLWebChat() {
-  // Feature flag check - return null if feature is disabled
-  if (!config.features.aiChat) {
-    return null;
-  }
-  
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -67,6 +62,9 @@ export default function NLWebChat() {
   const messagesEndRef = useRef(null);
   const location = useLocation();
   const { i18n } = useDocusaurusContext();
+  
+  // Feature flag check - moved after hooks to comply with Rules of Hooks
+  const isFeatureEnabled = config.features.aiChat;
   
   // Get current locale from Docusaurus context with fallback to URL detection
   const getCurrentLocale = () => {
@@ -154,6 +152,11 @@ export default function NLWebChat() {
       setIsLoading(false);
     }
   };
+
+  // Return null after hooks if feature is disabled
+  if (!isFeatureEnabled) {
+    return null;
+  }
 
   return (
     <>

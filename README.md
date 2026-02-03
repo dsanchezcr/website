@@ -1,82 +1,172 @@
 # David's Personal Website
 
-This repository contains the source code for my personal website and blog, [dsanchezcr.com](https://dsanchezcr.com). The site is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+This repository contains the source code for my personal website and blog, [dsanchezcr.com](https://dsanchezcr.com). The site is built using [Docusaurus](https://docusaurus.io/), a modern static website generator with a .NET 10 API backend.
 
-[![Build and Deploy Website](https://github.com/dsanchezcr/website/actions/workflows/azure-static-web-app.yml/badge.svg)](https://github.com/dsanchezcr/website/actions/workflows/azure-static-web-app.yml)
-[![Build and Deploy Azure Function](https://github.com/dsanchezcr/website/actions/workflows/api.yml/badge.svg)](https://github.com/dsanchezcr/website/actions/workflows/api.yml)
+[![Build and Deploy](https://github.com/dsanchezcr/website/actions/workflows/azure-static-web-app.yml/badge.svg)](https://github.com/dsanchezcr/website/actions/workflows/azure-static-web-app.yml)
 [![CodeQL](https://github.com/dsanchezcr/website/actions/workflows/codeql.yml/badge.svg)](https://github.com/dsanchezcr/website/actions/workflows/codeql.yml)
 
 ## ✨ About This Repository
 
 This website serves as a platform to share my thoughts on technology, software development, and other interests through blog posts. It also includes information about my projects and professional background.
 
+## 🏗️ Architecture
+
+The site uses **Azure Static Web Apps** with a **managed API** architecture:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  Azure Static Web Apps                       │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────────────┐    ┌─────────────────────────────┐ │
+│  │   Docusaurus Site   │    │    .NET 10 Managed API      │ │
+│  │   (React/MDX)       │    │    (Azure Functions)        │ │
+│  │                     │    │                             │ │
+│  │  • Blog posts       │    │  • /api/contact             │ │
+│  │  • Static pages     │    │  • /api/verify              │ │
+│  │  • i18n (en/es/pt)  │    │  • /api/weather             │ │
+│  │                     │    │  • /api/online-users        │ │
+│  │                     │    │  • /api/nlweb/ask           │ │
+│  └─────────────────────┘    └─────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
+
+Both frontend and backend are deployed together from a single repository, with the API served from the same domain under `/api`.
+
 ## 🚀 Tech Stack
 
-*   **[Docusaurus v3](https://docusaurus.io/)**: Main framework for building the static site.
-*   **[React](https://reactjs.org/)**: JavaScript library for building user interfaces.
-*   **[Markdown (MDX)](https://mdxjs.com/)**: For writing content (blog posts, pages).
-*   **Internationalization (i18n)**: Content is available in English, Spanish, and Portuguese.
-*   **Azure Static Web Apps**: For hosting and deployment.
-*   **Azure Functions**: For backend API functionality (e.g., contact form).
+### Frontend
+- **[Docusaurus v3](https://docusaurus.io/)**: Static site generator
+- **[React](https://reactjs.org/)**: UI components
+- **[MDX](https://mdxjs.com/)**: Content authoring
+- **Internationalization**: English, Spanish, Portuguese
+
+### Backend (Managed API)
+- **[.NET 10](https://dotnet.microsoft.com/)**: Runtime
+- **[Azure Functions](https://azure.microsoft.com/services/functions/)**: Serverless compute (isolated worker model)
+- **[Azure Communication Services](https://azure.microsoft.com/services/communication-services/)**: Email delivery
+- **[Azure OpenAI](https://azure.microsoft.com/services/cognitive-services/openai-service/)**: AI chat assistant
+
+### Infrastructure
+- **[Azure Static Web Apps](https://azure.microsoft.com/services/app-service/static/)**: Hosting
+- **[Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/)**: Infrastructure as Code
+- **[Application Insights](https://azure.microsoft.com/services/monitor/)**: Monitoring
 
 ## 🏁 Getting Started
 
-To get a local copy up and running, follow these simple steps.
-
 ### Prerequisites
 
-*   [Node.js](https://nodejs.org/) (version 18.x or later recommended)
-*   [npm](https://www.npmjs.com/) (comes with Node.js)
+- [Node.js](https://nodejs.org/) v22 or later
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-functions/functions-run-local) v4
+- [SWA CLI](https://azure.github.io/static-web-apps-cli/) (optional, for full local emulation)
 
 ### Installation
 
-1.  Clone the repository:
-    ```sh
-    git clone https://github.com/dsanchezcr/website.git
-    ```
-2.  Navigate to the project directory:
-    ```sh
-    cd website
-    ```
-3.  Install NPM packages:
-    ```sh
-    npm install
-    ```
+```sh
+git clone https://github.com/dsanchezcr/website.git
+cd website
+npm install
+dotnet restore api/api.csproj
+```
 
 ### Running Locally
 
-To start the development server and view the website locally:
+**Option 1: SWA CLI (Recommended)** - Full emulation with API integration
+```sh
+npm install -g @azure/static-web-apps-cli
+swa start
+```
+Access at `http://localhost:4280` (API available at `/api/*`)
 
+**Option 2: Frontend Only**
 ```sh
 npm start
 ```
+Access at `http://localhost:3000`
 
-This command will open a new browser window with the local version of the site, typically at `http://localhost:3000`. The site will automatically reload if you make changes to the source files.
+**Option 3: API Only**
+```sh
+cd api
+dotnet build
+func start --csharp
+```
+Access at `http://localhost:7071`
 
-## 🛠️ Building the Site
-
-To generate a static build of the website for production:
+## 🛠️ Building
 
 ```sh
+# Build frontend
 npm run build
+
+# Build API
+cd api && dotnet build --configuration Release
 ```
 
-The build artifacts will be stored in the `build/` directory.
+Build artifacts:
+- Frontend: `build/`
+- API: `api/bin/Release/net10.0/`
 
 ## 🌍 Internationalization (i18n)
 
-This website supports multiple languages:
-*   English (default)
-*   Spanish (`es`)
-*   Portuguese (`pt`)
+| Language | Path Prefix | Translation Directory |
+|----------|-------------|----------------------|
+| English | `/` (default) | - |
+| Spanish | `/es/` | `i18n/es/` |
+| Portuguese | `/pt/` | `i18n/pt/` |
 
-Content for different languages is managed using Docusaurus's i18n features. Translated files are located in the `i18n/` directory.
+## 📡 API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/contact` | POST | Submit contact form (initiates email verification) |
+| `/api/verify` | GET | Complete email verification |
+| `/api/weather` | GET | Weather data for predefined locations |
+| `/api/online-users` | GET | Real-time visitor analytics |
+| `/api/nlweb/ask` | POST | AI chat assistant |
 
 ## ☁️ Deployment
 
-The website is automatically built and deployed to [Azure Static Web Apps](https://azure.microsoft.com/services/app-service/static/) via GitHub Actions. The workflows are defined in the `.github/workflows/` directory:
-*   `azure-static-web-app.yml`: Builds and deploys the Docusaurus website.
-*   `api.yml`: Builds and deploys the Azure Function API.
+### Automatic (GitHub Actions)
+
+Push to `main` or create a PR to trigger automatic deployment via `azure-static-web-app.yml`.
+
+### Manual (Bicep)
+
+Deploy infrastructure using the Bicep templates in `infra/`:
+
+```sh
+az deployment group create \
+  --resource-group <resource-group> \
+  --template-file infra/main.bicep \
+  --parameters infra/main.parameters.json \
+  --parameters \
+    azureCommunicationServicesConnectionString="<secret>" \
+    recaptchaSecretKey="<secret>" \
+    azureOpenAIEndpoint="<endpoint>" \
+    azureOpenAIKey="<secret>"
+```
+
+See [infra/README.md](infra/README.md) for complete deployment instructions.
+
+## 📁 Project Structure
+
+```
+├── api/                    # .NET 10 Azure Functions API
+│   ├── SendEmail.cs        # Contact form endpoint
+│   ├── VerifyEmail.cs      # Email verification
+│   ├── GetWeather.cs       # Weather data
+│   ├── GetOnlineUsers.cs   # Analytics
+│   └── ChatWithOpenAI.cs   # AI chat
+├── blog/                   # Blog posts (MDX)
+├── src/
+│   ├── components/         # React components
+│   ├── pages/              # Static pages
+│   └── config/             # Environment configuration
+├── i18n/                   # Translations (es/, pt/)
+├── infra/                  # Bicep templates
+├── static/                 # Static assets + SWA config
+└── .github/workflows/      # CI/CD pipelines
+```
 
 ## 🤝 Contributing
 

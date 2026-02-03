@@ -18,7 +18,15 @@ public partial class SendEmail
     private readonly ILogger<SendEmail> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IMemoryCache _cache;
-    private static readonly EmailClient _emailClient = new(Environment.GetEnvironmentVariable("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING"));
+    private static readonly Lazy<EmailClient> _emailClient = new(() => 
+    {
+        var connectionString = Environment.GetEnvironmentVariable("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING");
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING environment variable is not configured.");
+        }
+        return new EmailClient(connectionString);
+    });
     
     // Rate limiting configuration
     private const int MaxSubmissionsPerIpPerHour = 3;
@@ -190,37 +198,36 @@ public partial class SendEmail
         }
     }
 
-    private bool CheckRateLimit(string clientIp, string email)
+    private bool CheckRateLimitExceeded(string clientIp, string email)
     {
         // Check IP-based rate limit
         var ipKey = $"ratelimit:ip:{clientIp}";
-        if (!_cache.TryGetValue<int>(ipKey, out var ipCount))
+        if (_cache.TryGetValue<int>(ipKey, out var ipCount) && ipCount >= MaxSubmissionsPerIpPerHour)
         {
-            ipCount = 0;
+            return true;
         }
-        
-        if (ipCount >= MaxSubmissionsPerIpPerHour)
-        {
-            return false;
-        }
-        
-        _cache.Set(ipKey, ipCount + 1, TimeSpan.FromHours(1));
 
         // Check email-based rate limit
         var emailKey = $"ratelimit:email:{email.ToLowerInvariant()}";
-        if (!_cache.TryGetValue<int>(emailKey, out var emailCount))
+        if (_cache.TryGetValue<int>(emailKey, out var emailCount) && emailCount >= MaxSubmissionsPerEmailPerDay)
         {
-            emailCount = 0;
+            return true;
         }
         
-        if (emailCount >= MaxSubmissionsPerEmailPerDay)
-        {
-            return false;
-        }
-        
+        return false;
+    }
+
+    private void IncrementRateLimits(string clientIp, string email)
+    {
+        // Increment IP-based rate limit
+        var ipKey = $"ratelimit:ip:{clientIp}";
+        _cache.TryGetValue<int>(ipKey, out var ipCount);
+        _cache.Set(ipKey, ipCount + 1, TimeSpan.FromHours(1));
+
+        // Increment email-based rate limit
+        var emailKey = $"ratelimit:email:{email.ToLowerInvariant()}";
+        _cache.TryGetValue<int>(emailKey, out var emailCount);
         _cache.Set(emailKey, emailCount + 1, TimeSpan.FromDays(1));
-        
-        return true;
     }
 
     private static SpamCheckResult CheckForSpam(ContactRequest contact)
@@ -285,13 +292,13 @@ public partial class SendEmail
             // Prefer API_URL for the Functions endpoint; fall back to WEBSITE_URL, then to the production default
             var apiUrl = Environment.GetEnvironmentVariable("API_URL")
                 ?? Environment.GetEnvironmentVariable("WEBSITE_URL")
-                ?? "https://dsanchezcr.azurewebsites.net";
+                ?? "https://dsanchezcr.com";
             var verificationUrl = $"{apiUrl}/api/verify?token={token}";
             
             var subject = LocalizationHelper.GetText(contact.Language, "verificationSubject");
             var message = LocalizationHelper.GetText(contact.Language, "verificationMessage", verificationUrl);
 
-            var operation = await _emailClient.SendAsync(
+            var operation = await _emailClient.Value.SendAsync(
                 wait: WaitUntil.Completed,
                 senderAddress: "DoNotReply@dsanchezcr.com",
                 recipientAddress: contact.Email,
@@ -365,8 +372,8 @@ public partial class SendEmail
                     "Security validation failed. Please try again.");
             }
 
-            // Check rate limits
-            if (!CheckRateLimit(clientIp, contactRequest.Email))
+            // Check rate limits (check only, don't increment yet)
+            if (CheckRateLimitExceeded(clientIp, contactRequest.Email))
             {
                 _logger.LogWarning("Rate limit exceeded from IP: {ClientIp}, Email: {Email}", clientIp, contactRequest.Email);
                 return await CreateErrorResponseAsync(req, HttpStatusCode.TooManyRequests, 
@@ -403,10 +410,13 @@ public partial class SendEmail
             var cacheData = new VerificationData(contactRequest.Name, contactRequest.Email, contactRequest.Message, contactRequest.Language);
             _cache.Set(cacheKey, cacheData, TimeSpan.FromHours(24));
 
+            // Increment rate limits only after all validations pass
+            IncrementRateLimits(clientIp, contactRequest.Email);
+
             // Send verification email to the user
             await SendVerificationEmailAsync(contactRequest, verificationToken, cancellationToken);
             
-            _logger.LogInformation("Verification email sent to {Email} with token {Token}", contactRequest.Email, verificationToken);
+            _logger.LogInformation("Verification email sent to {Email}", contactRequest.Email);
             
             var successMessage = LocalizationHelper.GetText(contactRequest.Language, "verificationSent");
             return await CreateSuccessResponseAsync(req, successMessage);

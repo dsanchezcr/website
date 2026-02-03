@@ -5,19 +5,20 @@ import styles from './styles.module.css';
 import { config } from '../../config/environment';
 
 const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
-  // Feature flag check - return null if feature is disabled
-  if (!config.features.recentVisits) {
-    return null;
-  }
   const [usersLastHour, setUsersLastHour] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
   const { colorMode } = useColorMode();
 
+  // Feature flag check - moved after hooks to comply with Rules of Hooks
+  const isFeatureEnabled = config.features.recentVisits;
+
   const fetchUsersLastHour = async () => {
+    if (!isFeatureEnabled) return;
+    
     try {
       const apiEndpoint = config.getApiEndpoint();
-      const response = await fetch(`${apiEndpoint}/api/GetOnlineUsersFunction`, {
+      const response = await fetch(`${apiEndpoint}/api/online-users`, {
         method: 'GET',
         cache: 'no-cache',
         headers: {
@@ -41,6 +42,11 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
   };
 
   useEffect(() => {
+    if (!isFeatureEnabled) {
+      setIsLoading(false);
+      return;
+    }
+    
     // Add a small delay before the first fetch to prevent immediate API calls
     const initialDelay = setTimeout(() => {
       fetchUsersLastHour();
@@ -51,7 +57,12 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
       clearTimeout(initialDelay);
       clearInterval(interval);
     };
-  }, []);
+  }, [isFeatureEnabled]);
+
+  // Return null after hooks if feature is disabled
+  if (!isFeatureEnabled) {
+    return null;
+  }
 
   const statusText = translate({
     id: 'onlineStatus.usersLastHour',

@@ -7,8 +7,9 @@ This project is actively maintained. Security updates are applied to the followi
 | Component | Version | Supported |
 | --- | --- | --- |
 | Frontend (Docusaurus) | 3.x | ✅ |
-| Backend (Azure Functions - .NET) | 9.0 | ✅ |
+| Backend (Azure Functions - .NET Isolated) | 10.0 | ✅ |
 | Node.js Dependencies | Latest | ✅ |
+| Azure Static Web Apps Managed API | dotnet-isolated:10.0 | ✅ |
 
 ## Security Features
 
@@ -81,8 +82,9 @@ The contact form (`/api/contact`) implements comprehensive security measures:
 
 #### Secure Communication
 - All API endpoints use HTTPS in production
+- Azure Static Web Apps serves API from the same origin (no CORS needed)
 - Azure Communication Services for email delivery with verified sender domains
-- CORS configuration restricts API access to known domains
+- Azure Static Web Apps automatically handles CORS for managed functions
 
 ## Reporting a Vulnerability
 
@@ -130,18 +132,23 @@ AZURE_STATIC_WEB_APPS_API_TOKEN
 
 Use Azure Key Vault or GitHub Secrets for production deployment.
 
+### Infrastructure as Code
+- Bicep templates in `infra/` directory for reproducible deployments
+- Sensitive parameters passed at deployment time, not stored in templates
+- See `infra/README.md` for secure deployment instructions
+
 ## Known Limitations
 
 ### Rate Limiting
 The current rate limiting implementation uses in-memory caching (`IMemoryCache`), which has the following limitations:
-- Resets when the Azure Function app restarts
+- Resets when the Azure Static Web App managed function restarts
 - Not shared across multiple function instances in scaled-out deployments
-- **Recommendation**: For production at scale, migrate to Azure Redis Cache or Azure Table Storage
+- **Recommendation**: For production at scale, migrate to Azure Cache for Redis or Azure Cosmos DB
 
 ### Email Verification Tokens
 - Stored in memory with 24-hour expiration
-- Lost during function app restarts
-- Consider Azure Redis Cache for persistent token storage in high-availability scenarios
+- Lost during function restarts
+- Consider Azure Cache for Redis for persistent token storage in high-availability scenarios
 
 ## Security Compliance
 
@@ -159,4 +166,4 @@ The current rate limiting implementation uses in-memory caching (`IMemoryCache`)
 
 ---
 
-**Last Updated**: November 2025
+**Last Updated**: February 2026

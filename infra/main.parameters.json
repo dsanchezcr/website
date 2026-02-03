@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "staticWebAppName": {
+      "value": "dsanchezcr"
+    },
+    "location": {
+      "value": "eastus2"
+    },
+    "sku": {
+      "value": "Standard"
+    },
+    "appInsightsName": {
+      "value": "dsanchezcr-insights"
+    },
+    "appInsightsLocation": {
+      "value": "eastus"
+    },
+    "repositoryUrl": {
+      "value": "https://github.com/dsanchezcr/website"
+    },
+    "branch": {
+      "value": "main"
+    },
+    "appLocation": {
+      "value": "/"
+    },
+    "apiLocation": {
+      "value": "api"
+    },
+    "outputLocation": {
+      "value": "build"
+    },
+    "websiteUrl": {
+      "value": "https://dsanchezcr.com"
+    },
+    "azureOpenAIDeployment": {
+      "value": "gpt-4"
+    },
+    "azureOpenAISystemPrompt": {
+      "value": "You are an online assistant for the website https://dsanchezcr.com answer only questions relevant to the content of the website."
+    }
+  }
+}
