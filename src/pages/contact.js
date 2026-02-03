@@ -107,6 +107,9 @@ function ContactForm() {
       return false;
     }
     
+    // Basic email validation for UX purposes only.
+    // The backend performs comprehensive email validation including format checks,
+    // disposable email detection, and other security measures.
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email.trim() || !emailRegex.test(email.trim())) {
       setError(t.validationEmail);

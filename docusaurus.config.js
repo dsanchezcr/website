@@ -5,13 +5,8 @@ const config = {
   staticDirectories: ['public', 'static'],
   baseUrl: '/',
   onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-
-  markdown: {
-    hooks: {
-      onBrokenMarkdownLinks: 'warn',
-    },
-  },
   organizationName: 'dsanchezcr',
   projectName: 'website',
 

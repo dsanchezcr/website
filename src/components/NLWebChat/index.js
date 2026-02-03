@@ -55,6 +55,11 @@ const localizedContent = {
 };
 
 export default function NLWebChat() {
+  // Feature flag check - return null if feature is disabled
+  if (!config.features.aiChat) {
+    return null;
+  }
+  
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);

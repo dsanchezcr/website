@@ -18,54 +18,6 @@ public class VerifyEmail
     // Rate limiting for verification attempts
     private const int MaxVerificationAttemptsPerIpPerHour = 10;
 
-    // Localization dictionaries
-    private static readonly Dictionary<string, Dictionary<string, string>> Localizations = new()
-    {
-        ["en"] = new()
-        {
-            ["notificationSubject"] = "New website message from {0}",
-            ["notificationTitle"] = "New Contact Form Submission",
-            ["confirmationSubject"] = "Thank you for contacting David Sanchez",
-            ["confirmationGreeting"] = "Hello {0},",
-            ["confirmationMessage"] = "Thank you very much for your message. I will try to get back to you as soon as possible.",
-            ["confirmationSignature"] = "Best regards,<br/>David Sanchez",
-            ["fieldLabels"] = "Name:|Email:|Message:",
-            ["verificationSuccess"] = "Your email has been verified successfully! I will get back to you soon.",
-            ["verificationError"] = "Invalid or expired verification link. Please submit the contact form again."
-        },
-        ["es"] = new()
-        {
-            ["notificationSubject"] = "Nuevo mensaje del sitio web de {0}",
-            ["notificationTitle"] = "Nueva Consulta del Formulario de Contacto",
-            ["confirmationSubject"] = "Gracias por contactar a David Sanchez",
-            ["confirmationGreeting"] = "Hola {0},",
-            ["confirmationMessage"] = "Muchas gracias por tu mensaje. Trataré de responderte lo antes posible.",
-            ["confirmationSignature"] = "Saludos cordiales,<br/>David Sanchez",
-            ["fieldLabels"] = "Nombre:|Correo:|Mensaje:",
-            ["verificationSuccess"] = "¡Tu correo ha sido verificado exitosamente! Te responderé pronto.",
-            ["verificationError"] = "Enlace de verificación inválido o expirado. Por favor envía el formulario de contacto nuevamente."
-        },
-        ["pt"] = new()
-        {
-            ["notificationSubject"] = "Nova mensagem do site de {0}",
-            ["notificationTitle"] = "Nova Submissão do Formulário de Contato",
-            ["confirmationSubject"] = "Obrigado por entrar em contato com David Sanchez",
-            ["confirmationGreeting"] = "Olá {0},",
-            ["confirmationMessage"] = "Muito obrigado pela sua mensagem. Tentarei responder o mais breve possível.",
-            ["confirmationSignature"] = "Atenciosamente,<br/>David Sanchez",
-            ["fieldLabels"] = "Nome:|E-mail:|Mensagem:",
-            ["verificationSuccess"] = "Seu e-mail foi verificado com sucesso! Responderei em breve.",
-            ["verificationError"] = "Link de verificação inválido ou expirado. Por favor, envie o formulário de contato novamente."
-        }
-    };
-
-    private static string GetLocalizedText(string language, string key, params object[] args)
-    {
-        var lang = Localizations.ContainsKey(language) ? language : "en";
-        var text = Localizations[lang].GetValueOrDefault(key, Localizations["en"][key]);
-        return args.Length > 0 ? string.Format(text, args) : text;
-    }
-
     private record VerificationData(string Name, string Email, string Message, string Language);
 
     public VerifyEmail(ILogger<VerifyEmail> logger, IMemoryCache cache)
@@ -106,6 +58,7 @@ public class VerifyEmail
                 attempts = 0;
             }
             
+            // Check limit first before incrementing to ensure accurate counting
             if (attempts >= MaxVerificationAttemptsPerIpPerHour)
             {
                 _logger.LogWarning("Rate limit exceeded for verification from IP: {ClientIp}", clientIp);
@@ -113,6 +66,7 @@ public class VerifyEmail
                     "Too many verification attempts. Please try again later.", "en");
             }
             
+            // Only increment the counter after confirming the request will be processed
             _cache.Set(rateLimitKey, attempts + 1, TimeSpan.FromHours(1));
 
             // Get token from query string
@@ -131,7 +85,7 @@ public class VerifyEmail
             {
                 _logger.LogWarning("Verification token not found or expired: {Token}", token);
                 return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest, 
-                    GetLocalizedText("en", "verificationError"), "en");
+                    LocalizationHelper.GetText("en", "verificationError"), "en");
             }
 
             // Remove from cache to prevent reuse
@@ -150,7 +104,7 @@ public class VerifyEmail
             {
                 _logger.LogInformation("Contact form verified and emails sent for {Email}", verificationData.Email);
                 return await CreateHtmlResponseAsync(req, HttpStatusCode.OK, 
-                    GetLocalizedText(verificationData.Language, "verificationSuccess"), 
+                    LocalizationHelper.GetText(verificationData.Language, "verificationSuccess"), 
                     verificationData.Language);
             }
             else
@@ -173,9 +127,9 @@ public class VerifyEmail
     {
         try
         {
-            var fieldLabels = GetLocalizedText(contact.Language, "fieldLabels").Split('|');
-            var subject = GetLocalizedText(contact.Language, "notificationSubject", contact.Name);
-            var title = GetLocalizedText(contact.Language, "notificationTitle");
+            var fieldLabels = LocalizationHelper.GetText(contact.Language, "fieldLabels").Split('|');
+            var subject = LocalizationHelper.GetText(contact.Language, "notificationSubject", contact.Name);
+            var title = LocalizationHelper.GetText(contact.Language, "notificationTitle");
 
             var operation = await _emailClient.SendAsync(
                 wait: WaitUntil.Completed,
@@ -213,10 +167,11 @@ public class VerifyEmail
     {
         try
         {
-            var subject = GetLocalizedText(contact.Language, "confirmationSubject");
-            var greeting = GetLocalizedText(contact.Language, "confirmationGreeting", contact.Name);
-            var message = GetLocalizedText(contact.Language, "confirmationMessage");
-            var signature = GetLocalizedText(contact.Language, "confirmationSignature");
+            var subject = LocalizationHelper.GetText(contact.Language, "confirmationSubject");
+            var greeting = LocalizationHelper.GetText(contact.Language, "confirmationGreeting", contact.Name);
+            var message = LocalizationHelper.GetText(contact.Language, "confirmationMessage");
+            var signature = LocalizationHelper.GetText(contact.Language, "confirmationSignature");
+            var title = LocalizationHelper.GetText(contact.Language, "confirmationTitle");
 
             var operation = await _emailClient.SendAsync(
                 wait: WaitUntil.Completed,
@@ -226,9 +181,7 @@ public class VerifyEmail
                 htmlContent: $"""
                     <html>
                         <body style="font-family: Arial, sans-serif;">
-                            <h2>{(contact.Language == "es" ? "¡Gracias por comunicarte!" : 
-                                  contact.Language == "pt" ? "Obrigado por entrar em contato!" : 
-                                  "Thank you for reaching out!")}</h2>
+                            <h2>{title}</h2>
                             <p>{greeting}</p>
                             <p>{message}</p>
                             <p>{signature}</p>
@@ -252,9 +205,8 @@ public class VerifyEmail
         var response = req.CreateResponse(statusCode);
         response.Headers.Add("Content-Type", "text/html; charset=utf-8");
         
-        var title = statusCode == HttpStatusCode.OK ? 
-            (language == "es" ? "Verificación Exitosa" : language == "pt" ? "Verificação Bem-sucedida" : "Verification Successful") :
-            (language == "es" ? "Error de Verificación" : language == "pt" ? "Erro de Verificação" : "Verification Error");
+        var isSuccess = statusCode == HttpStatusCode.OK;
+        var title = LocalizationHelper.GetVerificationPageTitle(language, isSuccess);
         
         var html = $$"""
             <!DOCTYPE html>
@@ -312,13 +264,13 @@ public class VerifyEmail
             </head>
             <body>
                 <div class="container">
-                    <div class="icon {{(statusCode == HttpStatusCode.OK ? "success" : "error")}}">
-                        {{(statusCode == HttpStatusCode.OK ? "✓" : "✗")}}
+                    <div class="icon {{(isSuccess ? "success" : "error")}}">
+                        {{(isSuccess ? "✓" : "✗")}}
                     </div>
                     <h1>{{title}}</h1>
                     <p>{{message}}</p>
-                    <a href="{{(language == "es" ? "https://dsanchezcr.com/es/" : language == "pt" ? "https://dsanchezcr.com/pt/" : "https://dsanchezcr.com/")}}" class="home-link">
-                        {{(language == "es" ? "Volver al Inicio" : language == "pt" ? "Voltar ao Início" : "Return to Home")}}
+                    <a href="{{LocalizationHelper.GetHomeUrl(language)}}" class="home-link">
+                        {{LocalizationHelper.GetReturnHomeText(language)}}
                     </a>
                 </div>
             </body>
