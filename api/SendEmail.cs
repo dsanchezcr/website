@@ -51,53 +51,29 @@ public partial class SendEmail
     [GeneratedRegex(@"(viagra|cialis|crypto|lottery|winner|prize|bitcoin|forex|casino|poker)", RegexOptions.IgnoreCase)]
     private static partial Regex SpamKeywords();
 
-    // Localization dictionaries
+    // Localization dictionaries (only keys used in SendEmail - VerifyEmail has its own)
     private static readonly Dictionary<string, Dictionary<string, string>> Localizations = new()
     {
         ["en"] = new()
         {
-            ["notificationSubject"] = "New website message from {0}",
-            ["notificationTitle"] = "New Contact Form Submission",
-            ["confirmationSubject"] = "Thank you for contacting David Sanchez",
-            ["confirmationGreeting"] = "Hello {0},",
-            ["confirmationMessage"] = "Thank you very much for your message. I will try to get back to you as soon as possible.",
-            ["confirmationSignature"] = "Best regards,<br/>David Sanchez",
             ["successMessage"] = "Emails sent successfully.",
-            ["partialErrorMessage"] = "Some emails could not be sent. Please try again.",
             ["verificationSent"] = "Please check your email to verify your contact request.",
             ["verificationSubject"] = "Verify your contact request",
-            ["verificationMessage"] = "Please click the link below to verify your contact request:<br/><br/><a href=\"{0}\">Verify Email</a><br/><br/>This link will expire in 24 hours.",
-            ["fieldLabels"] = "Name:|Email:|Message:"
+            ["verificationMessage"] = "Please click the link below to verify your contact request:<br/><br/><a href=\"{0}\">Verify Email</a><br/><br/>This link will expire in 24 hours."
         },
         ["es"] = new()
         {
-            ["notificationSubject"] = "Nuevo mensaje del sitio web de {0}",
-            ["notificationTitle"] = "Nueva Consulta del Formulario de Contacto",
-            ["confirmationSubject"] = "Gracias por contactar a David Sanchez",
-            ["confirmationGreeting"] = "Hola {0},",
-            ["confirmationMessage"] = "Muchas gracias por tu mensaje. Trataré de responderte lo antes posible.",
-            ["confirmationSignature"] = "Saludos cordiales,<br/>David Sanchez",
             ["successMessage"] = "Correos enviados exitosamente.",
-            ["partialErrorMessage"] = "Algunos correos no pudieron ser enviados. Por favor intenta de nuevo.",
             ["verificationSent"] = "Por favor revisa tu correo para verificar tu solicitud de contacto.",
             ["verificationSubject"] = "Verifica tu solicitud de contacto",
-            ["verificationMessage"] = "Por favor haz clic en el enlace a continuación para verificar tu solicitud de contacto:<br/><br/><a href=\"{0}\">Verificar Correo</a><br/><br/>Este enlace expirará en 24 horas.",
-            ["fieldLabels"] = "Nombre:|Correo:|Mensaje:"
+            ["verificationMessage"] = "Por favor haz clic en el enlace a continuación para verificar tu solicitud de contacto:<br/><br/><a href=\"{0}\">Verificar Correo</a><br/><br/>Este enlace expirará en 24 horas."
         },
         ["pt"] = new()
         {
-            ["notificationSubject"] = "Nova mensagem do site de {0}",
-            ["notificationTitle"] = "Nova Submissão do Formulário de Contato",
-            ["confirmationSubject"] = "Obrigado por entrar em contato com David Sanchez",
-            ["confirmationGreeting"] = "Olá {0},",
-            ["confirmationMessage"] = "Muito obrigado pela sua mensagem. Tentarei responder o mais breve possível.",
-            ["confirmationSignature"] = "Atenciosamente,<br/>David Sanchez",
             ["successMessage"] = "E-mails enviados com sucesso.",
-            ["partialErrorMessage"] = "Alguns e-mails não puderam ser enviados. Por favor, tente novamente.",
             ["verificationSent"] = "Por favor, verifique seu e-mail para confirmar sua solicitação de contato.",
             ["verificationSubject"] = "Verifique sua solicitação de contato",
-            ["verificationMessage"] = "Por favor, clique no link abaixo para verificar sua solicitação de contato:<br/><br/><a href=\"{0}\">Verificar E-mail</a><br/><br/>Este link expirará em 24 horas.",
-            ["fieldLabels"] = "Nome:|E-mail:|Mensagem:"
+            ["verificationMessage"] = "Por favor, clique no link abaixo para verificar sua solicitação de contato:<br/><br/><a href=\"{0}\">Verificar E-mail</a><br/><br/>Este link expirará em 24 horas."
         }
     };
 
@@ -508,87 +484,7 @@ public partial class SendEmail
         }
         catch
         {
-            return false;        }
-    }
-
-    private async Task<EmailSendOperation> SendNotificationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
-    {
-        try
-        {
-            var fieldLabels = GetLocalizedText(contact.Language, "fieldLabels").Split('|');
-            var subject = GetLocalizedText(contact.Language, "notificationSubject", contact.Name);
-            var title = GetLocalizedText(contact.Language, "notificationTitle");
-
-            var operation = await _emailClient.SendAsync(
-                wait: WaitUntil.Completed,
-                senderAddress: "DoNotReply@dsanchezcr.com",
-                recipientAddress: "david@dsanchezcr.com",
-                subject: subject,
-                htmlContent: $"""
-                    <html>
-                        <body style="font-family: Arial, sans-serif;">
-                            <h2>{title}</h2>
-                            <p><strong>{fieldLabels[0]}</strong> {System.Net.WebUtility.HtmlEncode(contact.Name)}</p>
-                            <p><strong>{fieldLabels[1]}</strong> {System.Net.WebUtility.HtmlEncode(contact.Email)}</p>
-                            <p><strong>{fieldLabels[2]}</strong></p>
-                            <div style="background-color: #f5f5f5; padding: 10px; border-left: 4px solid #007acc;">
-                                {System.Net.WebUtility.HtmlEncode(contact.Message)}
-                            </div>
-                            <p><em>Language: {contact.Language}</em></p>
-                        </body>
-                    </html>
-                    """,
-                cancellationToken: cancellationToken);
-
-            _logger.LogInformation("Notification email sent with ID: {MessageId}, Status: {Status}", 
-                operation.Id, operation.Value.Status);
-            
-            return operation;
-        }
-        catch (RequestFailedException ex)
-        {
-            _logger.LogError(ex, "Failed to send notification email. Error: {ErrorCode}", ex.ErrorCode);
-            throw;        }
-    }
-
-    private async Task<EmailSendOperation> SendConfirmationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
-    {
-        try
-        {
-            var subject = GetLocalizedText(contact.Language, "confirmationSubject");
-            var greeting = GetLocalizedText(contact.Language, "confirmationGreeting", contact.Name);
-            var message = GetLocalizedText(contact.Language, "confirmationMessage");
-            var signature = GetLocalizedText(contact.Language, "confirmationSignature");
-
-            var operation = await _emailClient.SendAsync(
-                wait: WaitUntil.Completed,
-                senderAddress: "DoNotReply@dsanchezcr.com",
-                recipientAddress: contact.Email,
-                subject: subject,
-                htmlContent: $"""
-                    <html>
-                        <body style="font-family: Arial, sans-serif;">
-                            <h2>{(contact.Language == "es" ? "¡Gracias por comunicarte!" : 
-                                  contact.Language == "pt" ? "Obrigado por entrar em contato!" : 
-                                  "Thank you for reaching out!")}</h2>
-                            <p>{greeting}</p>
-                            <p>{message}</p>
-                            <p>{signature}</p>
-                        </body>
-                    </html>
-                    """,
-                cancellationToken: cancellationToken);
-
-            _logger.LogInformation("Confirmation email sent with ID: {MessageId}, Status: {Status}", 
-                operation.Id, operation.Value.Status);
-            
-            return operation;
-        }
-        catch (RequestFailedException ex)
-        {
-            _logger.LogError(ex, "Failed to send confirmation email to {Email}. Error: {ErrorCode}", 
-                contact.Email, ex.ErrorCode);
-            throw;
+            return false;
         }
     }
 

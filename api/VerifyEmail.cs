@@ -317,7 +317,7 @@ public class VerifyEmail
                     </div>
                     <h1>{{title}}</h1>
                     <p>{{message}}</p>
-                    <a href="https://dsanchezcr.com" class="home-link">
+                    <a href="{{(language == "es" ? "https://dsanchezcr.com/es/" : language == "pt" ? "https://dsanchezcr.com/pt/" : "https://dsanchezcr.com/")}}" class="home-link">
                         {{(language == "es" ? "Volver al Inicio" : language == "pt" ? "Voltar ao Início" : "Return to Home")}}
                     </a>
                 </div>
