@@ -340,19 +340,6 @@ function ContactForm() {
                 </div>
               </div>
               
-              <div style={{ 
-                fontSize: '12px', 
-                color: 'var(--ifm-color-emphasis-600)', 
-                marginBottom: '16px',
-                textAlign: 'center'
-              }}>
-                {t.recaptchaNotice}{' '}
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">{t.privacyPolicy}</a>{' '}
-                {t.and}{' '}
-                <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">{t.termsOfService}</a>{' '}
-                {t.apply}
-              </div>
-              
               <button 
                 type="submit" 
                 className="button button--primary button--lg"
@@ -364,6 +351,22 @@ function ContactForm() {
               
               <p style={{ color: 'var(--ifm-color-emphasis-600)' }}>{t.thanks}</p>
             </form>
+            
+            {/* reCAPTCHA badge container - displayed under the form */}
+            <div id="recaptcha-container" className="recaptcha-container" />
+            
+            <div style={{ 
+              fontSize: '12px', 
+              color: 'var(--ifm-color-emphasis-600)', 
+              marginTop: '8px',
+              textAlign: 'center'
+            }}>
+              {t.recaptchaNotice}{' '}
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">{t.privacyPolicy}</a>{' '}
+              {t.and}{' '}
+              <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">{t.termsOfService}</a>{' '}
+              {t.apply}
+            </div>
           </div>
         </div>
       </div>
@@ -373,7 +376,15 @@ function ContactForm() {
 
 export default function Contact() {
   return (
-    <GoogleReCaptchaProvider reCaptchaKey={config.recaptchaSiteKey}>
+    <GoogleReCaptchaProvider 
+      reCaptchaKey={config.recaptchaSiteKey}
+      container={{
+        element: 'recaptcha-container',
+        parameters: {
+          badge: 'inline'
+        }
+      }}
+    >
       <ContactForm />
     </GoogleReCaptchaProvider>
   );

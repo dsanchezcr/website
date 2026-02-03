@@ -84,7 +84,7 @@ function HomepageHeader() {
         </div>
         <Svg className={styles.featureSvg} role="img" />
         <h1 className="hero__title">Hola, soy {siteConfig.title}.</h1>
-        <p className="hero__subtitle">Global Black Belt - Azure Developer Productivity en Microsoft.</p>
+        <p className="hero__subtitle">Director Go-To-Market Developer Audience en Microsoft.</p>
         <p className="hero__subtitle">Ayudando a personas a construir soluciones innovadoras con tecnología. 🚀</p>
       </div>
     </header>

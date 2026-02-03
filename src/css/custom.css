@@ -225,9 +225,67 @@ button:hover {
   text-decoration: none;
 }
 
-/* reCAPTCHA badge positioning */
+/* Navbar search box - prevent overlap with theme toggle and locale dropdown */
+.navbar .DocSearch {
+  margin-right: 8px;
+}
+
+.navbar__items--right {
+  gap: 8px;
+}
+
+.navbar__items--right > * {
+  flex-shrink: 0;
+}
+
+/* Ensure search doesn't overflow on smaller screens */
+@media (max-width: 996px) {
+  .navbar .DocSearch-Button {
+    padding: 0 8px;
+  }
+  
+  .navbar .DocSearch-Button-Placeholder,
+  .navbar .DocSearch-Button-Keys {
+    display: none;
+  }
+}
+
+/* Projects page layout fix - ensure proper content height */
+.markdown img {
+  max-width: 100%;
+  height: auto;
+}
+
+.theme-doc-markdown {
+  min-height: calc(100vh - 400px);
+}
+
+/* MDX page content wrapper */
+[class*='mdxPageWrapper'] {
+  min-height: calc(100vh - 60px - 200px);
+}
+
+/* reCAPTCHA badge - hidden globally, shown inline on contact page */
 .grecaptcha-badge {
-  z-index: 9999 !important;
-  bottom: 80px !important;
-  right: 16px !important;
+  visibility: hidden !important;
+}
+
+/* Contact page reCAPTCHA container */
+.recaptcha-container,
+#recaptcha-container {
+  position: relative;
+  width: 100%;
+  min-height: 70px;
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.recaptcha-container .grecaptcha-badge,
+#recaptcha-container .grecaptcha-badge {
+  visibility: visible !important;
+  position: relative !important;
+  bottom: auto !important;
+  right: auto !important;
+  box-shadow: none !important;
 }
