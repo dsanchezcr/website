@@ -48,5 +48,8 @@
     "@tsconfig/docusaurus": "^2.0.3",
     "babel-plugin-module-resolver": "^5.0.2",
     "typescript": "^5.8.3"
+  },
+  "overrides": {
+    "lodash-es": "4.17.23"
   }
 }
