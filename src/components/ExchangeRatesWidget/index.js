@@ -43,7 +43,7 @@ export default function ExchangeRatesWidget() {
   if (isLoading) {
     return (
       <div style={{ textAlign: 'center', padding: '20px' }}>
-        <div style={{
+        <div className="loading-spinner" style={{
           width: '30px',
           height: '30px',
           border: '3px solid var(--ifm-color-emphasis-200)',
@@ -52,7 +52,6 @@ export default function ExchangeRatesWidget() {
           animation: 'spin 1s linear infinite',
           margin: '0 auto 12px'
         }} />
-        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
         <p style={{ margin: 0, fontSize: '0.9em', color: 'var(--ifm-color-emphasis-600)' }}>Loading exchange rates...</p>
       </div>
     );
@@ -94,11 +93,11 @@ export default function ExchangeRatesWidget() {
           <div style={{ fontSize: '0.9em' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--ifm-color-emphasis-200)' }}>
               <span>Buy:</span>
-              <strong>{formatRate(dollarExchangeRate.purchase)}</strong>
+              <strong>{formatRate(dollarExchangeRate.purchase?.value || dollarExchangeRate.purchase || dollarExchangeRate.buy)}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
               <span>Sell:</span>
-              <strong>{formatRate(dollarExchangeRate.sale)}</strong>
+              <strong>{formatRate(dollarExchangeRate.sale?.value || dollarExchangeRate.sale || dollarExchangeRate.sell)}</strong>
             </div>
           </div>
         )}

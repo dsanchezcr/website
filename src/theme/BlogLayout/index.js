@@ -18,7 +18,7 @@ export default function BlogLayout(props) {
     location.pathname !== '/blog/' &&
     location.pathname !== '/blog';
   
-  // Also check for localized paths
+  // Also check for localized paths - exclude exact blog listing pages
   const isLocalizedPostPage = (
     location.pathname.startsWith('/es/blog/') || 
     location.pathname.startsWith('/pt/blog/')
@@ -26,7 +26,11 @@ export default function BlogLayout(props) {
     !location.pathname.includes('/page/') &&
     !location.pathname.includes('/tags/') &&
     !location.pathname.includes('/archive') &&
-    !location.pathname.includes('/authors/');
+    !location.pathname.includes('/authors/') &&
+    location.pathname !== '/es/blog/' &&
+    location.pathname !== '/es/blog' &&
+    location.pathname !== '/pt/blog/' &&
+    location.pathname !== '/pt/blog';
 
   const shouldHideSidebar = isPostPage || isLocalizedPostPage;
   const hasSidebar = sidebar && sidebar.items && sidebar.items.length > 0 && !shouldHideSidebar;

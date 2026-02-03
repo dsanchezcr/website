@@ -52,7 +52,7 @@ export default function ExchangeRates() {
             
             {isLoading && (
               <div style={{ textAlign: 'center', padding: '40px' }}>
-                <div style={{
+                <div className="loading-spinner" style={{
                   width: '40px',
                   height: '40px',
                   border: '4px solid var(--ifm-color-emphasis-200)',
@@ -61,7 +61,6 @@ export default function ExchangeRates() {
                   animation: 'spin 1s linear infinite',
                   margin: '0 auto 16px'
                 }} />
-                <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
                 <p>Loading exchange rates...</p>
               </div>
             )}
@@ -101,11 +100,11 @@ export default function ExchangeRates() {
                     <div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--ifm-color-emphasis-200)' }}>
                         <span>Buy:</span>
-                        <strong>{formatRate(dollarExchangeRate.purchase)}</strong>
+                        <strong>{formatRate(dollarExchangeRate.purchase?.value || dollarExchangeRate.purchase || dollarExchangeRate.buy)}</strong>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                         <span>Sell:</span>
-                        <strong>{formatRate(dollarExchangeRate.sale)}</strong>
+                        <strong>{formatRate(dollarExchangeRate.sale?.value || dollarExchangeRate.sale || dollarExchangeRate.sell)}</strong>
                       </div>
                     </div>
                   )}

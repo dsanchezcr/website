@@ -29,16 +29,6 @@ export const config = {
   // reCAPTCHA v3 site key
   recaptchaSiteKey: '6LcGaAIsAAAAALzUAxzGFx5R1uJ2Wgxn4RmNsy2I',
 
-  // API route configuration
-  // These are the managed API routes (relative to the API base)
-  routes: {
-    contact: '/api/contact',
-    verify: '/api/verify',
-    weather: '/api/weather',
-    onlineUsers: '/api/online-users',
-    chat: '/api/nlweb/ask',
-  },
-
   // Get the appropriate API endpoint based on environment
   getApiEndpoint: () => {
     // Check if we're in a browser environment

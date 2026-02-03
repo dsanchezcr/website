@@ -146,7 +146,6 @@ const config = {
         direction: 'ltr',
         htmlLang: 'en-US',
         calendar: 'gregory',
-        path: 'en',
       },
       es: {
         label: 'Español',
