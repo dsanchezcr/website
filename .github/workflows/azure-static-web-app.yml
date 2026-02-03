@@ -60,10 +60,6 @@ jobs:
       - name: Build Docusaurus Website
         run: npm run build
 
-      - name: Build Azure Functions API
-        working-directory: ./api
-        run: dotnet publish --configuration Release --output ./publish
-
       - name: Deploy to Azure Static Web Apps
         id: deploy
         uses: azure/static-web-apps-deploy@v1
@@ -72,9 +68,8 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           app_location: 'build'
-          api_location: 'api/publish'
+          api_location: 'api'
           skip_app_build: true
-          skip_api_build: true
 
   close_pull_request:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
