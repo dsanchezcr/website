@@ -31,7 +31,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Restore Dependencies
         working-directory: ./api
@@ -44,7 +44,7 @@ jobs:
       - name: Validate Build Output
         working-directory: ./api
         run: |
-          if [ -f "bin/Release/net10.0/api.dll" ]; then
+          if [ -f "bin/Release/net9.0/api.dll" ]; then
             echo "✅ API build successful"
           else
             echo "❌ API build failed - output not found"
