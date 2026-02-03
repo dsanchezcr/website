@@ -4,7 +4,7 @@
 
 This is a personal website/blog with **Azure Static Web Apps managed API architecture**:
 - **Frontend**: Docusaurus v3 static site (React/MDX) with i18n support (English, Spanish, Portuguese)
-- **Backend**: .NET 10 Azure Functions API hosted as **SWA Managed Functions**
+- **Backend**: .NET 9 Azure Functions API hosted as **SWA Managed Functions**
 
 Both frontend and backend are hosted together on **Azure Static Web Apps**. The API is served from the same domain under the `/api` path prefix. Configuration is defined in `staticwebapp.config.json` and infrastructure is managed via Bicep templates in `infra/`.
 
@@ -17,7 +17,7 @@ Both frontend and backend are hosted together on **Azure Static Web Apps**. The 
 - **i18n**: Translations in `i18n/es/` and `i18n/pt/` directories following Docusaurus i18n structure
 - **Custom Docs**: Two separate doc sections configured via plugins: `disney/` and `universal/` (theme parks content)
 
-### Backend (Azure Functions - .NET 10 Isolated Worker)
+### Backend (Azure Functions - .NET 9 Isolated Worker)
 Located in `api/` directory:
 - **SendEmail.cs**: Contact form endpoint (`/api/contact`) with reCAPTCHA v3, rate limiting, spam detection, honeypot field, and email verification flow using Azure Communication Services
 - **VerifyEmail.cs**: Email verification endpoint (`/api/verify`) that completes the contact form submission after user clicks verification link
@@ -53,11 +53,11 @@ swa start                                    # Starts both frontend and API
 
 **Option 2: Direct Function Host**
 Use VS Code tasks in `.vscode/tasks.json`:
-1. **Build**: Run task "build (functions)" - compiles to `api/bin/Debug/net10.0/`
+1. **Build**: Run task "build (functions)" - compiles to `api/bin/Debug/net9.0/`
 2. **Start Function Host**: Run task "func: 4" - starts Functions runtime (depends on build task)
 3. Local endpoint: `http://localhost:7071`
 
-**Important**: Always build the function before running the host. The function host runs from `api/bin/Debug/net10.0/`.
+**Important**: Always build the function before running the host. The function host runs from `api/bin/Debug/net9.0/`.
 
 ## Project-Specific Patterns
 
@@ -95,7 +95,7 @@ chat: '/api/nlweb/ask'
 
 ### CI/CD (Unified Deployment)
 Single GitHub Actions workflow deploys both frontend and managed API together:
-- **azure-static-web-app.yml**: Builds Docusaurus site and .NET 10 API, deploys to SWA
+- **azure-static-web-app.yml**: Builds Docusaurus site and .NET 9 API, deploys to SWA
 - SWA handles deploying both app and API from the same repository
 
 ## Dependencies & Integration Points
@@ -125,12 +125,12 @@ APPLICATIONINSIGHTS_CONNECTION_STRING
 
 ## Common Pitfalls
 
-1. **Function build location**: Functions must be built before running. The host expects binaries in `api/bin/Debug/net10.0/`, not the source directory.
+1. **Function build location**: Functions must be built before running. The host expects binaries in `api/bin/Debug/net9.0/`, not the source directory.
 2. **CORS**: Azure Static Web Apps handles CORS automatically for managed functions - do not add CORS headers in function code.
 3. **Rate limiting is in-memory**: Restarting the function app clears rate limits. Not suitable for multi-instance deployments without external cache.
 4. **Email verification tokens expire**: 24-hour TTL in MemoryCache. Expired tokens will fail verification.
 5. **i18n content sync**: When adding blog posts or pages, remember to check if translations exist in `i18n/es/` and `i18n/pt/`.
-6. **SWA API runtime**: Managed functions use .NET 10 isolated worker. Ensure `api.csproj` targets `net10.0`.
+6. **SWA API runtime**: Managed functions use .NET 9 isolated worker. Ensure `api.csproj` targets `net9.0`.
 
 ## Adding New Features
 
