@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '@theme/Layout';
 import { config } from '../config/environment';
-import { useLocation } from '@docusaurus/router';
+import { useLocale } from '@site/src/hooks';
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 // Translations for all supported languages
@@ -86,18 +86,9 @@ function ContactForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
   
-  const location = useLocation();
+  const { locale: lang } = useLocale();
   const { executeRecaptcha } = useGoogleReCaptcha();
   
-  // Extract language from URL path
-  const getLanguage = () => {
-    const pathname = location.pathname;
-    if (pathname.startsWith('/es/') || pathname === '/es') return 'es';
-    if (pathname.startsWith('/pt/') || pathname === '/pt') return 'pt';
-    return 'en';
-  };
-  
-  const lang = getLanguage();
   const t = translations[lang] || translations.en;
 
   // Client-side validation

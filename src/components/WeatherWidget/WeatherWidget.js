@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from '@docusaurus/router';
+import { useLocale } from '@site/src/hooks';
 import translations from './translations';
 import './WeatherWidget.css';
 import { config } from '../../config/environment';
 
 const WeatherWidget = ({ showUserLocation = false, locations = ['orlando', 'sanjose'] }) => {
   const [weatherData, setWeatherData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   
-  // Get current locale from URL
-  const location = useLocation();
-  const locale = location.pathname.startsWith('/es') ? 'es' : 
-                location.pathname.startsWith('/pt') ? 'pt' : 'en';
+  // Use shared locale hook for consistency
+  const locale = useLocale();
   const t = translations[locale] || translations.en;
 
   // Get user's geolocation
@@ -36,7 +34,7 @@ const WeatherWidget = ({ showUserLocation = false, locations = ['orlando', 'sanj
   // Fetch weather data
   useEffect(() => {
     const fetchWeatherData = async () => {
-      setLoading(true);
+      setIsLoading(true);
       setError(null);
       
       try {
@@ -95,7 +93,7 @@ const WeatherWidget = ({ showUserLocation = false, locations = ['orlando', 'sanj
         console.error('Error fetching weather data:', err);
         setError(t.error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -117,7 +115,7 @@ const WeatherWidget = ({ showUserLocation = false, locations = ['orlando', 'sanj
     }
   }, [userLocation, locations, showUserLocation, t]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="weather-widget">
         <div className="weather-loading">

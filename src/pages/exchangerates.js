@@ -5,7 +5,7 @@ import ColonesExchangeRate from '@dsanchezcr/colonesexchangerate';
 export default function ExchangeRates() {
   const [dollarExchangeRate, setDollarExchangeRate] = useState(null);
   const [euroExchangeRate, setEuroExchangeRate] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function ExchangeRates() {
         console.error(`Error: ${ex.message}`);
         setError(ex.message);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -50,7 +50,7 @@ export default function ExchangeRates() {
               Data sourced from the Central Bank of Costa Rica.
             </p>
             
-            {loading && (
+            {isLoading && (
               <div style={{ textAlign: 'center', padding: '40px' }}>
                 <div style={{
                   width: '40px',
@@ -80,7 +80,7 @@ export default function ExchangeRates() {
               </div>
             )}
             
-            {!loading && !error && (
+            {!isLoading && !error && (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginTop: '20px' }}>
                 {/* USD Exchange Rate Card */}
                 <div style={{

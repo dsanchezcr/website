@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from '@docusaurus/router';
+import { useLocale } from '@site/src/hooks';
 import translations from './translations';
 import './CompactWeatherWidget.css';
 import { config } from '../../config/environment';
 
 const CompactWeatherWidget = () => {
   const [weatherData, setWeatherData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Get current locale from URL
-  const location = useLocation();
-  const locale = location.pathname.startsWith('/es') ? 'es' : 
-                location.pathname.startsWith('/pt') ? 'pt' : 'en';
+  // Use shared locale hook for consistency
+  const locale = useLocale();
   const t = translations[locale] || translations.en;
 
   // Feature flag check - moved after hooks to comply with Rules of Hooks
@@ -24,12 +22,12 @@ const CompactWeatherWidget = () => {
   // Fetch weather data
   useEffect(() => {
     if (!isFeatureEnabled) {
-      setLoading(false);
+      setIsLoading(false);
       return;
     }
 
     const fetchWeatherData = async () => {
-      setLoading(true);
+      setIsLoading(true);
       setError(null);
       
       try {
@@ -66,7 +64,7 @@ const CompactWeatherWidget = () => {
         console.error('Error fetching weather data:', err);
         setError(t.error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -78,7 +76,7 @@ const CompactWeatherWidget = () => {
     return null;
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="compact-weather">
         <div className="compact-weather-loading">

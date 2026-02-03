@@ -1,19 +1,14 @@
 import React from "react";
 import Giscus from "@giscus/react";
 import { useColorMode } from "@docusaurus/theme-common";
-import { useLocation } from "@docusaurus/router";
+import { useLocale } from "@site/src/hooks";
 
 export default function Comments(): JSX.Element {
   const { colorMode } = useColorMode();
-  const location = useLocation();
+  const { locale } = useLocale();
   
-  // Detect locale from URL path
-  const getLocale = (): string => {
-    const pathname = location.pathname;
-    if (pathname.startsWith('/es/') || pathname === '/es') return 'es';
-    if (pathname.startsWith('/pt/') || pathname === '/pt') return 'pt-BR';
-    return 'en';
-  };
+  // Map locale to Giscus supported language codes
+  const giscusLang = locale === 'pt' ? 'pt-BR' : locale;
 
   return (
     <div>
@@ -29,7 +24,7 @@ export default function Comments(): JSX.Element {
         emitMetadata="1"
         inputPosition="top"
         theme={colorMode}
-        lang={getLocale()}
+        lang={giscusLang}
         loading="lazy"
         crossorigin="anonymous"
         async
