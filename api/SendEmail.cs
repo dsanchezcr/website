@@ -25,6 +25,95 @@ public partial class SendEmail
     private const int MaxSubmissionsPerEmailPerDay = 2;
     private const double MinRecaptchaScore = 0.5;
     
+    // Allowed origins for CORS
+    private static readonly string[] AllowedOrigins = [
+        "https://dsanchezcr.com",
+        "https://www.dsanchezcr.com",
+        "https://delightful-moss-07d95f50f.azurestaticapps.net",
+        "http://localhost:3000"
+    ];
+    
+    // Disposable email domains to block
+    // This is a comprehensive list of ~150 well-known disposable email services.
+    // For production systems with higher security needs, consider integrating with
+    // a dedicated API service (e.g., Kickbox, ZeroBounce, or similar).
+    private static readonly HashSet<string> DisposableEmailDomains = new(StringComparer.OrdinalIgnoreCase)
+    {
+        // Popular temporary email services
+        "10minutemail.com", "10minutemail.net", "10minutemail.org", "10minmail.com",
+        "20minutemail.com", "33mail.com", "temp-mail.org", "tempmail.com", "tempmail.net",
+        "tempmail.de", "tempmail.it", "temp-mail.io", "temp-mail.ru", "tmpmail.org",
+        "tmpmail.net", "tempr.email", "tempinbox.com", "tempinbox.co.uk",
+        
+        // Guerrilla Mail variants
+        "guerrillamail.com", "guerrillamail.net", "guerrillamail.org", "guerrillamail.biz",
+        "guerrillamail.de", "guerrillamail.info", "guerrillamailblock.com", "grr.la",
+        "sharklasers.com", "spam4.me", "pokemail.net",
+        
+        // Mailinator variants
+        "mailinator.com", "mailinator.net", "mailinator.org", "mailinator2.com",
+        "mailinater.com", "tradermail.info", "reallymymail.com", "reconmail.com",
+        "safetymail.info", "sendspamhere.com", "sogetthis.com", "spamherelots.com",
+        "thisisnotmyrealemail.com", "veryrealemail.com", "binkmail.com", "bobmail.info",
+        
+        // Other popular disposable services
+        "throwaway.email", "throwawaymail.com", "fakeinbox.com", "fakemailgenerator.com",
+        "trashmail.com", "trashmail.net", "trashmail.org", "trashmail.de", "trashmail.ws",
+        "mailnesia.com", "maildrop.cc", "dispostable.com", "disposableemailaddresses.com",
+        "getnada.com", "nada.email", "anonbox.net", "anonymbox.com",
+        
+        // YOPmail variants
+        "yopmail.com", "yopmail.fr", "yopmail.net", "cool.fr.nf", "jetable.fr.nf",
+        "nospam.ze.tc", "nomail.xl.cx", "mega.zik.dj", "speed.1s.fr", "courriel.fr.nf",
+        "moncourrier.fr.nf", "monemail.fr.nf", "monmail.fr.nf",
+        
+        // Spamgourmet variants
+        "spamgourmet.com", "spamgourmet.net", "spamgourmet.org",
+        
+        // MailDrop variants
+        "maildrop.cc", "mailsac.com", "inboxkitten.com",
+        
+        // Other common services
+        "emailondeck.com", "mohmal.com", "mohmal.tech", "discard.email", "discardmail.com",
+        "mintemail.com", "mytemp.email", "mytrashmail.com", "mt2009.com", "mt2014.com",
+        "mailcatch.com", "getairmail.com", "wegwerfmail.de", "wegwerfmail.net",
+        "wegwerfmail.org", "boun.cr", "mailnull.com", "e4ward.com", "spambox.us",
+        "spamfree24.org", "spamfree24.de", "spamfree24.eu", "spamfree24.info",
+        "spamfree24.net", "spamcero.com", "kasmail.com", "incognitomail.com",
+        "incognitomail.net", "incognitomail.org", "mailforspam.com", "spam.la",
+        "tempomail.fr", "tempemail.com", "tempemail.net", "tempsky.com", "emailtemporario.com.br",
+        "crazymailing.com", "fakemailgenerator.net", "emailfake.com", "armyspy.com",
+        "cuvox.de", "dayrep.com", "einrot.com", "fleckens.hu", "gustr.com",
+        "jourrapide.com", "rhyta.com", "superrito.com", "teleworm.us",
+        
+        // Burner mail services
+        "burnermail.io", "burner.kiwi", "burnermailbox.com",
+        
+        // 5-minute mail variants
+        "5minutemail.com", "5minutemail.net",
+        
+        // Additional well-known services
+        "mailexpire.com", "mailmoat.com", "mailnator.com", "mailscrap.com",
+        "mailzilla.com", "mailzilla.org", "nomail.net", "nowmymail.com",
+        "objectmail.com", "obobbo.com", "onewaymail.com", "oopi.org",
+        "owlpic.com", "proxymail.eu", "punkass.com", "putthisinyourspamdatabase.com",
+        "quickinbox.com", "rcpt.at", "rklips.com", "rmqkr.net",
+        "rppkn.com", "rtrtr.com", "s0ny.net", "safe-mail.net",
+        "safersignup.de", "safetypost.de", "sandelf.de", "saynotospams.com",
+        "selfdestructingmail.com", "shiftmail.com", "sinnlos-mail.de", "slaskpost.se",
+        "slopsbox.com", "smellfear.com", "snakemail.com", "sneakemail.com",
+        "sofimail.com", "sofort-mail.de", "sogetthis.com", "soodonims.com",
+        "spam.su", "spamavert.com", "spambob.com", "spambob.net",
+        "spambob.org", "spambog.com", "spambog.de", "spambog.net",
+        "spambog.ru", "spambox.info", "spambox.irishspringrealty.com",
+        "spambox.us", "spamcannon.com", "spamcannon.net", "spamcero.com",
+        "spamcon.org", "spamcorptastic.com", "spamcowboy.com", "spamcowboy.net",
+        "spamcowboy.org", "spamday.com", "spamex.com", "spamfree.eu",
+        "spamfree24.com", "spamfree24.de", "spamfree24.eu", "spamfree24.info",
+        "spamfree24.net", "spamfree24.org", "spamgoes.in", "spamherelots.com",
+        "spamhole.com", "spamify.com", "spaminator.de", "spamkill.info"
+    };
+    
     // Spam detection patterns
     [GeneratedRegex(@"(https?://|www\.)", RegexOptions.IgnoreCase)]
     private static partial Regex UrlPattern();
@@ -34,63 +123,6 @@ public partial class SendEmail
     
     [GeneratedRegex(@"(viagra|cialis|crypto|lottery|winner|prize|bitcoin|forex|casino|poker)", RegexOptions.IgnoreCase)]
     private static partial Regex SpamKeywords();
-
-    // Localization dictionaries
-    private static readonly Dictionary<string, Dictionary<string, string>> Localizations = new()
-    {
-        ["en"] = new()
-        {
-            ["notificationSubject"] = "New website message from {0}",
-            ["notificationTitle"] = "New Contact Form Submission",
-            ["confirmationSubject"] = "Thank you for contacting David Sanchez",
-            ["confirmationGreeting"] = "Hello {0},",
-            ["confirmationMessage"] = "Thank you very much for your message. I will try to get back to you as soon as possible.",
-            ["confirmationSignature"] = "Best regards,<br/>David Sanchez",
-            ["successMessage"] = "Emails sent successfully.",
-            ["partialErrorMessage"] = "Some emails could not be sent. Please try again.",
-            ["verificationSent"] = "Please check your email to verify your contact request.",
-            ["verificationSubject"] = "Verify your contact request",
-            ["verificationMessage"] = "Please click the link below to verify your contact request:<br/><br/><a href=\"{0}\">Verify Email</a><br/><br/>This link will expire in 24 hours.",
-            ["fieldLabels"] = "Name:|Email:|Message:"
-        },
-        ["es"] = new()
-        {
-            ["notificationSubject"] = "Nuevo mensaje del sitio web de {0}",
-            ["notificationTitle"] = "Nueva Consulta del Formulario de Contacto",
-            ["confirmationSubject"] = "Gracias por contactar a David Sanchez",
-            ["confirmationGreeting"] = "Hola {0},",
-            ["confirmationMessage"] = "Muchas gracias por tu mensaje. Trataré de responderte lo antes posible.",
-            ["confirmationSignature"] = "Saludos cordiales,<br/>David Sanchez",
-            ["successMessage"] = "Correos enviados exitosamente.",
-            ["partialErrorMessage"] = "Algunos correos no pudieron ser enviados. Por favor intenta de nuevo.",
-            ["verificationSent"] = "Por favor revisa tu correo para verificar tu solicitud de contacto.",
-            ["verificationSubject"] = "Verifica tu solicitud de contacto",
-            ["verificationMessage"] = "Por favor haz clic en el enlace a continuación para verificar tu solicitud de contacto:<br/><br/><a href=\"{0}\">Verificar Correo</a><br/><br/>Este enlace expirará en 24 horas.",
-            ["fieldLabels"] = "Nombre:|Correo:|Mensaje:"
-        },
-        ["pt"] = new()
-        {
-            ["notificationSubject"] = "Nova mensagem do site de {0}",
-            ["notificationTitle"] = "Nova Submissão do Formulário de Contato",
-            ["confirmationSubject"] = "Obrigado por entrar em contato com David Sanchez",
-            ["confirmationGreeting"] = "Olá {0},",
-            ["confirmationMessage"] = "Muito obrigado pela sua mensagem. Tentarei responder o mais breve possível.",
-            ["confirmationSignature"] = "Atenciosamente,<br/>David Sanchez",
-            ["successMessage"] = "E-mails enviados com sucesso.",
-            ["partialErrorMessage"] = "Alguns e-mails não puderam ser enviados. Por favor, tente novamente.",
-            ["verificationSent"] = "Por favor, verifique seu e-mail para confirmar sua solicitação de contato.",
-            ["verificationSubject"] = "Verifique sua solicitação de contato",
-            ["verificationMessage"] = "Por favor, clique no link abaixo para verificar sua solicitação de contato:<br/><br/><a href=\"{0}\">Verificar E-mail</a><br/><br/>Este link expirará em 24 horas.",
-            ["fieldLabels"] = "Nome:|E-mail:|Mensagem:"
-        }
-    };
-
-    private static string GetLocalizedText(string language, string key, params object[] args)
-    {
-        var lang = Localizations.ContainsKey(language) ? language : "en";
-        var text = Localizations[lang].GetValueOrDefault(key, Localizations["en"][key]);
-        return args.Length > 0 ? string.Format(text, args) : text;
-    }
 
     // Data models
     private class ContactRequest
@@ -258,11 +290,14 @@ public partial class SendEmail
     {
         try
         {
-            var baseUrl = Environment.GetEnvironmentVariable("WEBSITE_URL") ?? "https://dsanchezcr.com";
-            var verificationUrl = $"{baseUrl}/api/verify?token={token}";
+            // Prefer API_URL for the Functions endpoint; fall back to WEBSITE_URL, then to the production default
+            var apiUrl = Environment.GetEnvironmentVariable("API_URL")
+                ?? Environment.GetEnvironmentVariable("WEBSITE_URL")
+                ?? "https://dsanchezcr.azurewebsites.net";
+            var verificationUrl = $"{apiUrl}/api/verify?token={token}";
             
-            var subject = GetLocalizedText(contact.Language, "verificationSubject");
-            var message = GetLocalizedText(contact.Language, "verificationMessage", verificationUrl);
+            var subject = LocalizationHelper.GetText(contact.Language, "verificationSubject");
+            var message = LocalizationHelper.GetText(contact.Language, "verificationMessage", verificationUrl);
 
             var operation = await _emailClient.SendAsync(
                 wait: WaitUntil.Completed,
@@ -298,11 +333,20 @@ public partial class SendEmail
 
     [Function("SendEmail")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "contact")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", "options", Route = "contact")] HttpRequestData req,
         CancellationToken cancellationToken = default)
     {
+        // Handle CORS preflight request
+        if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
+        {
+            var corsResponse = req.CreateResponse(HttpStatusCode.OK);
+            AddCorsHeaders(req, corsResponse);
+            corsResponse.Headers.Add("Access-Control-Max-Age", "86400");
+            return corsResponse;
+        }
+
         using var activity = _logger.BeginScope("SendEmail Function");
-        _logger.LogInformation("SendEmail Function Triggered");
+        _logger.LogInformation("SendEmail Function Triggered from IP: {ClientIp}", GetClientIp(req));
 
         try
         {
@@ -323,7 +367,7 @@ public partial class SendEmail
             {
                 _logger.LogWarning("Honeypot triggered from IP: {ClientIp}", clientIp);
                 await Task.Delay(2000, cancellationToken); // Delay to waste bot time
-                return await CreateSuccessResponseAsync(req, GetLocalizedText(contactRequest.Language, "successMessage"));
+                return await CreateSuccessResponseAsync(req, LocalizationHelper.GetText(contactRequest.Language, "successMessage"));
             }
 
             // Validate reCAPTCHA token
@@ -350,6 +394,14 @@ public partial class SendEmail
                     "Invalid email format.");
             }
             
+            // Check for disposable email addresses
+            if (IsDisposableEmail(contactRequest.Email))
+            {
+                _logger.LogWarning("Disposable email detected: {EmailDomain}", contactRequest.Email.Split('@').LastOrDefault());
+                return await CreateErrorResponseAsync(req, HttpStatusCode.BadRequest, 
+                    "Please use a valid email address. Temporary/disposable emails are not accepted.");
+            }
+            
             // Spam detection
             var spamCheckResult = CheckForSpam(contactRequest);
             if (!spamCheckResult.IsValid)
@@ -370,7 +422,7 @@ public partial class SendEmail
             
             _logger.LogInformation("Verification email sent to {Email} with token {Token}", contactRequest.Email, verificationToken);
             
-            var successMessage = GetLocalizedText(contactRequest.Language, "verificationSent");
+            var successMessage = LocalizationHelper.GetText(contactRequest.Language, "verificationSent");
             return await CreateSuccessResponseAsync(req, successMessage);
         }
         catch (OperationCanceledException)
@@ -393,8 +445,6 @@ public partial class SendEmail
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync(cancellationToken);
             
-            _logger.LogInformation("Request body received: {RequestBody}", requestBody);
-            
             if (string.IsNullOrWhiteSpace(requestBody))
             {
                 _logger.LogWarning("Request body is empty");
@@ -415,13 +465,42 @@ public partial class SendEmail
                 return null;
             }
             
-            _logger.LogInformation("Parsed contact request - Name: {Name}, Email: {Email}, HasMessage: {HasMessage}, Language: {Language}, HasRecaptcha: {HasRecaptcha}", 
-                data.Name, data.Email, !string.IsNullOrWhiteSpace(data.Message), data.Language, !string.IsNullOrWhiteSpace(data.RecaptchaToken));
+            // Sanitize inputs - trim whitespace
+            data.Name = data.Name?.Trim() ?? string.Empty;
+            data.Email = data.Email?.Trim().ToLowerInvariant() ?? string.Empty;
+            data.Message = data.Message?.Trim() ?? string.Empty;
+            var rawLanguage = data.Language?.Trim().ToLowerInvariant();
+            
+            // Validate and normalize language - supported: en, es, pt
+            if (string.IsNullOrWhiteSpace(rawLanguage) ||
+                (rawLanguage != "en" && rawLanguage != "es" && rawLanguage != "pt"))
+            {
+                _logger.LogWarning("Unsupported or missing language '{OriginalLanguage}'. Falling back to default language 'en'.",
+                    rawLanguage);
+                data.Language = "en";
+            }
+            else
+            {
+                data.Language = rawLanguage;
+            }
+            
+            _logger.LogInformation("Contact request received - HasName: {HasName}, HasEmail: {HasEmail}, HasMessage: {HasMessage}, Language: {Language}", 
+                !string.IsNullOrWhiteSpace(data.Name), 
+                !string.IsNullOrWhiteSpace(data.Email), 
+                !string.IsNullOrWhiteSpace(data.Message), 
+                data.Language);
             
             // Validate required fields
             if (string.IsNullOrWhiteSpace(data.Name))
             {
                 _logger.LogWarning("Name is missing");
+                return null;
+            }
+            
+            // Validate name length
+            if (data.Name.Length < 2 || data.Name.Length > 100)
+            {
+                _logger.LogWarning("Name length invalid: {Length}", data.Name.Length);
                 return null;
             }
             
@@ -460,93 +539,14 @@ public partial class SendEmail
         }
         catch
         {
-            return false;        }
-    }
-
-    private async Task<EmailSendOperation> SendNotificationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
-    {
-        try
-        {
-            var fieldLabels = GetLocalizedText(contact.Language, "fieldLabels").Split('|');
-            var subject = GetLocalizedText(contact.Language, "notificationSubject", contact.Name);
-            var title = GetLocalizedText(contact.Language, "notificationTitle");
-
-            var operation = await _emailClient.SendAsync(
-                wait: WaitUntil.Completed,
-                senderAddress: "DoNotReply@dsanchezcr.com",
-                recipientAddress: "david@dsanchezcr.com",
-                subject: subject,
-                htmlContent: $"""
-                    <html>
-                        <body style="font-family: Arial, sans-serif;">
-                            <h2>{title}</h2>
-                            <p><strong>{fieldLabels[0]}</strong> {System.Net.WebUtility.HtmlEncode(contact.Name)}</p>
-                            <p><strong>{fieldLabels[1]}</strong> {System.Net.WebUtility.HtmlEncode(contact.Email)}</p>
-                            <p><strong>{fieldLabels[2]}</strong></p>
-                            <div style="background-color: #f5f5f5; padding: 10px; border-left: 4px solid #007acc;">
-                                {System.Net.WebUtility.HtmlEncode(contact.Message)}
-                            </div>
-                            <p><em>Language: {contact.Language}</em></p>
-                        </body>
-                    </html>
-                    """,
-                cancellationToken: cancellationToken);
-
-            _logger.LogInformation("Notification email sent with ID: {MessageId}, Status: {Status}", 
-                operation.Id, operation.Value.Status);
-            
-            return operation;
-        }
-        catch (RequestFailedException ex)
-        {
-            _logger.LogError(ex, "Failed to send notification email. Error: {ErrorCode}", ex.ErrorCode);
-            throw;        }
-    }
-
-    private async Task<EmailSendOperation> SendConfirmationEmailAsync(ContactRequest contact, CancellationToken cancellationToken)
-    {
-        try
-        {
-            var subject = GetLocalizedText(contact.Language, "confirmationSubject");
-            var greeting = GetLocalizedText(contact.Language, "confirmationGreeting", contact.Name);
-            var message = GetLocalizedText(contact.Language, "confirmationMessage");
-            var signature = GetLocalizedText(contact.Language, "confirmationSignature");
-
-            var operation = await _emailClient.SendAsync(
-                wait: WaitUntil.Completed,
-                senderAddress: "DoNotReply@dsanchezcr.com",
-                recipientAddress: contact.Email,
-                subject: subject,
-                htmlContent: $"""
-                    <html>
-                        <body style="font-family: Arial, sans-serif;">
-                            <h2>{(contact.Language == "es" ? "¡Gracias por comunicarte!" : 
-                                  contact.Language == "pt" ? "Obrigado por entrar em contato!" : 
-                                  "Thank you for reaching out!")}</h2>
-                            <p>{greeting}</p>
-                            <p>{message}</p>
-                            <p>{signature}</p>
-                        </body>
-                    </html>
-                    """,
-                cancellationToken: cancellationToken);
-
-            _logger.LogInformation("Confirmation email sent with ID: {MessageId}, Status: {Status}", 
-                operation.Id, operation.Value.Status);
-            
-            return operation;
-        }
-        catch (RequestFailedException ex)
-        {
-            _logger.LogError(ex, "Failed to send confirmation email to {Email}. Error: {ErrorCode}", 
-                contact.Email, ex.ErrorCode);
-            throw;
+            return false;
         }
     }
 
     private static async Task<HttpResponseData> CreateSuccessResponseAsync(HttpRequestData req, string message)
     {
         var response = req.CreateResponse(HttpStatusCode.OK);
+        AddCorsHeaders(req, response);
         response.Headers.Add("Content-Type", "application/json");
         await response.WriteStringAsync(JsonSerializer.Serialize(new { success = true, message }));
         return response;
@@ -555,8 +555,43 @@ public partial class SendEmail
     private static async Task<HttpResponseData> CreateErrorResponseAsync(HttpRequestData req, HttpStatusCode statusCode, string message)
     {
         var response = req.CreateResponse(statusCode);
+        AddCorsHeaders(req, response);
         response.Headers.Add("Content-Type", "application/json");
         await response.WriteStringAsync(JsonSerializer.Serialize(new { success = false, error = message }));
         return response;
+    }
+    
+    private static void AddCorsHeaders(HttpRequestData req, HttpResponseData response)
+    {
+        var origin = req.Headers.TryGetValues("Origin", out var origins) ? origins.FirstOrDefault() : null;
+        
+        // Only allow specific origins; do not set a fallback origin for disallowed requests
+        if (!string.IsNullOrEmpty(origin) && AllowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
+        {
+            response.Headers.Add("Access-Control-Allow-Origin", origin);
+        }
+        // Note: If origin is not in the allowed list, we don't add CORS headers.
+        // The browser will block the response, which is the desired security behavior.
+        
+        response.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS");
+        response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+    }
+    
+    private static bool IsDisposableEmail(string email)
+    {
+        // Defensive checks in case this is called without prior IsValidEmail().
+        if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
+        {
+            return false;
+        }
+        
+        var parts = email.Split('@');
+        if (parts.Length < 2)
+        {
+            return false;
+        }
+        
+        var domain = parts[parts.Length - 1].ToLowerInvariant();
+        return DisposableEmailDomains.Contains(domain);
     }
 }

@@ -5,6 +5,10 @@ import styles from './styles.module.css';
 import { config } from '../../config/environment';
 
 const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
+  // Feature flag check - return null if feature is disabled
+  if (!config.features.recentVisits) {
+    return null;
+  }
   const [usersLastHour, setUsersLastHour] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);

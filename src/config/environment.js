@@ -1,5 +1,12 @@
 // Environment configuration for the website
 export const config = {
+  // Feature flags - toggle features on/off
+  features: {
+    recentVisits: false,    // OnlineStatusWidget - shows recent visitor count
+    weather: false,         // WeatherWidget - shows weather on homepage
+    aiChat: false,          // NLWebChat - AI assistant chat widget
+  },
+
   // API endpoints
   api: {
     production: 'https://dsanchezcr.azurewebsites.net',

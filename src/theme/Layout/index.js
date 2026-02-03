@@ -6,6 +6,7 @@ export default function Layout(props) {
   return (
     <>
       <OriginalLayout {...props} />
+      {/* Feature flag check is done inside NLWebChat for consistency with other widgets */}
       <NLWebChat />
     </>
   );
