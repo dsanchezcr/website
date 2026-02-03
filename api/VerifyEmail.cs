@@ -15,6 +15,9 @@ public class VerifyEmail
     private readonly IMemoryCache _cache;
     private static readonly EmailClient _emailClient = new(Environment.GetEnvironmentVariable("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING"));
 
+    // Rate limiting for verification attempts
+    private const int MaxVerificationAttemptsPerIpPerHour = 10;
+
     // Localization dictionaries
     private static readonly Dictionary<string, Dictionary<string, string>> Localizations = new()
     {
@@ -70,6 +73,21 @@ public class VerifyEmail
         _logger = logger;
         _cache = cache;
     }
+    
+    private static string GetClientIp(HttpRequestData req)
+    {
+        if (req.Headers.TryGetValues("X-Forwarded-For", out var forwardedFor))
+        {
+            return forwardedFor.First().Split(',')[0].Trim();
+        }
+        
+        if (req.Headers.TryGetValues("X-Real-IP", out var realIp))
+        {
+            return realIp.First();
+        }
+        
+        return "unknown";
+    }
 
     [Function("VerifyEmail")]
     public async Task<HttpResponseData> Run(
@@ -80,6 +98,23 @@ public class VerifyEmail
 
         try
         {
+            // Rate limit verification attempts to prevent token brute forcing
+            var clientIp = GetClientIp(req);
+            var rateLimitKey = $"verify:ratelimit:{clientIp}";
+            if (!_cache.TryGetValue<int>(rateLimitKey, out var attempts))
+            {
+                attempts = 0;
+            }
+            
+            if (attempts >= MaxVerificationAttemptsPerIpPerHour)
+            {
+                _logger.LogWarning("Rate limit exceeded for verification from IP: {ClientIp}", clientIp);
+                return await CreateHtmlResponseAsync(req, HttpStatusCode.TooManyRequests, 
+                    "Too many verification attempts. Please try again later.", "en");
+            }
+            
+            _cache.Set(rateLimitKey, attempts + 1, TimeSpan.FromHours(1));
+
             // Get token from query string
             var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
             var token = query["token"];

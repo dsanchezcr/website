@@ -25,6 +25,22 @@ public partial class SendEmail
     private const int MaxSubmissionsPerEmailPerDay = 2;
     private const double MinRecaptchaScore = 0.5;
     
+    // Allowed origins for CORS
+    private static readonly string[] AllowedOrigins = [
+        "https://dsanchezcr.com",
+        "https://www.dsanchezcr.com",
+        "https://delightful-moss-07d95f50f.azurestaticapps.net",
+        "http://localhost:3000"
+    ];
+    
+    // Disposable email domains to block
+    private static readonly HashSet<string> DisposableEmailDomains = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "tempmail.com", "throwaway.email", "guerrillamail.com", "10minutemail.com",
+        "mailinator.com", "maildrop.cc", "temp-mail.org", "fakeinbox.com",
+        "trashmail.com", "getnada.com", "emailondeck.com", "mohmal.com"
+    };
+    
     // Spam detection patterns
     [GeneratedRegex(@"(https?://|www\.)", RegexOptions.IgnoreCase)]
     private static partial Regex UrlPattern();
@@ -258,8 +274,9 @@ public partial class SendEmail
     {
         try
         {
-            var baseUrl = Environment.GetEnvironmentVariable("WEBSITE_URL") ?? "https://dsanchezcr.com";
-            var verificationUrl = $"{baseUrl}/api/verify?token={token}";
+            // Use API_URL for verification endpoint since it's hosted on Azure Functions
+            var apiUrl = Environment.GetEnvironmentVariable("API_URL") ?? "https://dsanchezcr.azurewebsites.net";
+            var verificationUrl = $"{apiUrl}/api/verify?token={token}";
             
             var subject = GetLocalizedText(contact.Language, "verificationSubject");
             var message = GetLocalizedText(contact.Language, "verificationMessage", verificationUrl);
@@ -305,15 +322,13 @@ public partial class SendEmail
         if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
         {
             var corsResponse = req.CreateResponse(HttpStatusCode.OK);
-            corsResponse.Headers.Add("Access-Control-Allow-Origin", "*");
-            corsResponse.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS");
-            corsResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+            AddCorsHeaders(req, corsResponse);
             corsResponse.Headers.Add("Access-Control-Max-Age", "86400");
             return corsResponse;
         }
 
         using var activity = _logger.BeginScope("SendEmail Function");
-        _logger.LogInformation("SendEmail Function Triggered");
+        _logger.LogInformation("SendEmail Function Triggered from IP: {ClientIp}", GetClientIp(req));
 
         try
         {
@@ -361,6 +376,14 @@ public partial class SendEmail
                     "Invalid email format.");
             }
             
+            // Check for disposable email addresses
+            if (IsDisposableEmail(contactRequest.Email))
+            {
+                _logger.LogWarning("Disposable email detected: {EmailDomain}", contactRequest.Email.Split('@').LastOrDefault());
+                return await CreateErrorResponseAsync(req, HttpStatusCode.BadRequest, 
+                    "Please use a valid email address. Temporary/disposable emails are not accepted.");
+            }
+            
             // Spam detection
             var spamCheckResult = CheckForSpam(contactRequest);
             if (!spamCheckResult.IsValid)
@@ -404,8 +427,6 @@ public partial class SendEmail
         {
             var requestBody = await new StreamReader(req.Body).ReadToEndAsync(cancellationToken);
             
-            _logger.LogInformation("Request body received: {RequestBody}", requestBody);
-            
             if (string.IsNullOrWhiteSpace(requestBody))
             {
                 _logger.LogWarning("Request body is empty");
@@ -426,13 +447,29 @@ public partial class SendEmail
                 return null;
             }
             
-            _logger.LogInformation("Parsed contact request - Name: {Name}, Email: {Email}, HasMessage: {HasMessage}, Language: {Language}, HasRecaptcha: {HasRecaptcha}", 
-                data.Name, data.Email, !string.IsNullOrWhiteSpace(data.Message), data.Language, !string.IsNullOrWhiteSpace(data.RecaptchaToken));
+            // Sanitize inputs - trim whitespace
+            data.Name = data.Name?.Trim() ?? string.Empty;
+            data.Email = data.Email?.Trim().ToLowerInvariant() ?? string.Empty;
+            data.Message = data.Message?.Trim() ?? string.Empty;
+            data.Language = data.Language?.Trim().ToLowerInvariant() ?? "en";
+            
+            _logger.LogInformation("Contact request received - HasName: {HasName}, HasEmail: {HasEmail}, HasMessage: {HasMessage}, Language: {Language}", 
+                !string.IsNullOrWhiteSpace(data.Name), 
+                !string.IsNullOrWhiteSpace(data.Email), 
+                !string.IsNullOrWhiteSpace(data.Message), 
+                data.Language);
             
             // Validate required fields
             if (string.IsNullOrWhiteSpace(data.Name))
             {
                 _logger.LogWarning("Name is missing");
+                return null;
+            }
+            
+            // Validate name length
+            if (data.Name.Length < 2 || data.Name.Length > 100)
+            {
+                _logger.LogWarning("Name length invalid: {Length}", data.Name.Length);
                 return null;
             }
             
@@ -558,6 +595,7 @@ public partial class SendEmail
     private static async Task<HttpResponseData> CreateSuccessResponseAsync(HttpRequestData req, string message)
     {
         var response = req.CreateResponse(HttpStatusCode.OK);
+        AddCorsHeaders(req, response);
         response.Headers.Add("Content-Type", "application/json");
         await response.WriteStringAsync(JsonSerializer.Serialize(new { success = true, message }));
         return response;
@@ -566,8 +604,34 @@ public partial class SendEmail
     private static async Task<HttpResponseData> CreateErrorResponseAsync(HttpRequestData req, HttpStatusCode statusCode, string message)
     {
         var response = req.CreateResponse(statusCode);
+        AddCorsHeaders(req, response);
         response.Headers.Add("Content-Type", "application/json");
         await response.WriteStringAsync(JsonSerializer.Serialize(new { success = false, error = message }));
         return response;
+    }
+    
+    private static void AddCorsHeaders(HttpRequestData req, HttpResponseData response)
+    {
+        var origin = req.Headers.TryGetValues("Origin", out var origins) ? origins.FirstOrDefault() : null;
+        
+        // Only allow specific origins
+        if (!string.IsNullOrEmpty(origin) && AllowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
+        {
+            response.Headers.Add("Access-Control-Allow-Origin", origin);
+        }
+        else
+        {
+            // Fallback for production
+            response.Headers.Add("Access-Control-Allow-Origin", "https://dsanchezcr.com");
+        }
+        
+        response.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS");
+        response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+    }
+    
+    private static bool IsDisposableEmail(string email)
+    {
+        var domain = email.Split('@').LastOrDefault()?.ToLowerInvariant();
+        return domain != null && DisposableEmailDomains.Contains(domain);
     }
 }
