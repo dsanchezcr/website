@@ -62,7 +62,7 @@ jobs:
 
       - name: Build Azure Functions API
         working-directory: ./api
-        run: dotnet build --configuration Release
+        run: dotnet publish --configuration Release --output ./publish
 
       - name: Deploy to Azure Static Web Apps
         id: deploy
@@ -72,7 +72,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           app_location: 'build'
-          api_location: 'api'
+          api_location: 'api/publish'
           skip_app_build: true
           skip_api_build: true
 
