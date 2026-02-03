@@ -1,7 +1,7 @@
 ---
 title: Projects
 description: Open source projects by David Sanchez - Azure, GitHub Actions, .NET, and more.
-hide_table_of_contents: true
+hide_table_of_contents: false
 keywords: [open source, Azure, GitHub Actions, .NET, projects, David Sanchez]
 ---
 import ExchangeRatesWidget from '@site/src/components/ExchangeRatesWidget';
@@ -12,14 +12,16 @@ import ExchangeRatesWidget from '@site/src/components/ExchangeRatesWidget';
 All my projects are available on [GitHub](https://github.com/dsanchezcr). Feel free to contribute, fork, or use them for learning!
 :::
 
-# Secret Santa – Azure-powered gift exchange (Open Source)
+## Secret Santa {#secret-santa}
+
+**Azure-powered gift exchange application (Open Source)**
 
 **Secret Santa** is a multilingual gift exchange web application that helps you organize Secret Santa games for your team, friends, or family — with a modern, cloud-native architecture running on Azure.
 
 - 🌐 Live app: https://secretsanta.dsanchezcr.com  
 - 💻 Source code: https://github.com/dsanchezcr/secretsanta  
 
-## Why I built it
+### Why I built it
 
 Every year I see people fighting with spreadsheets and group chats to organize Secret Santa. I wanted something:
 
@@ -33,9 +35,9 @@ Every year I see people fighting with spreadsheets and group chats to organize S
 
 Secret Santa is the result.
 
-## Try it for your next gift exchange
+### Try it for your next gift exchange
 
-You don’t need an account to use the app.
+You don't need an account to use the app.
 
 **What you can do as an organizer:**
 
@@ -52,7 +54,7 @@ You don’t need an account to use the app.
 
 **What participants get:**
 
-- A simple flow to join the game and discover who they’re buying for  
+- A simple flow to join the game and discover who they're buying for  
 - Optional email notifications with their assignment  
 - The ability to request a new assignment (when the organizer allows it)
 
@@ -62,16 +64,20 @@ You don’t need an account to use the app.
 - Data is automatically deleted **3 days after the event date**  
 - Clear in-app **Privacy Policy** describing how data is handled
 
-## New GitHub Action: Issue Importer
+## Issue Importer Action {#issue-importer}
+
+**GitHub Action for bulk importing issues from CSV/JSON**
+
 In a world where AI coding agents and prompt engineering are becoming the new normal, issues remain the cornerstone of productive software development.
 
-That’s why I’m excited to share something I built for the community:
+That's why I'm excited to share something I built for the community:
 
 🎯 A GitHub Action that lets you bulk import issues from a CSV or JSON file directly into your repository, perfect for assigning structured tasks to GitHub Copilot.
 
 Whether you're managing a sprint, migrating from another system, or setting up a new repo with Copilot Agent Mode, this tool bridges the gap between planning and automated execution.
 
-✨ What makes this even more special?
+### How I built it
+
 I created this GitHub Action from scratch using the single structured prompt below, defining the tech stack, structure, and automation I wanted, and let GitHub Copilot help bring it to life.
 This experience reminded me how accessible and empowering today's tools have become for developers of all levels.
 
@@ -79,19 +85,23 @@ This experience reminded me how accessible and empowering today's tools have bec
 create a complete repository for a reusable github action that imports issues from a csv or json file into a repository. the action should support both formats and accept three inputs: file path, file format (csv or json), and github token. use node.js for the core logic and make the action publishable to the github marketplace. include an action.yml file with properly documented inputs, outputs, and usage metadata. also include a readme.md that explains the usage, configuration, and example workflow. the base project must include a .github folder with a ci-cd workflow file using actions/checkout and actions/setup-node, install dependencies, run tests, and optionally publish the action to the marketplace or tag the release. add a codeql analysis workflow with javascript configuration. add a basic issue template under .github/ISSUE_TEMPLATE including title, description, and reproduction steps. include a dependabot.yml file to keep the node dependencies up to date weekly. include a minimal package.json and ensure the index.js file contains working logic to read the file, parse the content based on format, and create issues via the github rest api. add basic unit tests in a tests folder. ensure the repository is ready to be pushed and used as an open-source github action with all best practices. do not scaffold a sample repository using hello world, start from scratch using the issue importer concept.
 ```
 
-🔗 [The Action is now live](https://github.com/dsanchezcr/issue-importer-action)
+- 🔗 [The Action is now live](https://github.com/dsanchezcr/issue-importer-action)
+- 👉🏻 [Here is a demo on how to use it](https://github.com/dsanchezcr/issue-importer-action-demo)
 
-👉🏻 [Here is a demo on how to use it](https://github.com/dsanchezcr/issue-importer-action-demo)
+If this helps you or your team move faster with automation, I'd love to hear how you use it. 
+Let's keep building — smarter, faster, and together. 🚀
 
-If this helps you or your team move faster with automation, I’d love to hear how you use it. 
-Let’s keep building — smarter, faster, and together. 🚀
+## Colones Exchange Rate {#colones-exchange-rate}
 
-## Colones Exchange Rate - NuGet & npm Packages (GitHub Actions, GitHub Packages, NuGet.org & npmjs.com)
+**NuGet & npm packages for Costa Rican currency exchange rates**
 
 This is a demo repository about how to build a NuGet package and publish it to GitHub Packages and NuGet.org. Also, how to build a npm package and publish it to GitHub Packages and npmjs.com.
 
 It is a real case scenario that gets the exchange rate from the [Ministerio de Hacienda de Costa Rica API](https://api.hacienda.go.cr/indicadores/tc) retrieving the values for Colones, Dollars and Euros.
-[Check out the repository](https://github.com/dsanchezcr/ColonesExchangeRate).
+
+- 💻 Source code: [Check out the repository](https://github.com/dsanchezcr/ColonesExchangeRate)
+
+### Live Demo
 
 Here is an example of the result of the npm package displaying today's exchange rates:
 
@@ -99,48 +109,85 @@ Here is an example of the result of the npm package displaying today's exchange 
 
 [![Icon](../../static/img/blog/2023-11-06-ColonesExchangeRate/Icon.png)](https://github.com/dsanchezcr/ColonesExchangeRate)
 
-## Build a simple contact form (Azure Communication Services, Azure Functions & GitHub Actions)
+## Contact Form with Azure {#contact-form}
 
-[Check out the blog post about this repository](/blog/building-a-contact-form-with-azure)
+**Azure Communication Services, Azure Functions & GitHub Actions**
 
-[![Contact Roles](../../static/img/blog/2023-04-23-BuildContactForm/ContactFormResult.jpg)](https://github.com/dsanchezcr/ContactFormWithAzure)
+A simple contact form implementation using Azure serverless technologies.
 
-## Load Testing Demo (.NET 7 ASP.NET with Azure Cosmos DB, Azure Load Testing & GitHub)
+- 📝 [Check out the blog post about this repository](/blog/building-a-contact-form-with-azure)
+- 💻 Source code: https://github.com/dsanchezcr/ContactFormWithAzure
+
+[![Contact Form](../../static/img/blog/2023-04-23-BuildContactForm/ContactFormResult.jpg)](https://github.com/dsanchezcr/ContactFormWithAzure)
+
+## Load Testing Demo {#load-testing}
+
+**.NET ASP.NET with Azure Cosmos DB, Azure Load Testing & GitHub**
 
 This is a demo repository about Azure Load Testing in CI/CD with Azure DevOps and GitHub.
 
+- 💻 Source code: https://github.com/dsanchezcr/LoadTestingDemo
+
 [![Load Testing Demo](../../static/img/blog/2022-12-21-LoadTesting/LoadTestingWebApp.jpg)](https://github.com/dsanchezcr/LoadTestingDemo)
 
-In my past roles I had the opportunity to build the following open source projects, check out to learn more about Azure services and software development.
+---
 
-## Sample Delivery Service (Azure Maps Project)
+## Projects from Previous Roles {#previous-roles}
+
+In my past roles I had the opportunity to build the following open source projects. Check them out to learn more about Azure services and software development.
+
+### Sample Delivery Service {#sample-delivery-service}
+
+**Azure Maps Project**
 
 Sample Web App using Azure Maps, Cosmos DB, Azure App Service, Key Vault and .NET with JavaScript.
 
+- 💻 Source code: https://github.com/dsanchezcr/SampleDeliveryService
+
 [![Sample Delivery Service](https://raw.githubusercontent.com/dsanchezcr/SampleDeliveryService/main/Images/App.gif)](https://github.com/dsanchezcr/SampleDeliveryService)
 
-## Rock, Paper, Scissors, Lizard, Spock
+### Rock, Paper, Scissors, Lizard, Spock {#rpsls}
 
-Sample application running in Azure presented at Microsoft Ignite 2019
+**Microsoft Ignite 2019 Demo**
+
+Sample application running in Azure presented at Microsoft Ignite 2019.
+
+- 💻 Source code: https://github.com/microsoft/RockPaperScissorsLizardSpock
 
 [![Rock, Paper, Scissors, Lizard, Spock](https://raw.githubusercontent.com/microsoft/RockPaperScissorsLizardSpock/main/Documents/Images/RPSLS.gif)](https://github.com/microsoft/RockPaperScissorsLizardSpock)
 
-## Tailwind Traders
+### Tailwind Traders {#tailwind-traders}
 
-A fictitious retail company showcasing the future of intelligent application experiences. These reference apps are all are powered by the Azure cloud, built with best-in-class tools, and made smarter through data and AI.
+**Intelligent Application Reference Architecture**
+
+A fictitious retail company showcasing the future of intelligent application experiences. These reference apps are all powered by the Azure cloud, built with best-in-class tools, and made smarter through data and AI.
+
+- 💻 Source code: https://github.com/microsoft/TailwindTraders
 
 [![Tailwind Traders](https://raw.githubusercontent.com/microsoft/TailwindTraders/master/Documents/Images/Logo.png)](https://github.com/microsoft/TailwindTraders)
 
-## SmartHotel360
+### SmartHotel360 {#smarthotel360}
+
+**Connected Travel Reference Architecture**
 
 SmartHotel360 is a fictitious smart hospitality company showcasing the future of connected travel.
 
-[![](https://raw.githubusercontent.com/microsoft/SmartHotel360/master/Documents/Images/Logo.png)](https://github.com/microsoft/SmartHotel360)
+- 💻 Source code: https://github.com/microsoft/SmartHotel360
 
-## Thundercloud
+[![SmartHotel360](https://raw.githubusercontent.com/microsoft/SmartHotel360/master/Documents/Images/Logo.png)](https://github.com/microsoft/SmartHotel360)
+
+### Thundercloud {#thundercloud}
+
+**Azure IoT Project**
 
 A cotton cloud with LED lights controlled remotely with the MXChip Azure IoT Dev Kit by using Azure IoT Hub and an Azure Function.
 
-[![Thunder Cloud](https://raw.githubusercontent.com/dsanchezcr/Thundercloud/main/Images/Thundercloud.gif)](https://github.com/dsanchezcr/Thundercloud)
+- 💻 Source code: https://github.com/dsanchezcr/Thundercloud
 
-### More to come!
+[![Thundercloud](https://raw.githubusercontent.com/dsanchezcr/Thundercloud/main/Images/Thundercloud.gif)](https://github.com/dsanchezcr/Thundercloud)
+
+---
+
+## More to come! {#more}
+
+Stay tuned for more projects. Follow me on [GitHub](https://github.com/dsanchezcr) to get notified!

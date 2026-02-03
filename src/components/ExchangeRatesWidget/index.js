@@ -94,11 +94,11 @@ export default function ExchangeRatesWidget() {
           <div style={{ fontSize: '0.9em' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--ifm-color-emphasis-200)' }}>
               <span>Buy:</span>
-              <strong>{formatRate(dollarExchangeRate.purchase?.value || dollarExchangeRate.buy)}</strong>
+              <strong>{formatRate(dollarExchangeRate.purchase)}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
               <span>Sell:</span>
-              <strong>{formatRate(dollarExchangeRate.sale?.value || dollarExchangeRate.sell)}</strong>
+              <strong>{formatRate(dollarExchangeRate.sale)}</strong>
             </div>
           </div>
         )}
@@ -122,12 +122,12 @@ export default function ExchangeRatesWidget() {
         {euroExchangeRate && (
           <div style={{ fontSize: '0.9em' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--ifm-color-emphasis-200)' }}>
-              <span>Buy:</span>
-              <strong>{formatRate(euroExchangeRate.purchase?.value || euroExchangeRate.buy)}</strong>
+              <span>Colones:</span>
+              <strong>{formatRate(euroExchangeRate.colones)}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
-              <span>Sell:</span>
-              <strong>{formatRate(euroExchangeRate.sale?.value || euroExchangeRate.sell)}</strong>
+              <span>Dollars:</span>
+              <strong>${euroExchangeRate.dollars?.toFixed(4) || 'N/A'}</strong>
             </div>
           </div>
         )}
