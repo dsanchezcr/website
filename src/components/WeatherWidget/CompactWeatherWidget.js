@@ -5,6 +5,10 @@ import './CompactWeatherWidget.css';
 import { config } from '../../config/environment';
 
 const CompactWeatherWidget = () => {
+  // Feature flag check - return null if feature is disabled
+  if (!config.features.weather) {
+    return null;
+  }
   const [weatherData, setWeatherData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);

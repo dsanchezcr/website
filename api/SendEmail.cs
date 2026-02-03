@@ -298,9 +298,20 @@ public partial class SendEmail
 
     [Function("SendEmail")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "contact")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", "options", Route = "contact")] HttpRequestData req,
         CancellationToken cancellationToken = default)
     {
+        // Handle CORS preflight request
+        if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
+        {
+            var corsResponse = req.CreateResponse(HttpStatusCode.OK);
+            corsResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            corsResponse.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS");
+            corsResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
+            corsResponse.Headers.Add("Access-Control-Max-Age", "86400");
+            return corsResponse;
+        }
+
         using var activity = _logger.BeginScope("SendEmail Function");
         _logger.LogInformation("SendEmail Function Triggered");
 
