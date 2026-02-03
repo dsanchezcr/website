@@ -25,14 +25,6 @@ public partial class SendEmail
     private const int MaxSubmissionsPerEmailPerDay = 2;
     private const double MinRecaptchaScore = 0.5;
     
-    // Allowed origins for CORS
-    private static readonly string[] AllowedOrigins = [
-        "https://dsanchezcr.com",
-        "https://www.dsanchezcr.com",
-        "https://delightful-moss-07d95f50f.azurestaticapps.net",
-        "http://localhost:3000"
-    ];
-    
     // Disposable email domains to block
     // This is a comprehensive list of ~150 well-known disposable email services.
     // For production systems with higher security needs, consider integrating with
@@ -333,17 +325,11 @@ public partial class SendEmail
 
     [Function("SendEmail")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", "options", Route = "contact")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "contact")] HttpRequestData req,
         CancellationToken cancellationToken = default)
     {
-        // Handle CORS preflight request
-        if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
-        {
-            var corsResponse = req.CreateResponse(HttpStatusCode.OK);
-            AddCorsHeaders(req, corsResponse);
-            corsResponse.Headers.Add("Access-Control-Max-Age", "86400");
-            return corsResponse;
-        }
+        // Note: CORS is handled at the Azure Function App platform level.
+        // OPTIONS preflight requests are automatically handled by Azure.
 
         using var activity = _logger.BeginScope("SendEmail Function");
         _logger.LogInformation("SendEmail Function Triggered from IP: {ClientIp}", GetClientIp(req));
@@ -546,7 +532,6 @@ public partial class SendEmail
     private static async Task<HttpResponseData> CreateSuccessResponseAsync(HttpRequestData req, string message)
     {
         var response = req.CreateResponse(HttpStatusCode.OK);
-        AddCorsHeaders(req, response);
         response.Headers.Add("Content-Type", "application/json");
         await response.WriteStringAsync(JsonSerializer.Serialize(new { success = true, message }));
         return response;
@@ -555,27 +540,13 @@ public partial class SendEmail
     private static async Task<HttpResponseData> CreateErrorResponseAsync(HttpRequestData req, HttpStatusCode statusCode, string message)
     {
         var response = req.CreateResponse(statusCode);
-        AddCorsHeaders(req, response);
         response.Headers.Add("Content-Type", "application/json");
         await response.WriteStringAsync(JsonSerializer.Serialize(new { success = false, error = message }));
         return response;
     }
     
-    private static void AddCorsHeaders(HttpRequestData req, HttpResponseData response)
-    {
-        var origin = req.Headers.TryGetValues("Origin", out var origins) ? origins.FirstOrDefault() : null;
-        
-        // Only allow specific origins; do not set a fallback origin for disallowed requests
-        if (!string.IsNullOrEmpty(origin) && AllowedOrigins.Contains(origin, StringComparer.OrdinalIgnoreCase))
-        {
-            response.Headers.Add("Access-Control-Allow-Origin", origin);
-        }
-        // Note: If origin is not in the allowed list, we don't add CORS headers.
-        // The browser will block the response, which is the desired security behavior.
-        
-        response.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS");
-        response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Accept");
-    }
+    // Note: CORS is handled at the Azure Function App platform level.
+    // The AddCorsHeaders method has been removed as it's no longer needed.
     
     private static bool IsDisposableEmail(string email)
     {
