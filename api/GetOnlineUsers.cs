@@ -17,15 +17,23 @@ namespace api
         private readonly IMemoryCache _cache;
         private static readonly Lazy<BetaAnalyticsDataClient?> _gaClient = new(() =>
         {
-            var credentialsJson = Environment.GetEnvironmentVariable("GOOGLE_ANALYTICS_CREDENTIALS_JSON");
-            if (string.IsNullOrEmpty(credentialsJson))
-                return null;
-            
-            var credential = GoogleCredential.FromJson(credentialsJson);
-            return new BetaAnalyticsDataClientBuilder
+            try
             {
-                Credential = credential
-            }.Build();
+                var credentialsJson = Environment.GetEnvironmentVariable("GOOGLE_ANALYTICS_CREDENTIALS_JSON");
+                if (string.IsNullOrEmpty(credentialsJson))
+                    return null;
+                
+                var credential = GoogleCredential.FromJson(credentialsJson);
+                return new BetaAnalyticsDataClientBuilder
+                {
+                    Credential = credential
+                }.Build();
+            }
+            catch (Exception)
+            {
+                // Invalid credentials JSON - return null to use fallback
+                return null;
+            }
         });
         
         private const string CacheKey = "online_users_count";

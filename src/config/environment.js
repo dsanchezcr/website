@@ -3,7 +3,7 @@ export const config = {
   // Feature flags - toggle features on/off
   features: {
     recentVisits: false,    // OnlineStatusWidget - shows recent visitor count
-    weather: false,         // WeatherWidget - shows weather on homepage
+    weather: true,          // WeatherWidget - shows weather on homepage
     aiChat: false,          // NLWebChat - AI assistant chat widget
   },
 

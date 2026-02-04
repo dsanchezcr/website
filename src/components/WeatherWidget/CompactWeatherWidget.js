@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Link from '@docusaurus/Link';
 import { useLocale } from '@site/src/hooks';
 import translations from './translations';
 import './CompactWeatherWidget.css';
@@ -95,7 +96,11 @@ const CompactWeatherWidget = () => {
   }
 
   return (
-    <div className="compact-weather" role="region" aria-label={t.title}>
+    <Link
+      to="/weather"
+      className="compact-weather-link compact-weather"
+      aria-label={t.viewDetails}
+    >
       <div className="compact-weather-items">
         {weatherData.map((weather, index) => (
           <div key={index} className="compact-weather-item" 
@@ -110,7 +115,7 @@ const CompactWeatherWidget = () => {
           </div>
         ))}
       </div>
-    </div>
+    </Link>
   );
 };
 

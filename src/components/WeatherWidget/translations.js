@@ -5,7 +5,8 @@ const translations = {
     error: "Unable to fetch weather data",
     lastUpdated: "Last updated:",
     humidity: "Humidity",
-    yourLocation: "Your Location"
+    yourLocation: "Your Location",
+    viewDetails: "View detailed weather information"
   },
   es: {
     title: "Clima Actual",
@@ -13,7 +14,8 @@ const translations = {
     error: "No se pudieron obtener los datos del clima",
     lastUpdated: "Última actualización:",
     humidity: "Humedad",
-    yourLocation: "Su Ubicación"
+    yourLocation: "Su Ubicación",
+    viewDetails: "Ver información meteorológica detallada"
   },
   pt: {
     title: "Clima Atual",
@@ -21,7 +23,8 @@ const translations = {
     error: "Não foi possível buscar dados meteorológicos",
     lastUpdated: "Última atualização:",
     humidity: "Umidade",
-    yourLocation: "Sua Localização"
+    yourLocation: "Sua Localização",
+    viewDetails: "Ver informações meteorológicas detalhadas"
   }
 };
 
