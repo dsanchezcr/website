@@ -5,7 +5,7 @@ This folder contains the Bicep templates for deploying the dsanchezcr.com websit
 ## Architecture
 
 The infrastructure includes:
-- **Azure Static Web App** (Standard SKU) with managed .NET 10 API
+- **Azure Static Web App** (Standard SKU) with managed .NET 9 API
 - **Application Insights** for monitoring and logging
 - **Log Analytics Workspace** for centralized logging
 
@@ -138,7 +138,7 @@ az group delete --name dsanchezcr-rg --yes --no-wait
 ### API 404 Errors
 - Verify the API is building successfully (check build logs)
 - Ensure routes in `host.json` match the expected paths
-- Check that `staticwebapp.config.json` has `apiRuntime` set to `dotnet-isolated:10.0`
+- Check that `staticwebapp.config.json` has `apiRuntime` set to `dotnet-isolated:9.0`
 
 ### Authentication Issues
 - Verify environment variables are set correctly

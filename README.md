@@ -1,6 +1,6 @@
 # David's Personal Website
 
-This repository contains the source code for my personal website and blog, [dsanchezcr.com](https://dsanchezcr.com). The site is built using [Docusaurus](https://docusaurus.io/), a modern static website generator with a .NET 10 API backend.
+This repository contains the source code for my personal website and blog, [dsanchezcr.com](https://dsanchezcr.com). The site is built using [Docusaurus](https://docusaurus.io/), a modern static website generator with a .NET 9 API backend.
 
 [![Build and Deploy](https://github.com/dsanchezcr/website/actions/workflows/azure-static-web-app.yml/badge.svg)](https://github.com/dsanchezcr/website/actions/workflows/azure-static-web-app.yml)
 [![CodeQL](https://github.com/dsanchezcr/website/actions/workflows/codeql.yml/badge.svg)](https://github.com/dsanchezcr/website/actions/workflows/codeql.yml)
@@ -18,7 +18,7 @@ The site uses **Azure Static Web Apps** with a **managed API** architecture:
 │                  Azure Static Web Apps                       │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────────────┐    ┌─────────────────────────────┐ │
-│  │   Docusaurus Site   │    │    .NET 10 Managed API      │ │
+│  │   Docusaurus Site   │    │    .NET 9 Managed API       │ │
 │  │   (React/MDX)       │    │    (Azure Functions)        │ │
 │  │                     │    │                             │ │
 │  │  • Blog posts       │    │  • /api/contact             │ │
@@ -41,7 +41,7 @@ Both frontend and backend are deployed together from a single repository, with t
 - **Internationalization**: English, Spanish, Portuguese
 
 ### Backend (Managed API)
-- **[.NET 10](https://dotnet.microsoft.com/)**: Runtime
+- **[.NET 9](https://dotnet.microsoft.com/)**: Runtime
 - **[Azure Functions](https://azure.microsoft.com/services/functions/)**: Serverless compute (isolated worker model)
 - **[Azure Communication Services](https://azure.microsoft.com/services/communication-services/)**: Email delivery
 - **[Azure OpenAI](https://azure.microsoft.com/services/cognitive-services/openai-service/)**: AI chat assistant
@@ -56,7 +56,7 @@ Both frontend and backend are deployed together from a single repository, with t
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) v22 or later
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [.NET 9 SDK](https://dotnet.microsoft.com/download)
 - [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-functions/functions-run-local) v4
 - [SWA CLI](https://azure.github.io/static-web-apps-cli/) (optional, for full local emulation)
 
@@ -104,7 +104,7 @@ cd api && dotnet build --configuration Release
 
 Build artifacts:
 - Frontend: `build/`
-- API: `api/bin/Release/net10.0/`
+- API: `api/bin/Release/net9.0/`
 
 ## 🌍 Internationalization (i18n)
 
@@ -151,7 +151,7 @@ See [infra/README.md](infra/README.md) for complete deployment instructions.
 ## 📁 Project Structure
 
 ```
-├── api/                    # .NET 10 Azure Functions API
+├── api/                    # .NET 9 Azure Functions API
 │   ├── SendEmail.cs        # Contact form endpoint
 │   ├── VerifyEmail.cs      # Email verification
 │   ├── GetWeather.cs       # Weather data

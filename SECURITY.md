@@ -7,9 +7,9 @@ This project is actively maintained. Security updates are applied to the followi
 | Component | Version | Supported |
 | --- | --- | --- |
 | Frontend (Docusaurus) | 3.x | ✅ |
-| Backend (Azure Functions - .NET Isolated) | 10.0 | ✅ |
+| Backend (Azure Functions - .NET Isolated) | 9.0 | ✅ |
 | Node.js Dependencies | Latest | ✅ |
-| Azure Static Web Apps Managed API | dotnet-isolated:10.0 | ✅ |
+| Azure Static Web Apps Managed API | dotnet-isolated:9.0 | ✅ |
 
 ## Security Features
 
