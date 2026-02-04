@@ -1,37 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from '@docusaurus/router';
+import { useLocale } from '@site/src/hooks';
 import translations from './translations';
 import './CompactWeatherWidget.css';
 import { config } from '../../config/environment';
 
 const CompactWeatherWidget = () => {
-  // Feature flag check - return null if feature is disabled
-  if (!config.features.weather) {
-    return null;
-  }
   const [weatherData, setWeatherData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Get current locale from URL
-  const location = useLocation();
-  const locale = location.pathname.startsWith('/es') ? 'es' : 
-                location.pathname.startsWith('/pt') ? 'pt' : 'en';
+  // Use shared locale hook for consistency
+  const locale = useLocale();
   const t = translations[locale] || translations.en;
+
+  // Feature flag check - moved after hooks to comply with Rules of Hooks
+  const isFeatureEnabled = config.features.weather;
 
   // Only fetch predefined locations (Orlando, FL and San José, CR)
   const locations = ['orlando', 'sanjose'];
 
   // Fetch weather data
   useEffect(() => {
+    if (!isFeatureEnabled) {
+      setIsLoading(false);
+      return;
+    }
+
     const fetchWeatherData = async () => {
-      setLoading(true);
+      setIsLoading(true);
       setError(null);
       
       try {
         const apiEndpoint = config.getApiEndpoint();
         const weatherPromises = locations.map(location => 
-          fetch(`${apiEndpoint}/api/GetWeatherFunction?location=${location}`)
+          fetch(`${apiEndpoint}/api/weather?location=${location}`)
             .catch(() => null) // Handle individual request failures
         );
         
@@ -62,14 +64,19 @@ const CompactWeatherWidget = () => {
         console.error('Error fetching weather data:', err);
         setError(t.error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     fetchWeatherData();
-  }, [t]);
+  }, [t, isFeatureEnabled]);
 
-  if (loading) {
+  // Return null after hooks if feature is disabled
+  if (!isFeatureEnabled) {
+    return null;
+  }
+
+  if (isLoading) {
     return (
       <div className="compact-weather">
         <div className="compact-weather-loading">

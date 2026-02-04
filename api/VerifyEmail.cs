@@ -13,7 +13,15 @@ public class VerifyEmail
 {
     private readonly ILogger<VerifyEmail> _logger;
     private readonly IMemoryCache _cache;
-    private static readonly EmailClient _emailClient = new(Environment.GetEnvironmentVariable("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING"));
+    private static readonly Lazy<EmailClient> _emailClient = new(() => 
+    {
+        var connectionString = Environment.GetEnvironmentVariable("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING");
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING environment variable is not configured.");
+        }
+        return new EmailClient(connectionString);
+    });
 
     // Rate limiting for verification attempts
     private const int MaxVerificationAttemptsPerIpPerHour = 10;
@@ -128,10 +136,15 @@ public class VerifyEmail
         try
         {
             var fieldLabels = LocalizationHelper.GetText(contact.Language, "fieldLabels").Split('|');
+            // Ensure we have all required field labels
+            if (fieldLabels.Length < 3)
+            {
+                fieldLabels = new[] { "Name:", "Email:", "Message:" };
+            }
             var subject = LocalizationHelper.GetText(contact.Language, "notificationSubject", contact.Name);
             var title = LocalizationHelper.GetText(contact.Language, "notificationTitle");
 
-            var operation = await _emailClient.SendAsync(
+            var operation = await _emailClient.Value.SendAsync(
                 wait: WaitUntil.Completed,
                 senderAddress: "DoNotReply@dsanchezcr.com",
                 recipientAddress: "david@dsanchezcr.com",
@@ -173,7 +186,7 @@ public class VerifyEmail
             var signature = LocalizationHelper.GetText(contact.Language, "confirmationSignature");
             var title = LocalizationHelper.GetText(contact.Language, "confirmationTitle");
 
-            var operation = await _emailClient.SendAsync(
+            var operation = await _emailClient.Value.SendAsync(
                 wait: WaitUntil.Completed,
                 senderAddress: "DoNotReply@dsanchezcr.com",
                 recipientAddress: contact.Email,

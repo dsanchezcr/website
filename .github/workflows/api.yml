@@ -1,89 +1,52 @@
-name: Build and Deploy Azure Function
+# =============================================================================
+# DEPRECATED: This workflow is no longer used for deployment.
+# The API is now deployed as part of Azure Static Web Apps managed functions.
+# See: azure-static-web-app.yml
+# =============================================================================
+# This workflow is kept for backward compatibility and will validate API builds
+# when changes are made to the api/ directory.
+# =============================================================================
+
+name: Validate API Build (Deprecated)
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'api/**'
-      - '.github/workflows/api.yml'
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, reopened]
     branches:
       - main
     paths:
       - 'api/**'
-      - '.github/workflows/api.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
-  build:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Check Out Repo
-        uses: actions/checkout@v4        
+        uses: actions/checkout@v4
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'          
-      - name: Build and Publish Azure Function
-        working-directory: './api'
-        run: |
-          dotnet restore
-          dotnet build api.csproj --configuration Release --no-restore
-          dotnet publish api.csproj --configuration Release --output ./publish --no-build --self-contained false
-      - name: Zip published function app
-        working-directory: './api'
-        run: |
-          cd publish
-          zip -r ../function-app.zip .
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: function-app
-          path: api/function-app.zip
+          dotnet-version: '9.0.x'
 
-  deploy-qa:
-    if: github.event_name == 'pull_request' && github.event.action != 'closed'
-    runs-on: ubuntu-latest
-    needs: build
-    environment: 
-      name: QA
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: function-app
-          path: ./
-      - name: Deploy to QA Azure Function
-        uses: azure/functions-action@v1
-        with:
-          app-name: 'dsanchezcr'
-          slot-name: 'qa'
-          package: './function-app.zip'
-          publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
+      - name: Restore Dependencies
+        working-directory: ./api
+        run: dotnet restore
 
-  deploy-production:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    needs: build
-    environment: 
-      name: Production
-    steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: function-app
-          path: ./
-      - name: Deploy to Production Azure Function
-        uses: azure/functions-action@v1
-        with:
-          app-name: 'dsanchezcr'
-          slot-name: 'production'
-          package: './function-app.zip'
-          publish-profile: ${{ secrets.AZUREFUNCTION_PUBLISHINGPROFILE }}
+      - name: Build API
+        working-directory: ./api
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Validate Build Output
+        working-directory: ./api
+        run: |
+          if [ -f "bin/Release/net9.0/api.dll" ]; then
+            echo "✅ API build successful"
+          else
+            echo "❌ API build failed - output not found"
+            exit 1
+          fi

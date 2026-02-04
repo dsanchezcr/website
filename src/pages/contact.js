@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '@theme/Layout';
 import { config } from '../config/environment';
-import { useLocation } from '@docusaurus/router';
+import { useLocale } from '@site/src/hooks';
 import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 // Translations for all supported languages
@@ -86,18 +86,9 @@ function ContactForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
   
-  const location = useLocation();
+  const lang = useLocale();
   const { executeRecaptcha } = useGoogleReCaptcha();
   
-  // Extract language from URL path
-  const getLanguage = () => {
-    const pathname = location.pathname;
-    if (pathname.startsWith('/es/') || pathname === '/es') return 'es';
-    if (pathname.startsWith('/pt/') || pathname === '/pt') return 'pt';
-    return 'en';
-  };
-  
-  const lang = getLanguage();
   const t = translations[lang] || translations.en;
 
   // Client-side validation
@@ -349,19 +340,6 @@ function ContactForm() {
                 </div>
               </div>
               
-              <div style={{ 
-                fontSize: '12px', 
-                color: 'var(--ifm-color-emphasis-600)', 
-                marginBottom: '16px',
-                textAlign: 'center'
-              }}>
-                {t.recaptchaNotice}{' '}
-                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">{t.privacyPolicy}</a>{' '}
-                {t.and}{' '}
-                <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">{t.termsOfService}</a>{' '}
-                {t.apply}
-              </div>
-              
               <button 
                 type="submit" 
                 className="button button--primary button--lg"
@@ -373,6 +351,22 @@ function ContactForm() {
               
               <p style={{ color: 'var(--ifm-color-emphasis-600)' }}>{t.thanks}</p>
             </form>
+            
+            {/* reCAPTCHA badge container - displayed under the form */}
+            <div id="recaptcha-container" className="recaptcha-container" />
+            
+            <div style={{ 
+              fontSize: '12px', 
+              color: 'var(--ifm-color-emphasis-600)', 
+              marginTop: '8px',
+              textAlign: 'center'
+            }}>
+              {t.recaptchaNotice}{' '}
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">{t.privacyPolicy}</a>{' '}
+              {t.and}{' '}
+              <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer">{t.termsOfService}</a>{' '}
+              {t.apply}
+            </div>
           </div>
         </div>
       </div>
@@ -382,7 +376,15 @@ function ContactForm() {
 
 export default function Contact() {
   return (
-    <GoogleReCaptchaProvider reCaptchaKey={config.recaptchaSiteKey}>
+    <GoogleReCaptchaProvider 
+      reCaptchaKey={config.recaptchaSiteKey}
+      container={{
+        element: 'recaptcha-container',
+        parameters: {
+          badge: 'inline'
+        }
+      }}
+    >
       <ContactForm />
     </GoogleReCaptchaProvider>
   );

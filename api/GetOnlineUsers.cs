@@ -7,41 +7,64 @@ using System.Text.Json;
 using System.Net;
 using Google.Analytics.Data.V1Beta;
 using Google.Apis.Auth.OAuth2;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace api
 {
     public class GetOnlineUsers
     {
-        private readonly ILogger _logger;
-
-        public GetOnlineUsers(ILoggerFactory loggerFactory)
+        private readonly ILogger<GetOnlineUsers> _logger;
+        private readonly IMemoryCache _cache;
+        private static readonly Lazy<BetaAnalyticsDataClient?> _gaClient = new(() =>
         {
-            _logger = loggerFactory.CreateLogger<GetOnlineUsers>();
+            var credentialsJson = Environment.GetEnvironmentVariable("GOOGLE_ANALYTICS_CREDENTIALS_JSON");
+            if (string.IsNullOrEmpty(credentialsJson))
+                return null;
+            
+            var credential = GoogleCredential.FromJson(credentialsJson);
+            return new BetaAnalyticsDataClientBuilder
+            {
+                Credential = credential
+            }.Build();
+        });
+        
+        private const string CacheKey = "online_users_count";
+        private static readonly TimeSpan CacheDuration = TimeSpan.FromSeconds(30);
+
+        public GetOnlineUsers(ILogger<GetOnlineUsers> logger, IMemoryCache cache)
+        {
+            _logger = logger;
+            _cache = cache;
         }
 
-        [Function("GetOnlineUsersFunction")]
+        [Function("GetOnlineUsers")]
         public async Task<HttpResponseData> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequestData req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "online-users")] HttpRequestData req)
         {
             _logger.LogInformation("GetOnlineUsers Function Triggered.");
 
             try
             {
+                // Check cache first
+                if (_cache.TryGetValue(CacheKey, out object? cachedResult) && cachedResult != null)
+                {
+                    _logger.LogInformation("Returning cached online users data");
+                    var cachedResponse = req.CreateResponse(HttpStatusCode.OK);
+                    cachedResponse.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                    cachedResponse.Headers.Add("Cache-Control", "public, max-age=30");
+                    await cachedResponse.WriteStringAsync(JsonSerializer.Serialize(cachedResult));
+                    return cachedResponse;
+                }
+
                 // Get Google Analytics settings from environment variables
                 var propertyId = Environment.GetEnvironmentVariable("GOOGLE_ANALYTICS_PROPERTY_ID");
-                var credentialsJson = Environment.GetEnvironmentVariable("GOOGLE_ANALYTICS_CREDENTIALS_JSON");
+                var client = _gaClient.Value;
 
                 int usersLastHour = 0;
+                string source = "Fallback";
 
-                if (!string.IsNullOrEmpty(propertyId) && !string.IsNullOrEmpty(credentialsJson))
+                if (!string.IsNullOrEmpty(propertyId) && client != null)
                 {
-                    // Authenticate using service account credentials
-                    var credential = GoogleCredential.FromJson(credentialsJson);
-                    var client = new BetaAnalyticsDataClientBuilder
-                    {
-                        Credential = credential
-                    }.Build();
-
                     // The GA4 API does not provide a direct way to filter for "last hour" in the standard report API.
                     // The correct way is to use the Realtime API with the "activeUsers" metric, which returns the count for the last 60 minutes.
                     var realtimeRequest = new RunRealtimeReportRequest
@@ -54,8 +77,8 @@ namespace api
                     {
                         int.TryParse(realtimeResponse.Rows[0].MetricValues[0].Value, out usersLastHour);
                     }
-
-                    _logger.LogInformation($"Retrieved {usersLastHour} users in the last hour from Google Analytics 4");
+                    source = "Google Analytics 4";
+                    _logger.LogInformation("Retrieved {UserCount} users in the last hour from Google Analytics 4", usersLastHour);
                 }
                 else
                 {
@@ -67,24 +90,25 @@ namespace api
                 {
                     usersLastHour = usersLastHour,
                     timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
-                    source = !string.IsNullOrEmpty(propertyId) && !string.IsNullOrEmpty(credentialsJson)
-                        ? "Google Analytics 4"
-                        : "Fallback"
+                    source = source
                 };
 
-                _logger.LogInformation($"Returning {result.usersLastHour} users in the last hour from {result.source}");
+                // Cache the result
+                _cache.Set(CacheKey, result, CacheDuration);
+
+                _logger.LogInformation("Returning {UserCount} users in the last hour from {Source}", result.usersLastHour, result.source);
 
                 var response = req.CreateResponse(HttpStatusCode.OK);
                 response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-                response.Headers.Add("Access-Control-Allow-Origin", "*");
                 response.Headers.Add("Cache-Control", "public, max-age=30");
+                // Note: CORS is handled by Azure Static Web Apps platform
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(result));
                 return response;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetOnlineUsers function: {ex.Message}");
+                _logger.LogError(ex, "Error in GetOnlineUsers function");
                 
                 // Return a default response instead of error to prevent widget from breaking
                 var fallbackResult = new
@@ -97,7 +121,7 @@ namespace api
 
                 var response = req.CreateResponse(HttpStatusCode.OK);
                 response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-                response.Headers.Add("Access-Control-Allow-Origin", "*");
+                // Note: CORS is handled by Azure Static Web Apps platform
 
                 await response.WriteStringAsync(JsonSerializer.Serialize(fallbackResult));
                 return response;

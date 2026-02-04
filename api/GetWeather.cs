@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Memory;
 using System.Net;
+using System.Globalization;
 
 namespace api
 {
@@ -32,17 +33,18 @@ namespace api
 
     public class GetWeather
     {
-        private static readonly HttpClient httpClient = new HttpClient();
-        private static readonly MemoryCache cache = new MemoryCache(new MemoryCacheOptions
-        {
-            SizeLimit = 100
-        });
-
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IMemoryCache _cache;
         private readonly ILogger<GetWeather> _logger;
+        
+        // HTTP request timeout
+        private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(10);
 
-        public GetWeather(ILogger<GetWeather> logger)
+        public GetWeather(ILogger<GetWeather> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache)
         {
             _logger = logger;
+            _httpClientFactory = httpClientFactory;
+            _cache = cache;
         }
 
         private static readonly Dictionary<string, WeatherLocation> locations = new Dictionary<string, WeatherLocation>
@@ -101,9 +103,9 @@ namespace api
             { 99, ("Thunderstorm with heavy hail", "⛈️") }
         };
 
-        [Function("GetWeatherFunction")]
+        [Function("GetWeather")]
         public async Task<HttpResponseData> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "weather")] HttpRequestData req)
         {
             _logger.LogInformation("GetWeather Function Triggered.");
 
@@ -124,8 +126,18 @@ namespace api
                         weatherDataList.Add(weatherData);
                 }
                 else if (!string.IsNullOrEmpty(latStr) && !string.IsNullOrEmpty(lonStr) && 
-                         double.TryParse(latStr, out double lat) && double.TryParse(lonStr, out double lon))
+                         double.TryParse(latStr, NumberStyles.Float, CultureInfo.InvariantCulture, out double lat) && 
+                         double.TryParse(lonStr, NumberStyles.Float, CultureInfo.InvariantCulture, out double lon))
                 {
+                    // Validate coordinate bounds
+                    if (lat < -90.0 || lat > 90.0 || lon < -180.0 || lon > 180.0)
+                    {
+                        _logger.LogWarning("Invalid coordinates: lat={Lat}, lon={Lon}", lat, lon);
+                        var badRequestResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+                        await badRequestResponse.WriteStringAsync("Invalid coordinates. Latitude must be between -90 and 90, longitude between -180 and 180.");
+                        return badRequestResponse;
+                    }
+
                     // Get weather for user's location
                     var userLocation = new WeatherLocation
                     {
@@ -151,15 +163,15 @@ namespace api
 
                 var response = req.CreateResponse(HttpStatusCode.OK);
                 response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-                response.Headers.Add("Access-Control-Allow-Origin", "*");
+                // Note: CORS is handled by Azure Static Web Apps platform
                 await response.WriteStringAsync(JsonSerializer.Serialize(weatherDataList));
                 return response;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error fetching weather data: {ex.Message}");
+                _logger.LogError(ex, "Error fetching weather data");
                 var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
-                errorResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+                // Note: CORS is handled by Azure Static Web Apps platform
                 return errorResponse;
             }
         }
@@ -169,9 +181,9 @@ namespace api
             string cacheKey = $"weather_{location.Name}_{DateTime.UtcNow:yyyyMMddHH}";
 
             // Check cache first (cache for 1 hour)
-            if (cache.TryGetValue(cacheKey, out WeatherData? cachedData) && cachedData != null)
+            if (_cache.TryGetValue(cacheKey, out WeatherData? cachedData) && cachedData != null)
             {
-                _logger.LogInformation($"Weather data for {location.Name} retrieved from cache.");
+                _logger.LogInformation("Weather data for {Location} retrieved from cache.", location.Name);
                 return cachedData;
             }
 
@@ -179,7 +191,9 @@ namespace api
             {
                 string url = $"https://api.open-meteo.com/v1/forecast?latitude={location.Latitude}&longitude={location.Longitude}&current=temperature_2m,relative_humidity_2m,weather_code&timezone={location.Timezone}";
                 
-                var response = await httpClient.GetStringAsync(url);
+                using var cts = new System.Threading.CancellationTokenSource(RequestTimeout);
+                var httpClient = _httpClientFactory.CreateClient();
+                var response = await httpClient.GetStringAsync(url, cts.Token);
                 using var doc = JsonDocument.Parse(response);
                 var current = doc.RootElement.GetProperty("current");
                 
@@ -200,19 +214,18 @@ namespace api
                     LastUpdated = DateTime.UtcNow
                 };
 
-                // Cache for 1 hour, specify size since SizeLimit is set
-                cache.Set(cacheKey, weatherData, new MemoryCacheEntryOptions
+                // Cache for 1 hour
+                _cache.Set(cacheKey, weatherData, new MemoryCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1),
-                    Size = 1
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1)
                 });
                 
-                _logger.LogInformation($"Weather data for {location.Name} fetched and cached.");
+                _logger.LogInformation("Weather data for {Location} fetched and cached.", location.Name);
                 return weatherData;
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error fetching weather data for {location.Name}: {ex.Message}");
+                _logger.LogError(ex, "Error fetching weather data for {Location}", location.Name);
                 return null;
             }
         }

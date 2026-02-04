@@ -1,9 +1,14 @@
 import React from "react";
 import Giscus from "@giscus/react";
 import { useColorMode } from "@docusaurus/theme-common";
+import { useLocale } from "@site/src/hooks";
 
 export default function Comments(): JSX.Element {
   const { colorMode } = useColorMode();
+  const locale = useLocale();
+  
+  // Map locale to Giscus supported language codes
+  const giscusLang = locale === 'pt' ? 'pt-BR' : locale;
 
   return (
     <div>
@@ -19,7 +24,7 @@ export default function Comments(): JSX.Element {
         emitMetadata="1"
         inputPosition="top"
         theme={colorMode}
-        lang="en"
+        lang={giscusLang}
         loading="lazy"
         crossorigin="anonymous"
         async

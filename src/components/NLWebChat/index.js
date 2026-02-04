@@ -1,13 +1,12 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
-import { useLocation } from '@docusaurus/router';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import { useLocale } from '@site/src/hooks';
 import styles from './styles.module.css';
 import { config } from '../../config/environment';
 
 // Localized content
-const localizedContent = {
+const translations = {
   en: {
     chatTitle: "Ask me about my website",
     chatSubtitle: "Powered by Azure OpenAI",
@@ -20,70 +19,54 @@ const localizedContent = {
       "Tech behind the website."
     ],
     inputPlaceholder: "Ask me anything about this website...",
-    chatIconTooltip: "Chat with David's AI Assistant"
+    chatIconTooltip: "Chat with David's AI Assistant",
+    fallbackResponse: (query) => `Thanks for your question about "${query}". The NLWeb backend is currently being set up with Azure OpenAI integration. Meanwhile, you can explore David's blog for insights on Azure technologies, developer productivity, and his latest projects. Check out the blog, projects, and about sections to learn more!`
   },
-  // Spanish translation
   es: {
-      chatTitle: "Pregúntame sobre mi sitio web",
-      chatSubtitle: "Impulsado por Azure OpenAI",
-      welcomeTitle: "👋 ¡Hola Amig@!",
-      welcomeDescription: "Puedes preguntarme sobre:",
-      welcomeItems: [
-        "Publicaciones de blog o artículos técnicos.",
-        "Proyectos y contribuciones.",
-        "Temas de charlas y presentaciones",
-        "Tecnología detrás del sitio web."
-      ],
-      inputPlaceholder: "Pregúntame cualquier cosa sobre este sitio web...",
-      chatIconTooltip: "Chatea con el Asistente de IA de David"
+    chatTitle: "Pregúntame sobre mi sitio web",
+    chatSubtitle: "Impulsado por Azure OpenAI",
+    welcomeTitle: "👋 ¡Hola Amig@!",
+    welcomeDescription: "Puedes preguntarme sobre:",
+    welcomeItems: [
+      "Publicaciones de blog o artículos técnicos.",
+      "Proyectos y contribuciones.",
+      "Temas de charlas y presentaciones",
+      "Tecnología detrás del sitio web."
+    ],
+    inputPlaceholder: "Pregúntame cualquier cosa sobre este sitio web...",
+    chatIconTooltip: "Chatea con el Asistente de IA de David",
+    fallbackResponse: (query) => `Gracias por tu pregunta sobre "${query}". El backend de NLWeb se está configurando actualmente con la integración de Azure OpenAI. Mientras tanto, puedes explorar el blog de David para obtener información sobre tecnologías de Azure, productividad del desarrollador y sus últimos proyectos. ¡Consulta las secciones de blog, proyectos y acerca de para obtener más información!`
   },
-  // Portuguese translation
   pt: {
-      chatTitle: "Pergunte-me sobre meu site",
-      chatSubtitle: "Desenvolvido com Azure OpenAI",
-      welcomeTitle: "👋 Olá amig@!",
-      welcomeDescription: "Você pode me perguntar sobre:",
-      welcomeItems: [
-        "Posts no blog ou artigos técnicos.",
-        "Projetos e contribuições.",
-        "Tópicos de palestras e apresentações",
-        "Tecnologia por trás do site."
-      ],
-      inputPlaceholder: "Pergunte-me qualquer coisa sobre este site...",
-      chatIconTooltip: "Converse com o Assistente de IA do David"
-    },
+    chatTitle: "Pergunte-me sobre meu site",
+    chatSubtitle: "Desenvolvido com Azure OpenAI",
+    welcomeTitle: "👋 Olá amig@!",
+    welcomeDescription: "Você pode me perguntar sobre:",
+    welcomeItems: [
+      "Posts no blog ou artigos técnicos.",
+      "Projetos e contribuições.",
+      "Tópicos de palestras e apresentações",
+      "Tecnologia por trás do site."
+    ],
+    inputPlaceholder: "Pergunte-me qualquer coisa sobre este site...",
+    chatIconTooltip: "Converse com o Assistente de IA do David",
+    fallbackResponse: (query) => `Obrigado pela sua pergunta sobre "${query}". O backend do NLWeb está sendo configurado atualmente com integração do Azure OpenAI. Enquanto isso, você pode explorar o blog do David para insights sobre tecnologias Azure, produtividade do desenvolvedor e seus projetos mais recentes. Confira as seções blog, projetos e sobre para saber mais!`
+  },
 };
 
-export default function NLWebChat() {
-  // Feature flag check - return null if feature is disabled
-  if (!config.features.aiChat) {
-    return null;
-  }
-  
+const NLWebChat = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef(null);
-  const location = useLocation();
-  const { i18n } = useDocusaurusContext();
   
-  // Get current locale from Docusaurus context with fallback to URL detection
-  const getCurrentLocale = () => {
-    // Try to get locale from Docusaurus context first
-    if (i18n && i18n.currentLocale) {
-      return i18n.currentLocale;
-    }
-    
-    // Fallback to URL-based detection
-    const pathname = location.pathname;
-    if (pathname.startsWith('/es/') || pathname === '/es') return 'es';
-    if (pathname.startsWith('/pt/') || pathname === '/pt') return 'pt';
-    return 'en';
-  };
+  // Use shared locale hook for consistency
+  const locale = useLocale();
+  const t = translations[locale] || translations.en;
   
-  const currentLocale = getCurrentLocale();
-  const content = localizedContent[currentLocale] || localizedContent.en;
+  // Feature flag check - moved after hooks to comply with Rules of Hooks
+  const isFeatureEnabled = config.features.aiChat;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -137,15 +120,9 @@ export default function NLWebChat() {
       // Fallback to simulated response if API is not available
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      const fallbackResponses = {
-        en: `Thanks for your question about "${userMessage.text}". The NLWeb backend is currently being set up with Azure OpenAI integration. Meanwhile, you can explore David's blog for insights on Azure technologies, developer productivity, and his latest projects. Check out the blog, projects, and about sections to learn more!`,
-        es: `Gracias por tu pregunta sobre "${userMessage.text}". El backend de NLWeb se está configurando actualmente con la integración de Azure OpenAI. Mientras tanto, puedes explorar el blog de David para obtener información sobre tecnologías de Azure, productividad del desarrollador y sus últimos proyectos. ¡Consulta las secciones de blog, proyectos y acerca de para obtener más información!`,
-        pt: `Obrigado pela sua pergunta sobre "${userMessage.text}". O backend do NLWeb está sendo configurado atualmente com integração do Azure OpenAI. Enquanto isso, você pode explorar o blog do David para insights sobre tecnologias Azure, produtividade do desenvolvedor e seus projetos mais recentes. Confira as seções blog, projetos e sobre para saber mais!`
-      };
-      
       const fallbackMessage = {
         id: Date.now() + 1,
-        text: fallbackResponses[currentLocale],
+        text: t.fallbackResponse(userMessage.text),
         sender: 'bot',
         timestamp: new Date()
       };
@@ -155,6 +132,11 @@ export default function NLWebChat() {
     }
   };
 
+  // Return null after hooks if feature is disabled
+  if (!isFeatureEnabled) {
+    return null;
+  }
+
   return (
     <>
       {/* Floating Chat Bubble */}
@@ -162,8 +144,8 @@ export default function NLWebChat() {
         <button
           className={clsx(styles.chatBubbleIcon, { [styles.chatOpen]: isOpen })}
           onClick={() => setIsOpen(!isOpen)}
-          title={content.chatIconTooltip}
-          aria-label={content.chatIconTooltip}
+          title={t.chatIconTooltip}
+          aria-label={t.chatIconTooltip}
         >
           {isOpen ? '✕' : '💬'}
         </button>
@@ -171,8 +153,8 @@ export default function NLWebChat() {
         {/* Chat Widget */}
         <div className={clsx(styles.chatWidget, { [styles.chatWidgetOpen]: isOpen })}>
           <div className={styles.chatHeader}>
-            <h3>{content.chatTitle}</h3>
-            <p>{content.chatSubtitle}</p>
+            <h3>{t.chatTitle}</h3>
+            <p>{t.chatSubtitle}</p>
             <button 
               className={styles.closeButton}
               onClick={() => setIsOpen(false)}
@@ -185,10 +167,10 @@ export default function NLWebChat() {
           <div className={styles.chatMessages}>
             {messages.length === 0 && (
               <div className={styles.welcomeMessage}>
-                <p>{content.welcomeTitle}</p>
-                <p>{content.welcomeDescription}</p>
+                <p>{t.welcomeTitle}</p>
+                <p>{t.welcomeDescription}</p>
                 <ul>
-                  {content.welcomeItems.map((item, index) => (
+                  {t.welcomeItems.map((item, index) => (
                     <li key={index}>{item}</li>
                   ))}
                 </ul>
@@ -233,7 +215,7 @@ export default function NLWebChat() {
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
-                placeholder={content.inputPlaceholder}
+                placeholder={t.inputPlaceholder}
                 className={styles.chatInput}
                 disabled={isLoading}
               />
@@ -250,4 +232,6 @@ export default function NLWebChat() {
       </div>
     </>
   );
-}
+};
+
+export default NLWebChat;

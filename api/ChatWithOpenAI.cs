@@ -15,13 +15,15 @@ namespace api
 {
     public class ChatWithOpenAI
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<ChatWithOpenAI> _logger;
         private readonly ChatClient _chatClient;
         private readonly string _systemPrompt;
+        private const int MaxQueryLength = 2000;
+        private const int MaxPrevLength = 4000;
         
-        public ChatWithOpenAI(ILoggerFactory loggerFactory)
+        public ChatWithOpenAI(ILogger<ChatWithOpenAI> logger)
         {
-            _logger = loggerFactory.CreateLogger<ChatWithOpenAI>();
+            _logger = logger;
             // Use environment variables for configuration
             string? endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
             string? key = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY");
@@ -39,20 +41,11 @@ namespace api
 
         [Function("ChatWithOpenAI")]
         public async Task<HttpResponseData> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", "options", Route = "nlweb/ask")] HttpRequestData req)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "nlweb/ask")] HttpRequestData req)
         {
             _logger.LogInformation("ChatWithOpenAI Function Triggered.");
 
-            // Handle CORS preflight request
-            if (req.Method.Equals("OPTIONS", StringComparison.OrdinalIgnoreCase))
-            {
-                var corsResponse = req.CreateResponse(HttpStatusCode.OK);
-                corsResponse.Headers.Add("Access-Control-Allow-Origin", "*");
-                corsResponse.Headers.Add("Access-Control-Allow-Methods", "POST, OPTIONS");
-                corsResponse.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
-                corsResponse.Headers.Add("Access-Control-Max-Age", "86400");
-                return corsResponse;
-            }
+            // Note: CORS preflight (OPTIONS) is automatically handled by Azure Static Web Apps platform
 
             try
             {
@@ -62,8 +55,25 @@ namespace api
                 if (chatRequest == null || string.IsNullOrWhiteSpace(chatRequest.Query))
                 {
                     var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
-                    badRequest.Headers.Add("Access-Control-Allow-Origin", "*");
                     await badRequest.WriteStringAsync("Missing or invalid 'query' in request body.");
+                    return badRequest;
+                }
+
+                // Validate query length to prevent abuse
+                if (chatRequest.Query.Length > MaxQueryLength)
+                {
+                    _logger.LogWarning("Query too long: {Length} characters", chatRequest.Query.Length);
+                    var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
+                    await badRequest.WriteStringAsync($"Query is too long. Maximum length is {MaxQueryLength} characters.");
+                    return badRequest;
+                }
+
+                // Validate previous context length
+                if (!string.IsNullOrWhiteSpace(chatRequest.Prev) && chatRequest.Prev.Length > MaxPrevLength)
+                {
+                    _logger.LogWarning("Previous context too long: {Length} characters", chatRequest.Prev.Length);
+                    var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
+                    await badRequest.WriteStringAsync($"Previous context is too long. Maximum length is {MaxPrevLength} characters.");
                     return badRequest;
                 }
 
@@ -94,7 +104,6 @@ namespace api
                 };
                 var ok = req.CreateResponse(HttpStatusCode.OK);
                 ok.Headers.Add("Content-Type", "application/json");
-                ok.Headers.Add("Access-Control-Allow-Origin", "*");
                 ok.Headers.Add("Cache-Control", "public, max-age=30");
                 await ok.WriteStringAsync(JsonSerializer.Serialize(responseObj));
                 return ok;
@@ -104,9 +113,8 @@ namespace api
                 _logger.LogError(ex, "Error in ChatWithOpenAI");
                 var error = req.CreateResponse(HttpStatusCode.InternalServerError);
                 error.Headers.Add("Content-Type", "application/json");
-                error.Headers.Add("Access-Control-Allow-Origin", "*");
                 var errorObj = new {
-                    error = $"Error: {ex.Message}"
+                    error = "An error occurred processing your request. Please try again later."
                 };
                 await error.WriteStringAsync(JsonSerializer.Serialize(errorObj));
                 return error;

@@ -1,0 +1,14 @@
+# Robots.txt for dsanchezcr.com
+# https://www.robotstxt.org/
+
+User-agent: *
+Allow: /
+
+# Disallow API endpoints
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://dsanchezcr.com/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

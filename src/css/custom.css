@@ -12,6 +12,10 @@
   --content-background: #ffffff;
   --text-color: #000000;
   --border-color: #cccccc;
+  
+  /* Docusaurus v4 compatibility */
+  --ifm-code-font-size: 95%;
+  --ifm-heading-font-weight: 600;
 }
 
 /* Dark theme overrides - softer colors */
@@ -28,6 +32,42 @@
   --text-color: #e5e7eb;
   --border-color: #1f2937;
   --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.1);
+}
+
+/* Announcement bar customization */
+div[class*='announcementBar'] {
+  font-size: 0.95rem;
+}
+
+/* Mermaid diagram styling */
+.docusaurus-mermaid-container {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+[data-theme='dark'] .docusaurus-mermaid-container svg {
+  background-color: transparent;
+}
+
+/* Admonition improvements */
+.admonition {
+  margin-bottom: 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.admonition-heading h5 {
+  font-size: 1rem;
+  text-transform: none;
+}
+
+/* Tabs component styling */
+.tabs-container {
+  margin: 1rem 0 1.5rem;
+}
+
+.tabs__item {
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
 }
 
 /* Code highlight styles */
@@ -185,9 +225,164 @@ button:hover {
   text-decoration: none;
 }
 
-/* reCAPTCHA badge positioning */
+/* Navbar search box - improved styling and spacing */
+.navbar .DocSearch {
+  margin-right: 12px;
+}
+
+.navbar .DocSearch-Button {
+  background-color: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  padding: 0 12px;
+  height: 36px;
+  transition: all 0.2s ease;
+}
+
+.navbar .DocSearch-Button:hover {
+  background-color: var(--ifm-color-emphasis-200);
+  border-color: var(--ifm-color-emphasis-400);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .navbar .DocSearch-Button {
+  background-color: var(--ifm-color-emphasis-100);
+  border-color: var(--ifm-color-emphasis-300);
+}
+
+[data-theme='dark'] .navbar .DocSearch-Button:hover {
+  background-color: var(--ifm-color-emphasis-200);
+  border-color: var(--ifm-color-emphasis-400);
+}
+
+.navbar .DocSearch-Button-Placeholder {
+  font-size: 0.875rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.navbar .DocSearch-Search-Icon {
+  width: 16px;
+  height: 16px;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.navbar .DocSearch-Button-Keys {
+  display: flex;
+  gap: 2px;
+}
+
+.navbar .DocSearch-Button-Key {
+  background: var(--ifm-color-emphasis-200);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ifm-color-emphasis-700);
+  box-shadow: none;
+  border: none;
+}
+
+.navbar__items--right {
+  gap: 12px;
+  align-items: center;
+}
+
+.navbar__items--right > * {
+  flex-shrink: 0;
+}
+
+/* Color mode toggle button - show sun/moon emoji icons */
+[class*='colorModeToggle'] button,
+button[class*='toggleButton'] {
+  background: transparent !important;
+  border: none !important;
+  font-size: 1.25rem;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+[class*='colorModeToggle'] button::before,
+button[class*='toggleButton']::before {
+  content: '☀️';
+}
+
+[data-theme='dark'] [class*='colorModeToggle'] button::before,
+[data-theme='dark'] button[class*='toggleButton']::before {
+  content: '🌙';
+}
+
+/* Hide the default SVG icons */
+[class*='colorModeToggle'] button svg,
+button[class*='toggleButton'] svg {
+  display: none !important;
+}
+
+/* Ensure search doesn't overflow on smaller screens */
+@media (max-width: 996px) {
+  .navbar .DocSearch-Button {
+    padding: 0 10px;
+    width: 36px;
+    justify-content: center;
+  }
+  
+  .navbar .DocSearch-Button-Placeholder,
+  .navbar .DocSearch-Button-Keys {
+    display: none;
+  }
+  
+  .navbar__items--right {
+    gap: 8px;
+  }
+}
+
+/* Large screens - ensure proper alignment */
+@media (min-width: 997px) {
+  .navbar .DocSearch-Button {
+    min-width: 200px;
+  }
+}
+
+/* Projects page layout fix - ensure proper content height */
+.markdown img {
+  max-width: 100%;
+  height: auto;
+}
+
+.theme-doc-markdown {
+  min-height: calc(100vh - 400px);
+}
+
+/* MDX page content wrapper */
+[class*='mdxPageWrapper'] {
+  min-height: calc(100vh - 60px - 200px);
+}
+
+/* reCAPTCHA badge - hidden globally, shown inline on contact page */
 .grecaptcha-badge {
-  z-index: 9999 !important;
-  bottom: 80px !important;
-  right: 16px !important;
+  visibility: hidden !important;
+}
+
+/* Contact page reCAPTCHA container */
+.recaptcha-container,
+#recaptcha-container {
+  position: relative;
+  width: 100%;
+  min-height: 70px;
+  margin: 16px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.recaptcha-container .grecaptcha-badge,
+#recaptcha-container .grecaptcha-badge {
+  visibility: visible !important;
+  position: relative !important;
+  bottom: auto !important;
+  right: auto !important;
+  box-shadow: none !important;
 }
