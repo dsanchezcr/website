@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Link from '@docusaurus/Link';
 import { useLocale } from '@site/src/hooks';
 import translations from './translations';
 import './CompactWeatherWidget.css';
@@ -95,22 +96,24 @@ const CompactWeatherWidget = () => {
   }
 
   return (
-    <div className="compact-weather" role="region" aria-label={t.title}>
-      <div className="compact-weather-items">
-        {weatherData.map((weather, index) => (
-          <div key={index} className="compact-weather-item" 
-               title={`${weather.Location}: ${weather.Description}, ${Math.round(weather.Temperature)}°C`}>
-            <span className="compact-weather-icon" role="img" aria-label={weather.Description}>
-              {weather.Icon}
-            </span>
-            <div className="compact-weather-info">
-              <div className="compact-weather-location">{weather.Location.split(',')[0]}</div>
-              <div className="compact-weather-temp">{Math.round(weather.Temperature)}°C</div>
+    <Link to="/weather" className="compact-weather-link">
+      <div className="compact-weather" role="region" aria-label={t.title}>
+        <div className="compact-weather-items">
+          {weatherData.map((weather, index) => (
+            <div key={index} className="compact-weather-item" 
+                 title={`${weather.Location}: ${weather.Description}, ${Math.round(weather.Temperature)}°C`}>
+              <span className="compact-weather-icon" role="img" aria-label={weather.Description}>
+                {weather.Icon}
+              </span>
+              <div className="compact-weather-info">
+                <div className="compact-weather-location">{weather.Location.split(',')[0]}</div>
+                <div className="compact-weather-temp">{Math.round(weather.Temperature)}°C</div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

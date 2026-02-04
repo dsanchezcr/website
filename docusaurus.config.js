@@ -177,7 +177,7 @@ const config = {
       // Announcement bar for important updates
       announcementBar: {
         id: 'announcement',
-        content: '🚀 Check out my latest blog posts on <a href="/blog">GitHub Copilot and cloud development</a>!',
+        content: '🚀 <a href="/blog">Check out my latest blog posts!</a>',
         backgroundColor: '#2c5282',
         textColor: '#ffffff',
         isCloseable: true,
