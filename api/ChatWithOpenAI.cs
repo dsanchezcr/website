@@ -104,7 +104,7 @@ namespace api
                 };
                 var ok = req.CreateResponse(HttpStatusCode.OK);
                 ok.Headers.Add("Content-Type", "application/json");
-                ok.Headers.Add("Cache-Control", "no-store");
+                ok.Headers.Add("Cache-Control", "private, no-store");
                 await ok.WriteStringAsync(JsonSerializer.Serialize(responseObj));
                 return ok;
             }

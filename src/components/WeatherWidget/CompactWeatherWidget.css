@@ -206,15 +206,15 @@
     animation: none;
   }
   
+  .compact-weather {
+    transition: none;
+  }
+  
   .compact-weather-item {
     transition: none;
   }
   
   .compact-weather-item:hover {
     transform: none;
-  }
-  
-  .compact-weather {
-    transition: none;
   }
 }

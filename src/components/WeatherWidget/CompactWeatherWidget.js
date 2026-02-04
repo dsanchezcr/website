@@ -99,8 +99,7 @@ const CompactWeatherWidget = () => {
     <Link
       to="/weather"
       className="compact-weather-link compact-weather"
-      role="region"
-      aria-label={t.title}
+      aria-label={t.viewDetails}
     >
       <div className="compact-weather-items">
         {weatherData.map((weather, index) => (
