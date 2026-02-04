@@ -6,14 +6,11 @@
 
 .compact-weather-link:hover {
   text-decoration: none;
-}
-
-.compact-weather-link:hover .compact-weather {
   border-color: var(--ifm-color-primary);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-[data-theme='dark'] .compact-weather-link:hover .compact-weather {
+[data-theme='dark'] .compact-weather-link:hover {
   border-color: var(--ifm-color-primary-light);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
