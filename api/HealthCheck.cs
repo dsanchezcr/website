@@ -69,7 +69,6 @@ public class HealthCheck
         { "AZURE_OPENAI_ENDPOINT", ("Azure OpenAI service endpoint URL", true) },
         { "AZURE_OPENAI_KEY", ("Azure OpenAI API key", true) },
         { "AZURE_OPENAI_DEPLOYMENT", ("Azure OpenAI deployment/model name", true) },
-        { "AZURE_OPENAI_SYSTEM_PROMPT", ("Custom system prompt for chat (optional - has default)", false) },
         
         // Google Analytics
         { "GOOGLE_ANALYTICS_PROPERTY_ID", ("GA4 property ID for analytics", true) },
