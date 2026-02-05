@@ -19,6 +19,17 @@ export const config = {
     // or direct function host for standalone development
     local: 'http://localhost:7071',
   },
+
+  // API routes - relative paths for all API endpoints
+  routes: {
+    contact: '/api/contact',
+    verify: '/api/verify',
+    weather: '/api/weather',
+    onlineUsers: '/api/online-users',
+    chat: '/api/nlweb/ask',
+    health: '/api/health',
+    healthConfig: '/api/health/config',
+  },
   
   // Production domains
   productionDomains: [
