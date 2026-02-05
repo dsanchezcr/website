@@ -137,7 +137,28 @@ public partial class SendEmail
     
     private record VerificationData(string Name, string Email, string Message, string Language);
     private record SpamCheckResult(bool IsValid, string Reason);
-    private record RecaptchaResponse(bool Success, double Score, string Action, DateTime ChallengeTs, string Hostname, string[] ErrorCodes);
+    
+    // Google reCAPTCHA API response format
+    private class RecaptchaResponse
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("success")]
+        public bool Success { get; set; }
+        
+        [System.Text.Json.Serialization.JsonPropertyName("score")]
+        public double Score { get; set; }
+        
+        [System.Text.Json.Serialization.JsonPropertyName("action")]
+        public string? Action { get; set; }
+        
+        [System.Text.Json.Serialization.JsonPropertyName("challenge_ts")]
+        public DateTime? ChallengeTs { get; set; }
+        
+        [System.Text.Json.Serialization.JsonPropertyName("hostname")]
+        public string? Hostname { get; set; }
+        
+        [System.Text.Json.Serialization.JsonPropertyName("error-codes")]
+        public string[]? ErrorCodes { get; set; }
+    }
 
     // Helper methods
     private static string GetClientIp(HttpRequestData req)
