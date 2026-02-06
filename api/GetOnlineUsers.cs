@@ -73,20 +73,20 @@ namespace api
 
                 if (!string.IsNullOrEmpty(propertyId) && client != null)
                 {
-                    // The GA4 API does not provide a direct way to filter for "last hour" in the standard report API.
-                    // The correct way is to use the Realtime API with the "activeUsers" metric, which returns the count for the last 60 minutes.
-                    var realtimeRequest = new RunRealtimeReportRequest
+                    // Use the GA4 Data API to get active users in the last 24 hours
+                    var reportRequest = new RunReportRequest
                     {
                         Property = $"properties/{propertyId}",
+                        DateRanges = { new DateRange { StartDate = "1daysAgo", EndDate = "today" } },
                         Metrics = { new Metric { Name = "activeUsers" } }
                     };
-                    var realtimeResponse = await client.RunRealtimeReportAsync(realtimeRequest);
-                    if (realtimeResponse.Rows.Count > 0 && realtimeResponse.Rows[0].MetricValues.Count > 0)
+                    var reportResponse = await client.RunReportAsync(reportRequest);
+                    if (reportResponse.Rows.Count > 0 && reportResponse.Rows[0].MetricValues.Count > 0)
                     {
-                        int.TryParse(realtimeResponse.Rows[0].MetricValues[0].Value, out usersLastHour);
+                        int.TryParse(reportResponse.Rows[0].MetricValues[0].Value, out usersLastHour);
                     }
                     source = "Google Analytics 4";
-                    _logger.LogInformation("Retrieved {UserCount} users in the last hour from Google Analytics 4", usersLastHour);
+                    _logger.LogInformation("Retrieved {UserCount} users in the last 24 hours from Google Analytics 4", usersLastHour);
                 }
                 else
                 {
@@ -96,7 +96,7 @@ namespace api
 
                 var result = new
                 {
-                    usersLastHour = usersLastHour,
+                    usersLast24Hours = usersLastHour,
                     timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
                     source = source
                 };
@@ -104,7 +104,7 @@ namespace api
                 // Cache the result
                 _cache.Set(CacheKey, result, CacheDuration);
 
-                _logger.LogInformation("Returning {UserCount} users in the last hour from {Source}", result.usersLastHour, result.source);
+                _logger.LogInformation("Returning {UserCount} users in the last 24 hours from {Source}", result.usersLast24Hours, result.source);
 
                 var response = req.CreateResponse(HttpStatusCode.OK);
                 response.Headers.Add("Content-Type", "application/json; charset=utf-8");
@@ -121,7 +121,7 @@ namespace api
                 // Return a default response instead of error to prevent widget from breaking
                 var fallbackResult = new
                 {
-                    usersLastHour = 0,
+                    usersLast24Hours = 0,
                     timestamp = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"),
                     error = "Analytics temporarily unavailable",
                     source = "Fallback"

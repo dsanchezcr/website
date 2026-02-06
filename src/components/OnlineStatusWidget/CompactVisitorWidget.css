@@ -1,0 +1,193 @@
+/* Compact Visitor Widget - matches CompactWeatherWidget style */
+
+.compact-visitor-container {
+  /* Positioned by parent container in index.module.css */
+}
+
+.compact-visitor {
+  display: flex;
+  align-items: center;
+  background: var(--ifm-background-surface-color);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  max-width: 100%;
+}
+
+[data-theme='dark'] .compact-visitor {
+  background: var(--ifm-background-surface-color);
+  border-color: var(--ifm-color-emphasis-400);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.compact-visitor-items {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.compact-visitor-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  background: var(--ifm-color-emphasis-100);
+  min-width: 0;
+}
+
+[data-theme='dark'] .compact-visitor-item {
+  background: var(--ifm-color-emphasis-200);
+}
+
+.compact-visitor-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.compact-visitor-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.compact-visitor-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-theme='dark'] .compact-visitor-label {
+  color: var(--ifm-color-emphasis-600);
+}
+
+.compact-visitor-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.compact-visitor-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.compact-visitor-error {
+  font-size: 1.1rem;
+  color: var(--ifm-color-danger);
+  padding: 0.5rem;
+}
+
+.compact-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--ifm-color-emphasis-300);
+  border-top: 2px solid var(--ifm-color-primary);
+  border-radius: 50%;
+  animation: compact-visitor-spin 1s linear infinite;
+}
+
+@keyframes compact-visitor-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Navbar widget (simple inline) */
+.compact-visitor-navbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--ifm-color-emphasis-100);
+  font-size: 0.875rem;
+}
+
+[data-theme='dark'] .compact-visitor-navbar {
+  background: var(--ifm-color-emphasis-200);
+}
+
+.compact-visitor-navbar .compact-visitor-icon {
+  font-size: 1rem;
+}
+
+.compact-visitor-navbar .compact-visitor-count {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ifm-color-primary);
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .compact-visitor {
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 996px) {
+  .compact-visitor {
+    margin: 0;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .compact-visitor {
+    padding: 0.5rem;
+  }
+  
+  .compact-visitor-item {
+    padding: 0.3rem 0.5rem;
+  }
+  
+  .compact-visitor-label {
+    font-size: 0.7rem;
+  }
+  
+  .compact-visitor-count {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .compact-visitor-item {
+    padding: 0.25rem 0.4rem;
+  }
+  
+  .compact-visitor-icon {
+    font-size: 1rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .compact-visitor {
+    border-width: 2px;
+  }
+  
+  .compact-visitor-item {
+    border: 1px solid var(--ifm-color-emphasis-500);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .compact-spinner {
+    animation: none;
+  }
+}

@@ -71,7 +71,6 @@ The following environment variables are configured as app settings for the manag
 | `AZURE_OPENAI_ENDPOINT` | Azure OpenAI service endpoint | No* |
 | `AZURE_OPENAI_KEY` | Azure OpenAI API key | No* |
 | `AZURE_OPENAI_DEPLOYMENT` | Azure OpenAI model deployment name | No* |
-| `AZURE_OPENAI_SYSTEM_PROMPT` | System prompt for the chat assistant | No |
 | `GOOGLE_ANALYTICS_PROPERTY_ID` | GA4 property ID | No* |
 | `GOOGLE_ANALYTICS_CREDENTIALS_JSON` | GA4 service account credentials JSON | No* |
 | `WEBSITE_URL` | The public website URL | Yes |

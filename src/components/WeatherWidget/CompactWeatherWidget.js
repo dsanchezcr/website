@@ -34,7 +34,7 @@ const CompactWeatherWidget = () => {
       try {
         const apiEndpoint = config.getApiEndpoint();
         const weatherPromises = locations.map(location => 
-          fetch(`${apiEndpoint}/api/weather?location=${location}`)
+          fetch(`${apiEndpoint}${config.routes.weather}?location=${location}`)
             .catch(() => null) // Handle individual request failures
         );
         

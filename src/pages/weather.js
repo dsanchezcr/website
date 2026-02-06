@@ -15,11 +15,11 @@ export default function Weather() {
             <p>
               Stay updated with real-time weather information for key locations. 
               We display current conditions including temperature, humidity, and weather conditions 
-              for Orlando, Florida and San José, Costa Rica. If you allow location access, 
-              we'll also show weather for your current location.
+              for Orlando, Florida and San José, Costa Rica. Click the button below to also 
+              get weather for your current location.
             </p>
             <ErrorBoundary showMessage errorMessage="Weather data is temporarily unavailable. Please try again later.">
-              <WeatherWidget showUserLocation={true} locations={['orlando', 'sanjose']} />
+              <WeatherWidget showLocationButton={true} locations={['orlando', 'sanjose']} />
             </ErrorBoundary>
             
             <div className="margin-top--lg">

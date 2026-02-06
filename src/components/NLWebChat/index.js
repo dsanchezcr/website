@@ -1,6 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import clsx from 'clsx';
+import ReactMarkdown from 'react-markdown';
 import { useLocale } from '@site/src/hooks';
 import styles from './styles.module.css';
 import { config } from '../../config/environment';
@@ -93,13 +94,16 @@ const NLWebChat = () => {
 
     try {
       // Use environment.js config to get the API endpoint
-      const apiUrl = config.getApiEndpoint() + '/api/nlweb/ask';
+      const apiUrl = config.getApiEndpoint() + config.routes.chat;
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ query: userMessage.text }),
+        body: JSON.stringify({ 
+          query: userMessage.text,
+          language: locale // Pass user's language for localized responses
+        }),
       });
 
       if (response.ok) {
@@ -186,7 +190,26 @@ const NLWebChat = () => {
                 )}
               >
                 <div className={styles.messageContent}>
-                  <p>{message.text}</p>
+                  {message.sender === 'bot' ? (
+                    <div className={styles.markdownContent}>
+                      <ReactMarkdown
+                        components={{
+                          // Open links in new tab
+                          a: ({node, ...props}) => (
+                            <a {...props} target="_blank" rel="noopener noreferrer" />
+                          ),
+                          // Style paragraphs
+                          p: ({node, ...props}) => (
+                            <p style={{ margin: '0.5em 0' }} {...props} />
+                          ),
+                        }}
+                      >
+                        {message.text}
+                      </ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p>{message.text}</p>
+                  )}
                   <span className={styles.timestamp}>
                     {message.timestamp.toLocaleTimeString()}
                   </span>

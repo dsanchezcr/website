@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Azure.Communication.Email;
 using Azure;
 using System.Text.Json;
+using api.Services;
 
 namespace api;
 
@@ -18,6 +19,7 @@ public partial class SendEmail
     private readonly ILogger<SendEmail> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IMemoryCache _cache;
+    private readonly ITokenStorageService _tokenStorage;
     private static readonly Lazy<EmailClient> _emailClient = new(() => 
     {
         var connectionString = Environment.GetEnvironmentVariable("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING");
@@ -135,9 +137,30 @@ public partial class SendEmail
         public string Website { get; set; } = string.Empty;
     }
     
-    private record VerificationData(string Name, string Email, string Message, string Language);
+    // VerificationData is now defined in Models/VerificationData.cs for sharing with VerifyEmail
     private record SpamCheckResult(bool IsValid, string Reason);
-    private record RecaptchaResponse(bool Success, double Score, string Action, DateTime ChallengeTs, string Hostname, string[] ErrorCodes);
+    
+    // Google reCAPTCHA API response format
+    private class RecaptchaResponse
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("success")]
+        public bool Success { get; set; }
+        
+        [System.Text.Json.Serialization.JsonPropertyName("score")]
+        public double Score { get; set; }
+        
+        [System.Text.Json.Serialization.JsonPropertyName("action")]
+        public string? Action { get; set; }
+        
+        [System.Text.Json.Serialization.JsonPropertyName("challenge_ts")]
+        public DateTime? ChallengeTs { get; set; }
+        
+        [System.Text.Json.Serialization.JsonPropertyName("hostname")]
+        public string? Hostname { get; set; }
+        
+        [System.Text.Json.Serialization.JsonPropertyName("error-codes")]
+        public string[]? ErrorCodes { get; set; }
+    }
 
     // Helper methods
     private static string GetClientIp(HttpRequestData req)
@@ -323,11 +346,12 @@ public partial class SendEmail
         }
     }
 
-    public SendEmail(ILogger<SendEmail> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache)
+    public SendEmail(ILogger<SendEmail> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache, ITokenStorageService tokenStorage)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _cache = cache;
+        _tokenStorage = tokenStorage;
     }
 
     [Function("SendEmail")]
@@ -406,9 +430,8 @@ public partial class SendEmail
 
             // Generate verification token and store request data
             var verificationToken = GenerateVerificationToken();
-            var cacheKey = $"verification:{verificationToken}";
-            var cacheData = new VerificationData(contactRequest.Name, contactRequest.Email, contactRequest.Message, contactRequest.Language);
-            _cache.Set(cacheKey, cacheData, TimeSpan.FromHours(24));
+            var verificationData = new Models.VerificationData(contactRequest.Name, contactRequest.Email, contactRequest.Message, contactRequest.Language);
+            await _tokenStorage.StoreTokenAsync(verificationToken, verificationData);
 
             // Increment rate limits only after all validations pass
             IncrementRateLimits(clientIp, contactRequest.Email);

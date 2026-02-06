@@ -130,10 +130,32 @@ function ContactForm() {
     }
 
     try {
-      setIsLoading(true);
+      // Get reCAPTCHA token BEFORE setting loading state
+      // (the loading state removes the recaptcha-container from DOM)
       
-      // Get reCAPTCHA token
-      const token = await executeRecaptcha('contact_form');
+      // Create a timeout promise to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('reCAPTCHA timeout')), 10000);
+      });
+      
+      let token;
+      try {
+        token = await Promise.race([
+          executeRecaptcha('contact_form'),
+          timeoutPromise
+        ]);
+      } catch (recaptchaError) {
+        setError(t.errorRecaptcha);
+        return;
+      }
+      
+      if (!token) {
+        setError(t.errorRecaptcha);
+        return;
+      }
+      
+      // Now set loading state after token is obtained
+      setIsLoading(true);
 
       const requestData = {
         name: name.trim(),
@@ -145,7 +167,8 @@ function ContactForm() {
       };
     
       const apiEndpoint = config.getApiEndpoint();
-      const response = await fetch(`${apiEndpoint}/api/contact`, {
+      
+      const response = await fetch(`${apiEndpoint}${config.routes.contact}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
