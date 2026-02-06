@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Translate, { translate } from '@docusaurus/Translate';
 import ColonesExchangeRate from '@dsanchezcr/colonesexchangerate';
 
 /**
@@ -52,7 +53,11 @@ export default function ExchangeRatesWidget() {
           animation: 'spin 1s linear infinite',
           margin: '0 auto 12px'
         }} />
-        <p style={{ margin: 0, fontSize: '0.9em', color: 'var(--ifm-color-emphasis-600)' }}>Loading exchange rates...</p>
+        <p style={{ margin: 0, fontSize: '0.9em', color: 'var(--ifm-color-emphasis-600)' }}>
+          <Translate id="exchangeRatesWidget.loading" description="Loading message for exchange rates widget">
+            Loading exchange rates...
+          </Translate>
+        </p>
       </div>
     );
   }
@@ -66,7 +71,9 @@ export default function ExchangeRatesWidget() {
         border: '1px solid var(--ifm-color-danger-dark)',
       }} role="alert">
         <p style={{ margin: 0, color: 'var(--ifm-color-danger-dark)', fontSize: '0.9em' }}>
-          ⚠️ Unable to fetch exchange rates: {error}
+          ⚠️ <Translate id="exchangeRatesWidget.error" description="Error message prefix for exchange rates widget">
+            Unable to fetch exchange rates:
+          </Translate> {error}
         </p>
       </div>
     );
@@ -85,18 +92,30 @@ export default function ExchangeRatesWidget() {
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
           <span style={{ fontSize: '1.5rem', marginRight: '10px' }}>🇺🇸</span>
           <div>
-            <h4 style={{ margin: 0, fontSize: '1rem' }}>US Dollar (USD)</h4>
+            <h4 style={{ margin: 0, fontSize: '1rem' }}>
+              <Translate id="exchangeRatesWidget.usDollar" description="US Dollar currency name">
+                US Dollar (USD)
+              </Translate>
+            </h4>
             <p style={{ margin: 0, color: 'var(--ifm-color-emphasis-600)', fontSize: '0.8em' }}>1 USD =</p>
           </div>
         </div>
         {dollarExchangeRate && (
           <div style={{ fontSize: '0.9em' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--ifm-color-emphasis-200)' }}>
-              <span>Buy:</span>
+              <span>
+                <Translate id="exchangeRatesWidget.buy" description="Buy rate label">
+                  Buy:
+                </Translate>
+              </span>
               <strong>{formatRate(dollarExchangeRate.purchase?.value || dollarExchangeRate.purchase || dollarExchangeRate.buy)}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
-              <span>Sell:</span>
+              <span>
+                <Translate id="exchangeRatesWidget.sell" description="Sell rate label">
+                  Sell:
+                </Translate>
+              </span>
               <strong>{formatRate(dollarExchangeRate.sale?.value || dollarExchangeRate.sale || dollarExchangeRate.sell)}</strong>
             </div>
           </div>
@@ -114,18 +133,30 @@ export default function ExchangeRatesWidget() {
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '12px' }}>
           <span style={{ fontSize: '1.5rem', marginRight: '10px' }}>🇪🇺</span>
           <div>
-            <h4 style={{ margin: 0, fontSize: '1rem' }}>Euro (EUR)</h4>
+            <h4 style={{ margin: 0, fontSize: '1rem' }}>
+              <Translate id="exchangeRatesWidget.euro" description="Euro currency name">
+                Euro (EUR)
+              </Translate>
+            </h4>
             <p style={{ margin: 0, color: 'var(--ifm-color-emphasis-600)', fontSize: '0.8em' }}>1 EUR =</p>
           </div>
         </div>
         {euroExchangeRate && (
           <div style={{ fontSize: '0.9em' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--ifm-color-emphasis-200)' }}>
-              <span>Colones:</span>
+              <span>
+                <Translate id="exchangeRatesWidget.colones" description="Colones label">
+                  Colones:
+                </Translate>
+              </span>
               <strong>{formatRate(euroExchangeRate.colones)}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
-              <span>Dollars:</span>
+              <span>
+                <Translate id="exchangeRatesWidget.dollars" description="Dollars label">
+                  Dollars:
+                </Translate>
+              </span>
               <strong>${euroExchangeRate.dollars?.toFixed(4) || 'N/A'}</strong>
             </div>
           </div>
