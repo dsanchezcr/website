@@ -26,7 +26,7 @@ public class VerifyEmail
     // Rate limiting for verification attempts
     private const int MaxVerificationAttemptsPerIpPerHour = 10;
 
-    private record VerificationData(string Name, string Email, string Message, string Language);
+    // VerificationData is now defined in Models/VerificationData.cs for sharing with SendEmail
 
     public VerifyEmail(ILogger<VerifyEmail> logger, IMemoryCache cache)
     {
@@ -89,7 +89,7 @@ public class VerifyEmail
 
             // Retrieve cached data
             var cacheKey = $"verification:{token}";
-            if (!_cache.TryGetValue<VerificationData>(cacheKey, out var verificationData) || verificationData == null)
+            if (!_cache.TryGetValue<Models.VerificationData>(cacheKey, out var verificationData) || verificationData == null)
             {
                 _logger.LogWarning("Verification token not found or expired: {Token}", token);
                 return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest, 
@@ -131,7 +131,7 @@ public class VerifyEmail
         }
     }
 
-    private async Task<EmailSendOperation> SendNotificationEmailAsync(VerificationData contact, CancellationToken cancellationToken)
+    private async Task<EmailSendOperation> SendNotificationEmailAsync(Models.VerificationData contact, CancellationToken cancellationToken)
     {
         try
         {
@@ -176,7 +176,7 @@ public class VerifyEmail
         }
     }
 
-    private async Task<EmailSendOperation> SendConfirmationEmailAsync(VerificationData contact, CancellationToken cancellationToken)
+    private async Task<EmailSendOperation> SendConfirmationEmailAsync(Models.VerificationData contact, CancellationToken cancellationToken)
     {
         try
         {

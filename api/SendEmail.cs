@@ -135,7 +135,7 @@ public partial class SendEmail
         public string Website { get; set; } = string.Empty;
     }
     
-    private record VerificationData(string Name, string Email, string Message, string Language);
+    // VerificationData is now defined in Models/VerificationData.cs for sharing with VerifyEmail
     private record SpamCheckResult(bool IsValid, string Reason);
     
     // Google reCAPTCHA API response format
@@ -428,7 +428,7 @@ public partial class SendEmail
             // Generate verification token and store request data
             var verificationToken = GenerateVerificationToken();
             var cacheKey = $"verification:{verificationToken}";
-            var cacheData = new VerificationData(contactRequest.Name, contactRequest.Email, contactRequest.Message, contactRequest.Language);
+            var cacheData = new Models.VerificationData(contactRequest.Name, contactRequest.Email, contactRequest.Message, contactRequest.Language);
             _cache.Set(cacheKey, cacheData, TimeSpan.FromHours(24));
 
             // Increment rate limits only after all validations pass
