@@ -298,5 +298,37 @@
   "onlineStatus.loading": {
     "message": "Cargando...",
     "description": "Loading text for online status widget"
+  },
+  "exchangeRatesWidget.loading": {
+    "message": "Cargando tipos de cambio...",
+    "description": "Loading message for exchange rates widget"
+  },
+  "exchangeRatesWidget.error": {
+    "message": "No se pudieron obtener los tipos de cambio:",
+    "description": "Error message prefix for exchange rates widget"
+  },
+  "exchangeRatesWidget.usDollar": {
+    "message": "Dólar Estadounidense (USD)",
+    "description": "US Dollar currency name"
+  },
+  "exchangeRatesWidget.euro": {
+    "message": "Euro (EUR)",
+    "description": "Euro currency name"
+  },
+  "exchangeRatesWidget.buy": {
+    "message": "Compra:",
+    "description": "Buy rate label"
+  },
+  "exchangeRatesWidget.sell": {
+    "message": "Venta:",
+    "description": "Sell rate label"
+  },
+  "exchangeRatesWidget.colones": {
+    "message": "Colones:",
+    "description": "Colones label"
+  },
+  "exchangeRatesWidget.dollars": {
+    "message": "Dólares:",
+    "description": "Dollars label"
   }
 }
