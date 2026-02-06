@@ -38,8 +38,14 @@
     "azureOpenAIDeployment": {
       "value": "gpt-4"
     },
-    "azureOpenAISystemPrompt": {
-      "value": "You are an online assistant for the website https://dsanchezcr.com answer only questions relevant to the content of the website."
+    "storageAccountName": {
+      "value": "dsanchezcrwebstorage"
+    },
+    "searchServiceName": {
+      "value": "dsanchezcr-search"
+    },
+    "searchIndexName": {
+      "value": "website-content"
     }
   }
 }

@@ -93,12 +93,64 @@ param googleAnalyticsCredentialsJson string = ''
 @description('The public facing website URL.')
 param websiteUrl string = 'https://dsanchezcr.com'
 
+@description('Azure Storage account name for Table Storage (token persistence).')
+param storageAccountName string = '${replace(staticWebAppName, '-', '')}storage'
+
+@description('Azure AI Search service name.')
+param searchServiceName string = '${staticWebAppName}-search'
+
+@description('Azure AI Search index name.')
+param searchIndexName string = 'website-content'
+
+@description('Secret key for authenticating reindex API calls from GitHub Actions.')
+@secure()
+param reindexSecretKey string = ''
+
 // ============================================================================
 // Resources
 // ============================================================================
 
+// Storage Account for Table Storage (email verification tokens)
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
+  name: storageAccountName
+  location: appInsightsLocation
+  tags: tags
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+  properties: {
+    accessTier: 'Hot'
+    supportsHttpsTrafficOnly: true
+    minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: false
+  }
+}
+
+// Table Service (for verification tokens)
+resource tableService 'Microsoft.Storage/storageAccounts/tableServices@2025-01-01' = {
+  parent: storageAccount
+  name: 'default'
+}
+
+// Azure AI Search (Free tier - 1 per subscription, or Basic for production)
+resource searchService 'Microsoft.Search/searchServices@2025-05-01' = {
+  name: searchServiceName
+  location: appInsightsLocation
+  tags: tags
+  sku: {
+    name: 'free' // Change to 'basic' or 'standard' for production workloads
+  }
+  properties: {
+    replicaCount: 1
+    partitionCount: 1
+    hostingMode: 'Default'
+    publicNetworkAccess: 'enabled'
+  }
+}
+
 // Log Analytics Workspace (required for Application Insights)
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: '${staticWebAppName}-logs'
   location: appInsightsLocation
   tags: tags
@@ -130,7 +182,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 // Static Web App with managed API
-resource staticWebApp 'Microsoft.Web/staticSites@2023-12-01' = {
+resource staticWebApp 'Microsoft.Web/staticSites@2024-04-01' = {
   name: staticWebAppName
   location: location
   tags: tags
@@ -156,7 +208,7 @@ resource staticWebApp 'Microsoft.Web/staticSites@2023-12-01' = {
 }
 
 // Static Web App Application Settings (API Environment Variables)
-resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2023-12-01' = {
+resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2024-04-01' = {
   parent: staticWebApp
   name: 'appsettings'
   properties: {
@@ -170,6 +222,17 @@ resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2023-12-01' = {
     AZURE_OPENAI_ENDPOINT: azureOpenAIEndpoint
     AZURE_OPENAI_KEY: azureOpenAIKey
     AZURE_OPENAI_DEPLOYMENT: azureOpenAIDeployment
+    
+    // Azure AI Search (RAG for chatbot)
+    AZURE_SEARCH_ENDPOINT: 'https://${searchService.name}.search.windows.net'
+    AZURE_SEARCH_API_KEY: searchService.listAdminKeys().primaryKey
+    AZURE_SEARCH_INDEX_NAME: searchIndexName
+    
+    // Azure Storage (Table Storage for token persistence)
+    AZURE_STORAGE_CONNECTION_STRING: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+    
+    // Reindex API authentication
+    REINDEX_SECRET_KEY: reindexSecretKey
     
     // Google Analytics
     GOOGLE_ANALYTICS_PROPERTY_ID: googleAnalyticsPropertyId
@@ -230,4 +293,15 @@ output apiEndpoints object = {
   weather: 'https://${staticWebApp.properties.defaultHostname}/api/weather'
   onlineUsers: 'https://${staticWebApp.properties.defaultHostname}/api/online-users'
   chat: 'https://${staticWebApp.properties.defaultHostname}/api/nlweb/ask'
+  health: 'https://${staticWebApp.properties.defaultHostname}/api/health'
+  reindex: 'https://${staticWebApp.properties.defaultHostname}/api/reindex'
 }
+
+@description('The Azure AI Search endpoint.')
+output searchEndpoint string = 'https://${searchService.name}.search.windows.net'
+
+@description('The Azure AI Search index name to create.')
+output searchIndexName string = searchIndexName
+
+@description('The Storage Account name.')
+output storageAccountName string = storageAccount.name

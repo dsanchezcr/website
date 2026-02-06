@@ -71,6 +71,48 @@ jobs:
           api_location: 'api'
           skip_app_build: true
 
+      - name: Update Search Index
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        continue-on-error: true
+        run: |
+          # Wait for deployment to propagate
+          echo "Waiting 30 seconds for deployment to propagate..."
+          sleep 30
+          
+          # Extract content from source files to a temp file (safer for large payloads)
+          echo "Extracting content from MDX files..."
+          node scripts/extract-content.js > /tmp/content.json
+          
+          # Validate JSON was created
+          if [ ! -s /tmp/content.json ]; then
+            echo "::warning::Content extraction produced empty output"
+            exit 0
+          fi
+          
+          # Call the reindex endpoint using file input (avoids shell variable limits)
+          echo "Calling reindex API..."
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            "${{ vars.WEBSITE_URL }}/api/reindex" \
+            -H "X-Reindex-Key: ${{ secrets.REINDEX_SECRET_KEY }}" \
+            -H "Content-Type: application/json" \
+            --max-time 120 \
+            -d @/tmp/content.json)
+          
+          # Clean up temp file
+          rm -f /tmp/content.json
+          
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+          
+          echo "Response: $body"
+          echo "Status: $http_code"
+          
+          if [ "$http_code" != "200" ]; then
+            echo "::warning::Search index update returned status $http_code"
+          else
+            echo "::notice::Search index updated successfully"
+          fi
+
   close_pull_request:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest

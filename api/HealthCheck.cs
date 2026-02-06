@@ -129,7 +129,10 @@ public class HealthCheck
         // Azure AI Search (optional - for RAG capabilities)
         { "AZURE_SEARCH_ENDPOINT", ("Azure AI Search endpoint URL", false) },
         { "AZURE_SEARCH_API_KEY", ("Azure AI Search API key", false) },
-        { "AZURE_SEARCH_INDEX_NAME", ("Azure AI Search index name", false) }
+        { "AZURE_SEARCH_INDEX_NAME", ("Azure AI Search index name", false) },
+        
+        // Reindex endpoint security
+        { "REINDEX_SECRET_KEY", ("Secret key for authenticating reindex API calls from GitHub Actions", false) }
     };
 
     [Function("HealthCheck")]

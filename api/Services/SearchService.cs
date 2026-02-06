@@ -20,6 +20,14 @@ public interface ISearchService
     Task<string> SearchAsync(string query, int maxResults = 3);
     
     /// <summary>
+    /// Indexes documents into Azure AI Search.
+    /// </summary>
+    /// <param name="documents">Documents to index</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>Number of documents successfully indexed</returns>
+    Task<int> IndexDocumentsAsync(IEnumerable<SearchDocument> documents, CancellationToken cancellationToken = default);
+    
+    /// <summary>
     /// Checks if the service is properly configured and operational.
     /// </summary>
     Task<(bool IsHealthy, string Message)> CheckHealthAsync();
@@ -191,6 +199,50 @@ The following content from dsanchezcr.com may help answer the question:
         catch (Exception ex)
         {
             return (false, $"Azure AI Search error: {ex.Message}");
+        }
+    }
+
+    public async Task<int> IndexDocumentsAsync(IEnumerable<SearchDocument> documents, CancellationToken cancellationToken = default)
+    {
+        if (!_isConfigured || _searchClient == null)
+        {
+            _logger.LogWarning("Cannot index documents: Azure AI Search not configured");
+            return 0;
+        }
+
+        var docList = documents.ToList();
+        if (docList.Count == 0)
+        {
+            _logger.LogInformation("No documents to index");
+            return 0;
+        }
+
+        try
+        {
+            // Upload in batches of 100 to avoid request size limits
+            const int batchSize = 100;
+            var totalSuccess = 0;
+
+            for (var i = 0; i < docList.Count; i += batchSize)
+            {
+                var batch = docList.Skip(i).Take(batchSize).ToList();
+                var indexBatch = IndexDocumentsBatch.MergeOrUpload(batch);
+                var response = await _searchClient.IndexDocumentsAsync(indexBatch, cancellationToken: cancellationToken);
+                
+                var successCount = response.Value.Results.Count(r => r.Succeeded);
+                totalSuccess += successCount;
+                
+                _logger.LogDebug("Indexed batch {BatchNumber}: {Success}/{Total} documents",
+                    (i / batchSize) + 1, successCount, batch.Count);
+            }
+
+            _logger.LogInformation("Successfully indexed {Success}/{Total} documents", totalSuccess, docList.Count);
+            return totalSuccess;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to index {Count} documents", docList.Count);
+            throw;
         }
     }
 }
