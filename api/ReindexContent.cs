@@ -180,6 +180,11 @@ public class ReindexContent
 
     private static SearchDocument CreateSearchDocument(ContentItem item)
     {
+        // Parse tags from comma-separated string to array (Azure AI Search expects Collection(Edm.String))
+        var tagsArray = string.IsNullOrWhiteSpace(item.Tags)
+            ? Array.Empty<string>()
+            : item.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
         return new SearchDocument(new Dictionary<string, object?>
         {
             ["id"] = item.Id,
@@ -188,7 +193,7 @@ public class ReindexContent
             ["description"] = item.Description,
             ["url"] = item.Url,
             ["category"] = item.Category,
-            ["tags"] = item.Tags ?? "",
+            ["tags"] = tagsArray,
             ["date"] = item.Date
         });
     }
@@ -219,7 +224,7 @@ public class ReindexContent
                         ["description"] = extracted.Description,
                         ["url"] = path,
                         ["category"] = "page",
-                        ["tags"] = "",
+                        ["tags"] = Array.Empty<string>(),
                         ["date"] = null
                     }));
                 }
@@ -270,7 +275,7 @@ public class ReindexContent
                         ["description"] = item.Summary ?? "",
                         ["url"] = $"/blog/{slug}",
                         ["category"] = "blog",
-                        ["tags"] = string.Join(", ", item.Tags ?? Array.Empty<string>()),
+                        ["tags"] = item.Tags ?? Array.Empty<string>(),
                         ["date"] = item.DatePublished
                     }));
                 }
@@ -366,7 +371,7 @@ public class ReindexContent
                     ["description"] = r.Description ?? "",
                     ["url"] = r.HtmlUrl ?? "",
                     ["category"] = "github",
-                    ["tags"] = string.Join(", ", r.Topics ?? Array.Empty<string>()),
+                    ["tags"] = r.Topics ?? Array.Empty<string>(),
                     ["date"] = r.UpdatedAt?.ToString("O")
                 }))
                 .ToList() ?? new List<SearchDocument>();
