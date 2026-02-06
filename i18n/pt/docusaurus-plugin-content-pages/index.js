@@ -77,6 +77,11 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
+        <div className={styles.visitorWidgetContainer}>
+          <ErrorBoundary>
+            <OnlineStatusWidget />
+          </ErrorBoundary>
+        </div>
         <div className={styles.weatherWidgetContainer}>
           <ErrorBoundary>
             <CompactWeatherWidget />
@@ -97,9 +102,6 @@ export default function Home() {
       title={`Inicio`}
       description="David Sanchez website pessoal"> 
       <div className={styles.homePageContainer}>
-        <ErrorBoundary>
-          <OnlineStatusWidget />
-        </ErrorBoundary>
         <HomepageHeader />   
         <main> 
           <HomepageFeatures />

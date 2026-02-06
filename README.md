@@ -26,6 +26,8 @@ The site uses **Azure Static Web Apps** with a **managed API** architecture:
 │  │  • i18n (en/es/pt)  │    │  • /api/weather             │ │
 │  │                     │    │  • /api/online-users        │ │
 │  │                     │    │  • /api/nlweb/ask           │ │
+│  │                     │    │  • /api/health              │ │
+│  │                     │    │  • /api/reindex             │ │
 │  └─────────────────────┘    └─────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -45,6 +47,8 @@ Both frontend and backend are deployed together from a single repository, with t
 - **[Azure Functions](https://azure.microsoft.com/services/functions/)**: Serverless compute (isolated worker model)
 - **[Azure Communication Services](https://azure.microsoft.com/services/communication-services/)**: Email delivery
 - **[Azure OpenAI](https://azure.microsoft.com/services/cognitive-services/openai-service/)**: AI chat assistant
+- **[Azure AI Search](https://azure.microsoft.com/services/search/)**: RAG for contextual AI responses
+- **[Azure Table Storage](https://azure.microsoft.com/services/storage/tables/)**: Token persistence
 
 ### Infrastructure
 - **[Azure Static Web Apps](https://azure.microsoft.com/services/app-service/static/)**: Hosting
@@ -121,8 +125,10 @@ Build artifacts:
 | `/api/contact` | POST | Submit contact form (initiates email verification) |
 | `/api/verify` | GET | Complete email verification |
 | `/api/weather` | GET | Weather data for predefined locations |
-| `/api/online-users` | GET | Real-time visitor analytics |
-| `/api/nlweb/ask` | POST | AI chat assistant |
+| `/api/online-users` | GET | Visitor analytics (24-hour count) |
+| `/api/nlweb/ask` | POST | AI chat assistant with RAG |
+| `/api/health` | GET | Health check for all services |
+| `/api/reindex` | POST | Update search index (called by GitHub Actions) |
 
 ## ☁️ Deployment
 
@@ -156,7 +162,10 @@ See [infra/README.md](infra/README.md) for complete deployment instructions.
 │   ├── VerifyEmail.cs      # Email verification
 │   ├── GetWeather.cs       # Weather data
 │   ├── GetOnlineUsers.cs   # Analytics
-│   └── ChatWithOpenAI.cs   # AI chat
+│   ├── ChatWithOpenAI.cs   # AI chat with RAG
+│   ├── HealthCheck.cs      # Health monitoring
+│   ├── ReindexContent.cs   # Search index updates
+│   └── Services/           # TokenStorage, Search services
 ├── blog/                   # Blog posts (MDX)
 ├── src/
 │   ├── components/         # React components

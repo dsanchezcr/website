@@ -8,6 +8,8 @@ The infrastructure includes:
 - **Azure Static Web App** (Standard SKU) with managed .NET 9 API
 - **Application Insights** for monitoring and logging
 - **Log Analytics Workspace** for centralized logging
+- **Azure Storage Account** for Table Storage (token persistence)
+- **Azure AI Search** (Free tier) for RAG capabilities in the AI chatbot
 
 ## Files
 
@@ -73,6 +75,11 @@ The following environment variables are configured as app settings for the manag
 | `AZURE_OPENAI_DEPLOYMENT` | Azure OpenAI model deployment name | No* |
 | `GOOGLE_ANALYTICS_PROPERTY_ID` | GA4 property ID | No* |
 | `GOOGLE_ANALYTICS_CREDENTIALS_JSON` | GA4 service account credentials JSON | No* |
+| `AZURE_SEARCH_ENDPOINT` | Azure AI Search service endpoint | No* |
+| `AZURE_SEARCH_API_KEY` | Azure AI Search admin API key | No* |
+| `AZURE_SEARCH_INDEX_NAME` | Azure AI Search index name | No* |
+| `AZURE_STORAGE_CONNECTION_STRING` | Azure Storage connection for Table Storage | No* |
+| `REINDEX_SECRET_KEY` | Secret key for authenticating reindex API calls | No* |
 | `WEBSITE_URL` | The public website URL | Yes |
 | `API_URL` | The API endpoint URL (auto-configured) | Auto |
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | App Insights connection (auto-configured) | Auto |
@@ -88,8 +95,10 @@ After deployment, the following API endpoints will be available:
 | `/api/contact` | POST | Submit contact form (initiates email verification) |
 | `/api/verify` | GET | Verify email address from contact form |
 | `/api/weather` | GET | Get weather data for predefined locations |
-| `/api/online-users` | GET | Get real-time visitor count |
-| `/api/nlweb/ask` | POST | Chat with AI assistant |
+| `/api/online-users` | GET | Get 24-hour visitor count |
+| `/api/nlweb/ask` | POST | Chat with AI assistant (uses RAG with Azure AI Search) |
+| `/api/health` | GET | Health check endpoint for monitoring |
+| `/api/reindex` | POST | Update search index (requires X-Reindex-Key header) |
 
 ## Post-Deployment Steps
 
@@ -100,7 +109,16 @@ After deployment, the following API endpoints will be available:
 
 2. **Add the deployment token** as a GitHub secret named `AZURE_STATIC_WEB_APPS_API_TOKEN`
 
-3. **Configure custom domain** (optional):
+3. **Add the reindex secret** as a GitHub secret named `REINDEX_SECRET_KEY` (same value as the app setting)
+
+4. **Add the website URL** as a GitHub variable named `WEBSITE_URL` (e.g., `https://dsanchezcr.com`)
+
+5. **Create the Azure AI Search index** in Azure Portal:
+   - Go to Azure AI Search > Indexes > Add Index
+   - Name: `website-content`
+   - Fields: `id` (key), `title`, `content`, `description`, `url`, `category`, `tags`, `date`
+
+6. **Configure custom domain** (optional):
    - Add a CNAME record pointing to the Static Web App default hostname
    - Configure the custom domain in the Azure Portal or update the Bicep template
 
