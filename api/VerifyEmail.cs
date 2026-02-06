@@ -6,6 +6,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Azure.Communication.Email;
 using Azure;
 using System.Text.Json;
+using api.Services;
 
 namespace api;
 
@@ -13,6 +14,7 @@ public class VerifyEmail
 {
     private readonly ILogger<VerifyEmail> _logger;
     private readonly IMemoryCache _cache;
+    private readonly ITokenStorageService _tokenStorage;
     private static readonly Lazy<EmailClient> _emailClient = new(() => 
     {
         var connectionString = Environment.GetEnvironmentVariable("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING");
@@ -28,10 +30,11 @@ public class VerifyEmail
 
     // VerificationData is now defined in Models/VerificationData.cs for sharing with SendEmail
 
-    public VerifyEmail(ILogger<VerifyEmail> logger, IMemoryCache cache)
+    public VerifyEmail(ILogger<VerifyEmail> logger, IMemoryCache cache, ITokenStorageService tokenStorage)
     {
         _logger = logger;
         _cache = cache;
+        _tokenStorage = tokenStorage;
     }
     
     private static string GetClientIp(HttpRequestData req)
@@ -87,17 +90,15 @@ public class VerifyEmail
                     "Invalid verification link.", "en");
             }
 
-            // Retrieve cached data
-            var cacheKey = $"verification:{token}";
-            if (!_cache.TryGetValue<Models.VerificationData>(cacheKey, out var verificationData) || verificationData == null)
+            // Retrieve verification data from persistent storage
+            var verificationData = await _tokenStorage.RetrieveAndDeleteTokenAsync(token);
+            
+            if (verificationData == null)
             {
                 _logger.LogWarning("Verification token not found or expired: {Token}", token);
                 return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest, 
                     LocalizationHelper.GetText("en", "verificationError"), "en");
             }
-
-            // Remove from cache to prevent reuse
-            _cache.Remove(cacheKey);
 
             // Send both emails now that verification is complete
             var tasks = new[]

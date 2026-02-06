@@ -83,7 +83,7 @@ const WeatherWidget = ({ showUserLocation = false, showLocationButton = false, l
         
         // Fetch user location weather if available
         if (userLocation) {
-          const userWeatherUrl = `${apiEndpoint}/api/weather?lat=${userLocation.lat}&lon=${userLocation.lon}`;
+          const userWeatherUrl = `${apiEndpoint}${config.routes.weather}?lat=${userLocation.lat}&lon=${userLocation.lon}`;
           weatherPromises.push(
             fetch(userWeatherUrl).catch(() => null) // Handle individual request failures
           );
@@ -91,7 +91,7 @@ const WeatherWidget = ({ showUserLocation = false, showLocationButton = false, l
         
         // Fetch predefined locations weather
         for (const location of locations) {
-          const locationWeatherUrl = `${apiEndpoint}/api/weather?location=${location}`;
+          const locationWeatherUrl = `${apiEndpoint}${config.routes.weather}?location=${location}`;
           weatherPromises.push(
             fetch(locationWeatherUrl).catch(() => null) // Handle individual request failures
           );

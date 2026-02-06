@@ -83,9 +83,6 @@ param azureOpenAIKey string = ''
 @description('Azure OpenAI deployment name.')
 param azureOpenAIDeployment string = 'gpt-4'
 
-@description('Azure OpenAI system prompt for the chat assistant.')
-param azureOpenAISystemPrompt string = 'You are an online assistant for the website https://dsanchezcr.com answer only questions relevant to the content of the website.'
-
 @description('Google Analytics Property ID for the online users widget.')
 param googleAnalyticsPropertyId string = ''
 
@@ -173,7 +170,6 @@ resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2023-12-01' = {
     AZURE_OPENAI_ENDPOINT: azureOpenAIEndpoint
     AZURE_OPENAI_KEY: azureOpenAIKey
     AZURE_OPENAI_DEPLOYMENT: azureOpenAIDeployment
-    AZURE_OPENAI_SYSTEM_PROMPT: azureOpenAISystemPrompt
     
     // Google Analytics
     GOOGLE_ANALYTICS_PROPERTY_ID: googleAnalyticsPropertyId

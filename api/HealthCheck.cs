@@ -9,8 +9,19 @@ using Azure.AI.OpenAI;
 using Azure;
 using Google.Analytics.Data.V1Beta;
 using Google.Apis.Auth.OAuth2;
+using api.Services;
 
 namespace api;
+
+/// <summary>
+/// Health status enumeration for service health checks.
+/// </summary>
+public enum HealthStatus
+{
+    Healthy,
+    Degraded,
+    Unhealthy
+}
 
 /// <summary>
 /// Health check endpoint for monitoring API status and configuration.
@@ -26,19 +37,50 @@ public class HealthCheck
     private readonly ILogger<HealthCheck> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IMemoryCache _cache;
+    private readonly ITokenStorageService _tokenStorage;
+    private readonly ISearchService _searchService;
 
-    public HealthCheck(ILogger<HealthCheck> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache)
+    // Orlando, FL coordinates used for weather API health check (matches primary location in GetWeather.cs)
+    private const double OrlandoLatitude = 28.5383;
+    private const double OrlandoLongitude = -81.3792;
+
+    // Rate limiting configuration
+    private const int MaxHealthCheckRequestsPerMinute = 10;
+
+    public HealthCheck(ILogger<HealthCheck> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache, ITokenStorageService tokenStorage, ISearchService searchService)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _cache = cache;
+        _tokenStorage = tokenStorage;
+        _searchService = searchService;
     }
 
-    public enum HealthStatus
+    private sealed class RateLimitState
     {
-        Healthy,
-        Degraded,
-        Unhealthy
+        public int Count { get; set; }
+        public DateTimeOffset WindowStart { get; set; }
+    }
+
+    private string GetClientIdentifier(HttpRequestData req)
+    {
+        var ipHeaders = new[] { "X-Client-IP", "X-Forwarded-For", "X-Real-IP" };
+        foreach (var header in ipHeaders)
+        {
+            if (req.Headers.TryGetValues(header, out var values))
+            {
+                foreach (var value in values)
+                {
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        var first = value.Split(',')[0].Trim();
+                        if (!string.IsNullOrWhiteSpace(first))
+                            return first;
+                    }
+                }
+            }
+        }
+        return "unknown";
     }
 
     public class ServiceHealth
@@ -70,16 +112,24 @@ public class HealthCheck
         { "AZURE_OPENAI_KEY", ("Azure OpenAI API key", true) },
         { "AZURE_OPENAI_DEPLOYMENT", ("Azure OpenAI deployment/model name", true) },
         
-        // Google Analytics
-        { "GOOGLE_ANALYTICS_PROPERTY_ID", ("GA4 property ID for analytics", true) },
-        { "GOOGLE_ANALYTICS_CREDENTIALS_JSON", ("Google service account credentials JSON for analytics", true) },
+        // Google Analytics (optional - health check degrades gracefully if missing)
+        { "GOOGLE_ANALYTICS_PROPERTY_ID", ("GA4 property ID for analytics", false) },
+        { "GOOGLE_ANALYTICS_CREDENTIALS_JSON", ("Google service account credentials JSON for analytics", false) },
         
         // URLs
         { "WEBSITE_URL", ("Website base URL for verification links (fallback)", false) },
         { "API_URL", ("API base URL for verification links (preferred)", false) },
         
         // Telemetry
-        { "APPLICATIONINSIGHTS_CONNECTION_STRING", ("Application Insights connection string for telemetry", false) }
+        { "APPLICATIONINSIGHTS_CONNECTION_STRING", ("Application Insights connection string for telemetry", false) },
+        
+        // Azure Storage (for token persistence)
+        { "AZURE_STORAGE_CONNECTION_STRING", ("Azure Storage connection string for Table Storage", false) },
+        
+        // Azure AI Search (optional - for RAG capabilities)
+        { "AZURE_SEARCH_ENDPOINT", ("Azure AI Search endpoint URL", false) },
+        { "AZURE_SEARCH_API_KEY", ("Azure AI Search API key", false) },
+        { "AZURE_SEARCH_INDEX_NAME", ("Azure AI Search index name", false) }
     };
 
     [Function("HealthCheck")]
@@ -87,6 +137,38 @@ public class HealthCheck
         [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "health")] HttpRequestData req,
         CancellationToken cancellationToken = default)
     {
+        // Rate limiting to prevent abuse
+        var clientId = GetClientIdentifier(req);
+        var cacheKey = $"HealthCheckRateLimit:{clientId}";
+        var window = TimeSpan.FromMinutes(1);
+
+        var rateLimitState = _cache.GetOrCreate(cacheKey, entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = window;
+            return new RateLimitState
+            {
+                Count = 0,
+                WindowStart = DateTimeOffset.UtcNow
+            };
+        })!;
+
+        lock (rateLimitState)
+        {
+            rateLimitState.Count++;
+            if (rateLimitState.Count > MaxHealthCheckRequestsPerMinute)
+            {
+                _logger.LogWarning("HealthCheck rate limit exceeded for client {ClientId}", clientId);
+                var tooManyRequestsResponse = req.CreateResponse((HttpStatusCode)429);
+                tooManyRequestsResponse.Headers.Add("Content-Type", "application/json");
+                tooManyRequestsResponse.WriteString(JsonSerializer.Serialize(new
+                {
+                    error = "Too Many Requests",
+                    message = "Rate limit exceeded for health check endpoint. Please try again later."
+                }));
+                return tooManyRequestsResponse;
+            }
+        }
+
         _logger.LogInformation("HealthCheck Function Triggered");
 
         var healthResponse = new HealthResponse
@@ -110,7 +192,9 @@ public class HealthCheck
             CheckAzureOpenAIAsync(cancellationToken),
             CheckGoogleAnalyticsAsync(cancellationToken),
             CheckOpenMeteoApiAsync(cancellationToken),
-            CheckMemoryCacheAsync()
+            CheckMemoryCacheAsync(),
+            CheckTokenStorageAsync(),
+            CheckSearchServiceAsync()
         };
 
         healthResponse.Services = (await Task.WhenAll(services)).ToList();
@@ -129,9 +213,11 @@ public class HealthCheck
             healthResponse.OverallStatus = HealthStatus.Healthy;
         }
 
+        // Use different HTTP status codes for monitoring systems:
+        // 200 OK = Healthy, 207 Multi-Status = Degraded, 503 = Unhealthy
         var response = req.CreateResponse(
             healthResponse.OverallStatus == HealthStatus.Healthy ? HttpStatusCode.OK :
-            healthResponse.OverallStatus == HealthStatus.Degraded ? HttpStatusCode.OK :
+            healthResponse.OverallStatus == HealthStatus.Degraded ? HttpStatusCode.MultiStatus :
             HttpStatusCode.ServiceUnavailable);
 
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
@@ -226,10 +312,16 @@ public class HealthCheck
             var sw = System.Diagnostics.Stopwatch.StartNew();
             var httpClient = _httpClientFactory.CreateClient();
             
-            // Test connectivity to reCAPTCHA API (with dummy token to verify API is reachable)
+            // Test connectivity to reCAPTCHA API using POST body (recommended by Google)
+            // Using form data prevents secret key from appearing in URL logs
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("secret", secretKey!),
+                new KeyValuePair<string, string>("response", "test")
+            });
             var response = await httpClient.PostAsync(
-                $"https://www.google.com/recaptcha/api/siteverify?secret={secretKey}&response=test",
-                null,
+                "https://www.google.com/recaptcha/api/siteverify",
+                content,
                 cancellationToken);
             
             sw.Stop();
@@ -382,7 +474,7 @@ public class HealthCheck
             cts.CancelAfter(TimeSpan.FromSeconds(10));
             
             var response = await httpClient.GetAsync(
-                "https://api.open-meteo.com/v1/forecast?latitude=28.5383&longitude=-81.3792&current=temperature_2m",
+                $"https://api.open-meteo.com/v1/forecast?latitude={OrlandoLatitude}&longitude={OrlandoLongitude}&current=temperature_2m",
                 cts.Token);
             
             sw.Stop();
@@ -452,6 +544,52 @@ public class HealthCheck
         return Task.FromResult(health);
     }
 
+    private async Task<ServiceHealth> CheckTokenStorageAsync()
+    {
+        var health = new ServiceHealth
+        {
+            Name = "Token Storage"
+        };
+
+        try
+        {
+            var (isHealthy, message) = await _tokenStorage.CheckHealthAsync();
+            health.Status = isHealthy ? HealthStatus.Healthy : HealthStatus.Degraded;
+            health.Message = message;
+        }
+        catch (Exception ex)
+        {
+            health.Status = HealthStatus.Degraded;
+            health.Message = $"Token storage check failed: {ex.Message}";
+            _logger.LogWarning(ex, "Token storage health check failed");
+        }
+
+        return health;
+    }
+
+    private async Task<ServiceHealth> CheckSearchServiceAsync()
+    {
+        var health = new ServiceHealth
+        {
+            Name = "Azure AI Search"
+        };
+
+        try
+        {
+            var (isHealthy, message) = await _searchService.CheckHealthAsync();
+            health.Status = isHealthy ? HealthStatus.Healthy : HealthStatus.Degraded;
+            health.Message = message;
+        }
+        catch (Exception ex)
+        {
+            health.Status = HealthStatus.Degraded;
+            health.Message = $"Search service check failed: {ex.Message}";
+            _logger.LogWarning(ex, "Azure AI Search health check failed");
+        }
+
+        return health;
+    }
+
     /// <summary>
     /// Returns the list of required environment variables and their descriptions.
     /// </summary>
@@ -473,6 +611,7 @@ public class HealthCheck
 
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+        response.Headers.Add("Cache-Control", "no-store, no-cache, must-revalidate");
 
         var options = new JsonSerializerOptions
         {

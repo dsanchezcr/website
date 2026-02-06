@@ -168,7 +168,7 @@ function ContactForm() {
     
       const apiEndpoint = config.getApiEndpoint();
       
-      const response = await fetch(`${apiEndpoint}/api/contact`, {
+      const response = await fetch(`${apiEndpoint}${config.routes.contact}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

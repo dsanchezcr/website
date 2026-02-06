@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Azure.Communication.Email;
 using Azure;
 using System.Text.Json;
+using api.Services;
 
 namespace api;
 
@@ -18,6 +19,7 @@ public partial class SendEmail
     private readonly ILogger<SendEmail> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IMemoryCache _cache;
+    private readonly ITokenStorageService _tokenStorage;
     private static readonly Lazy<EmailClient> _emailClient = new(() => 
     {
         var connectionString = Environment.GetEnvironmentVariable("AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING");
@@ -344,11 +346,12 @@ public partial class SendEmail
         }
     }
 
-    public SendEmail(ILogger<SendEmail> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache)
+    public SendEmail(ILogger<SendEmail> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache, ITokenStorageService tokenStorage)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _cache = cache;
+        _tokenStorage = tokenStorage;
     }
 
     [Function("SendEmail")]
@@ -427,9 +430,8 @@ public partial class SendEmail
 
             // Generate verification token and store request data
             var verificationToken = GenerateVerificationToken();
-            var cacheKey = $"verification:{verificationToken}";
-            var cacheData = new Models.VerificationData(contactRequest.Name, contactRequest.Email, contactRequest.Message, contactRequest.Language);
-            _cache.Set(cacheKey, cacheData, TimeSpan.FromHours(24));
+            var verificationData = new Models.VerificationData(contactRequest.Name, contactRequest.Email, contactRequest.Message, contactRequest.Language);
+            await _tokenStorage.StoreTokenAsync(verificationToken, verificationData);
 
             // Increment rate limits only after all validations pass
             IncrementRateLimits(clientIp, contactRequest.Email);

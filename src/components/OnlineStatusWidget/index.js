@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useColorMode } from '@docusaurus/theme-common';
 import { translate } from '@docusaurus/Translate';
-import styles from './styles.module.css';
+import './CompactVisitorWidget.css';
 import { config } from '../../config/environment';
 
 const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
-  const [usersLastHour, setUsersLastHour] = useState(0);
+  const [usersLast24Hours, setUsersLast24Hours] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(null);
   const { colorMode } = useColorMode();
 
   // Feature flag check - moved after hooks to comply with Rules of Hooks
   const isFeatureEnabled = config.features.recentVisits;
 
-  const fetchUsersLastHour = async () => {
+  const fetchUsersLast24Hours = async () => {
     if (!isFeatureEnabled) return;
     
     try {
       const apiEndpoint = config.getApiEndpoint();
-      const response = await fetch(`${apiEndpoint}/api/online-users`, {
+      const response = await fetch(`${apiEndpoint}${config.routes.onlineUsers}`, {
         method: 'GET',
         cache: 'no-cache',
         headers: {
@@ -27,17 +28,28 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
       });
       if (response.ok) {
         const data = await response.json();
-        setUsersLastHour(data.usersLastHour || 0);
+        
+        // Check if analytics is actually configured and returning real data
+        // Source === "Fallback" means Google Analytics is not configured
+        if (data.source === 'Fallback' || data.error) {
+          setHasError(true);
+          setUsersLast24Hours(null);
+        } else {
+          setHasError(false);
+          setUsersLast24Hours(data.usersLast24Hours || 0);
+        }
+        
         setLastUpdated(new Date());
         setIsLoading(false);
       } else {
-        console.warn('Failed to fetch users in last hour, status:', response.status);
+        console.warn('Failed to fetch users in last 24 hours, status:', response.status);
+        setHasError(true);
         setIsLoading(false);
       }
     } catch (error) {
-      console.error('Error fetching users in last hour:', error);
+      console.error('Error fetching users in last 24 hours:', error);
+      setHasError(true);
       setIsLoading(false);
-      // Fail silently and keep previous value if any
     }
   };
 
@@ -49,10 +61,10 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
     
     // Add a small delay before the first fetch to prevent immediate API calls
     const initialDelay = setTimeout(() => {
-      fetchUsersLastHour();
+      fetchUsersLast24Hours();
     }, 1000);
-    // Set up interval for updates every 30 seconds
-    const interval = setInterval(fetchUsersLastHour, 30000);
+    // Set up interval for updates every 5 minutes (less frequent for 24-hour data)
+    const interval = setInterval(fetchUsersLast24Hours, 300000);
     return () => {
       clearTimeout(initialDelay);
       clearInterval(interval);
@@ -65,10 +77,10 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
   }
 
   const statusText = translate({
-    id: 'onlineStatus.usersLastHour',
-    message: '{count} users in the last hour',
-    description: 'Number of users who visited in the last hour'
-  }, { count: usersLastHour });
+    id: 'onlineStatus.usersLast24Hours',
+    message: '{count} visitors in 24h',
+    description: 'Number of users who visited in the last 24 hours'
+  }, { count: usersLast24Hours });
 
   const loadingText = translate({
     id: 'onlineStatus.loading',
@@ -76,27 +88,59 @@ const OnlineStatusWidget = ({ isNavbarWidget = false }) => {
     description: 'Loading text for online status widget'
   });
 
-  // Use only the main class for homepage context to avoid CSS specificity issues
-  const widgetClass = isNavbarWidget ? 
-    `${styles.onlineStatusWidget} ${styles.navbarWidget}` : 
-    styles.onlineStatusWidget;
+  // Navbar-specific rendering (simple inline style)
+  if (isNavbarWidget) {
+    if (hasError) {
+      return (
+        <div className="compact-visitor-navbar">
+          <span className="compact-visitor-icon" role="img" aria-label="warning">⚠️</span>
+        </div>
+      );
+    }
+    return (
+      <div className="compact-visitor-navbar">
+        <span className="compact-visitor-icon" role="img" aria-label="visitors">👥</span>
+        <span className="compact-visitor-count">{usersLast24Hours}</span>
+      </div>
+    );
+  }
 
+  // Homepage widget (styled like weather widget, but on left)
   if (isLoading) {
     return (
-      <div className={widgetClass}>
-        <div className={`${styles.onlineIndicator} ${styles.loading}`}>
-          <span className={styles.userEmoji} role="img" aria-label="user">👤</span>
-          <span className={styles.statusText}>{loadingText}</span>
+      <div className="compact-visitor-container">
+        <div className="compact-visitor">
+          <div className="compact-visitor-loading">
+            <div className="compact-spinner"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show warning when analytics is not configured or errored
+  if (hasError) {
+    return (
+      <div className="compact-visitor-container">
+        <div className="compact-visitor">
+          <div className="compact-visitor-error">⚠️</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={widgetClass}>
-      <div className={styles.onlineIndicator}>
-        <span className={styles.userEmoji} role="img" aria-label="user">👤</span>
-        <span className={styles.statusText}>{statusText}</span>
+    <div className="compact-visitor-container">
+      <div className="compact-visitor">
+        <div className="compact-visitor-items">
+          <div className="compact-visitor-item" title="Visitors in the last 24 hours">
+            <span className="compact-visitor-icon" role="img" aria-label="visitors">👥</span>
+            <div className="compact-visitor-info">
+              <span className="compact-visitor-label">Visitors</span>
+              <span className="compact-visitor-count">{statusText}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
