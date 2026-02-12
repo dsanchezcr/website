@@ -46,11 +46,12 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.9.0",
     "@docusaurus/types": "^3.9.0",
-    "@tsconfig/docusaurus": "^2.0.3",
+    "@tsconfig/docusaurus": "^2.0.8",
     "babel-plugin-module-resolver": "^5.0.2",
     "typescript": "^5.8.3"
   },
   "overrides": {
-    "lodash-es": "4.17.23"
+    "lodash-es": "4.17.23",
+    "axios": "1.13.5"
   }
 }
