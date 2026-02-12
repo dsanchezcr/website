@@ -51,6 +51,7 @@
     "typescript": "^5.8.3"
   },
   "overrides": {
-    "lodash-es": "4.17.23"
+    "lodash-es": "4.17.23",
+    "axios": "1.13.5"
   }
 }
