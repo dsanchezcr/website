@@ -40,6 +40,12 @@ public class GetXboxProfile
     private static readonly string? Xuid = Environment.GetEnvironmentVariable("XBOX_GAMERTAG_XUID");
     private const string OpenXblBaseUrl = "https://xbl.io/api/v2";
 
+/// <summary>Ensures image URLs use HTTPS to comply with Content-Security-Policy.</summary>
+private static string? EnsureHttps(string? url)
+    => url?.StartsWith("http://", StringComparison.OrdinalIgnoreCase) == true
+        ? "https://" + url[7..]
+        : url;
+
     public GetXboxProfile(
         ILogger<GetXboxProfile> logger,
         IHttpClientFactory httpClientFactory,
@@ -189,8 +195,7 @@ public class GetXboxProfile
         if (profileRoot.TryGetProperty("accountTier", out var tierProp))
             profile.AccountTier = tierProp.GetString();
         if (profileRoot.TryGetProperty("displayPicRaw", out var picProp))
-            profile.AvatarUrl = picProp.GetString();
-
+        profile.AvatarUrl = EnsureHttps(picProp.GetString());
         // Fallback: Try Xbox Live API format (profileUsers array)
         if (string.IsNullOrEmpty(profile.Gamertag) && 
             profileRoot.TryGetProperty("profileUsers", out var profileUsers) &&
@@ -210,7 +215,7 @@ public class GetXboxProfile
                             profile.Gamertag = value;
                             break;
                         case "GameDisplayPicRaw":
-                            profile.AvatarUrl = value;
+                            profile.AvatarUrl = EnsureHttps(value);
                             break;
                         case "Gamerscore":
                             if (int.TryParse(value, out var gs))
@@ -257,8 +262,7 @@ public class GetXboxProfile
                         };
 
                         if (title.TryGetProperty("displayImage", out var img))
-                            game.ImageUrl = img.GetString();
-
+                        game.ImageUrl = EnsureHttps(img.GetString());
                         if (title.TryGetProperty("titleHistory", out var history) &&
                             history.TryGetProperty("lastTimePlayed", out var lastPlayed))
                             game.LastPlayed = lastPlayed.GetString();
