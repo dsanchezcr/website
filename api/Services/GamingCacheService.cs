@@ -53,6 +53,7 @@ public interface IGamingCacheService
 {
     Task<GamingProfile?> GetProfileAsync(string platform);
     Task SaveProfileAsync(string platform, GamingProfile profile);
+    Task ClearProfileAsync(string platform);
     Task<(bool IsHealthy, string Message)> CheckHealthAsync();
 }
 
@@ -187,6 +188,26 @@ public class TableStorageGamingCacheService : IGamingCacheService
             return (false, $"Gaming cache error: {ex.Message}");
         }
     }
+
+    public async Task ClearProfileAsync(string platform)
+    {
+        var cacheKey = $"gaming:{platform}";
+        _memoryCache.Remove(cacheKey);
+
+        try
+        {
+            await _tableClient.DeleteEntityAsync(PartitionKey, platform);
+            _logger.LogInformation("Cleared {Platform} profile from Table Storage and memory cache", platform);
+        }
+        catch (RequestFailedException ex) when (ex.Status == 404)
+        {
+            _logger.LogInformation("No cached profile to clear for {Platform}", platform);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to clear {Platform} profile from Table Storage (memory cache cleared)", platform);
+        }
+    }
 }
 
 /// <summary>
@@ -228,5 +249,13 @@ public class InMemoryGamingCacheService : IGamingCacheService
     public Task<(bool IsHealthy, string Message)> CheckHealthAsync()
     {
         return Task.FromResult((true, "Gaming cache (in-memory, dev mode)"));
+    }
+
+    public Task ClearProfileAsync(string platform)
+    {
+        var cacheKey = $"gaming:{platform}";
+        _memoryCache.Remove(cacheKey);
+        _logger.LogInformation("Cleared {Platform} profile from in-memory cache", platform);
+        return Task.CompletedTask;
     }
 }
