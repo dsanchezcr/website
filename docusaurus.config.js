@@ -64,6 +64,14 @@ const config = {
       },
     ],
     [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'videogames',
+        path: 'videogames',
+        routeBasePath: 'videogames'
+      },
+    ],
+    [
       '@docusaurus/plugin-sitemap',
       {
         lastmod: 'date',

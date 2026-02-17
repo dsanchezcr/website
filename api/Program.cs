@@ -43,6 +43,30 @@ var host = new HostBuilder()
             var logger = sp.GetRequiredService<ILogger<AzureSearchService>>();
             return new AzureSearchService(logger);
         });
+        
+        // Register Gaming Cache Service (Table Storage or fallback to Memory Cache)
+        services.AddSingleton<IGamingCacheService>(sp =>
+        {
+            var connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
+            var memoryCache = sp.GetRequiredService<Microsoft.Extensions.Caching.Memory.IMemoryCache>();
+            
+            if (!string.IsNullOrEmpty(connectionString))
+            {
+                try
+                {
+                    var logger = sp.GetRequiredService<ILogger<TableStorageGamingCacheService>>();
+                    return new TableStorageGamingCacheService(connectionString, memoryCache, logger);
+                }
+                catch (Exception ex)
+                {
+                    var fallbackLogger = sp.GetRequiredService<ILogger<InMemoryGamingCacheService>>();
+                    fallbackLogger.LogWarning(ex, "Failed to initialize Table Storage gaming cache, falling back to in-memory");
+                }
+            }
+            
+            var inMemoryLogger = sp.GetRequiredService<ILogger<InMemoryGamingCacheService>>();
+            return new InMemoryGamingCacheService(memoryCache, inMemoryLogger);
+        });
     })
     .Build();
 

@@ -1,0 +1,336 @@
+/* ============================================
+   Video Games Components - Shared Styles
+   ============================================ */
+
+/* ---------- GameCard ---------- */
+.gameCard {
+  position: relative;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  background: var(--ifm-card-background-color, var(--content-background));
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.gameCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.platformBadge {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  border-radius: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.gameCardContent {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  padding-top: 2rem;
+}
+
+.gameImageContainer {
+  flex-shrink: 0;
+  width: 120px;
+  height: 160px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.gameImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gameInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.gameTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ifm-heading-color);
+}
+
+.gameRating {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+}
+
+.filledStars {
+  opacity: 1;
+}
+
+.emptyStars {
+  opacity: 0.3;
+}
+
+.gameMeta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.gameStatus {
+  color: var(--ifm-color-emphasis-700);
+}
+
+.gameHours {
+  color: var(--ifm-color-emphasis-600);
+}
+
+.gameRecommendation {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .gameCardContent {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .gameImageContainer {
+    width: 160px;
+    height: 200px;
+  }
+
+  .gameMeta {
+    justify-content: center;
+  }
+}
+
+/* ---------- Profile Widgets (Xbox & PlayStation) ---------- */
+.profileWidget {
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  background: var(--ifm-card-background-color, var(--content-background));
+}
+
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  color: #fff;
+}
+
+.profileHeader.xbox {
+  background: linear-gradient(135deg, #107C10, #0e6b0e);
+}
+
+.profileHeader.playstation {
+  background: linear-gradient(135deg, #003087, #00246d);
+}
+
+.profileAvatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.profileInfo h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+.profileInfo p {
+  margin: 0;
+  opacity: 0.85;
+  font-size: 0.9rem;
+}
+
+.profileStats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1px;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: var(--ifm-card-background-color, var(--content-background));
+}
+
+.statValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ifm-color-primary);
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-600);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.25rem;
+}
+
+.profileGames {
+  padding: 1.25rem;
+}
+
+.profileGames h4 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  color: var(--ifm-heading-color);
+}
+
+.gamesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.recentGameCard {
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+  transition: box-shadow 0.2s ease;
+}
+
+.recentGameCard:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.recentGameLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.recentGameLink:hover {
+  text-decoration: none;
+  color: inherit;
+  transform: translateY(-2px);
+}
+
+.recentGameImage {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.recentGameTitle {
+  padding: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ifm-heading-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Trophy specific styles */
+.trophyRow {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 1rem 1.25rem;
+}
+
+.trophyItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.trophyIcon {
+  font-size: 1.2rem;
+}
+
+/* Loading and error states */
+.profileLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  gap: 1rem;
+}
+
+.profileSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--ifm-color-emphasis-200);
+  border-top: 3px solid var(--ifm-color-primary);
+  border-radius: 50%;
+  animation: profileSpin 0.8s linear infinite;
+}
+
+@keyframes profileSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.profileError {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.profileError button {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.875rem;
+  border-radius: 6px;
+}
+
+.profileCacheNotice {
+  padding: 0.75rem 1.25rem;
+  font-size: 0.8rem;
+  color: var(--ifm-color-emphasis-500);
+  text-align: center;
+  border-top: 1px solid var(--ifm-color-emphasis-100);
+}
+
+@media (max-width: 600px) {
+  .profileHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .profileStats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .gamesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
