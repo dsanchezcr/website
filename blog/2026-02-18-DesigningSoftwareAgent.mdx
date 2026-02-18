@@ -1,0 +1,390 @@
+---
+title: "Designing Software for an Agent-First World"
+description: Architecture, repositories, and engineering practices must evolve for the GenAI era. Learn how to design agent-friendly systems that survive model changes, enable safe autonomous contributions, and make both humans and machines more effective.
+slug: designing-software-agent-first-world
+authors: [dsanchezcr]
+tags: [AI, GitHub Copilot, Agentic AI, Software Engineering, Architecture, DevOps]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2026-02-18-DesigningSoftwareAgent/designing-software-agent-first-world.jpg
+date: 2026-02-18T10:00
+---
+
+# Designing Software for an Agent-First World
+
+## Your Repository Is Now Your Most Important Interface
+
+The role of the software engineer is evolving rapidly, not because AI can generate code, but because software development itself is becoming a **human-agent collaborative system**.
+
+In recent years, we moved from AI assisting with snippets, to generating entire functions, to proposing pull requests, and now to **agents that navigate repositories, reason about architecture, and execute multi-step development tasks autonomously**.
+
+<!--truncate-->
+
+![Designing Software for an Agent-First World](pathname:///img/blog/2026-02-18-DesigningSoftwareAgent/designing-software-agent-first-world.jpg)
+
+In my previous posts, I explored how [DevOps foundations prepare the system](/blog/agentic-devops-foundations), how [the role of the software engineer is evolving](/blog/evolution-of-the-software-engineer), and how [humans and agents collaborate through IDEs and pull requests](/blog/humans-and-agents-collaboration-patterns). This post tackles the next critical question:
+
+> **How should we design our software systems so that agents can work in them effectively, safely, and at scale?**
+
+The pace of innovation in GenAI and LLMs can feel overwhelming. New models, capabilities, frameworks, and best practices appear constantly. Many developers are asking: *Which models should I use? How do I structure my repo so agents understand it? What does "best practice" even mean when tools evolve monthly?*
+
+The answer isn't to chase every new model or feature.
+
+The answer is to **design software systems that are agent-friendly by default**.
+
+---
+
+## From AI-Assisted Coding to Agent-First Engineering
+
+Traditional software design assumed humans write code, humans read architecture docs, humans understand intent, and humans coordinate changes. Those assumptions no longer hold.
+
+Agentic engineering introduces a new reality:
+
+> **Your software will be read, modified, tested, and reasoned about by machines as well as humans.**
+
+This changes what "good engineering" looks like. Good design is no longer just readable for humans and maintainable by teams. It must also be:
+
+- **Navigable by agents**, clear structure, explicit conventions, discoverable patterns
+- **Verifiable automatically**, strong tests, automated checks, deterministic validation
+- **Safe for iterative autonomous changes**, bounded blast radius, rollback capability, progressive delivery
+
+The mental model shift is significant. Previously, your primary audience was the next developer who would read your code. Now, your primary audience includes non-human contributors that parse your repository to understand how to make changes.
+
+---
+
+## Why the GenAI Landscape Feels Overwhelming (and How to Respond)
+
+The GenAI ecosystem is evolving at unprecedented speed: larger context windows, tool-using agents, structured outputs, retrieval-augmented workflows, repo-aware assistants, and fully autonomous coding agents. Trying to optimize for *today's* specific model is a losing strategy.
+
+Instead, optimize for principles that survive model changes:
+
+| Principle | Why It Lasts |
+|---|---|
+| **Clear intent over clever implementation** | Every model benefits from explicit problem framing |
+| **Strong contracts over implicit behavior** | Agents need boundaries, not guesswork |
+| **Structured context over tribal knowledge** | What's undocumented is invisible to agents |
+| **Deterministic validation over manual review** | Automated tests scale; human attention doesn't |
+
+These aren't just agent-friendly practices, they're practices that make your software better for everyone. The overlap between "good for humans" and "good for agents" is enormous.
+
+---
+
+## Best Practices for Agent-First Software Design
+
+### 1. Treat Your Repository as an Executable Knowledge Base
+
+Agents don't just read code, they read the **entire repository**. Every file, every convention, every configuration choice becomes input for how an agent reasons about your system.
+
+Your repo should clearly answer:
+
+- 🏗️ What does this system do?
+- 📁 How is it structured?
+- 📍 Where should new code live?
+- ✅ How do we validate changes?
+- 🚫 What patterns should be avoided?
+
+**A recommended structure for agent-friendly repos:**
+
+```
+/.github
+  copilot-instructions.md    # Agent-specific guidance
+  CODEOWNERS                  # Ownership boundaries
+  workflows/                  # CI/CD automation
+
+/docs
+  architecture.md             # System design overview
+  domain-overview.md          # Business context
+  coding-standards.md         # Conventions and patterns
+  adr/                        # Architecture Decision Records
+
+/specs
+  feature-x.spec.md           # Feature specifications
+  api-contracts.md            # Interface definitions
+
+/src                          # Application code
+/tests                        # Test suites
+```
+
+The key insight is straightforward:
+
+> **If a new engineer would be confused, an agent will be too.**
+
+But it goes deeper. A new engineer can ask questions, read between the lines, and infer context from hallway conversations. An agent cannot. Everything must be explicit, documented, and discoverable within the repository itself.
+
+#### The Power of Copilot Instructions
+
+One of the most impactful things you can do today is create a `.github/copilot-instructions.md` file in your repository. This file serves as a direct interface between your team's knowledge and AI agents. It can include:
+
+- Architectural patterns your team follows
+- Naming conventions and coding standards
+- Technology choices and their rationale
+- Common pitfalls to avoid
+- Testing requirements and strategies
+
+This is exactly what I do in [this website's repository](https://github.com/dsanchezcr/website), the copilot instructions file contains detailed guidance about the project's architecture, development workflows, common patterns, and integration points. When [GitHub Copilot](https://github.com/features/copilot) or the [GitHub Copilot coding agent](https://github.com/features/copilot) operates in this repository, it has immediate access to context that would otherwise take a new contributor hours to discover. It's a practical example of treating your repository as a knowledge base.
+
+---
+
+### 2. Adopt Specification-Driven Development
+
+In an agentic workflow, specifications are not optional. They're not "nice to have." They're **essential**.
+
+The gap between a vague request and a precise specification is where agents fail most visibly. An agent asked to "build a user authentication system" without constraints will produce *something*, but it probably won't match your security model, your user experience requirements, or your infrastructure constraints.
+
+A strong specification (what some call DevSpec) should include:
+
+| Component | Purpose | Example |
+|---|---|---|
+| **Problem statement** | Why this change exists | "Users can't reset passwords without contacting support" |
+| **Expected behavior** | What success looks like | "Users receive a time-limited reset link via email" |
+| **Constraints** | Non-negotiable boundaries | "Tokens expire after 15 minutes, single-use only" |
+| **API contracts** | Interface definitions | "POST /api/reset-password accepts email, returns 202" |
+| **Edge cases** | What could go wrong | "Invalid emails, expired tokens, concurrent requests" |
+| **Acceptance criteria** | How to verify completion | "All tests pass, security review complete" |
+
+Why does this matter so much for agents?
+
+- Agents generate better solutions when intent is explicit, **garbage in, garbage out** applies doubly to AI
+- PR reviews become validation of the spec rather than guesswork about intent
+- Changes remain consistent across models and tools, if you switch from one AI tool to another, the spec remains your source of truth
+
+Think of specifications as:
+
+> **The stable interface between human intent and machine execution.**
+
+---
+
+### 3. Make Tests the Primary Safety Mechanism
+
+In an agent-first workflow, code is generated faster, PRs are more frequent, and iterations happen at machine speed. Manual review alone doesn't scale.
+
+This is perhaps the most important practice to internalize:
+
+> **Humans define intent. Agents implement. Tests arbitrate truth.**
+
+The implications are practical and immediate:
+
+- ✅ **Invest in deterministic automated tests**, flaky tests undermine agent-generated code validation
+- ✅ **Use behavior-focused tests**, not implementation tests, agents may implement differently than you would, and that's fine as long as behavior is correct
+- ✅ **Treat tests as contracts**, not coverage metrics, 80% coverage that tests the wrong things is worse than 40% coverage that tests critical paths
+- ✅ **Make tests fast**, slow test suites create friction that encourages skipping validation
+
+When an agent opens a pull request, your CI pipeline becomes the first line of defense. If your tests are comprehensive and reliable, you can review with confidence. If they're sparse or flaky, every agent-generated PR becomes a source of anxiety.
+
+#### The Testing Pyramid in an Agent-First World
+
+The traditional testing pyramid still holds, but the emphasis shifts:
+
+| Level | Agent-First Priority | Why |
+|---|---|---|
+| **Unit tests** | High | Fast feedback on correctness of individual components |
+| **Integration tests** | Critical | Validates that agent-generated code works with existing systems |
+| **Contract tests** | Essential | Ensures API boundaries aren't violated |
+| **End-to-end tests** | Important | Catches emergent behavior from combined changes |
+| **Security tests** | Non-negotiable | Agents can introduce subtle vulnerabilities |
+
+---
+
+### 4. Optimize for Discoverability, Not Cleverness
+
+This principle deserves special emphasis because it runs counter to how many experienced developers work.
+
+Agents struggle with:
+
+- 🔴 Hidden dependencies and implicit conventions
+- 🔴 Magical abstractions that obscure behavior
+- 🔴 Overly compact code that trades readability for brevity
+- 🔴 Sparse documentation and undefined acronyms
+- 🔴 Inconsistent patterns across different parts of the codebase
+
+Agents thrive with:
+
+- 🟢 Explicit module boundaries and clear dependency flows
+- 🟢 Descriptive naming that communicates intent
+- 🟢 Self-contained components with obvious interfaces
+- 🟢 Consistent patterns applied uniformly
+- 🟢 Architecture diagrams and decision records
+
+Here's a practical test:
+
+> **Could a new engineer understand this module in 15 minutes? Could they make a safe change in 30?**
+
+If not, an agent probably won't either. And unlike the new engineer, the agent won't ask clarifying questions, it will make assumptions, and those assumptions may be wrong.
+
+#### Concrete Example: Good vs. Poor Discoverability
+
+**Poor discoverability:**
+```csharp
+// What does this do? What's the context? What are the side effects?
+public async Task<Result> Process(Request r) =>
+    await _h.Handle(r, _c.GetConfig(), _v.Validate(r) ? Mode.Full : Mode.Partial);
+```
+
+**Good discoverability:**
+```csharp
+/// <summary>
+/// Processes a customer order through validation, pricing, and fulfillment.
+/// Returns a Result indicating success or failure with specific error details.
+/// </summary>
+public async Task<OrderResult> ProcessCustomerOrder(OrderRequest orderRequest)
+{
+    var validationResult = _orderValidator.Validate(orderRequest);
+    var processingMode = validationResult.IsValid ? ProcessingMode.Full : ProcessingMode.Partial;
+    var pricingConfig = _configurationService.GetCurrentPricingConfig();
+
+    return await _orderHandler.HandleOrder(orderRequest, pricingConfig, processingMode);
+}
+```
+
+The second version is longer, but an agent (or a new developer) can reason about it immediately. The intent is clear, the dependencies are visible, and the flow is obvious.
+
+---
+
+### 5. Design Pull Requests for Collaborative Reasoning
+
+In the agentic era, PRs become more than code diffs. They become **reasoning artifacts**, documents that explain not just *what* changed, but *why*, *how*, and *under what constraints*.
+
+A strong agent-generated PR should include:
+
+- 📝 **What changed**, clear summary of modifications
+- 🎯 **Why it changed**, linkage to the issue or specification that motivated it
+- 📋 **Which spec it satisfies**, traceability back to requirements
+- ⚠️ **Risks and assumptions**, what could go wrong, what was assumed
+- 🧪 **Test coverage summary**, what's validated and what isn't
+
+The goal isn't smaller PRs or larger PRs:
+
+> **The goal is PRs that explain themselves clearly enough for humans to decide quickly.**
+
+When [GitHub Copilot coding agent](https://github.com/features/copilot) opens a PR, it typically includes a description of what it did and why. But the human reviewer's job is to assess that description against their knowledge of the system. The clearer the PR, the faster and more accurate that assessment becomes.
+
+---
+
+### 6. Future-Proof Your Workflow Against Model Evolution
+
+Models will change, rapidly. Your engineering practices should **not depend on a specific model's strengths or limitations**.
+
+Here's what to invest in:
+
+| Investment | Survives Model Changes? | Why |
+|---|---|---|
+| Repo clarity and structure | ✅ Yes | Every model benefits from clear context |
+| Structured specifications | ✅ Yes | Intent is model-agnostic |
+| Automated validation | ✅ Yes | Tests don't care who wrote the code |
+| Clear contracts and interfaces | ✅ Yes | Boundaries apply regardless of tooling |
+| Documented architecture decisions | ✅ Yes | Context helps all future contributors |
+| Prompt engineering for a specific model | ❌ No | Model behavior changes with each version |
+| Workarounds for model limitations | ❌ No | Limitations are temporary |
+
+Good engineering outlives any single AI generation. The teams that invest in structural clarity today will benefit whether context windows grow to millions of tokens, agents become fully autonomous, or entirely new AI paradigms emerge.
+
+---
+
+## The Real Challenge: Changing How Teams Think
+
+The technical practices above are important, but the hardest part of agent-first design isn't technical, it's cultural.
+
+### Challenge 1: "We've Always Done It This Way"
+
+Many teams have implicit conventions that experienced developers "just know." These conventions are invisible to agents. The challenge is making the implicit explicit, and many teams resist this because documentation feels like overhead.
+
+**The reframe:** Documentation isn't overhead when your most productive contributor (an AI agent) literally cannot function without it. Time spent documenting is time multiplied across every future agent interaction.
+
+### Challenge 2: Overcoming the "Not Good Enough" Perception
+
+Some developers dismiss agent-generated code because it's "not how I would write it." This conflates style with correctness. Agents may choose different patterns, different variable names, different abstractions, and that's fine if the behavior is correct and the code is maintainable.
+
+**The reframe:** The question isn't "Would I write it this way?" but "Does this meet our standards for correctness, security, and maintainability?"
+
+### Challenge 3: Balancing Speed with Safety
+
+The velocity gains from AI agents are real and significant. But velocity without safety creates technical debt at AI speed. Teams that skip tests, bypass reviews, or eliminate quality gates in pursuit of speed will pay the price exponentially.
+
+**The reframe:** Agent-first design isn't about going faster by removing guardrails. It's about **going faster because your guardrails are automated and reliable**.
+
+### Challenge 4: Keeping Humans Engaged
+
+When agents handle more of the routine work, there's a risk that human engineers disengage, treating AI output as authoritative and rubber-stamping reviews. This is the most dangerous failure mode because it's invisible until something goes wrong.
+
+**The reframe:** The engineer's role shifts from *writing* code to *evaluating* code with the same (or greater) rigor. Review skills become premium, and active engagement with AI output is a core professional responsibility.
+
+---
+
+## A Practical Checklist for Agent-Ready Repositories
+
+Here's a self-assessment you can apply to your team's repositories today:
+
+### Repository Structure
+
+- Clear directory organization with consistent naming conventions
+- README with architecture overview, setup instructions, and contribution guidelines
+- `.github/copilot-instructions.md` with project-specific guidance for AI agents
+- Architecture Decision Records (ADRs) for significant technical choices
+
+### Documentation
+
+- API contracts and interface definitions are documented and up to date
+- Coding standards and patterns are explicitly documented (not just tribal knowledge)
+- Domain concepts and business rules are defined where code implements them
+
+### Testing
+
+- Comprehensive test suite that runs quickly and reliably
+- Tests focus on behavior, not implementation details
+- CI pipeline enforces tests on every PR, no exceptions
+- Security scanning is automated and non-bypassable
+
+### Governance
+
+- Branch protection rules are enforced on critical branches
+- CODEOWNERS file defines domain-specific review requirements
+- Agent-generated PRs receive the same review rigor as human PRs
+- Rollback procedures are documented and tested
+
+### Collaboration
+
+- Specifications are written before implementation begins
+- PR descriptions explain *why*, not just *what*
+- Labels distinguish agent-generated from human-generated contributions
+- Review feedback improves agent instructions (copilot-instructions.md)
+
+---
+
+## The Mindset Shift: Engineers as System Designers
+
+The most important change isn't technical, it's conceptual.
+
+In an agent-first world, engineers increasingly:
+
+- 🎯 **Define intent**, what should the system do and why?
+- 📐 **Design constraints**, what boundaries should agents operate within?
+- 🏗️ **Structure systems**, how should the repository, pipeline, and infrastructure be organized?
+- 🔍 **Review outcomes**, does this change meet our standards?
+- 📈 **Guide architecture evolution**, how should the system grow over time?
+
+Less time goes to writing boilerplate, manual refactoring, searching documentation, and repeating standard patterns.
+
+More time goes to:
+
+> **Designing systems that both humans and agents can safely evolve together.**
+
+This is what I described in [The Evolution of the Software Engineer](/blog/evolution-of-the-software-engineer), the shift from code author to system designer. Agent-first software design is the architectural expression of that evolution.
+
+---
+
+## Closing Thoughts
+
+The rapid evolution of GenAI and LLMs can feel overwhelming, but the path forward is surprisingly stable.
+
+You don't need to chase every new model or feature. Instead:
+
+- 🏗️ Structure repositories clearly
+- 📋 Write explicit specifications
+- 🧪 Invest in strong automated tests
+- 🔍 Design discoverable architectures
+- 📝 Treat PRs as reasoning artifacts
+- 🤝 Optimize for collaboration between humans and agents
+
+Teams that adopt these practices won't just keep up with the agentic era, they'll **build software that is ready for whatever comes next**.
+
+The agents are here. Your repository is their interface. Design it accordingly.

@@ -1,0 +1,389 @@
+---
+title: "Diseñando Software para un Mundo Donde los Agentes Son Primero"
+description: La arquitectura, los repositorios y las prácticas de ingeniería deben evolucionar para la era GenAI. Aprende cómo diseñar sistemas amigables para agentes que sobrevivan los cambios de modelos, habiliten contribuciones autónomas seguras y hagan más efectivos tanto a humanos como a máquinas.
+slug: designing-software-agent-first-world
+authors: [dsanchezcr]
+tags: [AI, GitHub Copilot, Agentic AI, Software Engineering, Architecture, DevOps]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2026-02-18-DesigningSoftwareAgent/designing-software-agent-first-world.jpg
+date: 2026-02-18T10:00
+---
+
+# Diseñando Software para un Mundo Donde los Agentes Son Primero
+
+## Tu Repositorio Es Ahora Tu Interfaz Más Importante
+
+El rol del ingeniero de software está evolucionando rápidamente, no porque la IA pueda generar código, sino porque el desarrollo de software en sí se está convirtiendo en un **sistema colaborativo humano-agente**.
+
+En los últimos años, pasamos de la IA asistiendo con fragmentos de código, a generar funciones completas, a proponer pull requests, y ahora a **agentes que navegan repositorios, razonan sobre arquitectura y ejecutan tareas de desarrollo de múltiples pasos de forma autónoma**.
+
+<!--truncate-->
+
+![Diseñando Software para un Mundo Donde los Agentes Son Primero](pathname:///img/blog/2026-02-18-DesigningSoftwareAgent/designing-software-agent-first-world.jpg)
+
+En mis publicaciones anteriores, exploré cómo [las prácticas fundamentales de DevOps preparan el sistema](/blog/agentic-devops-foundations), cómo [el rol del ingeniero de software está evolucionando](/blog/evolution-of-the-software-engineer), y cómo [humanos y agentes colaboran a través de IDEs y pull requests](/blog/humans-and-agents-collaboration-patterns). Esta publicación aborda la siguiente pregunta crítica:
+
+> **¿Cómo deberíamos diseñar nuestros sistemas de software para que los agentes puedan trabajar en ellos de manera efectiva, segura y a escala?**
+
+El ritmo de innovación en GenAI y LLMs puede sentirse abrumador. Nuevos modelos, capacidades, frameworks y mejores prácticas aparecen constantemente. Muchos desarrolladores se preguntan: *¿Qué modelos debería usar? ¿Cómo estructuro mi repo para que los agentes lo entiendan? ¿Qué significa "mejor práctica" cuando las herramientas evolucionan cada mes?*
+
+La respuesta no es perseguir cada nuevo modelo o funcionalidad.
+
+La respuesta es **diseñar sistemas de software que sean amigables para agentes por defecto**.
+
+---
+
+## De la Codificación Asistida por IA a la Ingeniería Donde los Agentes Son Primero
+
+El diseño de software tradicional asumía que los humanos escriben código, los humanos leen la documentación de arquitectura, los humanos entienden la intención y los humanos coordinan los cambios. Esas suposiciones ya no se sostienen.
+
+La ingeniería agéntica introduce una nueva realidad:
+
+> **Tu software será leído, modificado, probado y analizado tanto por máquinas como por humanos.**
+
+Esto cambia lo que significa "buena ingeniería". El buen diseño ya no es solo legible para humanos y mantenible por equipos. También debe ser:
+
+- **Navegable por agentes**, estructura clara, convenciones explícitas, patrones descubribles
+- **Verificable automáticamente**, pruebas sólidas, verificaciones automatizadas, validación determinista
+- **Seguro para cambios autónomos iterativos**, radio de explosión acotado, capacidad de reversión, entrega progresiva
+
+El cambio de modelo mental es significativo. Antes, tu audiencia principal era el siguiente desarrollador que leería tu código. Ahora, tu audiencia principal incluye contribuyentes no humanos que analizan tu repositorio para entender cómo hacer cambios.
+
+---
+
+## Por Qué el Panorama GenAI Se Siente Abrumador (y Cómo Responder)
+
+El ecosistema GenAI está evolucionando a una velocidad sin precedentes: ventanas de contexto más grandes, agentes que usan herramientas, salidas estructuradas, flujos de trabajo con recuperación aumentada, asistentes conscientes del repositorio y agentes de codificación completamente autónomos. Intentar optimizar para el modelo específico de *hoy* es una estrategia perdedora.
+
+En su lugar, optimiza para principios que sobrevivan los cambios de modelo:
+
+| Principio | Por Qué Perdura |
+|---|---|
+| **Intención clara sobre implementación ingeniosa** | Cada modelo se beneficia de un planteamiento explícito del problema |
+| **Contratos fuertes sobre comportamiento implícito** | Los agentes necesitan límites, no adivinanzas |
+| **Contexto estructurado sobre conocimiento tribal** | Lo que no está documentado es invisible para los agentes |
+| **Validación determinista sobre revisión manual** | Las pruebas automatizadas escalan; la atención humana no |
+
+Estas no son solo prácticas amigables para agentes, son prácticas que mejoran tu software para todos. La superposición entre "bueno para humanos" y "bueno para agentes" es enorme.
+
+---
+
+## Mejores Prácticas para el Diseño de Software Donde los Agentes Son Primero
+
+### 1. Trata Tu Repositorio como una Base de Conocimiento Ejecutable
+
+Los agentes no solo leen código, leen el **repositorio completo**. Cada archivo, cada convención, cada decisión de configuración se convierte en entrada para cómo un agente razona sobre tu sistema.
+
+Tu repo debería responder claramente:
+
+- 🏗️ ¿Qué hace este sistema?
+- 📁 ¿Cómo está estructurado?
+- 📍 ¿Dónde debería vivir el código nuevo?
+- ✅ ¿Cómo validamos los cambios?
+- 🚫 ¿Qué patrones deben evitarse?
+
+**Una estructura recomendada para repos amigables con agentes:**
+
+```
+/.github
+  copilot-instructions.md    # Guía específica para agentes
+  CODEOWNERS                  # Límites de propiedad
+  workflows/                  # Automatización CI/CD
+
+/docs
+  architecture.md             # Visión general del diseño del sistema
+  domain-overview.md          # Contexto de negocio
+  coding-standards.md         # Convenciones y patrones
+  adr/                        # Registros de Decisiones de Arquitectura
+
+/specs
+  feature-x.spec.md           # Especificaciones de funcionalidades
+  api-contracts.md            # Definiciones de interfaces
+
+/src                          # Código de la aplicación
+/tests                        # Suites de pruebas
+```
+
+La idea clave es directa:
+
+> **Si un nuevo ingeniero estaría confundido, un agente también lo estará.**
+
+Pero va más allá. Un nuevo ingeniero puede hacer preguntas, leer entre líneas e inferir contexto de conversaciones informales. Un agente no puede. Todo debe ser explícito, documentado y descubrible dentro del repositorio mismo.
+
+#### El Poder de las Instrucciones de Copilot
+
+Una de las cosas más impactantes que puedes hacer hoy es crear un archivo `.github/copilot-instructions.md` en tu repositorio. Este archivo sirve como una interfaz directa entre el conocimiento de tu equipo y los agentes de IA. Puede incluir:
+
+- Patrones arquitectónicos que sigue tu equipo
+- Convenciones de nomenclatura y estándares de codificación
+- Elecciones tecnológicas y su justificación
+- Errores comunes a evitar
+- Requisitos y estrategias de pruebas
+
+Esto es exactamente lo que hago en [el repositorio de este sitio web](https://github.com/dsanchezcr/website), el archivo de instrucciones de copilot contiene orientación detallada sobre la arquitectura del proyecto, flujos de trabajo de desarrollo, patrones comunes y puntos de integración. Cuando [GitHub Copilot](https://github.com/features/copilot) o el [agente de codificación de GitHub Copilot](https://github.com/features/copilot) opera en este repositorio, tiene acceso inmediato al contexto que de otro modo tomaría horas a un nuevo contribuyente descubrir. Es un ejemplo práctico de tratar tu repositorio como una base de conocimiento.
+
+---
+
+### 2. Adopta el Desarrollo Basado en Especificaciones
+
+En un flujo de trabajo agéntico, las especificaciones no son opcionales. No son "agradables de tener." Son **esenciales**.
+
+La brecha entre una solicitud vaga y una especificación precisa es donde los agentes fallan más visiblemente. Un agente al que se le pide "construir un sistema de autenticación de usuarios" sin restricciones producirá *algo*, pero probablemente no coincidirá con tu modelo de seguridad, tus requisitos de experiencia de usuario o las restricciones de tu infraestructura.
+
+Una especificación sólida (lo que algunos llaman DevSpec) debería incluir:
+
+| Componente | Propósito | Ejemplo |
+|---|---|---|
+| **Planteamiento del problema** | Por qué existe este cambio | "Los usuarios no pueden restablecer sus contraseñas sin contactar soporte" |
+| **Comportamiento esperado** | Cómo se ve el éxito | "Los usuarios reciben un enlace de restablecimiento con tiempo limitado por correo" |
+| **Restricciones** | Límites no negociables | "Los tokens expiran después de 15 minutos, un solo uso" |
+| **Contratos de API** | Definiciones de interfaz | "POST /api/reset-password acepta email, retorna 202" |
+| **Casos extremos** | Qué podría salir mal | "Emails inválidos, tokens expirados, solicitudes concurrentes" |
+| **Criterios de aceptación** | Cómo verificar la completitud | "Todas las pruebas pasan, revisión de seguridad completa" |
+
+¿Por qué importa tanto esto para los agentes?
+
+- Los agentes generan mejores soluciones cuando la intención es explícita, **basura entra, basura sale** se aplica doblemente a la IA
+- Las revisiones de PR se convierten en validación de la especificación en lugar de adivinanzas sobre la intención
+- Los cambios permanecen consistentes entre modelos y herramientas, si cambias de una herramienta de IA a otra, la especificación sigue siendo tu fuente de verdad
+
+Piensa en las especificaciones como:
+
+> **La interfaz estable entre la intención humana y la ejecución de la máquina.**
+
+---
+
+### 3. Haz de las Pruebas el Mecanismo Principal de Seguridad
+
+En un flujo de trabajo donde los agentes son primero, el código se genera más rápido, los PRs son más frecuentes y las iteraciones ocurren a velocidad de máquina. La revisión manual por sí sola no escala.
+
+Esta es quizás la práctica más importante de internalizar:
+
+> **Los humanos definen la intención. Los agentes implementan. Las pruebas arbitran la verdad.**
+
+Las implicaciones son prácticas e inmediatas:
+
+- ✅ **Invierte en pruebas automatizadas deterministas**, las pruebas inestables socavan la validación de código generado por agentes
+- ✅ **Usa pruebas enfocadas en comportamiento**, no pruebas de implementación, los agentes pueden implementar de manera diferente a como tú lo harías, y eso está bien siempre que el comportamiento sea correcto
+- ✅ **Trata las pruebas como contratos**, no como métricas de cobertura, 80% de cobertura que prueba las cosas equivocadas es peor que 40% de cobertura que prueba las rutas críticas
+- ✅ **Haz que las pruebas sean rápidas**, las suites de pruebas lentas crean fricción que incentiva saltarse la validación
+
+Cuando un agente abre un pull request, tu pipeline de CI se convierte en la primera línea de defensa. Si tus pruebas son completas y confiables, puedes revisar con confianza. Si son escasas o inestables, cada PR generado por agente se convierte en una fuente de ansiedad.
+
+#### La Pirámide de Pruebas en un Mundo Donde los Agentes Son Primero
+
+La pirámide de pruebas tradicional sigue vigente, pero el énfasis cambia:
+
+| Nivel | Prioridad Agent-First | Por Qué |
+|---|---|---|
+| **Pruebas unitarias** | Alta | Retroalimentación rápida sobre la corrección de componentes individuales |
+| **Pruebas de integración** | Crítica | Valida que el código generado por agentes funciona con los sistemas existentes |
+| **Pruebas de contrato** | Esencial | Asegura que los límites de API no se violen |
+| **Pruebas de extremo a extremo** | Importante | Detecta comportamiento emergente de cambios combinados |
+| **Pruebas de seguridad** | No negociable | Los agentes pueden introducir vulnerabilidades sutiles |
+
+---
+
+### 4. Optimiza para la Descubribilidad, No para la Ingeniosidad
+
+Este principio merece énfasis especial porque va en contra de cómo trabajan muchos desarrolladores experimentados.
+
+Los agentes tienen dificultades con:
+
+- 🔴 Dependencias ocultas y convenciones implícitas
+- 🔴 Abstracciones mágicas que oscurecen el comportamiento
+- 🔴 Código excesivamente compacto que sacrifica legibilidad por brevedad
+- 🔴 Documentación escasa y acrónimos indefinidos
+- 🔴 Patrones inconsistentes en diferentes partes del código
+
+Los agentes prosperan con:
+
+- 🟢 Límites explícitos de módulos y flujos de dependencia claros
+- 🟢 Nomenclatura descriptiva que comunica la intención
+- 🟢 Componentes autocontenidos con interfaces obvias
+- 🟢 Patrones consistentes aplicados uniformemente
+- 🟢 Diagramas de arquitectura y registros de decisiones
+
+Aquí hay una prueba práctica:
+
+> **¿Podría un nuevo ingeniero entender este módulo en 15 minutos? ¿Podría hacer un cambio seguro en 30?**
+
+Si no, un agente probablemente tampoco. Y a diferencia del nuevo ingeniero, el agente no hará preguntas aclaratorias, hará suposiciones, y esas suposiciones pueden ser incorrectas.
+
+#### Ejemplo Concreto: Buena vs. Mala Descubribilidad
+
+**Mala descubribilidad:**
+```csharp
+// ¿Qué hace esto? ¿Cuál es el contexto? ¿Cuáles son los efectos secundarios?
+public async Task<Result> Process(Request r) =>
+    await _h.Handle(r, _c.GetConfig(), _v.Validate(r) ? Mode.Full : Mode.Partial);
+```
+
+**Buena descubribilidad:**
+```csharp
+/// <summary>
+/// Procesa un pedido de cliente a través de validación, fijación de precios y cumplimiento.
+/// Retorna un Result indicando éxito o fallo con detalles específicos del error.
+/// </summary>
+public async Task<OrderResult> ProcessCustomerOrder(OrderRequest orderRequest)
+{
+    var validationResult = _orderValidator.Validate(orderRequest);
+    var processingMode = validationResult.IsValid ? ProcessingMode.Full : ProcessingMode.Partial;
+    var pricingConfig = _configurationService.GetCurrentPricingConfig();
+
+    return await _orderHandler.HandleOrder(orderRequest, pricingConfig, processingMode);
+}
+```
+
+La segunda versión es más larga, pero un agente (o un nuevo desarrollador) puede razonar sobre ella inmediatamente. La intención es clara, las dependencias son visibles y el flujo es obvio.
+
+---
+
+### 5. Diseña Pull Requests para el Razonamiento Colaborativo
+
+En la era agéntica, los PRs se convierten en más que diffs de código. Se convierten en **artefactos de razonamiento**, documentos que explican no solo *qué* cambió, sino *por qué*, *cómo* y *bajo qué restricciones*.
+
+Un PR sólido generado por agentes debería incluir:
+
+- 📝 **Qué cambió**, resumen claro de las modificaciones
+- 🎯 **Por qué cambió**, vinculación al issue o especificación que lo motivó
+- 📋 **Qué especificación satisface**, trazabilidad hacia los requisitos
+- ⚠️ **Riesgos y suposiciones**, qué podría salir mal, qué se asumió
+- 🧪 **Resumen de cobertura de pruebas**, qué está validado y qué no
+
+El objetivo no son PRs más pequeños ni más grandes:
+
+> **El objetivo son PRs que se expliquen lo suficientemente claro para que los humanos decidan rápidamente.**
+
+Cuando el [agente de codificación de GitHub Copilot](https://github.com/features/copilot) abre un PR, típicamente incluye una descripción de qué hizo y por qué. Pero el trabajo del revisor humano es evaluar esa descripción contra su conocimiento del sistema. Cuanto más claro sea el PR, más rápida y precisa será esa evaluación.
+
+---
+
+### 6. Prepara Tu Flujo de Trabajo para la Evolución de los Modelos
+
+Los modelos cambiarán, rápidamente. Tus prácticas de ingeniería **no deberían depender de las fortalezas o limitaciones de un modelo específico**.
+
+Aquí está en qué invertir:
+
+| Inversión | ¿Sobrevive a los Cambios de Modelo? | Por Qué |
+|---|---|---|
+| Claridad y estructura del repo | ✅ Sí | Cada modelo se beneficia de contexto claro |
+| Especificaciones estructuradas | ✅ Sí | La intención es agnóstica al modelo |
+| Validación automatizada | ✅ Sí | Las pruebas no se importan quién escribió el código |
+| Contratos e interfaces claras | ✅ Sí | Los límites aplican sin importar las herramientas |
+| Decisiones de arquitectura documentadas | ✅ Sí | El contexto ayuda a todos los futuros contribuyentes |
+| Ingeniería de prompts para un modelo específico | ❌ No | El comportamiento del modelo cambia con cada versión |
+| Soluciones alternativas para limitaciones del modelo | ❌ No | Las limitaciones son temporales |
+
+La buena ingeniería sobrevive a cualquier generación individual de IA. Los equipos que inviertan en claridad estructural hoy se beneficiarán ya sea que las ventanas de contexto crezcan a millones de tokens, los agentes se vuelvan completamente autónomos o emerjan paradigmas de IA completamente nuevos.
+
+---
+
+## El Verdadero Desafío: Cambiar Cómo Piensan los Equipos
+
+Las prácticas técnicas anteriores son importantes, pero la parte más difícil del diseño donde los agentes son primero no es técnica, es cultural.
+
+### Desafío 1: "Siempre Lo Hemos Hecho Así"
+
+Muchos equipos tienen convenciones implícitas que los desarrolladores experimentados "simplemente saben." Estas convenciones son invisibles para los agentes. El desafío es hacer lo implícito explícito, y muchos equipos se resisten porque la documentación se siente como sobrecarga.
+
+**El replanteamiento:** La documentación no es sobrecarga cuando tu contribuyente más productivo (un agente de IA) literalmente no puede funcionar sin ella. El tiempo invertido en documentar se multiplica a lo largo de cada interacción futura con agentes.
+
+### Desafío 2: Superar la Percepción de "No Es Suficientemente Bueno"
+
+Algunos desarrolladores desestiman el código generado por agentes porque "no es como yo lo escribiría." Esto confunde estilo con corrección. Los agentes pueden elegir diferentes patrones, diferentes nombres de variables, diferentes abstracciones, y eso está bien si el comportamiento es correcto y el código es mantenible.
+
+**El replanteamiento:** La pregunta no es "¿Lo escribiría yo así?" sino "¿Cumple con nuestros estándares de corrección, seguridad y mantenibilidad?"
+
+### Desafío 3: Equilibrar Velocidad con Seguridad
+
+Las ganancias de velocidad de los agentes de IA son reales y significativas. Pero la velocidad sin seguridad crea deuda técnica a velocidad de IA. Los equipos que omiten pruebas, evitan revisiones o eliminan puertas de calidad en busca de velocidad pagarán el precio exponencialmente.
+
+**El replanteamiento:** El diseño donde los agentes son primero no se trata de ir más rápido eliminando barreras. Se trata de **ir más rápido porque tus barreras están automatizadas y son confiables**.
+
+### Desafío 4: Mantener a los Humanos Comprometidos
+
+Cuando los agentes manejan más del trabajo rutinario, hay un riesgo de que los ingenieros humanos se desconecten, tratando la salida de la IA como autoritativa y aprobando revisiones sin pensar. Este es el modo de fallo más peligroso porque es invisible hasta que algo sale mal.
+
+**El replanteamiento:** El rol del ingeniero cambia de *escribir* código a *evaluar* código con el mismo (o mayor) rigor. Las habilidades de revisión se vuelven premium, y el compromiso activo con la salida de IA es una responsabilidad profesional fundamental.
+
+---
+
+## Una Lista de Verificación Práctica para Repositorios Listos para Agentes
+
+Aquí hay una autoevaluación que puedes aplicar a los repositorios de tu equipo hoy:
+
+### Estructura del Repositorio
+- [ ] Organización clara de directorios con convenciones de nomenclatura consistentes
+- [ ] README con visión general de arquitectura, instrucciones de configuración y guías de contribución
+- [ ] `.github/copilot-instructions.md` con orientación específica del proyecto para agentes de IA
+- [ ] Registros de Decisiones de Arquitectura (ADRs) para decisiones técnicas significativas
+
+### Documentación
+
+- Contratos de API y definiciones de interfaz documentados y actualizados
+- Estándares de codificación y patrones explícitamente documentados (no solo conocimiento tribal)
+- Conceptos de dominio y reglas de negocio definidos donde el código los implementa
+
+### Pruebas
+
+- Suite de pruebas completa que se ejecuta rápida y confiablemente
+- Las pruebas se enfocan en comportamiento, no en detalles de implementación
+- El pipeline de CI aplica pruebas en cada PR, sin excepciones
+- El escaneo de seguridad está automatizado y no se puede eludir
+
+### Gobernanza
+
+- Las reglas de protección de ramas se aplican en las ramas críticas
+- El archivo CODEOWNERS define requisitos de revisión específicos por dominio
+- Los PRs generados por agentes reciben el mismo rigor de revisión que los PRs humanos
+- Los procedimientos de reversión están documentados y probados
+
+### Colaboración
+
+- Las especificaciones se escriben antes de que comience la implementación
+- Las descripciones de PR explican el *por qué*, no solo el *qué*
+- Las etiquetas distinguen contribuciones generadas por agentes de las generadas por humanos
+- La retroalimentación de revisiones mejora las instrucciones del agente (copilot-instructions.md)
+
+---
+
+## El Cambio de Mentalidad: Ingenieros como Diseñadores de Sistemas
+
+El cambio más importante no es técnico, es conceptual.
+
+En un mundo donde los agentes son primero, los ingenieros cada vez más:
+
+- 🎯 **Definen la intención**, ¿qué debería hacer el sistema y por qué?
+- 📐 **Diseñan restricciones**, ¿dentro de qué límites deberían operar los agentes?
+- 🏗️ **Estructuran sistemas**, ¿cómo deberían organizarse el repositorio, el pipeline y la infraestructura?
+- 🔍 **Revisan resultados**, ¿este cambio cumple con nuestros estándares?
+- 📈 **Guían la evolución de la arquitectura**, ¿cómo debería crecer el sistema con el tiempo?
+
+Se dedica menos tiempo a escribir código repetitivo, refactorización manual, buscar documentación y repetir patrones estándar.
+
+Se dedica más tiempo a:
+
+> **Diseñar sistemas que tanto humanos como agentes puedan evolucionar juntos de forma segura.**
+
+Esto es lo que describí en [La Evolución del Ingeniero de Software](/blog/evolution-of-the-software-engineer), el cambio de autor de código a diseñador de sistemas. El diseño de software donde los agentes son primero es la expresión arquitectónica de esa evolución.
+
+---
+
+## Pensamientos Finales
+
+La rápida evolución de GenAI y los LLMs puede sentirse abrumadora, pero el camino a seguir es sorprendentemente estable.
+
+No necesitas perseguir cada nuevo modelo o funcionalidad. En su lugar:
+
+- 🏗️ Estructura los repositorios claramente
+- 📋 Escribe especificaciones explícitas
+- 🧪 Invierte en pruebas automatizadas sólidas
+- 🔍 Diseña arquitecturas descubribles
+- 📝 Trata los PRs como artefactos de razonamiento
+- 🤝 Optimiza para la colaboración entre humanos y agentes
+
+Los equipos que adopten estas prácticas no solo mantendrán el ritmo de la era agéntica, **construirán software que esté listo para lo que venga después**.
+
+Los agentes están aquí. Tu repositorio es su interfaz. Diséñalo en consecuencia.
