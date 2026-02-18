@@ -220,10 +220,45 @@ public class GetPlayStationProfile
             return null;
         }
 
+        // Local helper to parse query string without relying on System.Web
+        static Dictionary<string, string> ParseQueryString(string query)
+        {
+            var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            if (string.IsNullOrEmpty(query))
+            {
+                return result;
+            }
+
+            // Trim leading '?'
+            if (query[0] == '?')
+            {
+                query = query.Substring(1);
+            }
+
+            var pairs = query.Split('&', StringSplitOptions.RemoveEmptyEntries);
+            foreach (var pair in pairs)
+            {
+                var parts = pair.Split('=', 2);
+                if (parts.Length == 0 || string.IsNullOrEmpty(parts[0]))
+                {
+                    continue;
+                }
+
+                var key = Uri.UnescapeDataString(parts[0]);
+                var value = parts.Length > 1 ? Uri.UnescapeDataString(parts[1]) : string.Empty;
+
+                // Last value wins if there are duplicates
+                result[key] = value;
+            }
+
+            return result;
+        }
+
         // Extract code from redirect URI
         var uri = new Uri(redirectUri);
-        var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
-        var code = queryParams["code"];
+        var queryParams = ParseQueryString(uri.Query);
+        queryParams.TryGetValue("code", out var code);
 
         if (string.IsNullOrEmpty(code))
         {
