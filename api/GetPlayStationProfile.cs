@@ -275,9 +275,16 @@ public class GetPlayStationProfile
             ["token_format"] = "jwt"
         });
 
-        client.DefaultRequestHeaders.Add("Authorization",
-            "Basic MDk1MTUxNTktNzIzNy00MzcwLTliNDAtMzgwNmU2N2MwODkxOnVjUGprYTV0bnRCMktxc1A=");
+        // PSN OAuth client credential is provided via configuration to avoid hardcoding it in source.
+        // This is typically a public client id/secret pair used by official PSN clients.
+        var psnBasicAuth = Environment.GetEnvironmentVariable("PSN_OAUTH_BASIC");
+        if (string.IsNullOrWhiteSpace(psnBasicAuth))
+        {
+            _logger.LogError("PSN OAuth basic credential is not configured in environment variable 'PSN_OAUTH_BASIC'.");
+            return null;
+        }
 
+        client.DefaultRequestHeaders.Add("Authorization", psnBasicAuth);
         var tokenResponse = await client.PostAsync(TokenUrl, tokenRequest);
         if (!tokenResponse.IsSuccessStatusCode)
         {
