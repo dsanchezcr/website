@@ -15,7 +15,8 @@ Both frontend and backend are hosted together on **Azure Static Web Apps**. The 
 - **Static Pages**: React components in `src/pages/` (e.g., `contact.js`, `weather.js`, `exchangerates.js`)
 - **Custom Components**: Reusable widgets in `src/components/` (Comments, NLWebChat, OnlineStatusWidget, WeatherWidget)
 - **i18n**: Translations in `i18n/es/` and `i18n/pt/` directories following Docusaurus i18n structure
-- **Custom Docs**: Two separate doc sections configured via plugins: `disney/` and `universal/` (theme parks content)
+- **Video Games**: Docs in `videogames/` with images in `static/img/videogames/<platform>/`; status labels are localized in `GameCard`/`GameCardGroup` (keep status values like `completed`, `playing`, `backlog`, `dropped`)
+- **Custom Docs**: Three doc sections configured via plugins: `disney/`, `universal/`, and `videogames/`
 
 ### Backend (Azure Functions - .NET 9 Isolated Worker)
 Located in `api/` directory:

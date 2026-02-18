@@ -7,7 +7,7 @@ This repository contains the source code for my personal website and blog, [dsan
 
 ## ✨ About This Repository
 
-This website serves as a platform to share my thoughts on technology, software development, and other interests through blog posts. It also includes information about my projects, professional background, and a video games section showcasing my gaming profiles across Xbox, PlayStation, and Nintendo Switch.
+This website serves as a platform to share my thoughts on technology, software development, and other interests through blog posts. It also includes information about my projects, professional background, and a video games section showcasing my gaming profiles across Xbox, PlayStation, Nintendo Switch, and Meta Quest.
 
 ## 🏗️ Architecture
 
@@ -25,7 +25,8 @@ The site uses **Azure Static Web Apps** with a **managed API** architecture:
 │  │  • Static pages     │    │  • /api/verify              │ │
 │  │  • i18n (en/es/pt)  │    │  • /api/weather             │ │
 │  │  • Video Games      │    │  • /api/online-users        │ │
-│  │    (Xbox/PSN/NSW)   │    │  • /api/nlweb/ask           │ │
+│  │    (Xbox/PSN/NSW/   │    │  • /api/nlweb/ask           │ │
+│  │     Meta Quest)     │    │                             │ │
 │  │                     │    │  • /api/health              │ │
 │  │                     │    │  • /api/reindex             │ │
 │  │                     │    │  • /api/gaming/xbox         │ │
@@ -181,7 +182,8 @@ See [infra/README.md](infra/README.md) for complete deployment instructions.
 ├── videogames/             # Video Games docs section
 │   ├── xbox/               # Xbox & PC games
 │   ├── playstation/        # PlayStation games
-│   └── nintendo-switch/    # Nintendo Switch games
+│   ├── nintendo-switch/    # Nintendo Switch games
+│   └── meta-quest/         # Meta Quest games
 ├── src/
 │   ├── components/         # React components
 │   │   └── VideoGames/     # Gaming widgets (XboxProfile, PSNProfile, GameCard)
@@ -201,14 +203,15 @@ The website includes a video games section at `/videogames` showcasing gaming pr
 |----------|----------|-------------|
 | **Xbox & PC** | Live profile (gamertag, gamerscore), recently played games | [OpenXBL API](https://xbl.io/) |
 | **PlayStation** | Trophy summary, recently played games, PSN profile | [PSN Internal API](https://ca.account.sony.com/) |
-| **Nintendo Switch** | Manual game cards with ratings | User-curated content |
+| **Nintendo Switch** | Manual game cards with status updates | User-curated content |
+| **Meta Quest** | Manual VR/MR game lists | User-curated content |
 
 **Key features:**
 - Live profile data fetched from gaming APIs
 - Dual-layer caching (in-memory + Azure Table Storage) for resilience
 - Automatic fallback to cached data when APIs are unavailable
 - Clickable game cards linking to Xbox/PlayStation store pages
-- Custom `GameCard` component for manual game reviews with ratings
+- Custom `GameCard` component for manual game entries with status updates
 - Full i18n support (English, Spanish, Portuguese)
 
 **Required environment variables for gaming APIs:**
