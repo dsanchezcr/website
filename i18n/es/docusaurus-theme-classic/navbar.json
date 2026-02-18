@@ -22,5 +22,9 @@
   "item.label.About": {
     "message": "Acerca de",
     "description": "Navbar item with label About"
+  },
+  "item.label.Video Games": {
+    "message": "Videojuegos",
+    "description": "Navbar item with label Video Games"
   }
 }

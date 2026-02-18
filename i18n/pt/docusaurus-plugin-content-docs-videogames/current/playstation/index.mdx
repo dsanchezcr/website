@@ -9,6 +9,7 @@ keywords: [PlayStation, PSN, troféus, PS5, PS4, gaming]
 
 import PlayStationProfileWidget from '@site/src/components/VideoGames/PlayStationProfileWidget';
 import GameCard from '@site/src/components/VideoGames/GameCard';
+import GameCardGroup from '@site/src/components/VideoGames/GameCardGroup';
 
 # 🔵 PlayStation
 
@@ -20,19 +21,40 @@ O PlayStation tem exclusivos incríveis e um ótimo sistema de troféus. Abaixo 
 
 ## Meus Melhores Jogos
 
-{/* 
-Adicione seus cartões de jogos usando este modelo:
+<GameCard title="ASTRO BOT" platform="playstation" status="playing" imageUrl="/img/videogames/playstation/astrobot.jpg" recommendation="Um jogo de plataforma alegre e criativo. Pura diversão." url="https://store.playstation.com/product/UP9000-PPSA21564_00-0000000000000000" />
 
-<GameCard
-  title="Título do Jogo"
-  platform="playstation"
-  rating={5}
-  status="completed"
-  imageUrl="https://..."
-  recommendation="Sua avaliação aqui"
-/>
+<GameCardGroup title="Série Marvel's Spider-Man" platform="playstation" status="completed" recommendation="Os melhores jogos de super-heróis já feitos.">
+  <GameCard title="Marvel's Spider-Man" platform="playstation" imageUrl="/img/videogames/playstation/spiderman.jpg" url="https://store.playstation.com/product/UP9000-CUSA02299_00-MARVELSSMGOTY000" />
+  <GameCard title="Marvel's Spider-Man: Miles Morales" platform="playstation" imageUrl="/img/videogames/playstation/spiderman-miles.jpg" url="https://store.playstation.com/product/UP9000-PPSA01411_00-MARVELSSMMORALES" />
+  <GameCard title="Marvel's Spider-Man 2" platform="playstation" imageUrl="/img/videogames/playstation/spiderman-2.jpg" url="https://store.playstation.com/product/UP9000-PPSA03016_00-MARVELSPIDERMAN2" />
+</GameCardGroup>
 
-Valores possíveis:
-- rating: 1-5 (número de estrelas)
-- status: completed, playing, backlog, dropped
-*/}
+<GameCardGroup title="Série God of War" platform="playstation" status="completed" recommendation="Obras-primas de narrativa e combate.">
+  <GameCard title="God of War" platform="playstation" imageUrl="/img/videogames/playstation/gow.jpg" url="https://store.playstation.com/product/UP9000-CUSA07408_00-00000000GODOFWAR" />
+  <GameCard title="God of War Ragnarök" platform="playstation" imageUrl="/img/videogames/playstation/gow-ragnarok.jpg" url="https://store.playstation.com/product/UP9000-PPSA08329_00-GOWRAGNAROK00000" />
+</GameCardGroup>
+
+<GameCard title="Horizon Forbidden West" platform="playstation" status="playing" imageUrl="/img/videogames/playstation/horizon-forbidden-west.jpg" recommendation="Um impressionante RPG de ação de mundo aberto com uma história convincente." url="https://store.playstation.com/product/UP9000-PPSA04072_00-FORBIDDENWESTPS5" />
+
+<GameCardGroup title="Série The Last of Us" platform="playstation" status="playing" recommendation="Narrativas emocionalmente poderosas com jogabilidade intensa.">
+  <GameCard title="The Last of Us Part I" platform="playstation" imageUrl="/img/videogames/playstation/tlou-1.jpg" url="https://store.playstation.com/en-us/product/UP9000-PPSA03396_00-THELASTOFUSPART1" />
+  <GameCard title="The Last of Us Part II" platform="playstation" imageUrl="/img/videogames/playstation/tlou-2.jpg" url="https://store.playstation.com/product/UP9000-PPSA10662_00-THELASTOFUSPART2" />
+</GameCardGroup>
+
+<GameCard title="Bloodborne" platform="playstation" status="playing" imageUrl="/img/videogames/playstation/bloodborne.jpg" recommendation="Um RPG de ação sombrio e atmosférico com combate desafiador." url="https://store.playstation.com/product/UP9000-CUSA00900_00-BLOODBORNE000000" />
+
+<GameCard title="Coleção Uncharted" platform="playstation" status="playing" imageUrl="/img/videogames/playstation/uncharted.jpg" recommendation="A trilogia completa de Uncharted. Uma série de aventuras emocionante." url="https://store.playstation.com/product/UP9000-PPSA05389_00-UNCHARTED4R00000" />
+
+<GameCard title="Until Dawn" platform="playstation" status="playing" imageUrl="/img/videogames/playstation/until-dawn.jpg" recommendation="Uma aventura de terror onde suas escolhas importam." url="https://store.playstation.com/product/EP9000-PPSA15421_00-FULLGAME00000001" />
+
+<GameCard title="Gran Turismo 7" platform="playstation" status="playing" imageUrl="/img/videogames/playstation/gt7.jpg" recommendation="A experiência definitiva de simulação de corrida." url="https://store.playstation.com/product/UP9000-PPSA01317_00-GT7STD0000000PS5" />
+
+<GameCard title="Ratchet & Clank" platform="playstation" status="playing" imageUrl="/img/videogames/playstation/ratchet-clank.jpg" recommendation="Um jogo de plataforma e ação divertido com uma dupla encantadora." url="https://store.playstation.com/product/UP9000-CUSA01047_00-RATCHETPS4000000" />
+
+<GameCard title="Ratchet & Clank: Rift Apart" platform="playstation" status="playing" imageUrl="/img/videogames/playstation/ratchet-clank-rift-apart.jpg" recommendation="Um jogo de plataforma e ação visualmente impressionante com jogabilidade divertida." url="https://store.playstation.com/en-us/product/UP9000-PPSA01473_00-RATCHETCLANKRIFT" />
+
+<GameCardGroup title="Série Sly Cooper" platform="playstation" status="playing" recommendation="Uma charmosa série de plataforma e furtividade com um elenco adorável.">
+  <GameCard title="Sly Cooper and the Thievius Raccoonus" platform="playstation" imageUrl="/img/videogames/playstation/sly-cooper-1.jpg" url="https://store.playstation.com/product/UP9000-PPSA21300_00-SCUS971980000000" />
+  <GameCard title="Sly 2: Band of Thieves" platform="playstation" imageUrl="/img/videogames/playstation/sly-cooper-2.jpg" url="https://store.playstation.com/product/UP9000-PPSA22287_00-SCUS973160000000" />
+  <GameCard title="Sly 3: Honor Among Thieves" platform="playstation" imageUrl="/img/videogames/playstation/sly-cooper-3.jpg" url="https://store.playstation.com/en-us/product/UP9000-PPSA22288_00-SCUS974640000000" />
+</GameCardGroup>

@@ -1,10 +1,12 @@
 import React from 'react';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './styles.module.css';
 
 const platformColors = {
   xbox: '#107C10',
   playstation: '#003087',
   'nintendo-switch': '#E4000F',
+  'nintendo-switch-2': '#FF3C28',
   'meta-quest': '#1C1E20',
 };
 
@@ -12,21 +14,43 @@ const platformLabels = {
   xbox: 'Xbox',
   playstation: 'PlayStation',
   'nintendo-switch': 'Nintendo Switch',
+  'nintendo-switch-2': 'Nintendo Switch 2',
   'meta-quest': 'Meta Quest',
 };
 
-const statusLabels = {
-  completed: '✅ Completed',
-  playing: '🎮 Currently Playing',
-  backlog: '📋 Backlog',
-  dropped: '❌ Dropped',
+const statusLabelsByLocale = {
+  en: {
+    completed: '✅ Completed',
+    playing: '🎮 Currently Playing',
+    backlog: '📋 Backlog',
+    dropped: '❌ Dropped',
+  },
+  es: {
+    completed: '✅ Completado',
+    playing: '🎮 Jugando ahora',
+    backlog: '📋 Pendientes',
+    dropped: '❌ Abandonado',
+  },
+  pt: {
+    completed: '✅ Concluido',
+    playing: '🎮 Jogando agora',
+    backlog: '📋 Pendentes',
+    dropped: '❌ Abandonado',
+  },
 };
 
-const GameCard = ({ title, platform, rating, status, imageUrl, recommendation, hoursPlayed }) => {
-  const stars = '⭐'.repeat(Math.min(Math.max(rating || 0, 0), 5));
-  const emptyStars = '☆'.repeat(5 - Math.min(Math.max(rating || 0, 0), 5));
+const getLocaleKey = (locale) => {
+  if (!locale) return 'en';
+  if (locale.startsWith('es')) return 'es';
+  if (locale.startsWith('pt')) return 'pt';
+  return 'en';
+};
 
-  return (
+const GameCard = ({ title, platform, status, imageUrl, recommendation, hoursPlayed, url }) => {
+  const { i18n } = useDocusaurusContext();
+  const localeKey = getLocaleKey(i18n?.currentLocale);
+  const statusLabels = statusLabelsByLocale[localeKey] || statusLabelsByLocale.en;
+  const card = (
     <div className={styles.gameCard}>
       <div
         className={styles.platformBadge}
@@ -53,11 +77,6 @@ const GameCard = ({ title, platform, rating, status, imageUrl, recommendation, h
         <div className={styles.gameInfo}>
           <h3 className={styles.gameTitle}>{title}</h3>
 
-          <div className={styles.gameRating} title={`${rating}/5`}>
-            <span className={styles.filledStars}>{stars}</span>
-            <span className={styles.emptyStars}>{emptyStars}</span>
-          </div>
-
           <div className={styles.gameMeta}>
             {status && (
               <span className={styles.gameStatus}>
@@ -78,6 +97,16 @@ const GameCard = ({ title, platform, rating, status, imageUrl, recommendation, h
       </div>
     </div>
   );
+
+  if (url) {
+    return (
+      <a href={url} target="_blank" rel="noopener noreferrer" className={styles.gameCardLink}>
+        {card}
+      </a>
+    );
+  }
+
+  return card;
 };
 
 export default GameCard;
