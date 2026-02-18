@@ -614,6 +614,10 @@ public class HealthCheck
             missingVars.Add("XBOX_API_KEY");
         if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("XBOX_GAMERTAG_XUID")))
             missingVars.Add("XBOX_GAMERTAG_XUID");
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("PSN_NPSSO_TOKEN")))
+            missingVars.Add("PSN_NPSSO_TOKEN");
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GAMING_REFRESH_KEY")))
+            missingVars.Add("GAMING_REFRESH_KEY");
 
         try
         {
