@@ -159,9 +159,13 @@ const PlayStationProfileWidget = () => {
       {/* Cache notice */}
       {profile.lastUpdated && (
         <div className={styles.profileCacheNotice}>
-          Last updated: {new Date(profile.lastUpdated).toLocaleDateString(undefined, {
-            year: 'numeric', month: 'short', day: 'numeric',
-            hour: '2-digit', minute: '2-digit'
+          Last updated:{' '}
+          {new Date(profile.lastUpdated).toLocaleString(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
           })}
           {profile.isCached && ' (cached)'}
         </div>
