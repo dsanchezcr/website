@@ -132,7 +132,7 @@ const XboxProfileWidget = () => {
       {/* Cache notice */}
       {profile.lastUpdated && (
         <div className={styles.profileCacheNotice}>
-          Last updated: {new Date(profile.lastUpdated).toLocaleDateString(undefined, {
+          Last updated: {new Date(profile.lastUpdated).toLocaleString(undefined, {
             year: 'numeric', month: 'short', day: 'numeric',
             hour: '2-digit', minute: '2-digit'
           })}
