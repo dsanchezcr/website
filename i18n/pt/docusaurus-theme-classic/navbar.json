@@ -27,6 +27,10 @@
     "message": "Sobre",
     "description": "Navbar item with label About"
   },
+  "item.label.Video Games": {
+    "message": "Videogames",
+    "description": "Navbar item with label Video Games"
+  },
   "item.label.Facebook": {
     "message": "Facebook",
     "description": "Navbar item with label Facebook"

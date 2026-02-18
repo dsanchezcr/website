@@ -9,7 +9,6 @@ on:
       - '.github/workflows/dependency-review.yml'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/PULL_REQUEST_TEMPLATE/**'
-      - '**.md'
       - 'LICENSE'
   pull_request:
     types: [opened, synchronize, reopened, closed]
@@ -20,7 +19,6 @@ on:
       - '.github/workflows/dependency-review.yml'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/PULL_REQUEST_TEMPLATE/**'
-      - '**.md'
       - 'LICENSE'
   workflow_dispatch:
 
@@ -56,6 +54,10 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+
+      - name: Build .NET API
+        run: dotnet build --configuration Release
+        working-directory: api
 
       - name: Build Docusaurus Website
         run: npm run build

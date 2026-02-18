@@ -39,6 +39,7 @@ public class HealthCheck
     private readonly IMemoryCache _cache;
     private readonly ITokenStorageService _tokenStorage;
     private readonly ISearchService _searchService;
+    private readonly IGamingCacheService _gamingCacheService;
 
     // Orlando, FL coordinates used for weather API health check (matches primary location in GetWeather.cs)
     private const double OrlandoLatitude = 28.5383;
@@ -47,13 +48,14 @@ public class HealthCheck
     // Rate limiting configuration
     private const int MaxHealthCheckRequestsPerMinute = 10;
 
-    public HealthCheck(ILogger<HealthCheck> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache, ITokenStorageService tokenStorage, ISearchService searchService)
+    public HealthCheck(ILogger<HealthCheck> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache, ITokenStorageService tokenStorage, ISearchService searchService, IGamingCacheService gamingCacheService)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _cache = cache;
         _tokenStorage = tokenStorage;
         _searchService = searchService;
+        _gamingCacheService = gamingCacheService;
     }
 
     private sealed class RateLimitState
@@ -132,7 +134,13 @@ public class HealthCheck
         { "AZURE_SEARCH_INDEX_NAME", ("Azure AI Search index name", false) },
         
         // Reindex endpoint security
-        { "REINDEX_SECRET_KEY", ("Secret key for authenticating reindex API calls from GitHub Actions", false) }
+        { "REINDEX_SECRET_KEY", ("Secret key for authenticating reindex API calls from GitHub Actions", false) },
+        
+        // Gaming APIs
+        { "XBOX_API_KEY", ("OpenXBL API key for Xbox profile data (https://xbl.io)", false) },
+        { "XBOX_GAMERTAG_XUID", ("Xbox User ID (XUID) for profile lookup", false) },
+        { "PSN_NPSSO_TOKEN", ("PSN NPSSO token for PlayStation profile data (expires ~60 days)", false) },
+        { "GAMING_REFRESH_KEY", ("Secret key for authenticating gaming profile refresh requests", false) }
     };
 
     [Function("HealthCheck")]
@@ -197,7 +205,8 @@ public class HealthCheck
             CheckOpenMeteoApiAsync(cancellationToken),
             CheckMemoryCacheAsync(),
             CheckTokenStorageAsync(),
-            CheckSearchServiceAsync()
+            CheckSearchServiceAsync(),
+            CheckGamingCacheAsync()
         };
 
         healthResponse.Services = (await Task.WhenAll(services)).ToList();
@@ -588,6 +597,71 @@ public class HealthCheck
             health.Status = HealthStatus.Degraded;
             health.Message = $"Search service check failed: {ex.Message}";
             _logger.LogWarning(ex, "Azure AI Search health check failed");
+        }
+
+        return health;
+    }
+
+    private async Task<ServiceHealth> CheckGamingCacheAsync()
+    {
+        var health = new ServiceHealth
+        {
+            Name = "Gaming Profile Cache"
+        };
+
+        var missingVars = new List<string>();
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("XBOX_API_KEY")))
+            missingVars.Add("XBOX_API_KEY");
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("XBOX_GAMERTAG_XUID")))
+            missingVars.Add("XBOX_GAMERTAG_XUID");
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("PSN_NPSSO_TOKEN")))
+            missingVars.Add("PSN_NPSSO_TOKEN");
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GAMING_REFRESH_KEY")))
+            missingVars.Add("GAMING_REFRESH_KEY");
+
+        try
+        {
+            var (isHealthy, message) = await _gamingCacheService.CheckHealthAsync();
+            
+            if (!isHealthy)
+            {
+                health.Status = HealthStatus.Degraded;
+                health.Message = message;
+                return health;
+            }
+
+            // Check if cached data exists for each platform
+            var xboxProfile = await _gamingCacheService.GetProfileAsync("xbox");
+            var psnProfile = await _gamingCacheService.GetProfileAsync("playstation");
+
+            var details = new List<string>();
+            if (xboxProfile != null)
+                details.Add($"Xbox: cached ({xboxProfile.LastUpdated:u})");
+            else
+                details.Add("Xbox: no cached data");
+
+            if (psnProfile != null)
+                details.Add($"PlayStation: cached ({psnProfile.LastUpdated:u})");
+            else
+                details.Add("PlayStation: no cached data");
+
+            if (missingVars.Count > 0)
+            {
+                health.Status = HealthStatus.Degraded;
+                health.MissingConfigurations = missingVars;
+            }
+            else
+            {
+                health.Status = HealthStatus.Healthy;
+            }
+
+            health.Message = $"{message}. {string.Join(". ", details)}";
+        }
+        catch (Exception ex)
+        {
+            health.Status = HealthStatus.Degraded;
+            health.Message = $"Gaming cache check failed: {ex.Message}";
+            _logger.LogWarning(ex, "Gaming cache health check failed");
         }
 
         return health;

@@ -29,6 +29,9 @@ export const config = {
     chat: '/api/nlweb/ask',
     health: '/api/health',
     healthConfig: '/api/health/config',
+    xboxProfile: '/api/gaming/xbox',
+    playstationProfile: '/api/gaming/playstation',
+    gamingRefresh: '/api/gaming/refresh',
   },
   
   // Production domains

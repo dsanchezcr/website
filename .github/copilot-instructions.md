@@ -15,7 +15,8 @@ Both frontend and backend are hosted together on **Azure Static Web Apps**. The 
 - **Static Pages**: React components in `src/pages/` (e.g., `contact.js`, `weather.js`, `exchangerates.js`)
 - **Custom Components**: Reusable widgets in `src/components/` (Comments, NLWebChat, OnlineStatusWidget, WeatherWidget)
 - **i18n**: Translations in `i18n/es/` and `i18n/pt/` directories following Docusaurus i18n structure
-- **Custom Docs**: Two separate doc sections configured via plugins: `disney/` and `universal/` (theme parks content)
+- **Video Games**: Docs in `videogames/` with images in `static/img/videogames/<platform>/`; status labels are localized in `GameCard`/`GameCardGroup` (keep status values like `completed`, `playing`, `backlog`, `dropped`)
+- **Custom Docs**: Three doc sections configured via plugins: `disney/`, `universal/`, and `videogames/`
 
 ### Backend (Azure Functions - .NET 9 Isolated Worker)
 Located in `api/` directory:
@@ -26,10 +27,14 @@ Located in `api/` directory:
 - **ChatWithOpenAI.cs**: AI chat endpoint (`/api/nlweb/ask`) using Azure OpenAI with RAG from Azure AI Search
 - **HealthCheck.cs**: Health monitoring endpoint (`/api/health`) that validates all service configurations and connectivity
 - **ReindexContent.cs**: Search index update endpoint (`/api/reindex`) with secret key authentication, hybrid content indexing
-- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, and SearchService
+- **GetXboxProfile.cs**: Xbox profile endpoint (`/api/gaming/xbox`) using OpenXBL API with Table Storage caching
+- **GetPlayStationProfile.cs**: PlayStation profile endpoint (`/api/gaming/playstation`) using PSN internal API with JWT auth and Table Storage caching
+- **RefreshGamingProfiles.cs**: Admin endpoint (`/api/gaming/refresh`) to trigger gaming data refresh, protected with secret key
+- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, SearchService, and GamingCacheService
 - **LocalizationHelper.cs**: Centralized localization for email templates
 - **Services/TokenStorageService.cs**: Azure Table Storage integration for persistent email verification tokens
 - **Services/SearchService.cs**: Azure AI Search integration for querying and indexing documents (RAG pattern)
+- **Services/GamingCacheService.cs**: Dual-layer cache (memory + Table Storage) for gaming profiles with automatic fallback
 
 ### Infrastructure (Bicep)
 Located in `infra/` directory:
@@ -161,6 +166,9 @@ onlineUsers: '/api/online-users'
 chat: '/api/nlweb/ask'
 health: '/api/health'
 reindex: '/api/reindex'  // Called by GitHub Actions, requires X-Reindex-Key header
+xboxProfile: '/api/gaming/xbox'
+playstationProfile: '/api/gaming/playstation'
+gamingRefresh: '/api/gaming/refresh'  // POST, requires X-Gaming-Refresh-Key header
 ```
 
 ### CI/CD (Unified Deployment)
@@ -207,6 +215,12 @@ REINDEX_SECRET_KEY
 # Google Analytics
 GOOGLE_ANALYTICS_PROPERTY_ID
 GOOGLE_ANALYTICS_CREDENTIALS_JSON
+
+# Gaming APIs
+XBOX_API_KEY
+XBOX_GAMERTAG_XUID
+PSN_NPSSO_TOKEN
+GAMING_REFRESH_KEY
 
 # Telemetry
 APPLICATIONINSIGHTS_CONNECTION_STRING

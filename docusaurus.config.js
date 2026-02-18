@@ -64,6 +64,14 @@ const config = {
       },
     ],
     [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'videogames',
+        path: 'videogames',
+        routeBasePath: 'videogames'
+      },
+    ],
+    [
       '@docusaurus/plugin-sitemap',
       {
         lastmod: 'date',
@@ -221,6 +229,7 @@ const config = {
           {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/projects', label: 'Projects', position: 'left'},    
           {to: '/about', label: 'About', position: 'left'},
+          {to: '/videogames', label: 'Video Games', position: 'left'},
           {to: '/contact', label: 'Contact', position: 'left'},
           {to: '/sponsors', label: 'Sponsors', position: 'right'},
           {
