@@ -25,7 +25,7 @@ public class GetXboxProfile
     private readonly ILogger<GetXboxProfile> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IGamingCacheService _cacheService;
-    private readonly IMemoryCache _memoryCache;
+    private readonly IRateLimitService _rateLimitService;
 
     // JSON serialization with camelCase for frontend compatibility
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -50,27 +50,18 @@ private static string? EnsureHttps(string? url)
         ILogger<GetXboxProfile> logger,
         IHttpClientFactory httpClientFactory,
         IGamingCacheService cacheService,
-        IMemoryCache memoryCache)
+        IRateLimitService rateLimitService)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _cacheService = cacheService;
-        _memoryCache = memoryCache;
+        _rateLimitService = rateLimitService;
     }
 
     private bool CheckRateLimit(string clientIp)
     {
         var key = $"xbox:ratelimit:{clientIp}";
-        var counter = _memoryCache.GetOrCreate(key, entry =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
-            return 0;
-        });
-
-        if (counter >= MaxRequestsPerMinute) return true;
-
-        _memoryCache.Set(key, counter + 1, TimeSpan.FromMinutes(1));
-        return false;
+        return _rateLimitService.IsRateLimited(key, MaxRequestsPerMinute, TimeSpan.FromMinutes(1));
     }
 
     private static string GetClientIp(HttpRequestData req)

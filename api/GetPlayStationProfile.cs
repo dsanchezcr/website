@@ -36,6 +36,7 @@ public class GetPlayStationProfile
     private readonly ILogger<GetPlayStationProfile> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IGamingCacheService _cacheService;
+    private readonly IRateLimitService _rateLimitService;
     private readonly IMemoryCache _memoryCache;
 
     // JSON serialization with camelCase for frontend compatibility
@@ -57,26 +58,20 @@ public class GetPlayStationProfile
         ILogger<GetPlayStationProfile> logger,
         IHttpClientFactory httpClientFactory,
         IGamingCacheService cacheService,
+        IRateLimitService rateLimitService,
         IMemoryCache memoryCache)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _cacheService = cacheService;
+        _rateLimitService = rateLimitService;
         _memoryCache = memoryCache;
     }
 
     private bool CheckRateLimit(string clientIp)
     {
         var key = $"psn:ratelimit:{clientIp}";
-        var counter = _memoryCache.GetOrCreate(key, entry =>
-        {
-            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
-            return 0;
-        });
-
-        if (counter >= MaxRequestsPerMinute) return true;
-        _memoryCache.Set(key, counter + 1, TimeSpan.FromMinutes(1));
-        return false;
+        return _rateLimitService.IsRateLimited(key, MaxRequestsPerMinute, TimeSpan.FromMinutes(1));
     }
 
     private static string GetClientIp(HttpRequestData req)

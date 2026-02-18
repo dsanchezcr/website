@@ -13,6 +13,9 @@ var host = new HostBuilder()
         services.AddHttpClient();
         services.AddMemoryCache();
         
+        // Register Rate Limit Service (thread-safe atomic operations)
+        services.AddSingleton<IRateLimitService, MemoryCacheRateLimitService>();
+        
         // Register Token Storage Service (Table Storage or fallback to Memory Cache)
         services.AddSingleton<ITokenStorageService>(sp =>
         {
