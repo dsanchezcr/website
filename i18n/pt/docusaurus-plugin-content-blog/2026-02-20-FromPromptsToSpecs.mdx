@@ -1,0 +1,365 @@
+---
+title: "De Prompts a Especificações: Como os Grandes Engenheiros se Comunicam com a IA"
+description: A era da engenharia de prompts está dando lugar a algo mais poderoso, o design de especificações. Aprenda por que os melhores engenheiros estão mudando de prompts engenhosos para especificações estruturadas, versionadas e testáveis que guiam tanto humanos quanto agentes de IA com clareza e confiança.
+slug: from-prompts-to-specifications
+authors: [dsanchezcr]
+tags: [AI, GitHub Copilot, Agentic AI, Software Engineering, Specifications, DevOps]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2026-02-20-FromPromptstoSpects/from-prompts-to-spects.jpg
+date: 2026-02-20T10:00
+---
+
+# De Prompts a Especificações
+
+## Como os Grandes Engenheiros se Comunicam com a IA na Era Agêntica
+
+A IA mudou como escrevemos software. Mas, mais importante, ela mudou como **comunicamos intenção**.
+
+As primeiras conversas sobre desenvolvimento assistido por IA focaram fortemente na engenharia de prompts. Desenvolvedores experimentaram com truques de redação, estilos de formatação e instruções criativas para extrair melhores resultados dos modelos de linguagem. Comunidades inteiras se formaram ao redor do "prompt perfeito."
+
+Essa fase foi útil, mas nunca foi o destino.
+
+<!--truncate-->
+
+![De Prompts a Especificações](pathname:///img/blog/2026-02-20-FromPromptstoSpects/from-prompts-to-spects.jpg)
+
+À medida que as ferramentas de IA evoluem de assistentes de chat para agentes cientes do repositório que geram código, abrem pull requests e raciocinam sobre sistemas inteiros, a verdadeira habilidade não é mais escrever prompts engenhosos.
+
+A verdadeira habilidade é **expressar intenção de forma clara, estrutural e reproduzível**.
+
+Os grandes engenheiros não estão se tornando engenheiros de prompts.
+Eles estão se tornando **designers de especificações**.
+
+Nos meus posts anteriores, explorei como [as práticas de DevOps preparam sistemas para agentes](/blog/agentic-devops-foundations), como [o papel do engenheiro está evoluindo](/blog/evolution-of-the-software-engineer), como [humanos e agentes colaboram através de IDEs e pull requests](/blog/humans-and-agents-collaboration-patterns), e como [projetar software para um mundo onde os agentes são primeiros](/blog/designing-software-agent-first-world). Este post explora a camada de comunicação, a interface crítica entre a intenção humana e a execução da máquina.
+
+---
+
+## Os Prompts Foram o Começo, Não o Destino
+
+Os prompts são inerentemente temporários. Vivem em janelas de chat, painéis laterais da IDE ou sessões de curta duração. Ajudam a resolver tarefas imediatas, mas raramente escalam entre equipes ou sobrevivem ao longo do tempo.
+
+Um desenvolvedor pode criar o prompt perfeito para gerar um endpoint de API REST. Funciona perfeitamente, uma vez. No dia seguinte, um colega enfrenta uma tarefa similar e começa do zero. Um mês depois, o mesmo desenvolvedor não se lembra da redação exata que produziu bons resultados.
+
+Especificações, por outro lado, são duráveis. Podem ser versionadas, revisadas, referenciadas e reutilizadas. Codificam a intenção de uma forma que tanto humanos quanto máquinas podem entender consistentemente.
+
+Uma forma útil de pensar nesta evolução:
+
+| Nível | O Que Resolve | Durabilidade | Reutilização |
+|---|---|---|---|
+| **Prompt** | Um problema momentâneo | Efêmero | Nenhuma |
+| **Template** | Uma tarefa repetida | Escopo de sessão | Limitada |
+| **Especificação** | Comportamento esperado | Controlado por versão | Alta |
+| **Contrato** | Verdade do sistema | Arquitetônica | Universal |
+
+À medida que sistemas de IA ganham mais autonomia, desde as sugestões inline do [GitHub Copilot](https://github.com/features/copilot) até o [agente de codificação do GitHub Copilot](https://github.com/features/copilot/agents) abrindo pull requests completos, o centro de gravidade se move dos prompts avulsos para especificações estruturadas incorporadas no próprio repositório.
+
+---
+
+## Por Que os Desenvolvedores se Sentem Sobrecarregados Agora
+
+O panorama de GenAI está evoluindo a um ritmo que faz até engenheiros experientes sentirem que estão ficando para trás. Novos modelos aparecem mensalmente. Janelas de contexto se expandem de milhares para milhões de tokens. Ferramentas se integram mais profundamente nas IDEs. Agentes ganham a capacidade de planejar, editar múltiplos arquivos e raciocinar sobre arquitetura.
+
+Desenvolvedores frequentemente sentem pressão para acompanhar:
+
+- 🔄 Qual modelo tem melhor desempenho este mês
+- 💬 Qual técnica de prompting está em alta
+- 🧩 Qual extensão ou framework de agentes adotar
+- 🏗️ Qual fluxo de trabalho é considerado "moderno"
+- 📊 Quais benchmarks realmente importam
+
+Aqui está a verdade desconfortável: **tentar otimizar para cada novo modelo ou ferramenta é exaustivo e raramente sustentável**. Quando você domina uma técnica de prompting específica, o modelo mudou, a janela de contexto cresceu ou uma nova capacidade tornou a técnica obsoleta.
+
+Em vez de perseguir truques específicos de modelos, foque na **clareza agnóstica ao modelo**:
+
+- Intenção clara funciona em cada geração de modelos
+- Restrições explícitas sobrevivem a migrações de ferramentas
+- Documentação estruturada beneficia cada membro da equipe, humano ou IA
+- Pipelines de validação robustos verificam resultados independentemente de quem os produziu
+
+O objetivo não é dominar prompts.
+O objetivo é **projetar comunicação que sobreviva à evolução dos modelos**.
+
+---
+
+## O Que Realmente Faz um Ótimo Prompt (E Por Que Se Parece com uma Especificação)
+
+Um ótimo prompt não se trata de truques de redação ou frases mágicas. É sobre transmitir os mesmos elementos que definem boa documentação de engenharia.
+
+Prompts fortes geralmente contêm:
+
+### Contexto Claro
+Explique onde a mudança pertence e qual parte do sistema é afetada. Um agente que sabe que está modificando um módulo de processamento de pagamentos em uma arquitetura de microsserviços tomará decisões fundamentalmente diferentes de um trabalhando às cegas.
+
+### Intenção Explícita
+Declare o objetivo em termos de **comportamento ou resultado**, não preferência de implementação. Em vez de "use um HashMap," diga "otimize para buscas O(1) em IDs de usuário com cardinalidade esperada de 10M de registros."
+
+### Restrições
+Mencione limites de desempenho, fronteiras arquitetônicas, regras de segurança ou padrões de codificação. Estas são as barreiras que impedem agentes de produzir soluções tecnicamente corretas mas contextualmente erradas.
+
+### Definição de Sucesso
+Descreva o que um resultado correto deve fazer, como deve se comportar ou quais testes deve satisfazer. É aqui que entram os critérios de aceitação, condições mensuráveis e verificáveis.
+
+### Artefatos Relevantes
+Referencie especificações, interfaces, schemas ou módulos existentes em vez de confiar em suposições. Quanto mais um agente pode consultar, menos precisa adivinhar.
+
+Observe como essas características espelham o que esperamos em bons documentos de design ou especificações de funcionalidades. **Isso não é coincidência.** Bons prompts se parecem com pequenas especificações porque sistemas de IA respondem melhor à intenção estruturada, e engenheiros humanos também.
+
+Aqui está um exemplo prático:
+
+**Prompt fraco:**
+> "Adicione cache ao endpoint de clima."
+
+**Prompt forte (tipo especificação):**
+> "Adicione cache em memória ao endpoint `/api/weather` em `GetWeather.cs`. Armazene respostas em cache por 5 minutos usando `IMemoryCache`. A chave do cache deve incluir o parâmetro de localização. Ignore o cache quando o header `Cache-Control: no-cache` estiver presente. Garanta que o rate limiting existente no `RateLimitService` seja aplicado antes da verificação do cache. Adicione testes unitários que verifiquem acertos de cache, falhas de cache e comportamento de bypass do cache."
+
+O segundo prompt é realmente uma pequena especificação. Define comportamento, restrições, pontos de integração e critérios de validação. Funciona com **qualquer** modelo de IA porque comunica intenção, não truques.
+
+---
+
+## De Prompts no Chat para Instruções Baseadas no Repositório
+
+Conforme as equipes amadurecem no desenvolvimento assistido por IA, um padrão poderoso emerge: **a comunicação se move da janela de chat para o próprio repositório.**
+
+Em vez de digitar instruções repetidamente em sessões de chat que desaparecem após o uso, as equipes começam a armazenar orientação durável como:
+
+- 🏗️ Documentos de visão geral da arquitetura
+- 📏 Padrões e convenções de codificação
+- 📋 Arquivos de especificação de funcionalidades
+- 📡 Contratos de API e definições de interfaces
+- 🧪 Expectativas e estratégias de testes
+- 📖 Definições de terminologia do domínio
+- 🤖 Orientação específica para agentes (`.github/copilot-instructions.md`)
+
+Quando essa informação existe no controle de versão, tanto humanos quanto agentes ganham uma fonte de verdade estável. Agentes podem referenciá-la automaticamente. Engenheiros não precisam repetir o contexto a cada sessão.
+
+Essa abordagem transforma o repositório em uma **base de conhecimento executável**, um conceito que explorei em profundidade em [Projetando Software para um Mundo Onde os Agentes São Primeiros](/blog/designing-software-agent-first-world).
+
+No [repositório deste site](https://github.com/dsanchezcr/website), o arquivo `copilot-instructions.md` contém orientação detalhada sobre a arquitetura do projeto, fluxos de trabalho de desenvolvimento, rotas de API, configuração de ambiente e padrões comuns. Quando um agente de IA opera neste repositório, ele imediatamente entende:
+
+- O frontend é Docusaurus v3 com suporte i18n
+- O backend é Azure Functions .NET 9 como funções gerenciadas do SWA
+- Como a verificação em duas etapas do formulário de contato funciona
+- Onde adicionar novos posts de blog, componentes ou endpoints de API
+- Quais variáveis de ambiente são necessárias e por quê
+
+**Quanto mais claramente seu repositório se explica, menos prompting se torna necessário.**
+
+---
+
+## A Ascensão dos Kits de Especificação e Intenção Estruturada
+
+Uma das práticas emergentes mais promissoras é o uso de pacotes de especificação estruturados, às vezes chamados de kits DevSpec, especificações de funcionalidades ou briefings de engenharia.
+
+Estes tipicamente incluem:
+
+| Componente | Propósito |
+|---|---|
+| **Descrição da funcionalidade** | Objetivos, histórias de usuário e contexto de negócio |
+| **Critérios de aceitação** | Condições comportamentais que definem "pronto" |
+| **Contratos de API ou dados** | Definições de interfaces e schemas |
+| **Contexto arquitetônico** | Módulos, serviços e dependências relacionados |
+| **Cenários de teste** | Caminhos felizes, casos extremos e modos de falha |
+| **Considerações de segurança** | Modelo de ameaças, validação de entrada, requisitos de autenticação |
+| **Requisitos não funcionais** | Metas de desempenho, restrições de escalabilidade |
+
+Tais pacotes ajudam as ferramentas de IA a gerar implementações mais consistentes porque codificam tanto o *que* quanto o *por quê*.
+
+Mais importante, eles alinham:
+- **Revisores humanos**: que sabem o que a especificação exige
+- **Testes automatizados**: que validam contra a especificação
+- **Mudanças geradas por IA**: que foram guiadas pela especificação
+
+...ao redor da mesma definição de sucesso.
+
+Em vez de fazer prompts repetidamente e esperar que o agente lembre do contexto de três mensagens atrás, os engenheiros fornecem ao sistema uma especificação durável que pode guiar múltiplas iterações, através de múltiplas sessões, com múltiplas ferramentas.
+
+### Por Que Isso Importa para as Equipes
+
+Quando uma equipe de cinco desenvolvedores trabalha com agentes de IA, e cada desenvolvedor faz prompts de forma diferente, a base de código se torna inconsistente. O estilo de um desenvolvedor conflita com os padrões gerados por IA de outro. A arquitetura se erode.
+
+Especificações resolvem isso fornecendo uma **interface compartilhada para intenção**. Todos, humanos e IA, trabalham a partir da mesma fonte de verdade.
+
+---
+
+## Prompting na IDE vs. Prompting no PR
+
+A comunicação humano-agente acontece em duas superfícies fundamentalmente diferentes, cada uma com seu próprio propósito e padrões.
+
+### Dentro da IDE: Exploração e Descoberta
+
+Na IDE, prompts tendem a ser exploratórios. Engenheiros refinam ideias, testam abordagens e iteram rapidamente. Esses prompts ajudam a moldar soluções mas são frequentemente transitórios, e tudo bem.
+
+É aqui que você:
+- Prototipa diferentes implementações
+- Faz perguntas sobre código desconhecido
+- Gera código repetitivo e scaffolding
+- Explora casos extremos e alternativas
+
+A IDE é **a oficina**, bagunçada, iterativa, criativa.
+
+### Dentro dos Pull Requests: Formalização e Validação
+
+Dentro dos pull requests, a comunicação se torna formal. Descrições explicam a intenção, linkam para especificações, resumem riscos e documentam a validação. Nesta etapa, clareza importa mais que velocidade porque decisões afetam código compartilhado e sistemas em produção.
+
+É aqui que você:
+- Explica o que mudou e por quê
+- Linka para a especificação que guiou o trabalho
+- Documenta riscos, suposições e tradeoffs
+- Resume a cobertura de testes e resultados de validação
+
+O PR é **o contrato**, preciso, revisável, permanente.
+
+### Um Modelo Mental Útil
+
+> A IDE é para **descobrir** intenção.
+> O repositório é para **armazenar** intenção.
+> O pull request é para **validar** intenção.
+
+Grandes equipes tratam esses como camadas conectadas do mesmo sistema de comunicação. O que começa como um prompt exploratório na IDE eventualmente deve ser expresso como uma especificação no repositório e validado através de um pull request.
+
+---
+
+## O Modelo de Maturidade de Especificações
+
+Equipes não pulam de prompting ad-hoc para desenvolvimento totalmente baseado em especificações da noite para o dia. A transição acontece em estágios:
+
+### Estágio 1: Prompting Ad-Hoc
+- Desenvolvedores escrevem prompts avulsos
+- Sem contexto compartilhado entre sessões
+- Resultados variam por desenvolvedor e modelo
+- Conhecimento vive em cabeças individuais
+
+### Estágio 2: Templates de Prompts
+- Equipes criam templates de prompts reutilizáveis
+- Padrões comuns são documentados
+- Alguma consistência emerge
+- Mas templates ainda vivem fora da base de código
+
+### Estágio 3: Instruções Baseadas no Repositório
+- `.github/copilot-instructions.md` captura o contexto do projeto
+- Documentos de arquitetura se tornam legíveis por agentes
+- Padrões de codificação são explícitos e controlados por versão
+- Agentes capturam contexto automaticamente
+
+### Estágio 4: Desenvolvimento Orientado por Especificações
+- Funcionalidades começam com especificações formais
+- Critérios de aceitação são definidos antes da implementação
+- Agentes de IA geram a partir de especificações, não de prompts ad-hoc
+- Especificações são versionadas, revisadas e evoluem junto com o código
+
+### Estágio 5: Engenharia Contínua de Especificações
+- Especificações são documentos vivos que evoluem com o sistema
+- Resultados de testes alimentam o refinamento das especificações
+- Dados de desempenho dos agentes informam melhorias na qualidade das especificações
+- A especificação se torna a interface principal entre humanos e máquinas
+
+A maioria das equipes hoje está entre o Estágio 1 e o Estágio 3. As equipes que alcançarem o Estágio 4 e além descobrirão que sua colaboração com IA se torna dramaticamente mais consistente e confiável.
+
+---
+
+## Armadilhas Comuns: O Que Dá Errado Sem Especificações
+
+Quando equipes dependem apenas de prompting sem avançar para especificações, vários padrões de falha emergem:
+
+### O Problema "Funciona na Minha Máquina"
+Desenvolvedores diferentes fazem prompts de formas diferentes. O prompt cuidadosamente elaborado de um desenvolvedor produz resultados consistentes na sua máquina com suas configurações de IDE. Outro desenvolvedor, usando um modelo ou contexto diferente, obtém resultados completamente diferentes para a mesma funcionalidade.
+
+### O Problema da Amnésia de Contexto
+Um desenvolvedor gasta 20 minutos construindo contexto em uma sessão de chat, explicando a arquitetura, as restrições, os casos extremos. A sessão termina. Na próxima vez, começa do zero. Multiplique isso por cada desenvolvedor, todos os dias.
+
+### O Problema da Deriva
+Sem especificações, código gerado por IA gradualmente se desvia da arquitetura pretendida. Cada mudança parece razoável isoladamente, mas ao longo de semanas e meses, a base de código se torna internamente inconsistente.
+
+### O Gargalo das Revisões
+Sem especificações claras, revisores de código precisam fazer engenharia reversa da intenção a partir do próprio código. Essa convenção de nomenclatura foi intencional ou acidental? Esse padrão está alinhado com nossa arquitetura? Revisores gastam mais tempo fazendo perguntas do que avaliando resultados.
+
+**Especificações resolvem os quatro problemas** fornecendo uma fonte de verdade durável, compartilhada e versionada que todos, humanos e IA, podem referenciar.
+
+---
+
+## Melhores Práticas para Comunicação Sustentável com IA
+
+Para tornar a colaboração com IA confiável e à prova de futuro, as equipes devem considerar vários passos práticos:
+
+1. **Escreva especificações antes de solicitar implementação.** Mesmo uma especificação breve com objetivos, restrições e critérios de aceitação melhora dramaticamente o resultado da IA.
+
+2. **Armazene o contexto arquitetônico onde tanto humanos quanto ferramentas possam lê-lo.** O arquivo `.github/copilot-instructions.md` é um ponto de partida poderoso.
+
+3. **Prefira contratos explícitos em vez de convenções implícitas.** O que não está documentado é invisível para agentes, e frequentemente esquecido por humanos também.
+
+4. **Invista em testes automatizados que validam comportamento em vez de detalhes de implementação.** Como discuti em [Projetando Software para um Mundo Onde os Agentes São Primeiros](/blog/designing-software-agent-first-world), testes são o mecanismo de segurança principal.
+
+5. **Use nomenclatura descritiva e limites claros de módulos.** Sistemas fáceis de navegar são fáceis de evoluir, tanto por humanos quanto por agentes.
+
+6. **Trate prompts como rascunhos e especificações como a interface durável.** Prompts ajudam a descobrir intenção. Especificações a preservam.
+
+7. **Revise e itere nas suas especificações.** Assim como código, especificações podem ter bugs. Quando um agente produz resultados inesperados, verifique se a especificação era ambígua, e corrija-a.
+
+8. **Torne as especificações testáveis.** Cada critério de aceitação deve mapear para um resultado verificável, idealmente um teste automatizado.
+
+Essas práticas reduzem a dependência de qualquer modelo específico e tornam seu fluxo de trabalho de engenharia resiliente conforme as ferramentas evoluem.
+
+---
+
+## A Verdadeira Mudança de Habilidades para Engenheiros
+
+A maior mudança não é que a IA escreve código. É que os engenheiros devem ser melhores em **formalizar intenção**.
+
+Isso inclui:
+
+- 🎯 **Explicar problemas com precisão**: problemas vagos produzem soluções vagas
+- 📐 **Definir restrições claramente**: limites previnem deriva
+- 🏗️ **Estruturar sistemas para descobribilidade**: o que agentes podem encontrar, eles podem usar
+- ✅ **Escrever critérios de aceitação que podem ser validados automaticamente**: testes são o árbitro da verdade
+- 📖 **Projetar repositórios que comunicam sua própria lógica**: o repo é a interface
+
+Essas sempre foram habilidades valiosas, mas a IA as torna centrais para o trabalho diário.
+
+Neste ambiente, os melhores engenheiros não são os que digitam mais rápido.
+São os que tornam os sistemas **mais fáceis de entender** e **mais seguros de evoluir**.
+
+Considere isso: uma especificação bem escrita pode guiar um agente de IA a produzir uma implementação correta em minutos. Uma mal escrita pode levar a horas de depuração e idas e vindas. A alavancagem do pensamento claro nunca foi maior.
+
+---
+
+## De Habilidade Individual para Prática de Equipe
+
+Essa evolução não é apenas pessoal, é organizacional.
+
+Equipes que adotam desenvolvimento orientado por especificações ganham:
+
+| Benefício | Impacto |
+|---|---|
+| **Resultados de IA consistentes** | Cada desenvolvedor obtém resultados similares porque a especificação é a mesma |
+| **Onboarding mais rápido** | Novos membros da equipe (humanos ou IA) entendem o sistema mais rápido |
+| **Melhores revisões de código** | Revisores avaliam contra especificações, não intuição |
+| **Menos troca de contexto** | Especificações persistem entre sessões, modelos e ferramentas |
+| **Coerência arquitetônica** | Especificações impõem padrões que prompts ad-hoc não impõem |
+| **Auditabilidade** | Especificações criam um registro rastreável de intenção |
+
+A transição requer investimento, mas se acumula. Cada especificação torna a próxima mais fácil de escrever, e toda a equipe se beneficia de cada especificação que existe.
+
+---
+
+## Pensamentos Finais
+
+A engenharia de prompts capturou atenção porque foi a primeira interação visível entre desenvolvedores e IA. Foi empolgante, inovadora e imediatamente útil.
+
+Mas a mudança de longo prazo é mais profunda.
+
+O desenvolvimento de software está se movendo de prompts ad-hoc para especificações estruturadas, versionadas e testáveis que guiam tanto humanos quanto sistemas inteligentes.
+
+A jornada se parece com isso:
+
+> **Prompts → Templates → Instruções → Especificações → Contratos**
+
+Cada passo representa um movimento em direção a maior durabilidade, consistência e clareza.
+
+Equipes que abraçarem essa mudança descobrirão que a IA se torna mais previsível, a colaboração se torna mais fluida e as práticas de engenharia se tornam mais robustas. Elas não precisarão reaprender prompting toda vez que um novo modelo surgir. Suas especificações funcionarão em cada geração de ferramentas de IA.
+
+O futuro da engenharia de software não é sobre aprender a falar com a IA.
+
+É sobre aprender a **expressar intenção tão claramente que tanto humanos quanto máquinas possam construir sobre ela com confiança**.
+
+Os prompts foram o começo. As especificações são o futuro.
