@@ -1,0 +1,365 @@
+---
+title: "From Prompts to Specifications: How Great Engineers Communicate with AI"
+description: The era of prompt engineering is giving way to something more powerful, specification design. Learn why the best engineers are shifting from clever prompts to structured, versioned, and testable specifications that guide both humans and AI agents with clarity and confidence.
+slug: from-prompts-to-specifications
+authors: [dsanchezcr]
+tags: [AI, GitHub Copilot, Agentic AI, Software Engineering, Specifications, DevOps]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2026-02-20-FromPromptstoSpects/from-prompts-to-spects.jpg
+date: 2026-02-20T10:00
+---
+
+# From Prompts to Specifications
+
+## How Great Engineers Communicate with AI in the Agentic Era
+
+AI has changed how we write software. But more importantly, it has changed how we **communicate intent**.
+
+Early conversations about AI-assisted development focused heavily on prompt engineering. Developers experimented with phrasing tricks, formatting styles, and clever instructions to coax better outputs from language models. Entire communities formed around "the perfect prompt."
+
+That phase was useful, but it was never the destination.
+
+<!--truncate-->
+
+![From Prompts to Specifications](pathname:///img/blog/2026-02-20-FromPromptstoSpects/from-prompts-to-spects.jpg)
+
+As AI tools evolve from chat assistants into repository-aware agents that generate code, open pull requests, and reason across entire systems, the real skill is no longer writing clever prompts.
+
+The real skill is **expressing intent clearly, structurally, and reproducibly**.
+
+Great engineers are not becoming prompt engineers.
+They are becoming **specification designers**.
+
+In my previous posts, I explored how [DevOps foundations prepare systems for agents](/blog/agentic-devops-foundations), how [the engineer's role is evolving](/blog/evolution-of-the-software-engineer), how [humans and agents collaborate through IDEs and pull requests](/blog/humans-and-agents-collaboration-patterns), and how to [design software for an agent-first world](/blog/designing-software-agent-first-world). This post explores the communication layer, the critical interface between human intent and machine execution.
+
+---
+
+## Prompting Was the Beginning, Not the Destination
+
+Prompts are inherently temporary. They live in chat windows, IDE side panels, or short-lived sessions. They help solve immediate tasks, but they rarely scale across teams or survive over time.
+
+A developer might craft the perfect prompt to generate a REST API endpoint. It works beautifully but once. The next day, a teammate faces a similar task and starts from scratch. A month later, the same developer can't remember the exact phrasing that produced good results.
+
+Specifications, on the other hand, are durable. They can be versioned, reviewed, referenced, and reused. They encode intent in a way that both humans and machines can understand consistently.
+
+A useful way to think about this evolution:
+
+| Level | What It Solves | Durability | Reusability |
+|---|---|---|---|
+| **Prompt** | A momentary problem | Ephemeral | None |
+| **Template** | A repeated task | Session-scoped | Limited |
+| **Specification** | Expected behavior | Version-controlled | High |
+| **Contract** | System truth | Architectural | Universal |
+
+As AI systems gain more autonomy from [GitHub Copilot](https://github.com/features/copilot) inline suggestions to the [GitHub Copilot coding agent](https://github.com/features/copilot/agents) opening full pull requests, the center of gravity moves away from one-off prompts and toward structured specifications embedded in the repository itself.
+
+---
+
+## Why Developers Feel Overwhelmed Right Now
+
+The GenAI landscape is evolving at a pace that makes even experienced engineers feel like they're falling behind. New models appear monthly. Context windows expand from thousands to millions of tokens. Tools integrate deeper into IDEs. Agents gain the ability to plan, edit multiple files, and reason about architecture.
+
+Developers often feel pressure to keep up with:
+
+- 🔄 Which model performs best this month
+- 💬 Which prompting technique is trending
+- 🧩 Which extension or agent framework to adopt
+- 🏗️ Which workflow is considered "modern"
+- 📊 Which benchmarks actually matter
+
+Here's the uncomfortable truth: **trying to optimize for each new model or tool is exhausting and rarely sustainable**. By the time you master a specific prompting technique, the model has changed, the context window has grown, or a new capability has made the technique obsolete.
+
+Instead of chasing model-specific tricks, focus on **model-agnostic clarity**:
+
+- Clear intent works across every model generation
+- Explicit constraints survive tool migrations
+- Structured documentation benefits every team member, human or AI
+- Strong validation pipelines verify results regardless of who produced them
+
+The goal is not to master prompts.
+The goal is to **design communication that survives model evolution**.
+
+---
+
+## What Actually Makes a Great Prompt (And Why It Looks Like a Specification)
+
+A great prompt is not about wording tricks or magic phrases. It's about conveying the same elements that define good engineering documentation.
+
+Strong prompts usually contain:
+
+### Clear Context
+Explain where the change belongs and what part of the system is affected. An agent that knows it's modifying a payment processing module in a microservices architecture will make fundamentally different decisions than one working blindly.
+
+### Explicit Intent
+State the goal in terms of **behavior or outcome**, not implementation preference. Instead of "use a HashMap," say "optimize for O(1) lookups on user IDs with expected cardinality of 10M records."
+
+### Constraints
+Mention performance limits, architectural boundaries, security rules, or coding standards. These are the guardrails that prevent agents from producing technically correct but contextually wrong solutions.
+
+### Definition of Success
+Describe what a correct result should do, how it should behave, or which tests it should satisfy. This is where acceptance criteria come in, measurable, verifiable conditions.
+
+### Relevant Artifacts
+Reference specs, interfaces, schemas, or existing modules instead of relying on assumptions. The more an agent can look up, the less it has to guess.
+
+Notice how these characteristics mirror what we expect in good design documents or feature specifications. **That is not a coincidence.** Good prompts resemble small specs because AI systems respond best to structured intent, and so do human engineers.
+
+Here's a practical example:
+
+**Weak prompt:**
+> "Add caching to the weather endpoint."
+
+**Strong prompt (specification-like):**
+> "Add in-memory caching to the `/api/weather` endpoint in `GetWeather.cs`. Cache responses for 5 minutes using `IMemoryCache`. The cache key should include the location parameter. Bypass cache when the `Cache-Control: no-cache` header is present. Ensure the existing rate limiting in `RateLimitService` is applied before the cache check. Add unit tests that verify cache hits, cache misses, and cache bypass behavior."
+
+The second prompt is really a small specification. It defines behavior, constraints, integration points, and validation criteria. It works with **any** AI model because it communicates intent, not tricks.
+
+---
+
+## Moving From Chat Prompts to Repository-Based Instructions
+
+As teams mature in AI-assisted development, a powerful pattern emerges: **communication shifts from the chat window into the repository itself.**
+
+Instead of repeatedly typing instructions into chat sessions that disappear after use, teams begin storing durable guidance such as:
+
+- 🏗️ Architecture overview documents
+- 📏 Coding standards and conventions
+- 📋 Feature specification files
+- 📡 API contracts and interface definitions
+- 🧪 Testing expectations and strategies
+- 📖 Domain terminology definitions
+- 🤖 Agent-specific guidance (`.github/copilot-instructions.md`)
+
+When this information exists in version control, both humans and agents gain a stable source of truth. Agents can reference it automatically. Engineers don't need to restate context every session.
+
+This approach transforms the repository into an **executable knowledge base**, a concept I explored in depth in [Designing Software for an Agent-First World](/blog/designing-software-agent-first-world).
+
+In [this website's repository](https://github.com/dsanchezcr/website), the `copilot-instructions.md` file contains detailed guidance about the project's architecture, development workflows, API routes, environment configuration, and common patterns. When an AI agent operates in this repository, it immediately understands:
+
+- The frontend is Docusaurus v3 with i18n support
+- The backend is .NET 9 Azure Functions as SWA managed functions
+- How the contact form's two-step verification works
+- Where to add new blog posts, components, or API endpoints
+- Which environment variables are required and why
+
+**The more clearly your repository explains itself, the less prompting becomes necessary.**
+
+---
+
+## The Rise of Specification Kits and Structured Intent
+
+One of the most promising emerging practices is the use of structured specification bundles, sometimes called DevSpec kits, feature specs, or engineering briefs.
+
+These typically include:
+
+| Component | Purpose |
+|---|---|
+| **Feature description** | Goals, user stories, and business context |
+| **Acceptance criteria** | Behavioral conditions that define "done" |
+| **API or data contracts** | Interface definitions and schemas |
+| **Architecture context** | Related modules, services, and dependencies |
+| **Test scenarios** | Happy paths, edge cases, and failure modes |
+| **Security considerations** | Threat model, input validation, auth requirements |
+| **Non-functional requirements** | Performance targets, scalability constraints |
+
+Such bundles help AI tools generate more consistent implementations because they encode both the *what* and the *why*.
+
+More importantly, they align:
+- **Human reviewers**: who know what the spec requires
+- **Automated tests**: which validate against the spec
+- **AI-generated changes**: which were guided by the spec
+
+...around the same definition of success.
+
+Instead of prompting repeatedly and hoping the agent remembers context from three messages ago, engineers provide the system with a durable specification that can guide multiple iterations, across multiple sessions, with multiple tools.
+
+### Why This Matters for Teams
+
+When a team of five developers works with AI agents, and each developer prompts differently, the codebase becomes inconsistent. One developer's style clashes with another's AI-generated patterns. Architecture erodes.
+
+Specifications solve this by providing a **shared interface for intent**. Everyone, human and AI, works from the same source of truth.
+
+---
+
+## Prompting in the IDE vs. Prompting in the PR
+
+Human-agent communication happens across two fundamentally different surfaces, each with its own purpose and standards.
+
+### Inside the IDE: Exploration and Discovery
+
+In the IDE, prompts tend to be exploratory. Engineers refine ideas, test approaches, and iterate quickly. These prompts help shape solutions but are often transient, and that's fine.
+
+This is where you:
+- Prototype different implementations
+- Ask questions about unfamiliar code
+- Generate boilerplate and scaffolding
+- Explore edge cases and alternatives
+
+The IDE is **the workshop**, messy, iterative, creative.
+
+### Inside Pull Requests: Formalization and Validation
+
+Inside pull requests, communication becomes formal. Descriptions explain the intent, link to specs, summarize risks, and document validation. At this stage, clarity matters more than speed because decisions affect shared code and production systems.
+
+This is where you:
+- Explain what changed and why
+- Link to the specification that guided the work
+- Document risks, assumptions, and tradeoffs
+- Summarize test coverage and validation results
+
+The PR is **the contract**, precise, reviewable, permanent.
+
+### A Helpful Mental Model
+
+> The IDE is for **discovering** intent.
+> The repository is for **storing** intent.
+> The pull request is for **validating** intent.
+
+Great teams treat these as connected layers of the same communication system. What starts as an exploratory prompt in the IDE should eventually be expressed as a specification in the repository and validated through a pull request.
+
+---
+
+## The Specification Maturity Model
+
+Teams don't jump from ad-hoc prompting to full specification-driven development overnight. The transition happens in stages:
+
+### Stage 1: Ad-Hoc Prompting
+- Developers write one-off prompts
+- No shared context between sessions
+- Results vary by developer and model
+- Knowledge lives in individual heads
+
+### Stage 2: Prompt Templates
+- Teams create reusable prompt templates
+- Common patterns are documented
+- Some consistency emerges
+- But templates still live outside the codebase
+
+### Stage 3: Repository-Based Instructions
+- `.github/copilot-instructions.md` captures project context
+- Architecture docs become agent-readable
+- Coding standards are explicit and version-controlled
+- Agents pick up context automatically
+
+### Stage 4: Specification-Driven Development
+- Features begin with formal specifications
+- Acceptance criteria are defined before implementation
+- AI agents generate from specs, not from ad-hoc prompts
+- Specs are versioned, reviewed, and evolved alongside code
+
+### Stage 5: Continuous Specification Engineering
+- Specifications are living documents that evolve with the system
+- Test results feed back into spec refinement
+- Agent performance data informs spec quality improvements
+- The specification becomes the primary interface between humans and machines
+
+Most teams today are somewhere between Stage 1 and Stage 3. The teams that reach Stage 4 and beyond will find their AI collaboration becomes dramatically more consistent and reliable.
+
+---
+
+## Common Pitfalls: What Goes Wrong Without Specifications
+
+When teams rely solely on prompting without moving toward specifications, several failure patterns emerge:
+
+### The "It Works on My Machine" Problem
+Different developers prompt differently. One developer's carefully crafted prompt produces consistent results on their machine with their IDE settings. Another developer, using a different model or context, gets completely different output for the same feature.
+
+### The Context Amnesia Problem
+A developer spends 20 minutes building context in a chat session, explaining the architecture, the constraints, the edge cases. The session ends. Next time, they start from zero. Multiply this by every developer, every day.
+
+### The Drift Problem
+Without specifications, AI-generated code gradually drifts from the intended architecture. Each change seems reasonable in isolation, but over weeks and months, the codebase becomes internally inconsistent.
+
+### The Review Bottleneck
+Without clear specifications, code reviewers must reverse-engineer the intent from the code itself. Was this naming convention intentional or accidental? Is this pattern aligned with our architecture? Reviewers spend more time asking questions than evaluating outcomes.
+
+**Specifications solve all four problems** by providing a durable, shared, versioned source of truth that everyone, human and AI, can reference.
+
+---
+
+## Best Practices for Sustainable AI Communication
+
+To make AI collaboration reliable and future-proof, teams should consider several practical steps:
+
+1. **Write specifications before requesting implementation.** Even a brief spec with goals, constraints, and acceptance criteria dramatically improves AI output.
+
+2. **Store architectural context where both humans and tools can read it.** The `.github/copilot-instructions.md` file is a powerful starting point.
+
+3. **Prefer explicit contracts over implied conventions.** What's undocumented is invisible to agents, and often forgotten by humans too.
+
+4. **Invest in automated tests that validate behavior rather than implementation details.** As I discussed in [Designing Software for an Agent-First World](/blog/designing-software-agent-first-world), tests are the primary safety mechanism.
+
+5. **Use descriptive naming and clear module boundaries.** Systems that are easy to navigate are easy to evolve, by both humans and agents.
+
+6. **Treat prompts as drafts and specifications as the durable interface.** Prompts help you discover intent. Specifications preserve it.
+
+7. **Review and iterate on your specifications.** Just like code, specs can have bugs. When an agent produces unexpected results, check whether the spec was ambiguous, and fix it.
+
+8. **Make specifications testable.** Every acceptance criterion should map to a verifiable outcome, ideally an automated test.
+
+These practices reduce dependence on any specific model and make your engineering workflow resilient as tools evolve.
+
+---
+
+## The Real Skill Shift for Engineers
+
+The biggest shift is not that AI writes code. It's that engineers must become better at **formalizing intent**.
+
+This includes:
+
+- 🎯 **Explaining problems precisely**: vague problems produce vague solutions
+- 📐 **Defining constraints clearly**: boundaries prevent drift
+- 🏗️ **Structuring systems for discoverability**: what agents can find, they can use
+- ✅ **Writing acceptance criteria that can be validated automatically**: tests are the arbiter of truth
+- 📖 **Designing repositories that communicate their own logic**: the repo is the interface
+
+These were always valuable skills, but AI makes them central to daily work.
+
+In this environment, the best engineers are not the ones who type fastest.
+They are the ones who make systems **easiest to understand** and **safest to evolve**.
+
+Consider this: a well-written specification can guide an AI agent to produce a correct implementation in minutes. A poorly written one can lead to hours of debugging and back-and-forth. The leverage of clear thinking has never been higher.
+
+---
+
+## From Individual Skill to Team Practice
+
+This evolution isn't just personal, it's organizational.
+
+Teams that adopt specification-driven development gain:
+
+| Benefit | Impact |
+|---|---|
+| **Consistent AI output** | Every developer gets similar results because the spec is the same |
+| **Faster onboarding** | New team members (human or AI) understand the system faster |
+| **Better code reviews** | Reviewers evaluate against specs, not gut feeling |
+| **Reduced context switching** | Specs persist across sessions, models, and tools |
+| **Architectural coherence** | Specs enforce patterns that ad-hoc prompts don't |
+| **Auditability** | Specifications create a traceable record of intent |
+
+The transition requires investment, but it compounds. Each specification makes the next one easier to write, and the entire team benefits from every spec that exists.
+
+---
+
+## Final Thoughts
+
+Prompt engineering captured attention because it was the first visible interaction between developers and AI. It was exciting, novel, and immediately useful.
+
+But the long-term shift is deeper.
+
+Software development is moving from ad-hoc prompts toward structured, versioned, and testable specifications that guide both humans and intelligent systems.
+
+The journey looks like this:
+
+> **Prompts → Templates → Instructions → Specifications → Contracts**
+
+Each step represents a move toward greater durability, consistency, and clarity.
+
+Teams that embrace this shift will find that AI becomes more predictable, collaboration becomes smoother, and engineering practices become more robust. They won't need to relearn prompting every time a new model drops. Their specifications will work across every generation of AI tooling.
+
+The future of software engineering is not about learning how to talk to AI.
+
+It is about learning how to **express intent so clearly that both humans and machines can build on it with confidence**.
+
+The prompts were the beginning. The specifications are the future.
