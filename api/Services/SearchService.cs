@@ -124,9 +124,9 @@ public class AzureSearchService : ISearchService
                 if (!string.IsNullOrEmpty(content))
                 {
                     // Truncate content to avoid token limits
-                    if (content.Length > 500)
+                    if (content.Length > 1000)
                     {
-                        content = content.Substring(0, 500) + "...";
+                        content = content.Substring(0, 1000) + "...";
                     }
 
                     var resultText = new System.Text.StringBuilder();

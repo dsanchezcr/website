@@ -26,13 +26,14 @@ namespace api
         // Reduced limits to prevent abuse
         private const int MaxQueryLength = 500;
         private const int MaxPrevLength = 2000;
+        private const int MaxPageContentLength = 2500;
         
         // Rate limiting configuration
         private const int MaxRequestsPerIpPerMinute = 10;
         private const int MaxRequestsPerIpPerHour = 50;
         
-        // Build system prompt with language and website content knowledge
-        private static string GetSystemPrompt(string language)
+        // Build system prompt with language, page context, and website content knowledge
+        private static string GetSystemPrompt(string language, PageContext? currentPage)
         {
             var languageInstruction = language switch
             {
@@ -40,26 +41,83 @@ namespace api
                 "pt" => "IMPORTANT: You MUST respond in Portuguese (Português). All your responses should be in Portuguese.",
                 _ => "Respond in English."
             };
+
+            var pageContextSection = "";
+            if (currentPage != null && !string.IsNullOrWhiteSpace(currentPage.Path))
+            {
+                var sectionHint = currentPage.Section switch
+                {
+                    "blog" => "The user is reading a blog post. Prioritize answering questions about this specific article, its topic, related technologies, and David's perspective on it.",
+                    "videogames" => "The user is browsing the video games section. Focus on David's gaming interests, specific game collections, platforms (Xbox, PlayStation, Nintendo Switch, Meta Quest), and gaming experiences.",
+                    "disney" => "The user is viewing the Disney theme parks section. Focus on David's Disney park visits, favorites, and experiences.",
+                    "universal" => "The user is viewing the Universal theme parks section. Focus on David's Universal park visits, favorites, and experiences.",
+                    "about" => "The user is on the About page. Focus on David's background, career, skills, and personal information.",
+                    "projects" => "The user is viewing the Projects page. Focus on David's open source projects, contributions, and technical work.",
+                    "contact" => "The user is on the Contact page. Help with contact-related questions.",
+                    "sponsors" => "The user is on the Sponsors page. Help with sponsorship information.",
+                    "weather" => "The user is on the Weather page. This shows weather data using Azure Functions.",
+                    "exchangerates" => "The user is on the Exchange Rates page. This shows Costa Rican colón exchange rates.",
+                    _ => "The user is on the homepage. Provide general information about David and the website."
+                };
+
+                pageContextSection = $@"
+## Current Page Context (PRIORITY)
+{sectionHint}
+- Page URL: https://dsanchezcr.com{currentPage.Path}
+- Page Title: {currentPage.Title}";
+
+                if (!string.IsNullOrWhiteSpace(currentPage.Content))
+                {
+                    // Truncate page content to avoid token limits
+                    var content = currentPage.Content.Length > MaxPageContentLength 
+                        ? currentPage.Content.Substring(0, MaxPageContentLength) + "..." 
+                        : currentPage.Content;
+                    pageContextSection += $@"
+- Page Content:
+{content}";
+                }
+            }
             
             return $@"You are David Sanchez's personal website assistant at https://dsanchezcr.com
 
 {languageInstruction}
 
 ## About David Sanchez
-- Director Go-To-Market for Azure Developer Audience and Developer Productivity advocate
+- Director Go-To-Market for Azure Developer Audience and Developer Productivity advocate at Microsoft
 - Based in Orlando, Florida, originally from Costa Rica
 - Works with Microsoft Azure, GitHub, DevOps, and software engineering modern cloud technologies
+- Passionate about AI, developer tools, cloud development, and gaming
 - LinkedIn: https://linkedin.com/in/dsanchezcr 
 - GitHub: https://github.com/dsanchezcr
 - Website source code: https://github.com/dsanchezcr/website
 
-## Website Content (dsanchezcr.com)
+## Website Sections
+- **Blog** (/blog): Technical articles about Azure, GitHub, DevOps, AI, developer productivity, and software engineering
+- **About** (/about): Background, career, and personal information
+- **Projects** (/projects): Open source projects and contributions
+- **Sponsors** (/sponsors): Sponsorship and support information
+- **Video Games** (/videogames): Gaming collection across Xbox, PlayStation, Nintendo Switch, and Meta Quest
+- **Disney** (/disney): Disney theme park experiences and visits
+- **Universal** (/universal): Universal theme park experiences and visits
+- **Weather** (/weather): Live weather data powered by Azure Functions
+- **Exchange Rates** (/exchangerates): Costa Rican colón exchange rates using a custom npm package
+- **Contact** (/contact): Contact form with email verification, powered by Azure Communication Services
+
+## Technical Stack
+- Frontend: Docusaurus (React/MDX) with i18n support (English, Spanish, Portuguese)
+- Backend: .NET 9 Azure Functions (Azure Static Web Apps managed API)
+- AI Chat: Azure OpenAI with RAG (Retrieval-Augmented Generation) via Azure AI Search
+- Hosting: Azure Static Web Apps
+- Email: Azure Communication Services
+- Gaming: Live Xbox/PlayStation profile data via APIs
+{pageContextSection}
 
 ## Response Guidelines
-- Keep responses concise but helpful (under 200 words typically)
+- Keep responses concise but helpful (under 300 words typically)
 - Use markdown formatting for links, lists, and emphasis
-- Link to relevant blog posts when discussing topics David has written about
-- If asked about something not covered, politely say you don't have that specific information
+- Link to relevant blog posts and sections when discussing topics David has written about
+- When responding about the current page, reference specific details from its content
+- If asked about something not covered, politely say you don't have that specific information and suggest related topics
 - Be friendly and professional
 
 ## STRICT RULES
@@ -256,15 +314,15 @@ namespace api
                 // Increment rate limits after validation passes
                 IncrementRateLimits(clientIp);
 
-                // Build system prompt with user's language
-                var systemPrompt = GetSystemPrompt(chatRequest.Language);
+                // Build system prompt with user's language and current page context
+                var systemPrompt = GetSystemPrompt(chatRequest.Language, chatRequest.CurrentPage);
                 
                 // Query Azure AI Search for relevant content (DIY RAG)
                 if (_searchService.IsConfigured)
                 {
                     try
                     {
-                        var searchResults = await _searchService.SearchAsync(chatRequest.Query);
+                        var searchResults = await _searchService.SearchAsync(chatRequest.Query, maxResults: 5);
                         if (!string.IsNullOrEmpty(searchResults))
                         {
                             systemPrompt += searchResults;
@@ -291,7 +349,7 @@ namespace api
 
                 var options = new ChatCompletionOptions
                 {
-                    MaxOutputTokenCount = 512, // Reduced to limit response length and cost
+                    MaxOutputTokenCount = 800, // Allow longer responses for detailed content
                     Temperature = 0.5f // Lower temperature for more focused responses
                 };
 
@@ -327,6 +385,15 @@ namespace api
             public string Query { get; set; } = string.Empty;
             public string? Prev { get; set; } // Optional: previous context
             public string Language { get; set; } = "en"; // User's language (en, es, pt)
+            public PageContext? CurrentPage { get; set; } // Current page context for page-aware responses
+        }
+
+        public class PageContext
+        {
+            public string Path { get; set; } = string.Empty;
+            public string Title { get; set; } = string.Empty;
+            public string Content { get; set; } = string.Empty;
+            public string Section { get; set; } = "home";
         }
     }
 }

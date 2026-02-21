@@ -148,6 +148,43 @@ function extractPages() {
       // Continue processing other files
     }
   }
+
+  // Add video games section pages
+  const videogamesDirs = [
+    { dir: 'videogames', subdir: null, title: 'Video Games', url: '/videogames' },
+    { dir: 'videogames', subdir: 'xbox', title: 'Xbox & PC', url: '/videogames/xbox' },
+    { dir: 'videogames', subdir: 'playstation', title: 'PlayStation', url: '/videogames/playstation' },
+    { dir: 'videogames', subdir: 'nintendo-switch', title: 'Nintendo Switch', url: '/videogames/nintendo-switch' },
+    { dir: 'videogames', subdir: 'meta-quest', title: 'Meta Quest', url: '/videogames/meta-quest' }
+  ];
+
+  for (const vg of videogamesDirs) {
+    try {
+      const indexPath = vg.subdir
+        ? path.join(__dirname, '..', vg.dir, vg.subdir, 'index.mdx')
+        : path.join(__dirname, '..', vg.dir, 'index.mdx');
+      if (fs.existsSync(indexPath)) {
+        const content = fs.readFileSync(indexPath, 'utf-8');
+        const { frontmatter, body } = parseFrontmatter(content);
+        const id = vg.subdir ? `videogames-${vg.subdir}` : 'videogames';
+
+        pages.push({
+          id: `page-${id}`,
+          title: frontmatter.title || vg.title,
+          description: frontmatter.description || '',
+          content: stripMarkdown(body).slice(0, 5000),
+          url: vg.url,
+          category: 'videogames',
+          tags: Array.isArray(frontmatter.keywords)
+            ? frontmatter.keywords.join(', ')
+            : (frontmatter.keywords || ''),
+          date: null
+        });
+      }
+    } catch (error) {
+      console.error(`Error processing videogames page ${vg.subdir || vg.dir}: ${error.message}`);
+    }
+  }
   
   return pages;
 }

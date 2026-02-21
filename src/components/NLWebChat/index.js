@@ -55,6 +55,44 @@ const translations = {
   },
 };
 
+// Extract current page context to provide the AI with page-aware responses
+const getPageContext = () => {
+  if (typeof window === 'undefined') return null;
+
+  const path = window.location.pathname;
+  const title = document.title?.replace(/\s*[|–-]\s*David Sanchez.*$/, '').trim() || '';
+
+  // Extract main content text from the page
+  const mainEl = document.querySelector('article') || document.querySelector('main');
+  let content = '';
+  if (mainEl) {
+    // Clone to avoid modifying the DOM
+    const clone = mainEl.cloneNode(true);
+    // Remove nav, footer, scripts, styles, chat widget itself
+    clone.querySelectorAll('nav, footer, script, style, .chatBubbleContainer, header').forEach(el => el.remove());
+    content = clone.textContent?.replace(/\s+/g, ' ').trim() || '';
+    // Limit to ~2000 chars to stay within API limits
+    if (content.length > 2000) {
+      content = content.substring(0, 2000);
+    }
+  }
+
+  // Determine section from the path
+  let section = 'home';
+  if (path.startsWith('/blog')) section = 'blog';
+  else if (path.startsWith('/videogames')) section = 'videogames';
+  else if (path.startsWith('/disney')) section = 'disney';
+  else if (path.startsWith('/universal')) section = 'universal';
+  else if (path.startsWith('/about')) section = 'about';
+  else if (path.startsWith('/projects')) section = 'projects';
+  else if (path.startsWith('/contact')) section = 'contact';
+  else if (path.startsWith('/sponsors')) section = 'sponsors';
+  else if (path.startsWith('/weather')) section = 'weather';
+  else if (path.startsWith('/exchangerates')) section = 'exchangerates';
+
+  return { path, title, content, section };
+};
+
 const NLWebChat = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
@@ -93,6 +131,9 @@ const NLWebChat = () => {
     setIsLoading(true);
 
     try {
+      // Capture current page context for page-aware responses
+      const pageContext = getPageContext();
+
       // Use environment.js config to get the API endpoint
       const apiUrl = config.getApiEndpoint() + config.routes.chat;
       const response = await fetch(apiUrl, {
@@ -102,7 +143,8 @@ const NLWebChat = () => {
         },
         body: JSON.stringify({ 
           query: userMessage.text,
-          language: locale // Pass user's language for localized responses
+          language: locale, // Pass user's language for localized responses
+          currentPage: pageContext // Pass current page context for page-aware responses
         }),
       });
 
