@@ -86,6 +86,19 @@ public class AzureSearchService : ISearchService
             return string.Empty;
         }
 
+        // Validate inputs
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            _logger.LogDebug("Empty query provided to search");
+            return string.Empty;
+        }
+
+        // Clamp maxResults to reasonable bounds
+        if (maxResults <= 0 || maxResults > 100)
+        {
+            maxResults = Math.Clamp(maxResults, 1, 100);
+        }
+
         try
         {
             var searchOptions = new SearchOptions
@@ -101,8 +114,7 @@ public class AzureSearchService : ISearchService
             searchOptions.OrderBy.Add("recent desc");
             searchOptions.OrderBy.Add("date desc");
 
-            // Add select fields if they exist in the index
-            // Common fields for blog/content indexes
+            // Add select fields
             searchOptions.Select.Add("title");
             searchOptions.Select.Add("content");
             searchOptions.Select.Add("url");
@@ -113,7 +125,7 @@ public class AzureSearchService : ISearchService
 
             var response = await _searchClient.SearchAsync<SearchDocument>(query, searchOptions);
             
-            if (response.Value.TotalCount == 0)
+            if (response?.Value == null || response.Value.TotalCount == 0)
             {
                 _logger.LogDebug("No search results found for query: {Query}", query);
                 return string.Empty;
@@ -123,6 +135,8 @@ public class AzureSearchService : ISearchService
             await foreach (var result in response.Value.GetResultsAsync())
             {
                 var doc = result.Document;
+                if (doc == null) continue;
+
                 var title = GetFieldValue(doc, "title");
                 var content = GetFieldValue(doc, "content", "description");
                 var url = GetFieldValue(doc, "url");
@@ -159,7 +173,7 @@ public class AzureSearchService : ISearchService
                 return string.Empty;
             }
 
-            _logger.LogInformation("Search found {Count} relevant results for query", results.Count);
+            _logger.LogInformation("Search found {Count} relevant results for query: {Query}", results.Count, query.Substring(0, Math.Min(50, query.Length)));
             
             return $@"
 

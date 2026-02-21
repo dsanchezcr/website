@@ -234,6 +234,10 @@ function extractBlogPosts() {
     console.error(`Blog directory not found: ${blogDir}`);
     return posts;
   }
+
+  // Calculate 90-day window for "recent" flag
+  const ninetyDaysAgo = new Date();
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
   
   let files;
   try {
@@ -265,6 +269,10 @@ function extractBlogPosts() {
       const dateMatch = file.match(/^(\d{4}-\d{2}-\d{2})/);
       const dateStr = dateMatch ? dateMatch[1] : null;
       const date = dateStr ? `${dateStr}T00:00:00Z` : null;
+      
+      // Calculate if post is recent (within last 90 days)
+      const postDate = dateStr ? new Date(dateStr) : null;
+      const isRecent = postDate && postDate >= ninetyDaysAgo;
       
       // Generate slug from filename - use frontmatter slug if available
       const slug = frontmatter.slug || file

@@ -39,6 +39,8 @@ namespace api
         private static readonly object SessionLock = new();
         private const int MaxSessionMemorySize = 10; // Keep max 10 sessions in memory
         private const int MaxConversationTurns = 3; // Keep last 3 exchanges
+        private static readonly TimeSpan SessionTTL = TimeSpan.FromHours(24); // Sessions expire after 24 hours
+        private static DateTimeOffset LastSessionPruneTime = DateTimeOffset.UtcNow;
         
         private class ConversationSession
         {
@@ -160,20 +162,21 @@ DON'T:
 UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or fabricate.{pageContextSection}";
         }
         
-        // Pre-filter obvious abuse patterns before sending to the model
-        // Simplified patterns to avoid potential regex backtracking issues
-        private static readonly Regex AbusePatterns = new Regex(
-            @"(ignore\s+(previous|all|your)\s+(instructions?|rules?|prompts?)|" +
-            @"pretend\s+to\s+be|pretend\s+you\s+are|" +
-            @"act\s+as\s+if|act\s+as\s+a|" +
-            @"you\s+are\s+now|" +
-            @"new\s+instructions?|" +
-            @"forget\s+everything|forget\s+your\s+rules|" +
-            @"jailbreak|" +
-            @"do\s+my\s+homework|" +
-            @"write\s+(an?\s+)?(essay|code|program|script)|" +
-            @"generate\s+(code|program|script))",
-            RegexOptions.IgnoreCase);
+        // Pre-filter obvious abuse patterns with timeout protection
+        // Keyword-based approach avoids regex DoS vulnerabilities
+        private static readonly HashSet<string> AbuseKeywords = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "ignore previous", "ignore all", "ignore your",
+            "pretend to be", "pretend you are",
+            "act as if", "act as a", "act as an",
+            "you are now", "you will now", "become",
+            "new instructions", "forget everything", "forget your rules", "clear your memory",
+            "jailbreak", "bypass", "override",
+            "do my homework", "do my research",
+            "write an essay", "write a paper", "write code",
+            "generate code", "generate a program", "generate a script",
+            "what are your instructions", "what are your rules", "system prompt"
+        };
         
         public ChatWithOpenAI(
             ILogger<ChatWithOpenAI> logger,
@@ -258,19 +261,54 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
         }
         
         /// <summary>
+        /// Prunes expired sessions from memory to prevent unbounded growth.
+        /// Called periodically to clean up stale sessions.
+        /// </summary>
+        private static void PruneExpiredSessions()
+        {
+            // Only prune every 5 minutes to reduce overhead
+            if (DateTimeOffset.UtcNow - LastSessionPruneTime < TimeSpan.FromMinutes(5))
+                return;
+
+            lock (SessionLock)
+            {
+                var expired = SessionMemory
+                    .Where(kvp => DateTimeOffset.UtcNow - kvp.Value.LastActivity > SessionTTL)
+                    .Select(kvp => kvp.Key)
+                    .ToList();
+
+                foreach (var sessionId in expired)
+                {
+                    SessionMemory.Remove(sessionId);
+                }
+
+                LastSessionPruneTime = DateTimeOffset.UtcNow;
+            }
+        }
+
+        /// <summary>
         /// Gets or creates a session for the given session ID.
         /// Sessions store conversation history and preferences for multi-turn conversations.
         /// </summary>
         private static ConversationSession GetOrCreateSession(string sessionId, string language)
         {
+            PruneExpiredSessions();
+
             lock (SessionLock)
             {
-                // Cleanup old sessions if memory is getting full
-                if (SessionMemory.Count > MaxSessionMemorySize)
+                // Enforce strict memory limit - remove oldest sessions if at capacity
+                if (SessionMemory.Count >= MaxSessionMemorySize)
                 {
-                    var oldestSession = SessionMemory.OrderBy(kvp => kvp.Value.LastActivity).FirstOrDefault();
-                    if (!string.IsNullOrEmpty(oldestSession.Key))
-                        SessionMemory.Remove(oldestSession.Key);
+                    var oldestSessions = SessionMemory
+                        .OrderBy(kvp => kvp.Value.LastActivity)
+                        .Take(2)  // Remove 2 sessions when at limit
+                        .Select(kvp => kvp.Key)
+                        .ToList();
+
+                    foreach (var oldSession in oldestSessions)
+                    {
+                        SessionMemory.Remove(oldSession);
+                    }
                 }
 
                 if (!SessionMemory.TryGetValue(sessionId, out var session))
@@ -330,7 +368,7 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
         private sealed class RateLimitCounter
         {
             private int _count;
-            public int Count => _count;
+            public int Count => Volatile.Read(ref _count);  // Atomic read for int
             public int Increment() => Interlocked.Increment(ref _count);
         }
 
@@ -389,7 +427,9 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
         
         private static bool IsAbusiveQuery(string query)
         {
-            return AbusePatterns.IsMatch(query);
+            // Keyword-based check (fast, no regex DoS vulnerabilities)
+            return AbuseKeywords.Any(keyword => 
+                query.Contains(keyword, StringComparison.OrdinalIgnoreCase));
         }
 
         [Function("ChatWithOpenAI")]
@@ -397,7 +437,8 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "nlweb/ask")] HttpRequestData req)
         {
             var clientIp = GetClientIp(req);
-            _logger.LogInformation("ChatWithOpenAI Function Triggered from IP: {ClientIp}", clientIp);
+            var correlationId = Guid.NewGuid().ToString("D");
+            _logger.LogInformation("[{CorrelationId}] ChatWithOpenAI triggered from IP: {ClientIp}", correlationId, clientIp);
 
             try
             {
@@ -405,17 +446,43 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                 if (CheckRateLimitExceeded(clientIp))
                 {
                     var rateLimitResponse = req.CreateResponse(HttpStatusCode.TooManyRequests);
-                    rateLimitResponse.Headers.Add("Content-Type", "application/json");
+                    rateLimitResponse.Headers.Add("Content-Type", "application/json; charset=utf-8");
                     rateLimitResponse.Headers.Add("Retry-After", "60");
                     await rateLimitResponse.WriteStringAsync(JsonSerializer.Serialize(new
                     {
-                        error = "Too many requests. Please wait a moment before asking another question."
+                        error = "Too many requests. Please wait a moment before asking another question.",
+                        errorId = correlationId
                     }));
                     return rateLimitResponse;
                 }
 
+                // Validate Content-Length header before reading body
+                const int MaxRequestBodySize = 100 * 1024;  // 100 KB max
+                if (req.Headers.TryGetValues("Content-Length", out var contentLength))
+                {
+                    if (int.TryParse(contentLength.First(), out var length) && length > MaxRequestBodySize)
+                    {
+                        _logger.LogWarning("[{CorrelationId}] Request body too large: {Size} bytes from IP: {ClientIp}",
+                            correlationId, length, clientIp);
+                        var badRequest = req.CreateResponse(HttpStatusCode.RequestEntityTooLarge);
+                        await badRequest.WriteStringAsync("Request body too large (max 100 KB)");
+                        return badRequest;
+                    }
+                }
+
                 using var reader = new StreamReader(req.Body);
                 var body = await reader.ReadToEndAsync();
+
+                // Validate actual body size
+                if (body.Length > MaxRequestBodySize)
+                {
+                    _logger.LogWarning("[{CorrelationId}] Request body too large: {Size} bytes from IP: {ClientIp}",
+                        correlationId, body.Length, clientIp);
+                    var badRequest = req.CreateResponse(HttpStatusCode.RequestEntityTooLarge);
+                    await badRequest.WriteStringAsync("Request body too large (max 100 KB)");
+                    return badRequest;
+                }
+
                 var chatRequest = JsonSerializer.Deserialize<ChatRequest>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 if (chatRequest == null || string.IsNullOrWhiteSpace(chatRequest.Query))
                 {
@@ -424,10 +491,11 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                     return badRequest;
                 }
 
-                // Validate query length to prevent abuse
+                // Validate query length
                 if (chatRequest.Query.Length > MaxQueryLength)
                 {
-                    _logger.LogWarning("Query too long: {Length} characters from IP: {ClientIp}", chatRequest.Query.Length, clientIp);
+                    _logger.LogWarning("[{CorrelationId}] Query too long: {Length} from IP: {ClientIp}",
+                        correlationId, chatRequest.Query.Length, clientIp);
                     var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
                     await badRequest.WriteStringAsync($"Query is too long. Maximum length is {MaxQueryLength} characters.");
                     return badRequest;
@@ -436,24 +504,63 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                 // Validate previous context length
                 if (!string.IsNullOrWhiteSpace(chatRequest.Prev) && chatRequest.Prev.Length > MaxPrevLength)
                 {
-                    _logger.LogWarning("Previous context too long: {Length} characters from IP: {ClientIp}", chatRequest.Prev.Length, clientIp);
+                    _logger.LogWarning("[{CorrelationId}] Previous context too long: {Length} from IP: {ClientIp}",
+                        correlationId, chatRequest.Prev.Length, clientIp);
                     var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
                     await badRequest.WriteStringAsync($"Previous context is too long. Maximum length is {MaxPrevLength} characters.");
                     return badRequest;
                 }
+
+                // Validate language format (whitelist)
+                if (!new[] { "en", "es", "pt" }.Contains(chatRequest.Language))
+                {
+                    chatRequest.Language = "en";
+                }
+
+                // Validate SessionId format (should be GUID format if provided)
+                if (!string.IsNullOrEmpty(chatRequest.SessionId))
+                {
+                    if (!Guid.TryParse(chatRequest.SessionId, out _))
+                    {
+                        _logger.LogWarning("[{CorrelationId}] Invalid SessionId format from IP: {ClientIp}",
+                            correlationId, clientIp);
+                        chatRequest.SessionId = null; // Ignore invalid session ID
+                    }
+                }
+
+                // Validate and sanitize PageContext
+                if (chatRequest.CurrentPage != null)
+                {
+                    // Normalize page content length
+                    if (!string.IsNullOrWhiteSpace(chatRequest.CurrentPage.Content) && 
+                        chatRequest.CurrentPage.Content.Length > MaxPageContentLength)
+                    {
+                        chatRequest.CurrentPage.Content = chatRequest.CurrentPage.Content
+                            .Substring(0, MaxPageContentLength);
+                    }
+
+                    // Validate section is from known list
+                    if (!string.IsNullOrEmpty(chatRequest.CurrentPage.Section))
+                    {
+                        var validSections = new[] { "blog", "projects", "about", "videogames", "disney", "universal", "weather", "exchangerates", "home" };
+                        if (!validSections.Contains(chatRequest.CurrentPage.Section))
+                            chatRequest.CurrentPage.Section = "home";
+                    }
+                }
                 
-                // Check for obvious abuse patterns (jailbreak attempts, off-topic requests)
+                // Check for obvious abuse patterns
                 if (IsAbusiveQuery(chatRequest.Query))
                 {
-                    _logger.LogWarning("Abusive query detected from IP: {ClientIp}", clientIp);
+                    _logger.LogWarning("[{CorrelationId}] Abusive query detected from IP: {ClientIp}",
+                        correlationId, clientIp);
                     IncrementRateLimits(clientIp); // Still count against rate limit
                     
                     var politeRefusal = req.CreateResponse(HttpStatusCode.OK);
-                    politeRefusal.Headers.Add("Content-Type", "application/json");
+                    politeRefusal.Headers.Add("Content-Type", "application/json; charset=utf-8");
                     politeRefusal.Headers.Add("Cache-Control", "private, no-store");
                     await politeRefusal.WriteStringAsync(JsonSerializer.Serialize(new
                     {
-                        query_id = Guid.NewGuid().ToString(),
+                        query_id = correlationId,
                         result = "I can only help with questions about David Sanchez and the content on dsanchezcr.com. Is there something specific about David's work, projects, or blog posts I can help you with?"
                     }));
                     return politeRefusal;
@@ -465,6 +572,10 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                 // Build system prompt with user's language and current page context
                 var systemPrompt = GetSystemPrompt(chatRequest.Language, chatRequest.CurrentPage);
                 
+                // Create cancellation token with timeout for all async operations
+                using var cts = CancellationTokenSource.CreateLinkedTokenSource(new CancellationToken());
+                cts.CancelAfter(TimeSpan.FromSeconds(30));  // 30-second timeout for entire operation
+
                 // Query Azure AI Search for relevant content (DIY RAG)
                 if (_searchService.IsConfigured)
                 {
@@ -474,13 +585,19 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                         if (!string.IsNullOrEmpty(searchResults))
                         {
                             systemPrompt += searchResults;
-                            _logger.LogInformation("Injected search results into prompt for query: {Query}", 
-                                chatRequest.Query.Substring(0, Math.Min(50, chatRequest.Query.Length)));
+                            _logger.LogDebug("[{CorrelationId}] Injected search results for query: {Query}",
+                                correlationId, chatRequest.Query.Substring(0, Math.Min(50, chatRequest.Query.Length)));
                         }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        _logger.LogWarning("[{CorrelationId}] Search timeout from IP: {ClientIp}",
+                            correlationId, clientIp);
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning(ex, "Search failed, continuing without RAG context");
+                        _logger.LogWarning(ex, "[{CorrelationId}] Search failed, continuing without RAG context from IP: {ClientIp}",
+                            correlationId, clientIp);
                     }
                 }
                 
@@ -491,18 +608,23 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                     if (!string.IsNullOrEmpty(gamingData))
                     {
                         systemPrompt += gamingData;
-                        _logger.LogInformation("Injected live gaming data into prompt for videogames page");
+                        _logger.LogDebug("[{CorrelationId}] Injected live gaming data for page: {Page}",
+                            correlationId, chatRequest.CurrentPage?.Section);
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "Failed to inject gaming data, continuing without it");
+                    _logger.LogWarning(ex, "[{CorrelationId}] Failed to inject gaming data from IP: {ClientIp}",
+                        correlationId, clientIp);
                 }
 
                 // Load or create session for conversation continuity
                 ConversationSession session = string.IsNullOrEmpty(chatRequest.SessionId)
-                    ? new ConversationSession { SessionId = Guid.NewGuid().ToString(), Language = chatRequest.Language }
+                    ? new ConversationSession { SessionId = Guid.NewGuid().ToString("D"), Language = chatRequest.Language }
                     : GetOrCreateSession(chatRequest.SessionId, chatRequest.Language);
+
+                _logger.LogInformation("[{CorrelationId}] Using session {SessionId} from IP: {ClientIp}",
+                    correlationId, session.SessionId, clientIp);
 
                 var messages = new List<ChatMessage>
                 {
@@ -531,31 +653,55 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                     Temperature = 0.5f // Lower temperature for more focused responses
                 };
 
-                var completion = await _chatClient.CompleteChatAsync(messages, options);
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+                var completion = await _chatClient.CompleteChatAsync(messages, options, cts.Token);
+                sw.Stop();
+
                 var result = completion.Value.Content[0].Text;
+
+                _logger.LogInformation("[{CorrelationId}] Chat completion in {ElapsedMs}ms from IP: {ClientIp}",
+                    correlationId, sw.ElapsedMilliseconds, clientIp);
 
                 // Store this exchange in session history for future requests
                 AddToSessionHistory(session, chatRequest.Query, result);
 
                 var responseObj = new
                 {
-                    query_id = Guid.NewGuid().ToString(),
+                    query_id = correlationId,
                     session_id = session.SessionId, // Return session ID to client for conversation continuity
                     result = result
                 };
+                
                 var ok = req.CreateResponse(HttpStatusCode.OK);
-                ok.Headers.Add("Content-Type", "application/json");
-                ok.Headers.Add("Cache-Control", "private, no-store");
+                ok.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                ok.Headers.Add("Cache-Control", "private, no-store, no-cache, max-age=0");
+                ok.Headers.Add("Pragma", "no-cache");
+                ok.Headers.Add("X-Content-Type-Options", "nosniff");
+                ok.Headers.Add("X-Frame-Options", "DENY");
+                ok.Headers.Add("Vary", "Accept-Language");
                 await ok.WriteStringAsync(JsonSerializer.Serialize(responseObj));
                 return ok;
             }
+            catch (OperationCanceledException)
+            {
+                _logger.LogError("[{CorrelationId}] Operation timeout from IP: {ClientIp}", correlationId, clientIp);
+                var timeout = req.CreateResponse(HttpStatusCode.RequestTimeout);
+                timeout.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                await timeout.WriteStringAsync(JsonSerializer.Serialize(new
+                {
+                    error = "Request timeout. Please try again.",
+                    errorId = correlationId
+                }));
+                return timeout;
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in ChatWithOpenAI from IP: {ClientIp}", clientIp);
+                _logger.LogError(ex, "[{CorrelationId}] Error in ChatWithOpenAI from IP: {ClientIp}", correlationId, clientIp);
                 var error = req.CreateResponse(HttpStatusCode.InternalServerError);
-                error.Headers.Add("Content-Type", "application/json");
+                error.Headers.Add("Content-Type", "application/json; charset=utf-8");
                 var errorObj = new {
-                    error = "An error occurred processing your request. Please try again later."
+                    error = "An error occurred processing your request. Please try again later.",
+                    errorId = correlationId
                 };
                 await error.WriteStringAsync(JsonSerializer.Serialize(errorObj));
                 return error;
