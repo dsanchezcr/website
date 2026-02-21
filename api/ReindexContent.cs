@@ -194,7 +194,12 @@ public class ReindexContent
             ["url"] = item.Url,
             ["category"] = item.Category,
             ["tags"] = tagsArray,
-            ["date"] = item.Date
+            ["date"] = item.Date,
+            ["recent"] = item.Recent, // Index the recent flag for scoring
+            ["metadata"] = item.Metadata, // Code languages, links, etc.
+            ["wordCount"] = item.WordCount,
+            ["readingTimeMinutes"] = item.ReadingTimeMinutes,
+            ["codeLanguages"] = item.CodeLanguages ?? new List<string>()
         });
     }
 
@@ -420,6 +425,11 @@ public class ReindexContent
         public string Category { get; set; } = "";
         public string? Tags { get; set; }
         public string? Date { get; set; }
+        public bool Recent { get; set; } // Flag for recent blog posts (last 90 days)
+        public string? Metadata { get; set; } // Code languages, referenced resources, etc.
+        public int? WordCount { get; set; } // Article word count
+        public int? ReadingTimeMinutes { get; set; } // Estimated reading time
+        public List<string>? CodeLanguages { get; set; } // Languages in code blocks
     }
 
     private class BlogFeed

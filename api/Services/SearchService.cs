@@ -96,6 +96,11 @@ public class AzureSearchService : ISearchService
                 IncludeTotalCount = true
             };
 
+            // Add sorting: prioritize search score, then recent flag, then date
+            searchOptions.OrderBy.Add("search.score() desc");
+            searchOptions.OrderBy.Add("recent desc");
+            searchOptions.OrderBy.Add("date desc");
+
             // Add select fields if they exist in the index
             // Common fields for blog/content indexes
             searchOptions.Select.Add("title");
@@ -103,6 +108,8 @@ public class AzureSearchService : ISearchService
             searchOptions.Select.Add("url");
             searchOptions.Select.Add("description");
             searchOptions.Select.Add("category");
+            searchOptions.Select.Add("date");
+            searchOptions.Select.Add("recent");
 
             var response = await _searchClient.SearchAsync<SearchDocument>(query, searchOptions);
             
@@ -133,7 +140,12 @@ public class AzureSearchService : ISearchService
                     if (!string.IsNullOrEmpty(title))
                         resultText.AppendLine($"**{title}**");
                     if (!string.IsNullOrEmpty(category))
-                        resultText.AppendLine($"Category: {category}");
+                        resultText.AppendLine($"_Category: {category}_");
+                    // Add recent badge if applicable
+                    if (doc.TryGetValue("recent", out var recentVal) && recentVal is bool recent && recent)
+                        resultText.AppendLine("🔥 _Recently published_");
+                    if (doc.TryGetValue("date", out var dateVal) && dateVal != null)
+                        resultText.AppendLine($"Published: {dateVal}");
                     resultText.AppendLine(content);
                     if (!string.IsNullOrEmpty(url))
                         resultText.AppendLine($"URL: {url}");

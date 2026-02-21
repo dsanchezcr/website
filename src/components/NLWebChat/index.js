@@ -98,6 +98,7 @@ const NLWebChat = () => {
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [sessionId, setSessionId] = useState(null); // Store session ID for conversation continuity
   const messagesEndRef = useRef(null);
   
   // Use shared locale hook for consistency
@@ -144,12 +145,17 @@ const NLWebChat = () => {
         body: JSON.stringify({ 
           query: userMessage.text,
           language: locale, // Pass user's language for localized responses
-          currentPage: pageContext // Pass current page context for page-aware responses
+          currentPage: pageContext, // Pass current page context for page-aware responses
+          sessionId: sessionId // Pass session ID for conversation continuity
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
+        // Store the session ID returned by the server for future requests
+        if (data.session_id) {
+          setSessionId(data.session_id);
+        }
         const botMessage = {
           id: Date.now() + 1,
           text: data.result,

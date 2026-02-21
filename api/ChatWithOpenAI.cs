@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace api
         private readonly IMemoryCache _cache;
         private readonly ChatClient _chatClient;
         private readonly ISearchService _searchService;
+        private readonly IGamingCacheService _gamingCacheService;
         
         // Reduced limits to prevent abuse
         private const int MaxQueryLength = 500;
@@ -31,6 +33,21 @@ namespace api
         // Rate limiting configuration
         private const int MaxRequestsPerIpPerMinute = 10;
         private const int MaxRequestsPerIpPerHour = 50;
+        
+        // Session memory for conversation context - stores last 3 exchanges per session
+        private static readonly Dictionary<string, ConversationSession> SessionMemory = new();
+        private static readonly object SessionLock = new();
+        private const int MaxSessionMemorySize = 10; // Keep max 10 sessions in memory
+        private const int MaxConversationTurns = 3; // Keep last 3 exchanges
+        
+        private class ConversationSession
+        {
+            public string SessionId { get; set; } = string.Empty;
+            public string Language { get; set; } = "en";
+            public string? LastSection { get; set; }
+            public List<(string Role, string Content)> History { get; set; } = new();
+            public DateTimeOffset LastActivity { get; set; } = DateTimeOffset.UtcNow;
+        }
         
         // Build system prompt with language, page context, and website content knowledge
         private static string GetSystemPrompt(string language, PageContext? currentPage)
@@ -143,11 +160,16 @@ namespace api
             @"generate\s+(code|program|script))",
             RegexOptions.IgnoreCase);
         
-        public ChatWithOpenAI(ILogger<ChatWithOpenAI> logger, IMemoryCache cache, ISearchService searchService)
+        public ChatWithOpenAI(
+            ILogger<ChatWithOpenAI> logger,
+            IMemoryCache cache,
+            ISearchService searchService,
+            IGamingCacheService gamingCacheService)
         {
             _logger = logger;
             _cache = cache;
             _searchService = searchService;
+            _gamingCacheService = gamingCacheService;
             
             // Use environment variables for Azure OpenAI configuration
             string? endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
@@ -161,6 +183,117 @@ namespace api
             
             AzureOpenAIClient azureClient = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(key));
             _chatClient = azureClient.GetChatClient(deploymentName);
+        }
+        
+        private async Task<string> GetLiveGamingDataAsync(PageContext? currentPage)
+        {
+            // Only fetch gaming data if user is on a videogames page
+            if (currentPage?.Section != "videogames")
+                return string.Empty;
+
+            try
+            {
+                var gamingData = new StringBuilder();
+                gamingData.AppendLine();
+                gamingData.AppendLine("## Live Gaming Profile Data");
+                gamingData.AppendLine("Current user gaming stats and recently played games:");
+
+                // Fetch Xbox profile
+                var xboxProfile = await _gamingCacheService.GetProfileAsync("xbox");
+                if (xboxProfile != null)
+                {
+                    gamingData.AppendLine($"\n### Xbox Live");
+                    gamingData.AppendLine($"- Gamerscore: {xboxProfile.Gamerscore ?? 0:N0}");
+                    gamingData.AppendLine($"- Games Played: {xboxProfile.GamesPlayed ?? 0}");
+                    if (xboxProfile.RecentGames?.Count > 0)
+                    {
+                        gamingData.Append("- Recently Played: ");
+                        gamingData.AppendLine(string.Join(", ", xboxProfile.RecentGames.Take(3).Select(g => g.Name)));
+                    }
+                    if (xboxProfile.IsCached)
+                        gamingData.AppendLine($"- _Last Updated: {xboxProfile.LastUpdated:g} (cached)_");
+                }
+
+                // Fetch PlayStation profile
+                var psnProfile = await _gamingCacheService.GetProfileAsync("psn");
+                if (psnProfile != null)
+                {
+                    gamingData.AppendLine($"\n### PlayStation Network");
+                    gamingData.AppendLine($"- Trophy Level: {psnProfile.TrophyLevel ?? 0}");
+                    if (psnProfile.TrophySummary != null)
+                    {
+                        gamingData.AppendLine($"- Trophies: {psnProfile.TrophySummary.Platinum}🥇 {psnProfile.TrophySummary.Gold}🥈 {psnProfile.TrophySummary.Silver}🥉");
+                    }
+                    if (psnProfile.RecentGames?.Count > 0)
+                    {
+                        gamingData.Append("- Recently Played: ");
+                        gamingData.AppendLine(string.Join(", ", psnProfile.RecentGames.Take(3).Select(g => g.Name)));
+                    }
+                    if (psnProfile.IsCached)
+                        gamingData.AppendLine($"- _Last Updated: {psnProfile.LastUpdated:g} (cached)_");
+                }
+
+                return gamingData.ToString();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to fetch live gaming data");
+                return string.Empty;
+            }
+        }
+        
+        /// <summary>
+        /// Gets or creates a session for the given session ID.
+        /// Sessions store conversation history and preferences for multi-turn conversations.
+        /// </summary>
+        private static ConversationSession GetOrCreateSession(string sessionId, string language)
+        {
+            lock (SessionLock)
+            {
+                // Cleanup old sessions if memory is getting full
+                if (SessionMemory.Count > MaxSessionMemorySize)
+                {
+                    var oldestSession = SessionMemory.OrderBy(kvp => kvp.Value.LastActivity).FirstOrDefault();
+                    if (!string.IsNullOrEmpty(oldestSession.Key))
+                        SessionMemory.Remove(oldestSession.Key);
+                }
+
+                if (!SessionMemory.TryGetValue(sessionId, out var session))
+                {
+                    session = new ConversationSession
+                    {
+                        SessionId = sessionId,
+                        Language = language
+                    };
+                    SessionMemory[sessionId] = session;
+                }
+                else
+                {
+                    // Update language if it changes
+                    session.Language = language;
+                }
+
+                session.LastActivity = DateTimeOffset.UtcNow;
+                return session;
+            }
+        }
+
+        /// <summary>
+        /// Adds a user-assistant exchange to the session history for context in future requests.
+        /// </summary>
+        private static void AddToSessionHistory(ConversationSession session, string userMessage, string assistantResponse)
+        {
+            lock (SessionLock)
+            {
+                session.History.Add(("user", userMessage));
+                session.History.Add(("assistant", assistantResponse));
+
+                // Keep only the last N turns to avoid token limit issues
+                if (session.History.Count > MaxConversationTurns * 2)
+                {
+                    session.History = session.History.Skip(2).ToList();
+                }
+            }
         }
         
         private static string GetClientIp(HttpRequestData req)
@@ -335,12 +468,42 @@ namespace api
                         _logger.LogWarning(ex, "Search failed, continuing without RAG context");
                     }
                 }
+                
+                // Inject live gaming data if user is on videogames pages
+                try
+                {
+                    var gamingData = await GetLiveGamingDataAsync(chatRequest.CurrentPage);
+                    if (!string.IsNullOrEmpty(gamingData))
+                    {
+                        systemPrompt += gamingData;
+                        _logger.LogInformation("Injected live gaming data into prompt for videogames page");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to inject gaming data, continuing without it");
+                }
+
+                // Load or create session for conversation continuity
+                ConversationSession session = string.IsNullOrEmpty(chatRequest.SessionId)
+                    ? new ConversationSession { SessionId = Guid.NewGuid().ToString(), Language = chatRequest.Language }
+                    : GetOrCreateSession(chatRequest.SessionId, chatRequest.Language);
 
                 var messages = new List<ChatMessage>
                 {
                     new SystemChatMessage(systemPrompt)
                 };
                 
+                // Add previous exchanges from session history for conversation continuity
+                foreach (var (role, content) in session.History)
+                {
+                    if (role == "user")
+                        messages.Add(new UserChatMessage(content));
+                    else
+                        messages.Add(new AssistantChatMessage(content));
+                }
+                
+                // Add current message from user (or previous context if provided)
                 if (!string.IsNullOrWhiteSpace(chatRequest.Prev))
                 {
                     messages.Add(new UserChatMessage(chatRequest.Prev));
@@ -356,9 +519,13 @@ namespace api
                 var completion = await _chatClient.CompleteChatAsync(messages, options);
                 var result = completion.Value.Content[0].Text;
 
+                // Store this exchange in session history for future requests
+                AddToSessionHistory(session, chatRequest.Query, result);
+
                 var responseObj = new
                 {
                     query_id = Guid.NewGuid().ToString(),
+                    session_id = session.SessionId, // Return session ID to client for conversation continuity
                     result = result
                 };
                 var ok = req.CreateResponse(HttpStatusCode.OK);
@@ -386,6 +553,7 @@ namespace api
             public string? Prev { get; set; } // Optional: previous context
             public string Language { get; set; } = "en"; // User's language (en, es, pt)
             public PageContext? CurrentPage { get; set; } // Current page context for page-aware responses
+            public string? SessionId { get; set; } // Session ID for maintaining conversation history
         }
 
         public class PageContext
