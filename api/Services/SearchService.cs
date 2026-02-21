@@ -173,7 +173,8 @@ public class AzureSearchService : ISearchService
                 return string.Empty;
             }
 
-            _logger.LogInformation("Search found {Count} relevant results for query: {Query}", results.Count, query.Substring(0, Math.Min(50, query.Length)));
+            _logger.LogInformation("Search found {Count} relevant results for query: {Query}", 
+                results.Count, query.Length > 50 ? query.Substring(0, 50) + "..." : query);
             
             return $@"
 

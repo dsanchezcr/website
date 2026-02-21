@@ -364,6 +364,15 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
             return "unknown";
         }
         
+        /// <summary>
+        /// Safely truncates text for logging to prevent null reference exceptions. 
+        /// </summary>
+        private static string SafeTruncate(string? text, int maxLength = 50)
+        {
+            if (string.IsNullOrEmpty(text)) return "(empty)";
+            return text.Length > maxLength ? text.Substring(0, maxLength) + "..." : text;
+        }
+        
         // Thread-safe rate limit state class with atomic operations
         private sealed class RateLimitCounter
         {
@@ -586,7 +595,7 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                         {
                             systemPrompt += searchResults;
                             _logger.LogDebug("[{CorrelationId}] Injected search results for query: {Query}",
-                                correlationId, chatRequest.Query.Substring(0, Math.Min(50, chatRequest.Query.Length)));
+                                correlationId, SafeTruncate(chatRequest.Query));
                         }
                     }
                     catch (OperationCanceledException)
