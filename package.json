@@ -20,7 +20,7 @@
     "@docusaurus/plugin-sitemap": "^3.9.0",
     "@docusaurus/preset-classic": "^3.9.0",
     "@docusaurus/theme-mermaid": "^3.9.0",
-    "@dsanchezcr/colonesexchangerate": "^2.0.2",
+    "@dsanchezcr/colonesexchangerate": "^2.1.0",
     "@giscus/react": "^3.1.0",
     "@mdx-js/react": "^3.1.1",
     "clsx": "^2.1.1",
@@ -52,6 +52,9 @@
   },
   "overrides": {
     "lodash-es": "4.17.23",
-    "axios": "1.13.5"
+    "axios": "1.13.5",
+    "serve-handler": {
+      "minimatch": "^10.2.1"
+    }
   }
 }

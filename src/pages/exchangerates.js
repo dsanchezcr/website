@@ -100,11 +100,11 @@ export default function ExchangeRates() {
                     <div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--ifm-color-emphasis-200)' }}>
                         <span>Buy:</span>
-                        <strong>{formatRate(dollarExchangeRate.purchase?.value || dollarExchangeRate.purchase || dollarExchangeRate.buy)}</strong>
+                        <strong>{formatRate(dollarExchangeRate.purchase)}</strong>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                         <span>Sell:</span>
-                        <strong>{formatRate(dollarExchangeRate.sale?.value || dollarExchangeRate.sale || dollarExchangeRate.sell)}</strong>
+                        <strong>{formatRate(dollarExchangeRate.sale)}</strong>
                       </div>
                     </div>
                   )}
