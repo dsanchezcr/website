@@ -46,16 +46,44 @@ function stripAndExtractCode(content) {
   const codeBlocks = [];
   let codeBlockIndex = 0;
   
-  // Extract and index code blocks
-  const contentWithoutCode = content.replace(/```([\w]*)[\s\S]*?```/g, (match, lang) => {
+// Extract and index code blocks using a safe, linear scan (avoid regex backtracking)
+  let result = '';
+  let cursor = 0;
+  while (true) {
+    const startFence = content.indexOf('```', cursor);
+    if (startFence === -1) {
+      // No more fences, append the rest
+      result += content.slice(cursor);
+      break;
+    }
+    // Append text before the fence
+    result += content.slice(cursor, startFence);
+    // Find end of the fence line to get the optional language
+    const lineEnd = content.indexOf('\n', startFence + 3);
+    const afterFence = startFence + 3;
+    const fenceLineEnd = lineEnd === -1 ? content.length : lineEnd;
+    const fenceLine = content.slice(afterFence, fenceLineEnd);
+    const lang = fenceLine.trim();
+    // Code starts after the first newline after the opening fence (or immediately if none)
+    const codeStart = fenceLineEnd === content.length ? fenceLineEnd : fenceLineEnd + 1;
+    // Find matching closing fence
+    const endFence = content.indexOf('```', codeStart);
+    if (endFence === -1) {
+      // Unclosed code block; treat the rest as normal content
+      result += content.slice(startFence);
+      break;
+    }
+    const code = content.slice(codeStart, endFence);
     const language = lang || 'text';
     codeBlocks.push({
       language,
-      code: match.replace(/```[\w]*\n?/, '').replace(/```$/, '').trim()
+      code: code.trim()
     });
-    return `[CODE_BLOCK_${codeBlockIndex++}]`;
-  });
-  
+    result += `[CODE_BLOCK_${codeBlockIndex++}]`;
+    // Move cursor past the closing fence
+    cursor = endFence + 3;
+  }
+  const contentWithoutCode = result;
   const stripped = stripMarkdown(contentWithoutCode);
   
   return { stripped, codeBlocks };
@@ -285,9 +313,10 @@ function extractBlogPosts() {
       
       const { stripped: strippedContent, codeBlocks } = stripAndExtractCode(body);
       const externalLinks = extractLinks(body);
-      
+
       // Calculate reading time (average ~200 words per minute)
-      const wordCount = strippedContent.split(/\s+/).length;
+      const wordMatches = strippedContent.match(/\S+/g);
+      const wordCount = wordMatches ? wordMatches.length : 0;
       const readingTimeMinutes = Math.ceil(wordCount / 200);
       
       // Prepare code metadata string if there are code blocks

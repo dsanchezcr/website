@@ -479,18 +479,27 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                     }
                 }
 
-                using var reader = new StreamReader(req.Body);
-                var body = await reader.ReadToEndAsync();
-
-                // Validate actual body size
-                if (body.Length > MaxRequestBodySize)
+                // Safely read the request body with an enforced maximum size
+                var totalBytesRead = 0;
+                await using var limitedBodyStream = new MemoryStream();
+                var buffer = new byte[8192];
+                int bytesRead;
+                while ((bytesRead = await req.Body.ReadAsync(buffer, 0, buffer.Length)) > 0)
                 {
-                    _logger.LogWarning("[{CorrelationId}] Request body too large: {Size} bytes from IP: {ClientIp}",
-                        correlationId, body.Length, clientIp);
-                    var badRequest = req.CreateResponse(HttpStatusCode.RequestEntityTooLarge);
-                    await badRequest.WriteStringAsync("Request body too large (max 100 KB)");
-                    return badRequest;
+                    totalBytesRead += bytesRead;
+                    if (totalBytesRead > MaxRequestBodySize)
+                    {
+                        _logger.LogWarning("[{CorrelationId}] Request body too large: {Size} bytes from IP: {ClientIp}",
+                            correlationId, totalBytesRead, clientIp);
+                        var badRequest = req.CreateResponse(HttpStatusCode.RequestEntityTooLarge);
+                        await badRequest.WriteStringAsync("Request body too large (max 100 KB)");
+                        return badRequest;
+                    }
+                    await limitedBodyStream.WriteAsync(buffer, 0, bytesRead);
                 }
+                limitedBodyStream.Position = 0;
+                using var reader = new StreamReader(limitedBodyStream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: false);
+                var body = await reader.ReadToEndAsync();
 
                 var chatRequest = JsonSerializer.Deserialize<ChatRequest>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 if (chatRequest == null || string.IsNullOrWhiteSpace(chatRequest.Query))
@@ -582,7 +591,7 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                 var systemPrompt = GetSystemPrompt(chatRequest.Language, chatRequest.CurrentPage);
                 
                 // Create cancellation token with timeout for all async operations
-                using var cts = CancellationTokenSource.CreateLinkedTokenSource(new CancellationToken());
+                using var cts = new CancellationTokenSource();
                 cts.CancelAfter(TimeSpan.FromSeconds(30));  // 30-second timeout for entire operation
 
                 // Query Azure AI Search for relevant content (DIY RAG)

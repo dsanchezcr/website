@@ -255,13 +255,22 @@ public class ReindexContent
                         ["url"] = path,
                         ["category"] = "page",
                         ["tags"] = Array.Empty<string>(),
-                        ["date"] = null
+                        ["date"] = null,
+                        ["recent"] = false,
+                        ["metadata"] = null,
+                        ["wordCount"] = null,
+                        ["readingTimeMinutes"] = null,
+                        ["codeLanguages"] = Array.Empty<string>()
                     }));
                 }
             }
-            catch (OperationCanceledException)
+            catch (TaskCanceledException ex) when (ex.CancellationToken == ct || ex.InnerException is TimeoutException)
             {
-                _logger.LogWarning("Timeout crawling page: {Path}", path);
+                _logger.LogWarning("Timeout (30s) crawling page: {Path}", path);
+            }
+            catch (OperationCanceledException ex)
+            {
+                _logger.LogWarning(ex, "Operation cancelled crawling page: {Path}", path);
             }
             catch (Exception ex)
             {

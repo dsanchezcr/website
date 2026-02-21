@@ -109,9 +109,8 @@ public class AzureSearchService : ISearchService
                 IncludeTotalCount = true
             };
 
-            // Add sorting: prioritize search score, then recent flag, then date
+            // Add sorting: prioritize search score, then date
             searchOptions.OrderBy.Add("search.score() desc");
-            searchOptions.OrderBy.Add("recent desc");
             searchOptions.OrderBy.Add("date desc");
 
             // Add select fields

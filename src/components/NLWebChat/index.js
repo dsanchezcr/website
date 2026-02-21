@@ -77,18 +77,19 @@ const getPageContext = () => {
     }
   }
 
-  // Determine section from the path
+  // Determine section from the path (normalize locale prefixes like /es, /pt)
+  const normalizedPath = path.replace(/^\/(es|pt)(?=\/|$)/, '') || '/';
   let section = 'home';
-  if (path.startsWith('/blog')) section = 'blog';
-  else if (path.startsWith('/videogames')) section = 'videogames';
-  else if (path.startsWith('/disney')) section = 'disney';
-  else if (path.startsWith('/universal')) section = 'universal';
-  else if (path.startsWith('/about')) section = 'about';
-  else if (path.startsWith('/projects')) section = 'projects';
-  else if (path.startsWith('/contact')) section = 'contact';
-  else if (path.startsWith('/sponsors')) section = 'sponsors';
-  else if (path.startsWith('/weather')) section = 'weather';
-  else if (path.startsWith('/exchangerates')) section = 'exchangerates';
+  if (normalizedPath.startsWith('/blog')) section = 'blog';
+  else if (normalizedPath.startsWith('/videogames')) section = 'videogames';
+  else if (normalizedPath.startsWith('/disney')) section = 'disney';
+  else if (normalizedPath.startsWith('/universal')) section = 'universal';
+  else if (normalizedPath.startsWith('/about')) section = 'about';
+  else if (normalizedPath.startsWith('/projects')) section = 'projects';
+  else if (normalizedPath.startsWith('/contact')) section = 'contact';
+  else if (normalizedPath.startsWith('/sponsors')) section = 'sponsors';
+  else if (normalizedPath.startsWith('/weather')) section = 'weather';
+  else if (normalizedPath.startsWith('/exchangerates')) section = 'exchangerates';
 
   return { path, title, content, section };
 };
