@@ -41,6 +41,71 @@ function parseFrontmatter(content) {
   return { frontmatter, body: match[2] };
 }
 
+// Enhanced markdown stripping with code extraction
+function stripAndExtractCode(content) {
+  const codeBlocks = [];
+  let codeBlockIndex = 0;
+  
+// Extract and index code blocks using a safe, linear scan (avoid regex backtracking)
+  let result = '';
+  let cursor = 0;
+  while (true) {
+    const startFence = content.indexOf('```', cursor);
+    if (startFence === -1) {
+      // No more fences, append the rest
+      result += content.slice(cursor);
+      break;
+    }
+    // Append text before the fence
+    result += content.slice(cursor, startFence);
+    // Find end of the fence line to get the optional language
+    const lineEnd = content.indexOf('\n', startFence + 3);
+    const afterFence = startFence + 3;
+    const fenceLineEnd = lineEnd === -1 ? content.length : lineEnd;
+    const fenceLine = content.slice(afterFence, fenceLineEnd);
+    const lang = fenceLine.trim();
+    // Code starts after the first newline after the opening fence (or immediately if none)
+    const codeStart = fenceLineEnd === content.length ? fenceLineEnd : fenceLineEnd + 1;
+    // Find matching closing fence
+    const endFence = content.indexOf('```', codeStart);
+    if (endFence === -1) {
+      // Unclosed code block; treat the rest as normal content
+      result += content.slice(startFence);
+      break;
+    }
+    const code = content.slice(codeStart, endFence);
+    const language = lang || 'text';
+    codeBlocks.push({
+      language,
+      code: code.trim()
+    });
+    result += `[CODE_BLOCK_${codeBlockIndex++}]`;
+    // Move cursor past the closing fence
+    cursor = endFence + 3;
+  }
+  const contentWithoutCode = result;
+  const stripped = stripMarkdown(contentWithoutCode);
+  
+  return { stripped, codeBlocks };
+}
+
+// Extract external links from markdown
+function extractLinks(content) {
+  const links = [];
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let match;
+  
+  while ((match = linkRegex.exec(content)) !== null) {
+    const text = match[1];
+    const url = match[2];
+    if (!url.startsWith('/')) { // Only external links
+      links.push({ text, url });
+    }
+  }
+  
+  return links;
+}
+
 // Strip MDX/Markdown syntax to get plain text
 function stripMarkdown(content) {
   return content
@@ -148,6 +213,43 @@ function extractPages() {
       // Continue processing other files
     }
   }
+
+  // Add video games section pages
+  const videogamesDirs = [
+    { dir: 'videogames', subdir: null, title: 'Video Games', url: '/videogames' },
+    { dir: 'videogames', subdir: 'xbox', title: 'Xbox & PC', url: '/videogames/xbox' },
+    { dir: 'videogames', subdir: 'playstation', title: 'PlayStation', url: '/videogames/playstation' },
+    { dir: 'videogames', subdir: 'nintendo-switch', title: 'Nintendo Switch', url: '/videogames/nintendo-switch' },
+    { dir: 'videogames', subdir: 'meta-quest', title: 'Meta Quest', url: '/videogames/meta-quest' }
+  ];
+
+  for (const vg of videogamesDirs) {
+    try {
+      const indexPath = vg.subdir
+        ? path.join(__dirname, '..', vg.dir, vg.subdir, 'index.mdx')
+        : path.join(__dirname, '..', vg.dir, 'index.mdx');
+      if (fs.existsSync(indexPath)) {
+        const content = fs.readFileSync(indexPath, 'utf-8');
+        const { frontmatter, body } = parseFrontmatter(content);
+        const id = vg.subdir ? `videogames-${vg.subdir}` : 'videogames';
+
+        pages.push({
+          id: `page-${id}`,
+          title: frontmatter.title || vg.title,
+          description: frontmatter.description || '',
+          content: stripMarkdown(body).slice(0, 5000),
+          url: vg.url,
+          category: 'videogames',
+          tags: Array.isArray(frontmatter.keywords)
+            ? frontmatter.keywords.join(', ')
+            : (frontmatter.keywords || ''),
+          date: null
+        });
+      }
+    } catch (error) {
+      console.error(`Error processing videogames page ${vg.subdir || vg.dir}: ${error.message}`);
+    }
+  }
   
   return pages;
 }
@@ -160,12 +262,22 @@ function extractBlogPosts() {
     console.error(`Blog directory not found: ${blogDir}`);
     return posts;
   }
+
+  // Calculate 90-day window for "recent" flag
+  const ninetyDaysAgo = new Date();
+  ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
   
   let files;
   try {
     files = fs.readdirSync(blogDir)
       .filter(f => f.endsWith('.mdx') || f.endsWith('.md'))
-      .filter(f => !f.startsWith('_')); // Exclude partial files
+      .filter(f => !f.startsWith('_')) // Exclude partial files
+      .sort((a, b) => {
+        // Sort by date in filename descending (newest first)
+        const dateA = a.match(/^(\d{4}-\d{2}-\d{2})/) ? a.substring(0, 10) : '0000-00-00';
+        const dateB = b.match(/^(\d{4}-\d{2}-\d{2})/) ? b.substring(0, 10) : '0000-00-00';
+        return dateB.localeCompare(dateA);
+      });
   } catch (error) {
     console.error(`Error reading blog directory: ${error.message}`);
     return posts;
@@ -183,7 +295,12 @@ function extractBlogPosts() {
       
       // Extract date from filename (YYYY-MM-DD-Title.mdx)
       const dateMatch = file.match(/^(\d{4}-\d{2}-\d{2})/);
-      const date = dateMatch ? `${dateMatch[1]}T00:00:00Z` : null;
+      const dateStr = dateMatch ? dateMatch[1] : null;
+      const date = dateStr ? `${dateStr}T00:00:00Z` : null;
+      
+      // Calculate if post is recent (within last 90 days)
+      const postDate = dateStr ? new Date(dateStr) : null;
+      const isRecent = postDate && postDate >= ninetyDaysAgo;
       
       // Generate slug from filename - use frontmatter slug if available
       const slug = frontmatter.slug || file
@@ -194,7 +311,25 @@ function extractBlogPosts() {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
       
-      const strippedContent = stripMarkdown(body);
+      const { stripped: strippedContent, codeBlocks } = stripAndExtractCode(body);
+      const externalLinks = extractLinks(body);
+
+      // Calculate reading time (average ~200 words per minute)
+      const wordMatches = strippedContent.match(/\S+/g);
+      const wordCount = wordMatches ? wordMatches.length : 0;
+      const readingTimeMinutes = Math.ceil(wordCount / 200);
+      
+      // Prepare code metadata string if there are code blocks
+      const codeMetadata = codeBlocks.length > 0
+        ? `Contains code examples: ${codeBlocks.map(b => b.language).join(', ')}`
+        : '';
+      
+      // Prepare links metadata
+      const linkMetadata = externalLinks.length > 0
+        ? `References: ${externalLinks.slice(0, 3).map(l => l.text).join(', ')}`
+        : '';
+      
+      const allMetadata = [codeMetadata, linkMetadata].filter(Boolean).join('. ');
       
       posts.push({
         id: `blog-${slug}`,
@@ -206,7 +341,12 @@ function extractBlogPosts() {
         tags: Array.isArray(frontmatter.tags) 
           ? frontmatter.tags.join(', ') 
           : (frontmatter.tags || ''),
-        date
+        date,
+        recent: isRecent,
+        metadata: allMetadata,
+        wordCount,
+        readingTimeMinutes,
+        codeLanguages: codeBlocks.length > 0 ? codeBlocks.map(b => b.language) : []
       });
     } catch (error) {
       console.error(`Error processing blog post ${file}: ${error.message}`);

@@ -55,11 +55,51 @@ const translations = {
   },
 };
 
+// Extract current page context to provide the AI with page-aware responses
+const getPageContext = () => {
+  if (typeof window === 'undefined') return null;
+
+  const path = window.location.pathname;
+  const title = document.title?.replace(/\s*[|–-]\s*David Sanchez.*$/, '').trim() || '';
+
+  // Extract main content text from the page
+  const mainEl = document.querySelector('article') || document.querySelector('main');
+  let content = '';
+  if (mainEl) {
+    // Clone to avoid modifying the DOM
+    const clone = mainEl.cloneNode(true);
+    // Remove nav, footer, scripts, styles, chat widget itself
+    clone.querySelectorAll('nav, footer, script, style, .chatBubbleContainer, header').forEach(el => el.remove());
+    content = clone.textContent?.replace(/\s+/g, ' ').trim() || '';
+    // Limit to ~2000 chars to stay within API limits
+    if (content.length > 2000) {
+      content = content.substring(0, 2000);
+    }
+  }
+
+  // Determine section from the path (normalize locale prefixes like /es, /pt)
+  const normalizedPath = path.replace(/^\/(es|pt)(?=\/|$)/, '') || '/';
+  let section = 'home';
+  if (normalizedPath.startsWith('/blog')) section = 'blog';
+  else if (normalizedPath.startsWith('/videogames')) section = 'videogames';
+  else if (normalizedPath.startsWith('/disney')) section = 'disney';
+  else if (normalizedPath.startsWith('/universal')) section = 'universal';
+  else if (normalizedPath.startsWith('/about')) section = 'about';
+  else if (normalizedPath.startsWith('/projects')) section = 'projects';
+  else if (normalizedPath.startsWith('/contact')) section = 'contact';
+  else if (normalizedPath.startsWith('/sponsors')) section = 'sponsors';
+  else if (normalizedPath.startsWith('/weather')) section = 'weather';
+  else if (normalizedPath.startsWith('/exchangerates')) section = 'exchangerates';
+
+  return { path, title, content, section };
+};
+
 const NLWebChat = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [sessionId, setSessionId] = useState(null); // Store session ID for conversation continuity
   const messagesEndRef = useRef(null);
   
   // Use shared locale hook for consistency
@@ -93,6 +133,9 @@ const NLWebChat = () => {
     setIsLoading(true);
 
     try {
+      // Capture current page context for page-aware responses
+      const pageContext = getPageContext();
+
       // Use environment.js config to get the API endpoint
       const apiUrl = config.getApiEndpoint() + config.routes.chat;
       const response = await fetch(apiUrl, {
@@ -102,12 +145,18 @@ const NLWebChat = () => {
         },
         body: JSON.stringify({ 
           query: userMessage.text,
-          language: locale // Pass user's language for localized responses
+          language: locale, // Pass user's language for localized responses
+          currentPage: pageContext, // Pass current page context for page-aware responses
+          sessionId: sessionId // Pass session ID for conversation continuity
         }),
       });
 
       if (response.ok) {
         const data = await response.json();
+        // Store the session ID returned by the server for future requests
+        if (data.session_id) {
+          setSessionId(data.session_id);
+        }
         const botMessage = {
           id: Date.now() + 1,
           text: data.result,

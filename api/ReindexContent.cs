@@ -75,108 +75,132 @@ public class ReindexContent
         [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "reindex")] HttpRequestData req,
         CancellationToken cancellationToken)
     {
-        // Verify secret key to prevent unauthorized calls
-        var authHeader = req.Headers.TryGetValues("X-Reindex-Key", out var keys)
-            ? keys.FirstOrDefault()
-            : null;
+            var correlationId = Guid.NewGuid().ToString("D");
 
-        var expectedKey = Environment.GetEnvironmentVariable("REINDEX_SECRET_KEY");
+            // Verify secret key to prevent unauthorized calls
+            var authHeader = req.Headers.TryGetValues("X-Reindex-Key", out var keys)
+                ? keys.FirstOrDefault()
+                : null;
 
-        if (string.IsNullOrEmpty(expectedKey))
-        {
-            _logger.LogWarning("REINDEX_SECRET_KEY not configured");
-            var notConfigured = req.CreateResponse(HttpStatusCode.ServiceUnavailable);
-            await notConfigured.WriteStringAsync("Reindex endpoint not configured - missing REINDEX_SECRET_KEY");
-            return notConfigured;
-        }
+            var expectedKey = Environment.GetEnvironmentVariable("REINDEX_SECRET_KEY");
 
-        // Use constant-time comparison to prevent timing attacks
-        if (!SecureCompare(authHeader, expectedKey))
-        {
-            _logger.LogWarning("Reindex authentication failed");
-            var unauthorized = req.CreateResponse(HttpStatusCode.Unauthorized);
-            await unauthorized.WriteStringAsync("Invalid or missing X-Reindex-Key header");
-            return unauthorized;
-        }
-
-        if (!_searchService.IsConfigured)
-        {
-            _logger.LogWarning("Azure AI Search not configured");
-            var notConfigured = req.CreateResponse(HttpStatusCode.ServiceUnavailable);
-            await notConfigured.WriteStringAsync("Azure AI Search not configured");
-            return notConfigured;
-        }
-
-        _logger.LogInformation("Starting content reindexing...");
-
-        try
-        {
-            var results = new List<IndexResult>();
-
-            // Check if content was passed in the request body (from GitHub Actions)
-            var requestBody = await req.ReadAsStringAsync();
-            List<SearchDocument> pageDocs;
-            List<SearchDocument> blogDocs;
-
-            if (!string.IsNullOrWhiteSpace(requestBody) && requestBody.TrimStart().StartsWith("{"))
+            if (string.IsNullOrEmpty(expectedKey))
             {
-                // Content provided by GitHub Actions script
-                _logger.LogInformation("Using content from request body");
-                var providedContent = JsonSerializer.Deserialize<ProvidedContent>(requestBody,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                pageDocs = providedContent?.Pages?
-                    .Select(CreateSearchDocument)
-                    .ToList() ?? new List<SearchDocument>();
-
-                blogDocs = providedContent?.BlogPosts?
-                    .Select(CreateSearchDocument)
-                    .ToList() ?? new List<SearchDocument>();
-
-                _logger.LogInformation("Received {Pages} pages and {Posts} blog posts from request",
-                    pageDocs.Count, blogDocs.Count);
-            }
-            else
-            {
-                // Fallback: Crawl the website
-                _logger.LogInformation("No content in request body, falling back to website crawling");
-                pageDocs = await CrawlWebsitePagesAsync(cancellationToken);
-                blogDocs = await CrawlBlogFeedAsync(cancellationToken);
+                _logger.LogWarning("[{CorrelationId}] REINDEX_SECRET_KEY not configured", correlationId);
+                var notConfigured = req.CreateResponse(HttpStatusCode.ServiceUnavailable);
+                notConfigured.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                await notConfigured.WriteStringAsync(JsonSerializer.Serialize(new
+                {
+                    error = "Reindex endpoint not configured",
+                    errorId = correlationId
+                }));
+                return notConfigured;
             }
 
-            results.Add(new IndexResult("pages", pageDocs.Count));
-            results.Add(new IndexResult("blog", blogDocs.Count));
-
-            // Index GitHub repos (always fetched fresh from API)
-            var githubDocs = await IndexGitHubReposAsync(cancellationToken);
-            results.Add(new IndexResult("github", githubDocs.Count));
-
-            // Combine and upload all documents
-            var allDocs = pageDocs.Concat(blogDocs).Concat(githubDocs).ToList();
-            var indexed = await _searchService.IndexDocumentsAsync(allDocs, cancellationToken);
-
-            _logger.LogInformation("Reindexing complete: {Indexed} documents indexed", indexed);
-
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "application/json");
-            await response.WriteStringAsync(JsonSerializer.Serialize(new
+            // Use constant-time comparison to prevent timing attacks
+            if (!SecureCompare(authHeader, expectedKey))
             {
-                success = true,
-                indexed,
-                sources = results,
-                timestamp = DateTime.UtcNow.ToString("O")
-            }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
-            return response;
+                _logger.LogWarning("[{CorrelationId}] Reindex authentication failed", correlationId);
+                var unauthorized = req.CreateResponse(HttpStatusCode.Unauthorized);
+                unauthorized.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                await unauthorized.WriteStringAsync(JsonSerializer.Serialize(new
+                {
+                    error = "Invalid or missing X-Reindex-Key header",
+                    errorId = correlationId
+                }));
+                return unauthorized;
+            }
+
+            if (!_searchService.IsConfigured)
+            {
+                _logger.LogWarning("[{CorrelationId}] Azure AI Search not configured", correlationId);
+                var notConfigured = req.CreateResponse(HttpStatusCode.ServiceUnavailable);
+                notConfigured.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                await notConfigured.WriteStringAsync(JsonSerializer.Serialize(new
+                {
+                    error = "Azure AI Search not configured",
+                    errorId = correlationId
+                }));
+                return notConfigured;
+            }
+
+            _logger.LogInformation("[{CorrelationId}] Starting content reindexing", correlationId);
+
+            try
+            {
+                var results = new List<IndexResult>();
+
+                // Check if content was passed in the request body (from GitHub Actions)
+                var requestBody = await req.ReadAsStringAsync();
+                List<SearchDocument> pageDocs;
+                List<SearchDocument> blogDocs;
+
+                if (!string.IsNullOrWhiteSpace(requestBody) && requestBody.TrimStart().StartsWith("{"))
+                {
+                    // Content provided by GitHub Actions script
+                    _logger.LogInformation("[{CorrelationId}] Using content from request body", correlationId);
+                    var providedContent = JsonSerializer.Deserialize<ProvidedContent>(requestBody,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    pageDocs = providedContent?.Pages?
+                        .Select(CreateSearchDocument)
+                        .ToList() ?? new List<SearchDocument>();
+
+                    blogDocs = providedContent?.BlogPosts?
+                        .Select(CreateSearchDocument)
+                        .ToList() ?? new List<SearchDocument>();
+
+                    _logger.LogInformation("[{CorrelationId}] Received {Pages} pages and {Posts} blog posts",
+                        correlationId, pageDocs.Count, blogDocs.Count);
+                }
+                else
+                {
+                    // Fallback: Crawl the website
+                    _logger.LogInformation("[{CorrelationId}] No content in request body, falling back to website crawling",
+                        correlationId);
+                    pageDocs = await CrawlWebsitePagesAsync(cancellationToken);
+                    blogDocs = await CrawlBlogFeedAsync(cancellationToken);
+                }
+
+                results.Add(new IndexResult("pages", pageDocs.Count));
+                results.Add(new IndexResult("blog", blogDocs.Count));
+
+                // Index GitHub repos (always fetched fresh from API)
+                var githubDocs = await IndexGitHubReposAsync(cancellationToken);
+                results.Add(new IndexResult("github", githubDocs.Count));
+
+                // Combine and upload all documents
+                var allDocs = pageDocs.Concat(blogDocs).Concat(githubDocs).ToList();
+                var indexed = await _searchService.IndexDocumentsAsync(allDocs, cancellationToken);
+
+                _logger.LogInformation("[{CorrelationId}] Reindexing complete: {Indexed}/{Total} documents indexed",
+                    correlationId, indexed, allDocs.Count);
+
+                var response = req.CreateResponse(HttpStatusCode.OK);
+                response.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                await response.WriteStringAsync(JsonSerializer.Serialize(new
+                {
+                    success = true,
+                    correlationId = correlationId,
+                    indexed,
+                    sources = results,
+                    timestamp = DateTime.UtcNow.ToString("O")
+                }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "[{CorrelationId}] Reindexing failed", correlationId);
+                var error = req.CreateResponse(HttpStatusCode.InternalServerError);
+                error.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                await error.WriteStringAsync(JsonSerializer.Serialize(new
+                {
+                    error = "Reindexing failed. Check logs for details.",
+                    errorId = correlationId
+                }));
+                return error;
+            }
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Reindexing failed");
-            var error = req.CreateResponse(HttpStatusCode.InternalServerError);
-            error.Headers.Add("Content-Type", "application/json");
-            await error.WriteStringAsync(JsonSerializer.Serialize(new { error = ex.Message }));
-            return error;
-        }
-    }
 
     private static SearchDocument CreateSearchDocument(ContentItem item)
     {
@@ -194,7 +218,12 @@ public class ReindexContent
             ["url"] = item.Url,
             ["category"] = item.Category,
             ["tags"] = tagsArray,
-            ["date"] = item.Date
+            ["date"] = item.Date,
+            ["recent"] = item.Recent, // Index the recent flag for scoring
+            ["metadata"] = item.Metadata, // Code languages, links, etc.
+            ["wordCount"] = item.WordCount,
+            ["readingTimeMinutes"] = item.ReadingTimeMinutes,
+            ["codeLanguages"] = item.CodeLanguages ?? new List<string>()
         });
     }
 
@@ -202,6 +231,7 @@ public class ReindexContent
     {
         var websiteUrl = Environment.GetEnvironmentVariable("WEBSITE_URL") ?? "https://dsanchezcr.com";
         var httpClient = _httpClientFactory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromSeconds(30);  // 30-second timeout
         var documents = new List<SearchDocument>();
 
         foreach (var (id, path) in WebsitePages)
@@ -225,9 +255,22 @@ public class ReindexContent
                         ["url"] = path,
                         ["category"] = "page",
                         ["tags"] = Array.Empty<string>(),
-                        ["date"] = null
+                        ["date"] = null,
+                        ["recent"] = false,
+                        ["metadata"] = null,
+                        ["wordCount"] = null,
+                        ["readingTimeMinutes"] = null,
+                        ["codeLanguages"] = Array.Empty<string>()
                     }));
                 }
+            }
+            catch (TaskCanceledException ex) when (ex.CancellationToken == ct || ex.InnerException is TimeoutException)
+            {
+                _logger.LogWarning("Timeout (30s) crawling page: {Path}", path);
+            }
+            catch (OperationCanceledException ex)
+            {
+                _logger.LogWarning(ex, "Operation cancelled crawling page: {Path}", path);
             }
             catch (Exception ex)
             {
@@ -242,6 +285,7 @@ public class ReindexContent
     {
         var websiteUrl = Environment.GetEnvironmentVariable("WEBSITE_URL") ?? "https://dsanchezcr.com";
         var httpClient = _httpClientFactory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromSeconds(30);  // 30-second timeout
         var documents = new List<SearchDocument>();
 
         try
@@ -282,6 +326,10 @@ public class ReindexContent
             }
             
             _logger.LogInformation("Fetched {Count} blog posts from feed", documents.Count);
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.LogWarning("Timeout fetching blog feed");
         }
         catch (Exception ex)
         {
@@ -341,6 +389,7 @@ public class ReindexContent
     private async Task<List<SearchDocument>> IndexGitHubReposAsync(CancellationToken ct)
     {
         var httpClient = _httpClientFactory.CreateClient();
+        httpClient.Timeout = TimeSpan.FromSeconds(30);  // 30-second timeout
         httpClient.DefaultRequestHeaders.Add("User-Agent", "dsanchezcr-website-indexer");
         httpClient.DefaultRequestHeaders.Add("Accept", "application/vnd.github.v3+json");
 
@@ -378,6 +427,11 @@ public class ReindexContent
             
             _logger.LogInformation("Fetched {Count} public GitHub repositories", documents.Count);
             return documents;
+        }
+        catch (OperationCanceledException)
+        {
+            _logger.LogWarning("Timeout fetching GitHub repos");
+            return new List<SearchDocument>();
         }
         catch (Exception ex)
         {
@@ -420,6 +474,11 @@ public class ReindexContent
         public string Category { get; set; } = "";
         public string? Tags { get; set; }
         public string? Date { get; set; }
+        public bool Recent { get; set; } // Flag for recent blog posts (last 90 days)
+        public string? Metadata { get; set; } // Code languages, referenced resources, etc.
+        public int? WordCount { get; set; } // Article word count
+        public int? ReadingTimeMinutes { get; set; } // Estimated reading time
+        public List<string>? CodeLanguages { get; set; } // Languages in code blocks
     }
 
     private class BlogFeed
