@@ -101,11 +101,11 @@ export default function ExchangeRates() {
                     <div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--ifm-color-emphasis-200)' }}>
                         <span>Compra:</span>
-                        <strong>{formatRate(dollarExchangeRate.purchase?.value || dollarExchangeRate.buy)}</strong>
+                        <strong>{formatRate(dollarExchangeRate.purchase)}</strong>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
                         <span>Venta:</span>
-                        <strong>{formatRate(dollarExchangeRate.sale?.value || dollarExchangeRate.sell)}</strong>
+                        <strong>{formatRate(dollarExchangeRate.sale)}</strong>
                       </div>
                     </div>
                   )}
@@ -129,12 +129,12 @@ export default function ExchangeRates() {
                   {euroExchangeRate && (
                     <div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--ifm-color-emphasis-200)' }}>
-                        <span>Compra:</span>
-                        <strong>{formatRate(euroExchangeRate.purchase?.value || euroExchangeRate.buy)}</strong>
+                        <span>Colones:</span>
+                        <strong>{formatRate(euroExchangeRate.colones)}</strong>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                        <span>Venta:</span>
-                        <strong>{formatRate(euroExchangeRate.sale?.value || euroExchangeRate.sell)}</strong>
+                        <span>Dólares:</span>
+                        <strong>${euroExchangeRate.dollars?.toFixed(4) || 'N/A'}</strong>
                       </div>
                     </div>
                   )}
