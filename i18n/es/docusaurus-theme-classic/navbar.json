@@ -26,5 +26,9 @@
   "item.label.Video Games": {
     "message": "Videojuegos",
     "description": "Navbar item with label Video Games"
+  },
+  "item.label.3D Printing": {
+    "message": "Impresión 3D",
+    "description": "Navbar item with label 3D Printing"
   }
 }
