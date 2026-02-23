@@ -7,7 +7,7 @@ This repository contains the source code for my personal website and blog, [dsan
 
 ## ✨ About This Repository
 
-This website serves as a platform to share my thoughts on technology, software development, and other interests through blog posts. It also includes information about my projects, professional background, and a video games section showcasing my gaming profiles across Xbox, PlayStation, Nintendo Switch, and Meta Quest.
+This website serves as a platform to share my thoughts on technology, software development, and other interests through blog posts. It also includes information about my projects, professional background, volunteering experience, and a video games section showcasing my gaming profiles across Xbox, PlayStation, Nintendo Switch, and Meta Quest.
 
 ## 🏗️ Architecture
 
@@ -24,8 +24,9 @@ The site uses **Azure Static Web Apps** with a **managed API** architecture:
 │  │  • Blog posts       │    │  • /api/contact             │ │
 │  │  • Static pages     │    │  • /api/verify              │ │
 │  │  • i18n (en/es/pt)  │    │  • /api/weather             │ │
-│  │  • Video Games      │    │  • /api/online-users        │ │
-│  │    (Xbox/PSN/NSW/   │    │  • /api/nlweb/ask           │ │
+│  │  • Volunteering     │    │  • /api/online-users        │ │
+│  │  • Video Games      │    │  • /api/nlweb/ask           │ │
+│  │    (Xbox/PSN/NSW/   │    │                             │ │
 │  │     Meta Quest)     │    │                             │ │
 │  │                     │    │  • /api/health              │ │
 │  │                     │    │  • /api/reindex             │ │
