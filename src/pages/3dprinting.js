@@ -326,7 +326,13 @@ export default function PrintingPage() {
           <div style={cardStyle}>
             <span style={badgeStyle('#e05c00')}>{t.primaryLabel}</span>
             <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.4rem' }}>
-              <a href="https://bambulab.com/en/p1" target="_blank" rel="noopener noreferrer">{t.bambu.name}</a>
+              <a
+                href="https://bambulab.com/en/p1"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${t.bambu.name} (opens in new tab)`}>
+                {t.bambu.name}
+              </a>
             </h3>
             <p style={{ color: 'var(--ifm-font-color-secondary)', marginBottom: '1.25rem', lineHeight: 1.6 }}>
               {t.bambu.description}
