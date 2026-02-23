@@ -302,8 +302,8 @@ export default function PrintingPage() {
         position: 'relative',
         overflow: 'hidden',
       }}>
-        <div style={{ position: 'absolute', top: '15%', left: '8%', width: '180px', height: '180px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: '10%', right: '12%', width: '130px', height: '130px', borderRadius: '50%', background: 'rgba(255,255,255,0.07)', pointerEvents: 'none' }} />
+        <div aria-hidden="true" style={{ position: 'absolute', top: '15%', left: '8%', width: '180px', height: '180px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', pointerEvents: 'none' }} />
+        <div aria-hidden="true" style={{ position: 'absolute', bottom: '10%', right: '12%', width: '130px', height: '130px', borderRadius: '50%', background: 'rgba(255,255,255,0.07)', pointerEvents: 'none' }} />
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <h1 style={{ fontSize: '2.75rem', fontWeight: '800', marginBottom: '1rem', textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
             {t.heroTitle}
