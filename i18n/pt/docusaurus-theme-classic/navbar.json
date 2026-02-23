@@ -31,6 +31,10 @@
     "message": "Videogames",
     "description": "Navbar item with label Video Games"
   },
+  "item.label.3D Printing": {
+    "message": "Impressão 3D",
+    "description": "Navbar item with label 3D Printing"
+  },
   "item.label.Facebook": {
     "message": "Facebook",
     "description": "Navbar item with label Facebook"

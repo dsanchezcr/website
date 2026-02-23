@@ -230,6 +230,7 @@ const config = {
           {to: '/projects', label: 'Projects', position: 'left'},    
           {to: '/about', label: 'About', position: 'left'},
           {to: '/videogames', label: 'Video Games', position: 'left'},
+          {to: '/3dprinting', label: '3D Printing', position: 'left'},
           {to: '/contact', label: 'Contact', position: 'left'},
           {to: '/sponsors', label: 'Sponsors', position: 'right'},
           {
@@ -259,6 +260,10 @@ const config = {
               {
                 label: 'About',
                 to: '/about',
+              },
+              {
+                label: '3D Printing',
+                to: '/3dprinting',
               },
             ],
           },
