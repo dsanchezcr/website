@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '@theme/Layout';
 import { useLocale } from '@site/src/hooks';
 
@@ -235,6 +235,8 @@ const badgeStyle = (color) => ({
 });
 
 function PrintCard({ print, viewModelLabel }) {
+  const [imageError, setImageError] = useState(false);
+
   return (
     <div style={{ ...cardStyle, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
       <div style={{
@@ -246,15 +248,16 @@ function PrintCard({ print, viewModelLabel }) {
         alignItems: 'center',
         justifyContent: 'center',
       }}>
-        <img
-          src={print.image}
-          alt={print.title}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          onError={(e) => {
-            e.currentTarget.style.display = 'none';
-            e.currentTarget.parentElement.innerHTML = '<span style="font-size:3rem">🖨️</span>';
-          }}
-        />
+        {imageError ? (
+          <span style={{ fontSize: '3rem' }}>🖨️</span>
+        ) : (
+          <img
+            src={print.image}
+            alt={print.title}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={() => setImageError(true)}
+          />
+        )}
       </div>
       <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{print.title}</h3>
       <p style={{ margin: 0, color: 'var(--ifm-font-color-secondary)', fontSize: '0.9rem', lineHeight: 1.6, flex: 1 }}>

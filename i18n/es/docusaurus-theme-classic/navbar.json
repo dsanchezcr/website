@@ -23,6 +23,10 @@
     "message": "Acerca de",
     "description": "Navbar item with label About"
   },
+  "item.label.Volunteering": {
+    "message": "Voluntariado",
+    "description": "Navbar item with label Volunteering"
+  },
   "item.label.Video Games": {
     "message": "Videojuegos",
     "description": "Navbar item with label Video Games"
@@ -30,5 +34,9 @@
   "item.label.3D Printing": {
     "message": "Impresión 3D",
     "description": "Navbar item with label 3D Printing"
+  },
+  "item.label.Sponsors": {
+    "message": "Patrocinadores",
+    "description": "Navbar item with label Sponsors"
   }
 }

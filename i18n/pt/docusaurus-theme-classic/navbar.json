@@ -35,6 +35,10 @@
     "message": "Impressão 3D",
     "description": "Navbar item with label 3D Printing"
   },
+  "item.label.Sponsors": {
+    "message": "Patrocinadores",
+    "description": "Navbar item with label Sponsors"
+  },
   "item.label.Facebook": {
     "message": "Facebook",
     "description": "Navbar item with label Facebook"

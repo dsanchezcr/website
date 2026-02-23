@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@theme/Layout';
 import { config } from '../config/environment';
 import { useLocale } from '@site/src/hooks';
@@ -90,6 +90,26 @@ function ContactForm() {
   const { executeRecaptcha } = useGoogleReCaptcha();
   
   const t = translations[lang] || translations.en;
+
+  // Load pre-populated values from URL query parameters
+  // Safe: React auto-escapes text content, and backend validates all input (10-5000 char limit, reCAPTCHA, etc.)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const subject = params.get('subject');
+      const msg = params.get('message');
+      
+      if (subject) {
+        // Prepend subject to message if both exist
+        const fullMessage = msg 
+          ? `Subject: ${subject}\n\n${msg}`
+          : `Subject: ${subject}`;
+        setMessage(fullMessage);
+      } else if (msg) {
+        setMessage(msg);
+      }
+    }
+  }, []);
 
   // Client-side validation
   const validateForm = () => {
