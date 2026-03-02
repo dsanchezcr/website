@@ -9,19 +9,19 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
-using Azure.AI.OpenAI;
+using Azure.AI.Inference;
 using System.Collections.Generic;
 using Azure;
-using OpenAI.Chat;
 using api.Services;
 
 namespace api
 {
-    public class ChatWithOpenAI
+    public class ChatWithFoundry
     {
-        private readonly ILogger<ChatWithOpenAI> _logger;
+        private readonly ILogger<ChatWithFoundry> _logger;
         private readonly IMemoryCache _cache;
-        private readonly ChatClient _chatClient;
+        private readonly ChatCompletionsClient _chatClient;
+        private readonly string _foundryModel;
         private readonly ISearchService _searchService;
         private readonly IGamingCacheService _gamingCacheService;
         
@@ -178,8 +178,8 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
             "what are your instructions", "what are your rules", "system prompt"
         };
         
-        public ChatWithOpenAI(
-            ILogger<ChatWithOpenAI> logger,
+        public ChatWithFoundry(
+            ILogger<ChatWithFoundry> logger,
             IMemoryCache cache,
             ISearchService searchService,
             IGamingCacheService gamingCacheService)
@@ -189,18 +189,18 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
             _searchService = searchService;
             _gamingCacheService = gamingCacheService;
             
-            // Use environment variables for Azure OpenAI configuration
-            string? endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
-            string? key = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY");
-            string? deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT");
+            // Use environment variables for Microsoft Foundry (Azure AI Inference) configuration
+            string? endpoint = Environment.GetEnvironmentVariable("AZURE_INFERENCE_ENDPOINT");
+            string? key = Environment.GetEnvironmentVariable("AZURE_INFERENCE_KEY");
+            string? modelName = Environment.GetEnvironmentVariable("AZURE_INFERENCE_MODEL");
             
-            if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key) || string.IsNullOrEmpty(deploymentName))
+            if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key) || string.IsNullOrEmpty(modelName))
             {
-                throw new InvalidOperationException("Azure OpenAI configuration is missing. Please set AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_KEY, and AZURE_OPENAI_DEPLOYMENT environment variables.");
+                throw new InvalidOperationException("Microsoft Foundry configuration is missing. Please set AZURE_INFERENCE_ENDPOINT, AZURE_INFERENCE_KEY, and AZURE_INFERENCE_MODEL environment variables.");
             }
             
-            AzureOpenAIClient azureClient = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(key));
-            _chatClient = azureClient.GetChatClient(deploymentName);
+            _chatClient = new ChatCompletionsClient(new Uri(endpoint), new AzureKeyCredential(key));
+            _foundryModel = modelName;
         }
         
         private async Task<string> GetLiveGamingDataAsync(PageContext? currentPage)
@@ -441,13 +441,13 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                 query.Contains(keyword, StringComparison.OrdinalIgnoreCase));
         }
 
-        [Function("ChatWithOpenAI")]
+        [Function("ChatWithFoundry")]
         public async Task<HttpResponseData> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "nlweb/ask")] HttpRequestData req)
         {
             var clientIp = GetClientIp(req);
             var correlationId = Guid.NewGuid().ToString("D");
-            _logger.LogInformation("[{CorrelationId}] ChatWithOpenAI triggered from IP: {ClientIp}", correlationId, clientIp);
+            _logger.LogInformation("[{CorrelationId}] ChatWithFoundry triggered from IP: {ClientIp}", correlationId, clientIp);
 
             try
             {
@@ -644,38 +644,41 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                 _logger.LogInformation("[{CorrelationId}] Using session {SessionId} from IP: {ClientIp}",
                     correlationId, session.SessionId, clientIp);
 
-                var messages = new List<ChatMessage>
+                var requestOptions = new ChatCompletionsOptions
                 {
-                    new SystemChatMessage(systemPrompt)
+                    Model = _foundryModel
                 };
+
+                requestOptions.Messages.Add(new ChatRequestSystemMessage(systemPrompt));
                 
                 // Add previous exchanges from session history for conversation continuity
                 foreach (var (role, content) in session.History)
                 {
                     if (role == "user")
-                        messages.Add(new UserChatMessage(content));
+                        requestOptions.Messages.Add(new ChatRequestUserMessage(content));
                     else
-                        messages.Add(new AssistantChatMessage(content));
+                        requestOptions.Messages.Add(new ChatRequestAssistantMessage(content));
                 }
                 
                 // Add current message from user (or previous context if provided)
                 if (!string.IsNullOrWhiteSpace(chatRequest.Prev))
                 {
-                    messages.Add(new UserChatMessage(chatRequest.Prev));
+                    requestOptions.Messages.Add(new ChatRequestUserMessage(chatRequest.Prev));
                 }
-                messages.Add(new UserChatMessage(chatRequest.Query));
+                requestOptions.Messages.Add(new ChatRequestUserMessage(chatRequest.Query));
 
-                var options = new ChatCompletionOptions
-                {
-                    MaxOutputTokenCount = 800, // Allow longer responses for detailed content
-                    Temperature = 0.5f // Lower temperature for more focused responses
-                };
+                requestOptions.MaxTokens = 800;
+                requestOptions.Temperature = 0.5f;
 
                 var sw = System.Diagnostics.Stopwatch.StartNew();
-                var completion = await _chatClient.CompleteChatAsync(messages, options, cts.Token);
+                var completion = await _chatClient.CompleteAsync(requestOptions, cts.Token);
                 sw.Stop();
 
-                var result = completion.Value.Content[0].Text;
+                var result = completion.Value.Choices.FirstOrDefault()?.Message?.Content;
+                if (string.IsNullOrWhiteSpace(result))
+                {
+                    throw new InvalidOperationException("Model response did not contain any content.");
+                }
 
                 _logger.LogInformation("[{CorrelationId}] Chat completion in {ElapsedMs}ms from IP: {ClientIp}",
                     correlationId, sw.ElapsedMilliseconds, clientIp);
@@ -714,7 +717,7 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "[{CorrelationId}] Error in ChatWithOpenAI from IP: {ClientIp}", correlationId, clientIp);
+                _logger.LogError(ex, "[{CorrelationId}] Error in ChatWithFoundry from IP: {ClientIp}", correlationId, clientIp);
                 var error = req.CreateResponse(HttpStatusCode.InternalServerError);
                 error.Headers.Add("Content-Type", "application/json; charset=utf-8");
                 var errorObj = new {

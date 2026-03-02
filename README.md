@@ -51,7 +51,7 @@ Both frontend and backend are deployed together from a single repository, with t
 - **[.NET 9](https://dotnet.microsoft.com/)**: Runtime
 - **[Azure Functions](https://azure.microsoft.com/services/functions/)**: Serverless compute (isolated worker model)
 - **[Azure Communication Services](https://azure.microsoft.com/services/communication-services/)**: Email delivery
-- **[Azure OpenAI](https://azure.microsoft.com/services/cognitive-services/openai-service/)**: AI chat assistant
+- **[Microsoft Foundry](https://learn.microsoft.com/azure/foundry/)**: AI chat assistant (Claude model)
 - **[Azure AI Search](https://azure.microsoft.com/services/search/)**: RAG for contextual AI responses
 - **[Azure Table Storage](https://azure.microsoft.com/services/storage/tables/)**: Token & gaming profile persistence
 - **[OpenXBL API](https://xbl.io/)**: Xbox Live profile data
@@ -158,8 +158,9 @@ az deployment group create \
   --parameters \
     azureCommunicationServicesConnectionString="<secret>" \
     recaptchaSecretKey="<secret>" \
-    azureOpenAIEndpoint="<endpoint>" \
-    azureOpenAIKey="<secret>"
+    azureInferenceEndpoint="<endpoint-with-/models>" \
+    azureInferenceKey="<secret>" \
+    azureInferenceModel="claude-3-5-sonnet"
 ```
 
 See [infra/README.md](infra/README.md) for complete deployment instructions.
@@ -172,7 +173,7 @@ See [infra/README.md](infra/README.md) for complete deployment instructions.
 │   ├── VerifyEmail.cs      # Email verification
 │   ├── GetWeather.cs       # Weather data
 │   ├── GetOnlineUsers.cs   # Analytics
-│   ├── ChatWithOpenAI.cs   # AI chat with RAG
+│   ├── ChatWithOpenAI.cs   # AI chat (Foundry + Claude) with RAG
 │   ├── HealthCheck.cs      # Health monitoring
 │   ├── ReindexContent.cs   # Search index updates
 │   ├── GetXboxProfile.cs   # Xbox Live profile data

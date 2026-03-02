@@ -5,7 +5,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
 using Azure.Communication.Email;
-using Azure.AI.OpenAI;
+using Azure.AI.Inference;
 using Azure;
 using Google.Analytics.Data.V1Beta;
 using Google.Apis.Auth.OAuth2;
@@ -109,10 +109,10 @@ public class HealthCheck
         { "AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING", ("Azure Communication Services connection string for sending emails", true) },
         { "RECAPTCHA_SECRET_KEY", ("Google reCAPTCHA v3 secret key for form protection", true) },
         
-        // Azure OpenAI / Chat
-        { "AZURE_OPENAI_ENDPOINT", ("Azure OpenAI service endpoint URL", true) },
-        { "AZURE_OPENAI_KEY", ("Azure OpenAI API key", true) },
-        { "AZURE_OPENAI_DEPLOYMENT", ("Azure OpenAI deployment/model name", true) },
+        // Microsoft Foundry / Chat
+        { "AZURE_INFERENCE_ENDPOINT", ("Microsoft Foundry inference endpoint URL", true) },
+        { "AZURE_INFERENCE_KEY", ("Microsoft Foundry inference API key", true) },
+        { "AZURE_INFERENCE_MODEL", ("Microsoft Foundry model deployment name (Claude)", true) },
         
         // Google Analytics (optional - health check degrades gracefully if missing)
         { "GOOGLE_ANALYTICS_PROPERTY_ID", ("GA4 property ID for analytics", false) },
@@ -200,7 +200,7 @@ public class HealthCheck
         {
             CheckAzureCommunicationServicesAsync(cancellationToken),
             CheckRecaptchaAsync(cancellationToken),
-            CheckAzureOpenAIAsync(cancellationToken),
+            CheckMicrosoftFoundryAsync(cancellationToken),
             CheckGoogleAnalyticsAsync(cancellationToken),
             CheckOpenMeteoApiAsync(cancellationToken),
             CheckMemoryCacheAsync(),
@@ -361,28 +361,28 @@ public class HealthCheck
         return health;
     }
 
-    private Task<ServiceHealth> CheckAzureOpenAIAsync(CancellationToken cancellationToken)
+    private Task<ServiceHealth> CheckMicrosoftFoundryAsync(CancellationToken cancellationToken)
     {
         var health = new ServiceHealth
         {
-            Name = "Azure OpenAI"
+            Name = "Microsoft Foundry"
         };
 
-        var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
-        var key = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY");
-        var deployment = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT");
+        var endpoint = Environment.GetEnvironmentVariable("AZURE_INFERENCE_ENDPOINT");
+        var key = Environment.GetEnvironmentVariable("AZURE_INFERENCE_KEY");
+        var model = Environment.GetEnvironmentVariable("AZURE_INFERENCE_MODEL");
 
         if (string.IsNullOrWhiteSpace(endpoint))
         {
-            health.MissingConfigurations.Add("AZURE_OPENAI_ENDPOINT");
+            health.MissingConfigurations.Add("AZURE_INFERENCE_ENDPOINT");
         }
         if (string.IsNullOrWhiteSpace(key))
         {
-            health.MissingConfigurations.Add("AZURE_OPENAI_KEY");
+            health.MissingConfigurations.Add("AZURE_INFERENCE_KEY");
         }
-        if (string.IsNullOrWhiteSpace(deployment))
+        if (string.IsNullOrWhiteSpace(model))
         {
-            health.MissingConfigurations.Add("AZURE_OPENAI_DEPLOYMENT");
+            health.MissingConfigurations.Add("AZURE_INFERENCE_MODEL");
         }
 
         if (health.MissingConfigurations.Count > 0)
@@ -397,8 +397,8 @@ public class HealthCheck
             var sw = System.Diagnostics.Stopwatch.StartNew();
             
             // Create client to validate configuration (validates endpoint URL format and key)
-            var azureClient = new AzureOpenAIClient(new Uri(endpoint!), new AzureKeyCredential(key!));
-            _ = azureClient.GetChatClient(deployment!); // Validate deployment name is accepted
+            _ = new ChatCompletionsClient(new Uri(endpoint!), new AzureKeyCredential(key!));
+            _ = new ChatCompletionsOptions { Model = model! };
             
             sw.Stop();
 
@@ -410,7 +410,7 @@ public class HealthCheck
         {
             health.Status = HealthStatus.Unhealthy;
             health.Message = $"Configuration error: {ex.Message}";
-            _logger.LogError(ex, "Azure OpenAI health check failed");
+            _logger.LogError(ex, "Microsoft Foundry health check failed");
         }
 
         return Task.FromResult(health);

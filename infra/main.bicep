@@ -73,15 +73,15 @@ param azureCommunicationServicesConnectionString string = ''
 @secure()
 param recaptchaSecretKey string = ''
 
-@description('Azure OpenAI endpoint URL.')
-param azureOpenAIEndpoint string = ''
+@description('Microsoft Foundry inference endpoint URL (must include /models).')
+param azureInferenceEndpoint string = ''
 
-@description('Azure OpenAI API key.')
+@description('Microsoft Foundry inference API key.')
 @secure()
-param azureOpenAIKey string = ''
+param azureInferenceKey string = ''
 
-@description('Azure OpenAI deployment name.')
-param azureOpenAIDeployment string = 'gpt-4'
+@description('Microsoft Foundry model deployment name (Claude).')
+param azureInferenceModel string = 'claude-3-5-sonnet'
 
 @description('Google Analytics Property ID for the online users widget.')
 param googleAnalyticsPropertyId string = ''
@@ -218,10 +218,10 @@ resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2024-04-01' = {
     // Google reCAPTCHA v3
     RECAPTCHA_SECRET_KEY: recaptchaSecretKey
     
-    // Azure OpenAI configuration
-    AZURE_OPENAI_ENDPOINT: azureOpenAIEndpoint
-    AZURE_OPENAI_KEY: azureOpenAIKey
-    AZURE_OPENAI_DEPLOYMENT: azureOpenAIDeployment
+    // Microsoft Foundry configuration
+    AZURE_INFERENCE_ENDPOINT: azureInferenceEndpoint
+    AZURE_INFERENCE_KEY: azureInferenceKey
+    AZURE_INFERENCE_MODEL: azureInferenceModel
     
     // Azure AI Search (RAG for chatbot)
     AZURE_SEARCH_ENDPOINT: 'https://${searchService.name}.search.windows.net'

@@ -35,8 +35,8 @@
     "websiteUrl": {
       "value": "https://dsanchezcr.com"
     },
-    "azureOpenAIDeployment": {
-      "value": "gpt-4"
+    "azureInferenceModel": {
+      "value": "claude-3-5-sonnet"
     },
     "storageAccountName": {
       "value": "dsanchezcrwebstorage"

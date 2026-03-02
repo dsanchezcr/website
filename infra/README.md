@@ -47,8 +47,9 @@ az deployment group create \
   --parameters \
     azureCommunicationServicesConnectionString="<your-acs-connection-string>" \
     recaptchaSecretKey="<your-recaptcha-secret>" \
-    azureOpenAIEndpoint="<your-openai-endpoint>" \
-    azureOpenAIKey="<your-openai-key>" \
+   azureInferenceEndpoint="<your-foundry-endpoint-with-/models>" \
+   azureInferenceKey="<your-foundry-api-key>" \
+   azureInferenceModel="claude-3-5-sonnet" \
     googleAnalyticsPropertyId="<your-ga-property-id>" \
     googleAnalyticsCredentialsJson="<your-ga-credentials-json>"
 ```
@@ -70,9 +71,9 @@ The following environment variables are configured as app settings for the manag
 |----------|-------------|----------|
 | `AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING` | Connection string for Azure Communication Services (email) | Yes |
 | `RECAPTCHA_SECRET_KEY` | Google reCAPTCHA v3 secret key | Yes |
-| `AZURE_OPENAI_ENDPOINT` | Azure OpenAI service endpoint | No* |
-| `AZURE_OPENAI_KEY` | Azure OpenAI API key | No* |
-| `AZURE_OPENAI_DEPLOYMENT` | Azure OpenAI model deployment name | No* |
+| `AZURE_INFERENCE_ENDPOINT` | Microsoft Foundry inference endpoint (`...services.ai.azure.com/models`) | No* |
+| `AZURE_INFERENCE_KEY` | Microsoft Foundry inference API key | No* |
+| `AZURE_INFERENCE_MODEL` | Microsoft Foundry model deployment name (Claude) | No* |
 | `GOOGLE_ANALYTICS_PROPERTY_ID` | GA4 property ID | No* |
 | `GOOGLE_ANALYTICS_CREDENTIALS_JSON` | GA4 service account credentials JSON | No* |
 | `AZURE_SEARCH_ENDPOINT` | Azure AI Search service endpoint | No* |
