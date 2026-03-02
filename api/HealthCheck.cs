@@ -361,7 +361,7 @@ public class HealthCheck
         return health;
     }
 
-    private Task<ServiceHealth> CheckMicrosoftFoundryAsync(CancellationToken cancellationToken)
+    private async Task<ServiceHealth> CheckMicrosoftFoundryAsync(CancellationToken cancellationToken)
     {
         var health = new ServiceHealth
         {
@@ -389,31 +389,48 @@ public class HealthCheck
         {
             health.Status = HealthStatus.Unhealthy;
             health.Message = $"Missing configuration: {string.Join(", ", health.MissingConfigurations)}";
-            return Task.FromResult(health);
+            return health;
         }
 
         try
         {
             var sw = System.Diagnostics.Stopwatch.StartNew();
             
-            // Create client to validate configuration (validates endpoint URL format and key)
-            _ = new ChatCompletionsClient(new Uri(endpoint!), new AzureKeyCredential(key!));
-            _ = new ChatCompletionsOptions { Model = model! };
+            // Create client to validate connectivity
+            var client = new ChatCompletionsClient(new Uri(endpoint!), new AzureKeyCredential(key!));
+            
+            // Perform a minimal inference request to verify connectivity and auth
+            // Use a single token request to minimize cost and latency
+            var options = new ChatCompletionsOptions
+            {
+                Messages = { new ChatRequestUserMessage("ping") },
+                Model = model!,
+                MaxTokens = 1,
+                Temperature = 0
+            };
+            
+            await client.CompleteAsync(options, cancellationToken);
             
             sw.Stop();
 
             health.Status = HealthStatus.Healthy;
-            health.Message = "Configuration valid";
+            health.Message = "Connectivity verified";
             health.ResponseTimeMs = sw.ElapsedMilliseconds;
+        }
+        catch (RequestFailedException ex)
+        {
+            health.Status = HealthStatus.Unhealthy;
+            health.Message = $"API Error: {ex.ErrorCode} - {ex.Message}";
+            _logger.LogError(ex, "Microsoft Foundry health check API failure");
         }
         catch (Exception ex)
         {
             health.Status = HealthStatus.Unhealthy;
-            health.Message = $"Configuration error: {ex.Message}";
-            _logger.LogError(ex, "Microsoft Foundry health check failed");
+            health.Message = $"Connection error: {ex.Message}";
+            _logger.LogError(ex, "Microsoft Foundry health check connection failed");
         }
 
-        return Task.FromResult(health);
+        return health;
     }
 
     private Task<ServiceHealth> CheckGoogleAnalyticsAsync(CancellationToken cancellationToken)
