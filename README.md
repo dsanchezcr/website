@@ -173,7 +173,7 @@ See [infra/README.md](infra/README.md) for complete deployment instructions.
 │   ├── VerifyEmail.cs      # Email verification
 │   ├── GetWeather.cs       # Weather data
 │   ├── GetOnlineUsers.cs   # Analytics
-│   ├── ChatWithOpenAI.cs   # AI chat (Foundry + Claude) with RAG
+│   ├── ChatWithFoundry.cs  # AI chat (Foundry + Claude) with RAG
 │   ├── HealthCheck.cs      # Health monitoring
 │   ├── ReindexContent.cs   # Search index updates
 │   ├── GetXboxProfile.cs   # Xbox Live profile data

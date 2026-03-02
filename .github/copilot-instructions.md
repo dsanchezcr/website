@@ -25,7 +25,7 @@ Located in `api/` directory:
 - **VerifyEmail.cs**: Email verification endpoint (`/api/verify`) that completes the contact form submission after user clicks verification link
 - **GetWeather.cs**: Weather data endpoint (`/api/weather`)
 - **GetOnlineUsers.cs**: Analytics endpoint (`/api/online-users`) with Google Analytics Data API (24-hour visitor count)
-- **ChatWithOpenAI.cs**: AI chat endpoint (`/api/nlweb/ask`) using Microsoft Foundry (Claude) with RAG from Azure AI Search
+- **ChatWithFoundry.cs**: AI chat endpoint (`/api/nlweb/ask`) using Microsoft Foundry (Claude) with RAG from Azure AI Search
 - **HealthCheck.cs**: Health monitoring endpoint (`/api/health`) that validates all service configurations and connectivity
 - **ReindexContent.cs**: Search index update endpoint (`/api/reindex`) with secret key authentication, hybrid content indexing
 - **GetXboxProfile.cs**: Xbox profile endpoint (`/api/gaming/xbox`) using OpenXBL API with Table Storage caching
