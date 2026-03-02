@@ -230,6 +230,7 @@ const config = {
           {to: '/projects', label: 'Projects', position: 'left'},          
           {to: '/volunteering', label: 'Volunteering', position: 'left'},
           {to: '/videogames', label: 'Video Games', position: 'left'},
+          {to: '/movies', label: 'Movies', position: 'left'},
           {to: '/3dprinting', label: '3D Printing', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
           {to: '/contact', label: 'Contact', position: 'left'},

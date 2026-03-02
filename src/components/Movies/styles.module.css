@@ -1,0 +1,188 @@
+/* ============================================
+   Movies Components - Shared Styles
+   ============================================ */
+
+.movieCard {
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 14px;
+  background: var(--ifm-card-background-color, var(--content-background));
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+
+.movieCard:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.movieCardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.movieCardLink:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+.movieCardContent {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.5rem;
+}
+
+.posterContainer {
+  width: 120px;
+  height: 180px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--ifm-color-emphasis-100);
+  flex-shrink: 0;
+}
+
+.posterImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.posterPlaceholder {
+  width: 120px;
+  height: 180px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--ifm-color-emphasis-100), var(--ifm-color-emphasis-200));
+  flex-shrink: 0;
+}
+
+.movieInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.movieTitle {
+  margin: 0 0 0.75rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ifm-heading-color);
+}
+
+.metaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.metaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.metaLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ifm-color-emphasis-600);
+  font-weight: 600;
+}
+
+.metaValue {
+  font-size: 0.95rem;
+  color: var(--ifm-font-color-base);
+}
+
+.ratingRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.ratingLabel {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ifm-color-emphasis-600);
+  font-weight: 600;
+}
+
+.ratingValue {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ifm-color-primary);
+}
+
+.ratingPending {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+.reviewText {
+  margin: 0 0 0.9rem;
+  font-size: 0.95rem;
+  color: var(--ifm-font-color-secondary);
+  line-height: 1.6;
+}
+
+.reviewLabel {
+  font-weight: 700;
+  color: var(--ifm-font-color-base);
+}
+
+.genresRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.genresLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ifm-color-emphasis-600);
+  font-weight: 600;
+}
+
+.genreChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.genreChip {
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  font-size: 0.78rem;
+  color: var(--ifm-font-color-secondary);
+}
+
+@media (max-width: 640px) {
+  .movieCardContent {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .posterContainer,
+  .posterPlaceholder {
+    width: 160px;
+    height: 240px;
+  }
+
+  .metaGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ratingRow {
+    justify-content: center;
+  }
+
+  .genreChips {
+    justify-content: center;
+  }
+}
