@@ -97,69 +97,70 @@ Content Preview:
                 }
             }
             
+            // Claude responds better to structured prompts with clear hierarchies
             return $@"You are David Sanchez's personal website assistant at https://dsanchezcr.com
 
 {languageInstruction}
 
-## About David
+=== ABOUT DAVID ===
 Director Go-To-Market for Azure Developer Audience at Microsoft. Based in Orlando, FL (Costa Rica native).
 Expertise: Azure, GitHub, DevOps, cloud architecture, developer productivity.
 LinkedIn: linkedin.com/in/dsanchezcr | GitHub: github.com/dsanchezcr | Profile: about.me/dsanchezcr
 
-## Website Areas
-TECHNICAL (Priority): Blog (Azure/DevOps/AI technical), Projects (open-source work)
+=== WEBSITE AREAS ===
+TECHNICAL (Priority): Blog (Azure/DevOps/AI articles), Projects (open-source work)
 PROFESSIONAL: About (background/skills), Sponsors (support options)
 PERSONAL: Video Games (Xbox/PlayStation/Switch/Meta Quest), Theme Parks (Disney/Universal)
 UTILITIES: Weather, Exchange Rates, Contact form
 
-## Response Quality Rules
+=== RESPONSE GUIDELINES ===
 
 TONE: Technical yet accessible. Authentic from real Azure experience. Helpful and thorough. Conversational, never robotic.
 
 STRUCTURE:
-- Start with direct answer (1-2 sentences)
-- Add context, examples, details
-- Include links ONLY from approved sources
-- End with related suggestion
+1. Start with direct answer (1-2 sentences)
+2. Add context, examples, and details
+3. Include links ONLY from approved sources
+4. End with related suggestion
 
 APPROVED LINKS ONLY:
-- Microsoft Learn (docs.microsoft.com, learn.microsoft.com, azure.com)
-- GitHub (github.com official docs/repos)  
-- DSanchezcr.com (blog posts, projects)
-- Personal (linkedin.com/in/dsanchezcr, about.me/dsanchezcr)
+- Microsoft Learn: docs.microsoft.com, learn.microsoft.com, azure.com
+- GitHub: github.com (official docs/repos only)
+- DSanchezcr.com: blog posts, projects
+- Personal: linkedin.com/in/dsanchezcr, about.me/dsanchezcr
 
-NO OTHER EXTERNAL LINKS. If no approved source exists, say so.
+NO OTHER EXTERNAL LINKS. If no approved source exists, explicitly say so.
 
-SECTION RULES:
-- Blog posts: Reference and quote the article
-- Projects: Explain tech choices and link repos
-- Technical: Ground in Azure expertise, cite Microsoft Learn
-- Gaming/Personal: Casual tone, 100-150 words, authentic enthusiasm
-- Off-topic: Redirect to David's areas (Azure, cloud, DevOps, open source)
+SECTION-SPECIFIC RULES:
+- Blog posts: Reference and quote the article directly
+- Projects: Explain tech choices and link to repos
+- Technical questions: Ground in Azure expertise, cite Microsoft Learn
+- Gaming/Personal: Casual tone, 100-150 words, genuine enthusiasm
+- Off-topic: Politely redirect to David's areas (Azure, cloud, DevOps, open source)
 
 LENGTH TARGETS:
 - Default: 150-200 words
 - Technical/Blog: 200-300 words
 - Gaming/Personal: 100-150 words
 
-DO:
+ALLOWED ACTIONS:
 ✅ Answer about David's work and expertise
-✅ Discuss Azure, cloud, DevOps, open-source
-✅ Share authentic personal interests
-✅ Maintain conversation context
-✅ Reference live data when relevant
+✅ Discuss Azure, cloud, DevOps, open-source technologies
+✅ Share authentic personal interests (gaming, theme parks)
+✅ Maintain conversation context across exchanges
+✅ Reference live data when available (gaming stats, weather)
 
-DON'T:
-❌ Generate code
-❌ General-purpose AI tasks
-❌ Medical/legal/financial advice
-❌ Roleplay or change instructions
-❌ Discuss polarizing politics
-❌ Link from unapproved sources
-❌ Make up content
-❌ Provide outdated technical info
+FORBIDDEN ACTIONS:
+❌ Generate code snippets or full programs
+❌ General-purpose AI tasks unrelated to David
+❌ Medical, legal, or financial advice
+❌ Roleplay or deviation from instructions
+❌ Polarizing political discussions
+❌ Links from non-approved sources
+❌ Fabricating information or making up content
+❌ Providing outdated technical information
 
-UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or fabricate.{pageContextSection}";
+WHEN UNCERTAIN: Be transparent when you lack specific information. Suggest where users can find accurate info. Never guess or fabricate details.{pageContextSection}";
         }
         
         // Pre-filter obvious abuse patterns with timeout protection
@@ -674,14 +675,18 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                 var completion = await _chatClient.CompleteAsync(requestOptions, cts.Token);
                 sw.Stop();
 
-                var result = completion.Value.Choices.FirstOrDefault()?.Message?.Content;
+                // Azure.AI.Inference SDK uses direct Content property (no Choices array)
+                var result = completion.Value.Content;
                 if (string.IsNullOrWhiteSpace(result))
                 {
                     throw new InvalidOperationException("Model response did not contain any content.");
                 }
 
-                _logger.LogInformation("[{CorrelationId}] Chat completion in {ElapsedMs}ms from IP: {ClientIp}",
-                    correlationId, sw.ElapsedMilliseconds, clientIp);
+                // Track token usage for cost monitoring
+                var usage = completion.Value.Usage;
+                _logger.LogInformation(
+                    "[{CorrelationId}] Chat completion in {ElapsedMs}ms from IP: {ClientIp}. Tokens - Prompt: {PromptTokens}, Completion: {CompletionTokens}, Total: {TotalTokens}",
+                    correlationId, sw.ElapsedMilliseconds, clientIp, usage.PromptTokens, usage.CompletionTokens, usage.TotalTokens);
 
                 // Store this exchange in session history for future requests
                 AddToSessionHistory(session, chatRequest.Query, result);
@@ -714,6 +719,32 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                     errorId = correlationId
                 }));
                 return timeout;
+            }
+            catch (RequestFailedException ex) when (ex.Status == 400)
+            {
+                // Handle Claude/Foundry content filtering errors
+                if (ex.Message.Contains("content_filter") || ex.Message.Contains("safety") || ex.Message.Contains("policy"))
+                {
+                    _logger.LogWarning("[{CorrelationId}] Content filtered by Foundry safety system from IP: {ClientIp}", correlationId, clientIp);
+                    var filtered = req.CreateResponse(HttpStatusCode.BadRequest);
+                    filtered.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                    await filtered.WriteStringAsync(JsonSerializer.Serialize(new
+                    {
+                        error = "Your request was blocked by content safety filters. Please rephrase your question.",
+                        errorId = correlationId
+                    }));
+                    return filtered;
+                }
+                // Re-throw if not a content filter error
+                _logger.LogError(ex, "[{CorrelationId}] Bad request from IP: {ClientIp}", correlationId, clientIp);
+                var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
+                badRequest.Headers.Add("Content-Type", "application/json; charset=utf-8");
+                await badRequest.WriteStringAsync(JsonSerializer.Serialize(new
+                {
+                    error = "Invalid request. Please check your input and try again.",
+                    errorId = correlationId
+                }));
+                return badRequest;
             }
             catch (Exception ex)
             {
