@@ -1,6 +1,6 @@
 {
   "name": "dsanchezcr",
-  "version": "3.5.2",
+  "version": "3.5.3",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
@@ -53,6 +53,7 @@
   "overrides": {
     "lodash-es": "4.17.23",
     "axios": "1.13.5",
+    "serialize-javascript": "7.0.4",
     "serve-handler": {
       "minimatch": "^10.2.1"
     }
