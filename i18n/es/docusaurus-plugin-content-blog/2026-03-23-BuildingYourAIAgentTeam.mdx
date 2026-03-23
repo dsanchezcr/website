@@ -1,0 +1,308 @@
+---
+title: "Construyendo Tu Equipo de Agentes de IA: Custom Agents, Spec Kit, APM y Squad para Flujos de Trabajo Agénticos Escalables"
+description: A medida que los equipos adoptan agentes de IA para el desarrollo de software, enfrentan la misma fragmentación que los gestores de paquetes resolvieron para las dependencias de código. Esta publicación explora cuatro herramientas complementarias que organizan, empaquetan y escalan las configuraciones de agentes de IA en proyectos reales, desde los agentes personalizados nativos de GitHub Copilot hasta la gobernanza de especificaciones, la gestión de dependencias y la orquestación multi-agente.
+slug: building-your-ai-agent-team
+authors: [dsanchezcr]
+tags: [AI, GitHub Copilot, Agentic AI, Custom Agents, Spec Kit, DevOps, Software Engineering]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2026-03-23-BuildingYourAIAgentTeam/building-your-ai-agent-team.jpg
+date: 2026-03-23T10:00
+---
+
+# Construyendo Tu Equipo de Agentes de IA: Custom Agents, Spec Kit, APM y Squad para Flujos de Trabajo Agénticos Escalables
+
+## El Problema de Fragmentación del que Nadie Habla
+
+Los agentes de codificación con IA ya no son experimentales. Los equipos están usando [GitHub Copilot](https://github.com/features/copilot), Claude Code, Cursor y otras herramientas para generar código, abrir pull requests, revisar cambios y automatizar tareas de ingeniería de múltiples pasos. Los resultados son impresionantes, pero un problema más silencioso está creciendo debajo de las ganancias de productividad.
+
+Cada desarrollador en el equipo configura sus agentes de IA de manera diferente.
+
+<!--truncate-->
+
+![Construyendo Tu Equipo de Agentes de IA](pathname:///img/blog/2026-03-23-BuildingYourAIAgentTeam/building-your-ai-agent-team.jpg)
+
+Las especificaciones viven en documentos dispersos, historiales de chat y notas personales. Los archivos de instrucciones existen en algunos repositorios pero no en otros. Un desarrollador ha creado una persona detallada de revisión de seguridad; su compañero nunca ha oído hablar de ella. Incorporar a un nuevo ingeniero significa horas de configuración manual, copiar archivos de prompts, explicar qué servidores MCP conectar y esperar que la configuración coincida con lo que todos los demás están ejecutando.
+
+Este es el mismo problema que `package.json`, `requirements.txt` y `Cargo.toml` resolvieron para las dependencias de código hace años. Las dependencias de código también se gestionaban manualmente, hasta que la fricción se volvió insoportable y los gestores de paquetes surgieron como la solución natural.
+
+Estamos en ese punto de inflexión para la configuración de agentes de IA.
+
+En mis publicaciones anteriores, exploré cómo [humanos y agentes colaboran a través de IDEs y pull requests](/blog/humans-and-agents-collaboration-patterns), cómo [diseñar software para un mundo donde los agentes son primero](/blog/designing-software-agent-first-world), y cómo [los grandes ingenieros están pasando de prompts a especificaciones](/blog/from-prompts-to-specifications). Esta publicación aborda la pregunta práctica de infraestructura: **¿cómo organizas, empaquetas, gobiernas y escalas las configuraciones de agentes de IA a través de un equipo y entre repositorios?**
+
+Cuatro herramientas complementarias abordan esto en diferentes capas, y entender qué hace cada una, cuándo elegirla y cómo se componen juntas es la clave para construir una práctica de ingeniería agéntica escalable.
+
+---
+
+## Capa 1: GitHub Copilot Custom Agents y Skills (La Base Nativa)
+
+Todo comienza con las capacidades nativas integradas en [GitHub Copilot](https://github.com/features/copilot). Los agentes personalizados, las habilidades y los archivos de instrucciones son la base sobre la que se construyen todas las demás herramientas de esta publicación.
+
+### Agentes Personalizados
+
+Los agentes personalizados son archivos `.agent.md` que viven en tu repositorio bajo `.github/agents/`. Cada archivo define una persona especializada con una identidad, experiencia y conjunto de instrucciones específicos. Cuando un desarrollador invoca ese agente en su IDE, el agente responde con el contexto, las restricciones y la perspectiva definidos en su configuración.
+
+Piensa en los agentes personalizados como miembros del equipo con memoria permanente sobre las convenciones de tu proyecto. Algunos ejemplos:
+
+| Agente | Qué Hace |
+|---|---|
+| **Experto Frontend** | Conoce tu sistema de diseño, biblioteca de componentes y estándares de accesibilidad. Genera código de UI que sigue tus patrones, no código genérico de React |
+| **Revisor de Seguridad** | Aplica tus políticas de seguridad, verifica vulnerabilidades OWASP, valida la sanitización de entradas y señala brechas de autenticación antes de que el código llegue a revisión |
+| **Especialista en Bases de Datos** | Sigue tus convenciones de migración, entiende tu estrategia de partition key y genera consultas optimizadas para tu modelo de datos específico |
+| **Arquitecto de APIs** | Diseña endpoints que siguen tus convenciones REST, estrategia de versionado y patrones de manejo de errores |
+
+Estos agentes viven en control de versiones. Se revisan a través de pull requests. Evolucionan con el código. Cada desarrollador que clona el repositorio obtiene los mismos agentes, automáticamente.
+
+### Skills (Habilidades)
+
+Los Skills son archivos `SKILL.md` que empaquetan conocimiento y capacidades específicas de dominio. Mientras que los agentes definen personas, las habilidades definen experticia que los agentes pueden aprovechar. Un skill podría contener conocimiento detallado sobre tu pipeline de despliegue, tu framework de testing o tu configuración de observabilidad. Los skills son componibles: múltiples agentes pueden referenciar el mismo skill, y los skills se pueden organizar por dominio.
+
+### Archivos de Instrucciones
+
+El archivo `.github/copilot-instructions.md` establece convenciones a nivel de proyecto que cada interacción de Copilot respeta, independientemente de qué agente esté activo. Este es el "manual operativo" de tu repositorio para la IA. Puede incluir patrones arquitectónicos, convenciones de nomenclatura, opciones de tecnología, errores comunes, requisitos de testing y puntos de integración.
+
+Esto es exactamente lo que hago en [el repositorio de este sitio web](https://github.com/dsanchezcr/website). El archivo de instrucciones de copilot contiene guía detallada sobre el frontend de Docusaurus, el backend de Azure Functions con .NET 9, el flujo de verificación de dos pasos del formulario de contacto y cada ruta de API. Cuando cualquier agente de IA opera en este repositorio, inmediatamente entiende el sistema sin requerir contexto repetido en cada conversación.
+
+### Agent Hooks
+
+Los agent hooks te permiten ejecutar comandos de shell personalizados en puntos clave durante la ejecución del agente. Antes de que un agente aplique un cambio, un hook puede ejecutar un linter. Después de que se modifica un archivo, un hook puede activar un escaneo de seguridad. Los hooks conectan los cambios generados por IA con tu infraestructura de validación existente, asegurando que los agentes participen en las mismas puertas de calidad que los desarrolladores humanos.
+
+### Por Qué Esta Capa Importa
+
+Los agentes personalizados, skills, instrucciones y hooks son los bloques de construcción nativos. Resuelven el problema de dar a los agentes de IA el contexto correcto dentro de un solo repositorio. Pero a medida que los equipos escalan, surgen tres desafíos adicionales: cómo gobernar contra qué construyen los agentes, cómo distribuir las configuraciones de agentes entre repositorios y cómo orquestar múltiples agentes trabajando juntos. Ahí es donde entran las siguientes tres capas.
+
+---
+
+## Capa 2: Spec Kit (La Capa de Especificaciones y Gobernanza)
+
+En [De Prompts a Especificaciones](/blog/from-prompts-to-specifications), describí el cambio de prompts efímeros a especificaciones duraderas y versionadas como la base de una colaboración efectiva entre humanos y agentes. [Spec Kit](https://github.com/github/spec-kit) es la herramienta práctica que hace esa visión concreta.
+
+Spec Kit introduce el **Desarrollo Dirigido por Especificaciones (SDD)**, una metodología donde las especificaciones se convierten en la fuente de verdad que genera la implementación, no al revés. En lugar de escribir código y esperar que coincida con los requisitos, defines lo que quieres, validas la definición y luego dejas que los agentes generen la implementación desde esa base estructurada.
+
+### La Constitución: La Carta de Derechos de Tu Proyecto
+
+El flujo comienza con el comando `/speckit.constitution`, que crea un documento de gobernanza en `.specify/memory/constitution.md`. Este documento define los principios no negociables para tu proyecto: patrones arquitectónicos, filosofía de testing, estándares de calidad de código, restricciones tecnológicas, requisitos de seguridad y expectativas de rendimiento.
+
+Esta no es documentación que se escribe y se olvida. Cada comando subsiguiente de Spec Kit lee la constitución como puerta de control antes de proceder. Si un plan técnico viola un principio constitucional, el agente lo señala. Si una lista de tareas incluye enfoques que contradicen tus decisiones de arquitectura, el conflicto se evidencia antes de que se genere cualquier código.
+
+Piensa en esto como la carta de derechos del proyecto que los agentes de IA deben respetar. En un mundo agéntico donde los agentes pueden generar código funcional de forma autónoma, tener una constitución previene la trampa del "vibe coding" donde la IA produce código que compila y pasa tests pero no se alinea con tu arquitectura, tu modelo de seguridad o los estándares de calidad de tu equipo.
+
+### El Flujo Estructurado
+
+Después de la constitución, Spec Kit proporciona una secuencia de comandos slash que guían el desarrollo desde la intención hasta la implementación:
+
+| Comando | Propósito |
+|---|---|
+| `/speckit.specify` | Define qué quieres construir (el qué y el por qué), produciendo requisitos estructurados e historias de usuario. Cada especificación crea una rama de Git, haciendo natural pensar en cada spec como una unidad de pull request |
+| `/speckit.clarify` | Resuelve ambigüedades mediante preguntas estructuradas antes de que comience la planificación. Esto previene el costoso ciclo de generar código, descubrir un malentendido y empezar de nuevo |
+| `/speckit.plan` | Crea un plan de implementación técnica con el stack tecnológico y la arquitectura elegidos, controlado por cumplimiento constitucional |
+| `/speckit.tasks` | Genera desgloses de tareas accionables con ordenamiento de dependencias, marcadores de ejecución paralela y especificaciones de rutas de archivo |
+| `/speckit.analyze` | Realiza análisis de consistencia y cobertura entre artefactos, actuando como puerta de calidad antes de que comience la implementación |
+| `/speckit.implement` | Ejecuta las tareas, generando código funcional a partir de las especificaciones |
+
+Cada paso se basa en el anterior. La salida de `/speckit.specify` alimenta a `/speckit.plan`. La salida de `/speckit.plan` alimenta a `/speckit.tasks`. En cada etapa, la constitución actúa como restricción, y el comando `/speckit.analyze` proporciona una verificación de consistencia transversal antes de que se escriba cualquier código.
+
+### Agnóstico de Agentes por Diseño
+
+Spec Kit soporta más de 25 agentes de IA, incluyendo GitHub Copilot, Claude Code, Cursor, Gemini CLI, Windsurf, Codex CLI, Kiro, Amp y muchos otros. Esto no es accidental. Debido a que Spec Kit opera en la capa de especificaciones en lugar de la capa de generación de código, funciona con cualquier agente que prefieras para la implementación. El directorio `.specify/` y su contenido viajan con el repositorio, así que cualquiera que lo clone hereda el historial completo de especificaciones, independientemente de qué herramienta de IA use.
+
+### Extensiones y Presets
+
+Spec Kit es extensible a través de dos sistemas complementarios. Las **Extensiones** agregan nuevos comandos y flujos de trabajo específicos de dominio: integración con Jira, revisión de código post-implementación, trazabilidad de tests V-Model o diagnósticos de salud del proyecto. Los **Presets** sobreescriben plantillas para personalizar terminología y formatos sin cambiar la funcionalidad. Un equipo enfocado en cumplimiento podría instalar un preset que requiera trazabilidad regulatoria en cada especificación. Un equipo que usa diseño dirigido por dominio podría reformular el vocabulario de planes y tareas para coincidir con su metodología.
+
+### Por Qué Spec Kit Importa a Escala
+
+Cuando un solo desarrollador trabaja con un solo agente de IA, los prompts funcionan bien. Cuando un equipo de diez desarrolladores trabaja con múltiples agentes en un código base, la falta de especificaciones estructuradas produce los problemas que describí en mi publicación anterior: resultados inconsistentes, amnesia de contexto, deriva arquitectónica y cuellos de botella en revisión.
+
+Spec Kit resuelve estos proporcionando una interfaz duradera, versionada y gobernada entre la intención humana y la ejecución de la máquina. La constitución asegura que todos construyan contra los mismos principios. El flujo estructurado asegura que nada se salte. Y el directorio `.specify/` en control de versiones asegura que todo el historial de especificaciones esté disponible para cada miembro del equipo, humano y de IA.
+
+---
+
+## Capa 3: APM, Agent Package Manager (La Capa de Gestión de Dependencias)
+
+Los agentes personalizados y skills resuelven el problema de configuración dentro de un solo repositorio. Spec Kit resuelve el problema de gobernanza y especificaciones. Pero ¿qué pasa cuando tienes 20 repositorios que todos necesitan el mismo agente revisor de seguridad? ¿O cuando tu organización tiene un conjunto estándar de instrucciones de codificación que cada proyecto debería seguir? ¿O cuando un nuevo desarrollador se une al equipo y necesita replicar exactamente la misma configuración de agentes que todos los demás están ejecutando?
+
+Este es un problema de gestión de dependencias, y [APM (Agent Package Manager)](https://github.com/microsoft/apm) lo resuelve de la misma manera que npm lo resolvió para JavaScript y pip lo resolvió para Python.
+
+### La Idea Central
+
+APM trata la configuración de agentes, incluyendo skills, prompts, instrucciones, agentes, hooks y servidores MCP, como paquetes versionados y componibles con resolución transitiva de dependencias. En lugar de copiar manualmente archivos entre repositorios o mantener páginas wiki que explican cómo configurar tu entorno de agentes, declaras las dependencias agénticas de tu proyecto en un solo archivo de manifiesto.
+
+```yaml
+# apm.yml
+name: tu-proyecto
+version: 1.0.0
+dependencies:
+  apm:
+    - anthropics/skills/skills/frontend-design
+    - github/awesome-copilot/plugins/context-engineering
+    - github/awesome-copilot/agents/api-architect.agent.md
+    - microsoft/apm-sample-package#v1.0.0
+```
+
+Ejecuta `apm install`, y APM resuelve el árbol completo de dependencias, incluyendo dependencias transitivas (paquetes que dependen de otros paquetes), y despliega la configuración a los directorios que cada herramienta de IA lee nativamente: `.github/` para Copilot, `.claude/` para Claude Code, `.cursor/` para Cursor y `.opencode/` para OpenCode.
+
+### El Archivo Lock
+
+Después de la instalación, `apm.lock.yaml` fija cada dependencia a un commit exacto. Esta es la garantía de reproducibilidad. Cuando un nuevo desarrollador clona el repositorio y ejecuta `apm install`, obtiene exactamente la misma configuración de agentes que todos los demás en el equipo están usando. Sin deriva. Sin "funciona en mi máquina" para configuraciones de agentes.
+
+### Compilación
+
+El paso `apm compile` genera archivos de salida optimizados para cada herramienta de IA. Produce `AGENTS.md` para Copilot, Cursor y Codex, y `CLAUDE.md` para Claude Code. Este paso de compilación significa que puedes mantener una sola fuente de verdad en `apm.yml` y generar los archivos específicos de cada herramienta automáticamente.
+
+### Integración CI/CD
+
+APM incluye una [GitHub Action](https://github.com/microsoft/apm-action) para flujos de CI/CD. El comando `apm pack` crea paquetes portátiles para entornos aislados como el [agente de codificación de GitHub Copilot](https://github.com/features/copilot/agents), donde la instalación desde la red no siempre es posible. Los paquetes se pueden compartir entre trabajos de CI sin reinstalar, haciendo que la configuración de agentes sea tan confiable en automatización como lo es en las máquinas de los desarrolladores.
+
+### Seguridad de Contenido
+
+En un mundo donde las configuraciones de agentes pueden contener instrucciones que influyen en la generación autónoma de código, la seguridad importa. El comando `apm audit` escanea caracteres Unicode ocultos y otros riesgos de seguridad de contenido. Durante la instalación, APM bloquea paquetes comprometidos antes de que los agentes los lean. Esta es una defensa práctica contra la inyección de prompts y ataques a la cadena de suministro dirigidos a configuraciones de agentes de IA.
+
+### Lo Que APM No Es
+
+APM no es un sistema de plugins. No compite con las Extensiones de Copilot, plugins de Claude o servidores MCP. Esos sistemas definen lo que los agentes *pueden hacer*, extendiendo sus capacidades con nuevas herramientas y APIs. APM gestiona qué configuración se *despliega*, cómo se *compone* y si todos en el equipo tienen la *misma configuración*. Si dejas de usar APM, los archivos que generó permanecen como archivos planos que cada herramienta ya entiende. No hay bloqueo de proveedor.
+
+---
+
+## Capa 4: Squad (La Capa de Runtime Multi-Agente)
+
+Los agentes personalizados te dan personas especializadas. Spec Kit te da especificaciones gobernadas. APM te da configuración reproducible. Pero todos estos todavía operan dentro de un modelo donde un solo humano trabaja con un solo agente a la vez. ¿Qué pasa si pudieras tener un equipo completo de especialistas de IA trabajando en paralelo, coordinando su trabajo y aprendiendo unos de otros?
+
+[Squad](https://github.com/bradygaster/squad) es un runtime multi-agente para GitHub Copilot que te da exactamente eso: un equipo completo de desarrollo de IA que vive en tu repositorio.
+
+### Cómo Funciona
+
+Después de ejecutar `squad init`, obtienes un directorio `.squad/` que contiene la configuración de tu equipo. Squad propone agentes especializados, cada uno con un nombre temático de personaje extraído de un sistema de casting persistente (para que los nombres sean consistentes entre sesiones). Un equipo típico podría incluir:
+
+| Agente | Rol |
+|---|---|
+| **Lead** | Analiza requisitos, clasifica tareas, toma decisiones arquitectónicas |
+| **Frontend** | Construye componentes de UI, maneja estilos, implementa lógica del lado del cliente |
+| **Backend** | Configura endpoints de API, maneja acceso a datos, implementa lógica de negocio |
+| **Tester** | Escribe casos de prueba desde especificaciones, valida cambios, detecta regresiones |
+| **Scribe** | Gestor de memoria silencioso que registra decisiones y mantiene el conocimiento del equipo |
+
+Cada agente tiene su propia carta (identidad y experticia) e historial (lo que han aprendido sobre tu proyecto con el tiempo). El historial se acumula entre sesiones: después de unas pocas interacciones, los agentes conocen tus convenciones, tus preferencias y tu arquitectura. Dejan de hacer preguntas que ya han respondido.
+
+### Ejecución Paralela
+
+El patrón definidor de Squad es el paralelismo. Cuando dices "Equipo, construyan la página de login," el coordinador no asigna la tarea a un agente secuencialmente. En cambio:
+
+```
+Lead     — analizando requisitos...             ⎤
+Frontend — construyendo formulario de login...   ⎥ todos lanzados
+Backend  — configurando endpoints de auth...     ⎥ en paralelo
+Tester   — escribiendo casos de prueba...        ⎥
+Scribe   — registrando todo...                   ⎦
+```
+
+Cuando los agentes terminan, el coordinador encadena inmediatamente el trabajo de seguimiento. Si te alejas, un rastro de migas de pan te espera cuando regresas: `decisions.md` registra cada decisión que cualquier agente tomó, `orchestration-log/` muestra qué se generó y por qué, y `log/` contiene el historial completo de la sesión.
+
+### El Patrón Drop-Box
+
+Las decisiones arquitectónicas se agregan a un archivo versionado `decisions.md` que sirve como el cerebro compartido del equipo. Esto no es un registro de chat. Es un registro estructurado y buscable de cada elección significativa: qué patrones se adoptaron, qué alternativas se consideraron y por qué se hicieron tradeoffs específicos. Esto proporciona persistencia (las decisiones sobreviven entre sesiones), legibilidad (cualquiera puede leer la justificación) y un rastro de auditoría completo (cada decisión es rastreable).
+
+### Integración con el Agente de Codificación de GitHub Copilot
+
+Squad se integra con el [agente de codificación de GitHub Copilot](https://github.com/features/copilot/agents) como miembro del equipo. Ejecutar `squad copilot` agrega `@copilot` al squad. La bandera `--auto-assign` habilita la asignación automática de issues a través de flujos de trabajo de GitHub Actions. El lead usa el perfil de capacidades de Copilot durante la clasificación para decidir qué tareas son adecuadas para ejecución autónoma, enrutando issues apropiados a Copilot mientras mantiene las decisiones arquitectónicas complejas para los miembros humanos del equipo.
+
+### Persistencia de Sesión y el Sistema de Casting
+
+Si un agente falla o una sesión se interrumpe, Squad reanuda desde el checkpoint. No se pierde contexto. El sistema de casting asigna nombres temáticos de personajes persistentes entre sesiones, de modo que el equipo se siente consistente en lugar de anónimo. El directorio `.squad/` se commitea al repositorio, así que cualquiera que clone el proyecto obtiene el mismo equipo con el mismo conocimiento acumulado.
+
+---
+
+## Cuándo Usar Qué: Un Marco de Decisión
+
+Estas cuatro herramientas operan en diferentes capas, y entender cuándo recurrir a cada una es esencial para construir un flujo de trabajo agéntico coherente.
+
+### Necesitas especificaciones estructuradas y gobernanza antes de escribir cualquier código
+
+**Comienza con Spec Kit.** Ejecuta `/speckit.constitution` para definir los principios no negociables de tu proyecto, luego `/speckit.specify` para establecer requisitos. Esto es especialmente importante para proyectos greenfield, entornos regulados o cualquier situación donde la coherencia arquitectónica importa más que la velocidad.
+
+### Eres un desarrollador solo o un equipo pequeño y quieres personas de IA para tareas específicas
+
+**Usa los agentes personalizados y skills de GitHub Copilot directamente.** Crea archivos `.agent.md` para las personas que necesitas, configura `copilot-instructions.md` para el contexto del proyecto y agrega agent hooks para validación. Este es el punto de partida más simple y no requiere herramientas adicionales.
+
+### Necesitas configuraciones de agentes reproducibles en un equipo de 5+ desarrolladores, o quieres compartir configuraciones de agentes entre repositorios
+
+**Agrega APM para gestionar empaquetado y distribución.** Declara tus dependencias en `apm.yml`, ejecuta `apm install`, y cada desarrollador obtiene la misma configuración de agentes. Usa `apm.lock.yaml` para reproducibilidad y `apm pack` para entornos de CI/CD.
+
+### Quieres flujos de trabajo multi-agente paralelos donde múltiples especialistas colaboran con memoria persistente
+
+**Usa Squad para orquestación.** Inicializa un equipo con `squad init`, deja que el coordinador enrute tareas y deja que los agentes especializados trabajen en paralelo. Usa el sistema de casting para consistencia del equipo y `decisions.md` para conocimiento compartido.
+
+### Quieres las cuatro capas trabajando juntas
+
+Aquí es donde las herramientas se componen naturalmente:
+
+1. **Spec Kit** define las especificaciones y principios constitucionales que gobiernan lo que se construye
+2. **Agentes personalizados y skills** proporcionan las personas especializadas que hacen el trabajo
+3. **APM** empaqueta y distribuye las configuraciones, incluyendo plantillas de Spec Kit como dependencias, asegurando que cada desarrollador y cada repositorio tenga la misma configuración
+4. **Squad** orquesta múltiples agentes trabajando en las especificaciones en paralelo, con el lead analizando los desgloses de tareas de Spec Kit y enrutando el trabajo a los especialistas adecuados
+
+Las capas se refuerzan mutuamente. Spec Kit previene que los agentes se desvíen. APM asegura configuración consistente. Squad multiplica el rendimiento. Y los agentes personalizados proporcionan la experticia de dominio que hace todo esto efectivo.
+
+---
+
+## Primeros Pasos: Tus Primeras Acciones
+
+Si has leído hasta aquí y quieres comenzar a construir tu propia infraestructura agéntica, aquí está el camino concreto que recomiendo:
+
+**Paso 1: Configura la base nativa (hoy)**
+
+Crea un archivo `.github/copilot-instructions.md` en tu repositorio. Describe tu arquitectura, convenciones, opciones tecnológicas y errores comunes. Este único archivo mejorará inmediatamente cada interacción de Copilot en tu proyecto. Luego crea uno o dos agentes personalizados en `.github/agents/` para los roles que tu equipo más necesita, un revisor de seguridad, un escritor de tests o un especialista para tu framework principal.
+
+**Paso 2: Instala Spec Kit y define tu constitución (esta semana)**
+
+```bash
+# Instala el CLI de Specify
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git@v0.4.0
+
+# Inicializa en tu proyecto
+specify init --here --ai copilot
+
+# Crea tu constitución
+# En Copilot Chat:
+/speckit.constitution Crea principios enfocados en nuestra arquitectura,
+estándares de testing, requisitos de seguridad y expectativas de calidad de código
+```
+
+Esto te da la capa de gobernanza. Cada funcionalidad que construyas a partir de este punto tendrá especificaciones estructuradas y cumplimiento constitucional.
+
+**Paso 3: Agrega APM cuando necesites consistencia en todo el equipo**
+
+```bash
+# Instala APM (Windows)
+irm https://aka.ms/apm-windows | iex
+
+# Instala APM (Linux/macOS)
+curl -sSL https://aka.ms/apm-unix | sh
+
+# Agrega tu primera dependencia
+apm install microsoft/apm-sample-package#v1.0.0
+
+# Commitea apm.yml y apm.lock.yaml a tu repositorio
+```
+
+Ahora cada desarrollador que clone el repositorio y ejecute `apm install` obtiene la misma configuración de agentes.
+
+**Paso 4: Incorpora Squad cuando estés listo para orquestación multi-agente**
+
+```bash
+# Instala Squad
+npm install -g @bradygaster/squad-cli
+
+# Inicializa en tu proyecto
+squad init
+
+# Abre Copilot y configura el equipo
+# "Estoy comenzando un nuevo proyecto. Configura el equipo.
+#  Esto es lo que estoy construyendo: [describe tu proyecto]"
+```
+
+No necesitas adoptar las cuatro capas a la vez. Comienza con la base, agrega gobernanza cuando las especificaciones importan, agrega empaquetado cuando la consistencia del equipo importa y agrega orquestación cuando el rendimiento paralelo importa. Cada capa proporciona valor independientemente y se compone naturalmente con las demás.
+
+El problema de fragmentación es real, pero las soluciones existen. Los equipos que invierten en esta infraestructura ahora encontrarán que sus flujos de trabajo agénticos escalan sin problemas a medida que las capacidades de IA continúan evolucionando, mientras que los equipos que lo omitan enfrentarán el mismo caos de configuración que el ecosistema de JavaScript enfrentó antes de que `package.json` se convirtiera en estándar.
+
+Las herramientas son de código abierto. Los patrones están documentados. La única pregunta es cuándo comienzas.
