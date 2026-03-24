@@ -3,7 +3,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './styles.module.css';
 import { platformColors, platformLabels, statusLabelsByLocale, getLocaleKey } from './gameCardConstants';
 
-const GameCard = ({ title, platform, status, imageUrl, recommendation, hoursPlayed, url }) => {
+const GameCard = ({ title, platform, status, imageUrl, recommendation, hoursPlayed, url, coOp, online }) => {
   const { i18n } = useDocusaurusContext();
   const localeKey = getLocaleKey(i18n?.currentLocale);
   const statusLabels = statusLabelsByLocale[localeKey] || statusLabelsByLocale.en;
@@ -28,6 +28,12 @@ const GameCard = ({ title, platform, status, imageUrl, recommendation, hoursPlay
                 e.target.style.display = 'none';
               }}
             />
+            {(coOp || online) && (
+              <div className={styles.gameModeBadges}>
+                {coOp && <span className={styles.coOpBadge}>Co-Op</span>}
+                {online && <span className={styles.onlineBadge}>Online</span>}
+              </div>
+            )}
           </div>
         )}
 
