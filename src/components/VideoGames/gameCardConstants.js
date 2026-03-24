@@ -1,5 +1,6 @@
 const platformColors = {
   xbox: '#107C10',
+  pc: '#6A1B9A',
   playstation: '#003087',
   'nintendo-switch': '#E4000F',
   'nintendo-switch-2': '#FF3C28',
@@ -8,6 +9,7 @@ const platformColors = {
 
 const platformLabels = {
   xbox: 'Xbox',
+  pc: 'PC',
   playstation: 'PlayStation',
   'nintendo-switch': 'Nintendo Switch',
   'nintendo-switch-2': 'Nintendo Switch 2',
