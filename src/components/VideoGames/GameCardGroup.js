@@ -14,6 +14,10 @@ const GameCardGroup = ({ title, platform, status, recommendation, hoursPlayed, c
       title: child.props.title,
       imageUrl: child.props.imageUrl,
       url: child.props.url,
+      status: child.props.status,
+      recommendation: child.props.recommendation,
+      coOp: child.props.coOp,
+      online: child.props.online,
     }));
 
   if (games.length === 0) return null;
@@ -30,8 +34,13 @@ const GameCardGroup = ({ title, platform, status, recommendation, hoursPlayed, c
       <div className={styles.gameCardContent}>
         <div className={styles.gameGroupImages}>
           {games.map((game, index) => {
+            const tooltipParts = [];
+            if (game.status) tooltipParts.push(statusLabels[game.status] || game.status);
+            if (game.recommendation) tooltipParts.push(`💬 ${game.recommendation}`);
+            const tooltip = tooltipParts.join(' — ');
+
             const content = (
-              <div key={index} className={styles.gameGroupItem}>
+              <div key={index} className={styles.gameGroupItem} title={tooltip}>
                 {game.imageUrl && (
                   <div className={styles.gameImageContainer}>
                     <img
@@ -41,9 +50,20 @@ const GameCardGroup = ({ title, platform, status, recommendation, hoursPlayed, c
                       loading="lazy"
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
+                    {(game.coOp || game.online) && (
+                      <div className={styles.gameModeBadges}>
+                        {game.coOp && <span className={styles.coOpBadge}>Co-Op</span>}
+                        {game.online && <span className={styles.onlineBadge}>Online</span>}
+                      </div>
+                    )}
                   </div>
                 )}
                 <span className={styles.gameGroupTitle}>{game.title}</span>
+                {game.status && (
+                  <span className={styles.gameGroupStatus}>
+                    {statusLabels[game.status] || game.status}
+                  </span>
+                )}
               </div>
             );
             return game.url ? (
