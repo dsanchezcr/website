@@ -1,0 +1,14 @@
+---
+title: Watchlist
+sidebar_position: 3
+description: Movies on my IMDB watchlist that I plan to watch.
+---
+
+import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
+import moviesData from '@site/src/data/movies.json';
+
+# Watchlist
+
+Movies I'm planning to watch next. Synced from my [IMDB Watchlist](https://www.imdb.com/user/ur214132979/watchlist).
+
+<MediaCardList items={moviesData} category="watchlist" />

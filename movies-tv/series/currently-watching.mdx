@@ -1,0 +1,14 @@
+---
+title: Currently Watching
+sidebar_position: 1
+description: TV shows I'm currently watching.
+---
+
+import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
+import seriesData from '@site/src/data/series.json';
+
+# Currently Watching
+
+TV shows I'm currently binge-watching.
+
+<MediaCardList items={seriesData} category="currently-watching" />

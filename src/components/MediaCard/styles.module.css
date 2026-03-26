@@ -1,0 +1,169 @@
+/* ============================================
+   MediaCard Components - Shared Styles
+   ============================================ */
+
+/* ---------- MediaCard ---------- */
+.mediaCard {
+  position: relative;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  background: var(--ifm-card-background-color, var(--content-background));
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.mediaCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.mediaCardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.mediaCardLink:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+.mediaCardContent {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.25rem;
+}
+
+/* ---------- Poster ---------- */
+.posterContainer {
+  position: relative;
+  flex-shrink: 0;
+  width: 130px;
+  height: 195px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.posterImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.posterPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--ifm-color-emphasis-100), var(--ifm-color-emphasis-200));
+}
+
+.posterSkeleton {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--ifm-color-emphasis-100) 25%,
+    var(--ifm-color-emphasis-200) 50%,
+    var(--ifm-color-emphasis-100) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ---------- Rating Badges (overlaid on poster, like Co-Op/Online in GameCard) ---------- */
+.ratingBadges {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 1;
+}
+
+.imdbBadge,
+.myRatingBadge {
+  padding: 2px 6px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.imdbBadge {
+  background: rgba(245, 197, 24, 0.92);
+  color: #000;
+}
+
+.myRatingBadge {
+  background: rgba(33, 150, 243, 0.9);
+}
+
+/* ---------- Info ---------- */
+.mediaInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.mediaTitle {
+  margin: 0 0 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ifm-heading-color);
+}
+
+.review {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-700);
+  line-height: 1.5;
+}
+
+.genreChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.genreChip {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--ifm-color-emphasis-100);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  font-size: 0.72rem;
+  color: var(--ifm-font-color-secondary);
+}
+
+.errorText {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  color: var(--ifm-color-danger);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .mediaCardContent {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .posterContainer {
+    width: 160px;
+    height: 240px;
+  }
+
+  .genreChips {
+    justify-content: center;
+  }
+}

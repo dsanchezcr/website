@@ -1,0 +1,14 @@
+---
+title: Mejores Películas
+sidebar_position: 2
+description: Mis películas favoritas de todos los tiempos.
+---
+
+import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
+import moviesData from '@site/src/data/movies.json';
+
+# Mejores Películas
+
+Mis películas favoritas de todos los tiempos con calificaciones personales.
+
+<MediaCardList items={moviesData} category="top-movies" />
