@@ -72,6 +72,14 @@ const config = {
       },
     ],
     [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'movies-tv',
+        path: 'movies-tv',
+        routeBasePath: 'movies-tv'
+      },
+    ],
+    [
       '@docusaurus/plugin-sitemap',
       {
         lastmod: 'date',
@@ -230,7 +238,7 @@ const config = {
           {to: '/projects', label: 'Projects', position: 'left'},          
           {to: '/volunteering', label: 'Volunteering', position: 'left'},
           {to: '/videogames', label: 'Video Games', position: 'left'},
-          {to: '/movies', label: 'Movies', position: 'left'},
+          {to: '/movies-tv', label: 'Movies & TV', position: 'left'},
           {to: '/3dprinting', label: '3D Printing', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
           {to: '/contact', label: 'Contact', position: 'left'},

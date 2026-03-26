@@ -1,0 +1,14 @@
+---
+title: Top Movies
+sidebar_position: 2
+description: My all-time favorite movies.
+---
+
+import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
+import moviesData from '@site/src/data/movies.json';
+
+# Top Movies
+
+My all-time favorite movies with personal ratings.
+
+<MediaCardList items={moviesData} category="top-movies" />

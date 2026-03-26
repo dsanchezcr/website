@@ -1,0 +1,14 @@
+---
+title: Assistidos Recentemente
+sidebar_position: 1
+description: Filmes que assisti recentemente com minhas avaliações e resenhas.
+---
+
+import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
+import moviesData from '@site/src/data/movies.json';
+
+# Assistidos Recentemente
+
+Filmes que assisti recentemente no cinema.
+
+<MediaCardList items={moviesData} category="recently-watched" />
