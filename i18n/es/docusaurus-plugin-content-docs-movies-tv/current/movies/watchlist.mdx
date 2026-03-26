@@ -1,0 +1,14 @@
+---
+title: Lista de Seguimiento
+sidebar_position: 3
+description: Películas en mi lista de seguimiento de IMDB que planeo ver.
+---
+
+import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
+import moviesData from '@site/src/data/movies.json';
+
+# Lista de Seguimiento
+
+Películas que planeo ver próximamente. Sincronizada desde mi [Lista de IMDB](https://www.imdb.com/user/ur214132979/watchlist).
+
+<MediaCardList items={moviesData} category="watchlist" />

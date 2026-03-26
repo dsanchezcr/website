@@ -1,9 +1,16 @@
 [
-  {"titleId": "tt12042730", "myRating": null, "review": {"en": "", "es": "", "pt": ""}, "category": "recently-watched"},
-  {"titleId": "tt6263850", "myRating": null, "review": {"en": "", "es": "", "pt": ""}, "category": "recently-watched"},
+  {"titleId": "tt12042730", "myRating": 9.5, "review": {"en": "Amazing story, great perforance, perfect balance or comedy, drama and action. We need more space movies like this.", "es": "Historia increíble, gran actuación, perfecto equilibrio de comedia, drama y acción. Necesitamos más películas espaciales como esta.", "pt": "História incrível, ótima atuação, equilíbrio perfeito de comédia, drama e ação. Precisamos de mais filmes espaciais como este."}, "category": "recently-watched"},
   {"titleId": "tt0111161", "myRating": 10, "review": {"en": "A timeless masterpiece.", "es": "Una obra maestra atemporal.", "pt": "Uma obra-prima atemporal."}, "category": "top-movies"},
   {"titleId": "tt0468569", "myRating": 9.5, "review": {"en": "Heath Ledger's iconic performance.", "es": "La actuación icónica de Heath Ledger.", "pt": "A atuação icônica de Heath Ledger."}, "category": "top-movies"},
   {"titleId": "tt1375666", "myRating": 9, "review": {"en": "Mind-bending at its best.", "es": "Lo mejor del cine que desafía la mente.", "pt": "O melhor do cinema que desafia a mente."}, "category": "top-movies"},
   {"titleId": "tt0816692", "myRating": 9.5, "review": {"en": "Visually stunning and emotionally powerful.", "es": "Visualmente impresionante y emocionalmente poderosa.", "pt": "Visualmente impressionante e emocionalmente poderoso."}, "category": "top-movies"},
-  {"titleId": "tt0499549", "myRating": 8, "review": {"en": "A visual spectacle that redefined cinema.", "es": "Un espectáculo visual que redefinió el cine.", "pt": "Um espetáculo visual que redefiniu o cinema."}, "category": "top-movies"}
+  {"titleId": "tt0499549", "myRating": 8, "review": {"en": "A visual spectacle that redefined cinema.", "es": "Un espectáculo visual que redefinió el cine.", "pt": "Um espetáculo visual que redefiniu o cinema."}, "category": "top-movies"},
+  {"titleId": "tt0316465", "myRating": 9, "review": {"en": "Amazing performance, inspiring real life story.", "es": "Actuación increíble, historia real inspiradora.", "pt": "Performance incrível, história real inspiradora."}, "category": "top-movies"},
+  {"titleId": "tt28650488", "myRating": null, "review": {"en": "", "es": "", "pt": ""}, "category": "watchlist"},
+  {"titleId": "tt30825738", "myRating": null, "review": {"en": "", "es": "", "pt": ""}, "category": "watchlist"},
+  {"titleId": "tt32093575", "myRating": null, "review": {"en": "", "es": "", "pt": ""}, "category": "watchlist"},
+  {"titleId": "tt29355505", "myRating": null, "review": {"en": "", "es": "", "pt": ""}, "category": "watchlist"},
+  {"titleId": "tt33764258", "myRating": null, "review": {"en": "", "es": "", "pt": ""}, "category": "watchlist"},
+  {"titleId": "tt22084616", "myRating": null, "review": {"en": "", "es": "", "pt": ""}, "category": "watchlist"},
+  {"titleId": "tt32557122", "myRating": null, "review": {"en": "", "es": "", "pt": ""}, "category": "watchlist"}
 ]
