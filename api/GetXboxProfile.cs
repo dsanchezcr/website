@@ -256,6 +256,10 @@ private static string? EnsureHttps(string? url)
                         case "AccountTier":
                             profile.AccountTier = value;
                             break;
+                        case "TenureLevel":
+                            if (int.TryParse(value, out var tenure))
+                                profile.TenureLevel = tenure;
+                            break;
                     }
                 }
             }

@@ -76,6 +76,12 @@
 			"command": "host start",
 			"isBackground": true,
 			"problemMatcher": "$func-dotnet-watch"
+		},
+		{
+			"label": "Start Functions Host",
+			"type": "shell",
+			"command": "cd d:\\dsanchezcr\\website\\api && Copy-Item local.settings.json bin\\Debug\\net9.0\\ -Force && cd bin\\Debug\\net9.0 && func host start",
+			"isBackground": true
 		}
 	]
 }

@@ -20,6 +20,7 @@ public class GamingProfile
     public int? Gamerscore { get; set; }
     public int? GamesPlayed { get; set; }
     public string? AccountTier { get; set; }
+    public int? TenureLevel { get; set; }  // Years on Xbox Live
     public int? TrophyLevel { get; set; }
     public TrophySummary? TrophySummary { get; set; }
     public List<RecentGame> RecentGames { get; set; } = new();

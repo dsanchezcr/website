@@ -87,6 +87,10 @@ const XboxProfileWidget = () => {
           <span className={styles.statLabel}>Games Played</span>
         </div>
         <div className={styles.statItem}>
+          <span className={styles.statValue}>{profile.tenureLevel ? `${profile.tenureLevel} yr${profile.tenureLevel !== 1 ? 's' : ''}` : '—'}</span>
+          <span className={styles.statLabel}>Xbox Live</span>
+        </div>
+        <div className={styles.statItem}>
           <span className={styles.statValue}>{profile.accountTier || '—'}</span>
           <span className={styles.statLabel}>Account Tier</span>
         </div>
