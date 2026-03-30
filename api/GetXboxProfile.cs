@@ -168,9 +168,14 @@ private static string? EnsureHttps(string? url)
 
         var profileJson = await profileResponse.Content.ReadAsStringAsync();
         
-        // Log raw response for debugging API format changes
-        _logger.LogInformation("Xbox API raw response (first 500 chars): {Response}", 
-            profileJson.Length > 500 ? profileJson[..500] : profileJson);
+        // Log raw response for debugging API format changes (debug level only to avoid leaking PII at information level)
+        if (_logger.IsEnabled(LogLevel.Debug))
+        {
+            _logger.LogDebug(
+                "Xbox API raw response length {Length}. First 500 chars: {ResponseSnippet}",
+                profileJson.Length,
+                profileJson.Length > 500 ? profileJson[..500] : profileJson);
+        }
 
         using var profileDoc = JsonDocument.Parse(profileJson);
         var profileRoot = profileDoc.RootElement;
@@ -178,17 +183,18 @@ private static string? EnsureHttps(string? url)
         // Check for API error responses (OpenXBL may return 200 with error in body)
         if (profileRoot.TryGetProperty("error", out var errorProp))
         {
-            _logger.LogWarning("Xbox API returned error: {Error}", errorProp.GetString());
+            _logger.LogWarning("Xbox API returned error: {Error}", errorProp.ToString());
             return null;
         }
         // OpenXBL returns {"content":{},"code":401} for auth errors
         if (profileRoot.TryGetProperty("code", out var codeProp))
         {
-            var code = codeProp.GetInt32();
+            if (!codeProp.TryGetInt32(out var code))
+                code = -1;
             if (code >= 400)
             {
                 var desc = profileRoot.TryGetProperty("description", out var descProp) 
-                    ? descProp.GetString() 
+                    ? descProp.ToString() 
                     : "No description";
                 _logger.LogWarning("Xbox API returned error code {Code}: {Description}. API key may be expired - renew at https://xbl.io", 
                     code, desc);
