@@ -181,12 +181,19 @@ private static string? EnsureHttps(string? url)
             _logger.LogWarning("Xbox API returned error: {Error}", errorProp.GetString());
             return null;
         }
-        if (profileRoot.TryGetProperty("code", out var codeProp) && 
-            profileRoot.TryGetProperty("description", out var descProp))
+        // OpenXBL returns {"content":{},"code":401} for auth errors
+        if (profileRoot.TryGetProperty("code", out var codeProp))
         {
-            _logger.LogWarning("Xbox API returned error code {Code}: {Description}", 
-                codeProp.GetInt32(), descProp.GetString());
-            return null;
+            var code = codeProp.GetInt32();
+            if (code >= 400)
+            {
+                var desc = profileRoot.TryGetProperty("description", out var descProp) 
+                    ? descProp.GetString() 
+                    : "No description";
+                _logger.LogWarning("Xbox API returned error code {Code}: {Description}. API key may be expired - renew at https://xbl.io", 
+                    code, desc);
+                return null;
+            }
         }
 
         var profile = new GamingProfile
@@ -206,12 +213,21 @@ private static string? EnsureHttps(string? url)
             profile.AccountTier = tierProp.GetString();
         if (profileRoot.TryGetProperty("displayPicRaw", out var picProp))
             profile.AvatarUrl = EnsureHttps(picProp.GetString());
+
         // Fallback: Try Xbox Live API format (profileUsers array)
+        // Response may be at root or nested under "content"
+        JsonElement? profileUsersElement = null;
+        if (profileRoot.TryGetProperty("profileUsers", out var directUsers))
+            profileUsersElement = directUsers;
+        else if (profileRoot.TryGetProperty("content", out var content) &&
+                 content.TryGetProperty("profileUsers", out var nestedUsers))
+            profileUsersElement = nestedUsers;
+
         if (string.IsNullOrEmpty(profile.Gamertag) && 
-            profileRoot.TryGetProperty("profileUsers", out var profileUsers) &&
-            profileUsers.GetArrayLength() > 0)
+            profileUsersElement.HasValue &&
+            profileUsersElement.Value.GetArrayLength() > 0)
         {
-            var user = profileUsers[0];
+            var user = profileUsersElement.Value[0];
             if (user.TryGetProperty("settings", out var settings))
             {
                 foreach (var setting in settings.EnumerateArray())
