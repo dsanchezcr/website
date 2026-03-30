@@ -167,8 +167,27 @@ private static string? EnsureHttps(string? url)
         }
 
         var profileJson = await profileResponse.Content.ReadAsStringAsync();
+        
+        // Log raw response for debugging API format changes
+        _logger.LogInformation("Xbox API raw response (first 500 chars): {Response}", 
+            profileJson.Length > 500 ? profileJson[..500] : profileJson);
+
         using var profileDoc = JsonDocument.Parse(profileJson);
         var profileRoot = profileDoc.RootElement;
+
+        // Check for API error responses (OpenXBL may return 200 with error in body)
+        if (profileRoot.TryGetProperty("error", out var errorProp))
+        {
+            _logger.LogWarning("Xbox API returned error: {Error}", errorProp.GetString());
+            return null;
+        }
+        if (profileRoot.TryGetProperty("code", out var codeProp) && 
+            profileRoot.TryGetProperty("description", out var descProp))
+        {
+            _logger.LogWarning("Xbox API returned error code {Code}: {Description}", 
+                codeProp.GetInt32(), descProp.GetString());
+            return null;
+        }
 
         var profile = new GamingProfile
         {
@@ -186,7 +205,7 @@ private static string? EnsureHttps(string? url)
         if (profileRoot.TryGetProperty("accountTier", out var tierProp))
             profile.AccountTier = tierProp.GetString();
         if (profileRoot.TryGetProperty("displayPicRaw", out var picProp))
-        profile.AvatarUrl = EnsureHttps(picProp.GetString());
+            profile.AvatarUrl = EnsureHttps(picProp.GetString());
         // Fallback: Try Xbox Live API format (profileUsers array)
         if (string.IsNullOrEmpty(profile.Gamertag) && 
             profileRoot.TryGetProperty("profileUsers", out var profileUsers) &&
@@ -219,8 +238,6 @@ private static string? EnsureHttps(string? url)
                 }
             }
         }
-
-        _logger.LogInformation("Parsed Xbox profile: {Gamertag}", profile.Gamertag ?? "unknown");
 
         // Fetch recently played games
         try
@@ -278,6 +295,17 @@ private static string? EnsureHttps(string? url)
         {
             _logger.LogWarning(ex, "Failed to fetch Xbox recent games");
         }
+
+        // Validate that we actually parsed useful data before returning
+        // If gamertag is missing, the API response format may have changed or there was an auth issue
+        if (string.IsNullOrEmpty(profile.Gamertag))
+        {
+            _logger.LogWarning("Xbox API returned response but gamertag could not be parsed - falling back to cache");
+            return null;
+        }
+
+        _logger.LogInformation("Successfully parsed Xbox profile for {Gamertag} with {GamesCount} recent games",
+            profile.Gamertag, profile.RecentGames.Count);
 
         return profile;
     }
