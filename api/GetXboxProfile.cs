@@ -268,11 +268,25 @@ private static string? EnsureHttps(string? url)
             if (gamesResponse.IsSuccessStatusCode)
             {
                 var gamesJson = await gamesResponse.Content.ReadAsStringAsync();
+                
+                // Log first part of games response for debugging
+                _logger.LogInformation("Xbox Games API raw response (first 500 chars): {Response}", 
+                    gamesJson.Length > 500 ? gamesJson[..500] : gamesJson);
+                
                 using var gamesDoc = JsonDocument.Parse(gamesJson);
                 var gamesRoot = gamesDoc.RootElement;
 
-                if (gamesRoot.TryGetProperty("titles", out var titles))
+                // Titles may be at root or nested under "content"
+                JsonElement? titlesElement = null;
+                if (gamesRoot.TryGetProperty("titles", out var directTitles))
+                    titlesElement = directTitles;
+                else if (gamesRoot.TryGetProperty("content", out var gamesContent) &&
+                         gamesContent.TryGetProperty("titles", out var nestedTitles))
+                    titlesElement = nestedTitles;
+
+                if (titlesElement.HasValue)
                 {
+                    var titles = titlesElement.Value;
                     var gameCount = 0;
                     foreach (var title in titles.EnumerateArray())
                     {
@@ -292,7 +306,7 @@ private static string? EnsureHttps(string? url)
                         };
 
                         if (title.TryGetProperty("displayImage", out var img))
-                        game.ImageUrl = EnsureHttps(img.GetString());
+                            game.ImageUrl = EnsureHttps(img.GetString());
                         if (title.TryGetProperty("titleHistory", out var history) &&
                             history.TryGetProperty("lastTimePlayed", out var lastPlayed))
                             game.LastPlayed = lastPlayed.GetString();
@@ -306,6 +320,12 @@ private static string? EnsureHttps(string? url)
                     }
 
                     profile.GamesPlayed = titles.GetArrayLength();
+                    _logger.LogInformation("Parsed {GamesPlayed} total games, {RecentCount} recent games", 
+                        profile.GamesPlayed, profile.RecentGames.Count);
+                }
+                else
+                {
+                    _logger.LogWarning("Xbox games response did not contain 'titles' property");
                 }
             }
             else
