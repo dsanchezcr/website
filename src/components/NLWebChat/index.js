@@ -81,7 +81,7 @@ const getPageContext = () => {
   const normalizedPath = path.replace(/^\/(es|pt)(?=\/|$)/, '') || '/';
   let section = 'home';
   if (normalizedPath.startsWith('/blog')) section = 'blog';
-  else if (normalizedPath.startsWith('/videogames')) section = 'videogames';
+  else if (normalizedPath.startsWith('/gaming')) section = 'gaming';
   else if (normalizedPath.startsWith('/disney')) section = 'disney';
   else if (normalizedPath.startsWith('/universal')) section = 'universal';
   else if (normalizedPath.startsWith('/about')) section = 'about';

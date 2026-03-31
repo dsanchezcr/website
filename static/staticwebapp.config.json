@@ -5,6 +5,36 @@
   },
   "routes": [
     {
+      "route": "/videogames",
+      "redirect": "/gaming",
+      "statusCode": 301
+    },
+    {
+      "route": "/videogames/*",
+      "redirect": "/gaming/:splat",
+      "statusCode": 301
+    },
+    {
+      "route": "/es/videogames",
+      "redirect": "/es/gaming",
+      "statusCode": 301
+    },
+    {
+      "route": "/es/videogames/*",
+      "redirect": "/es/gaming/:splat",
+      "statusCode": 301
+    },
+    {
+      "route": "/pt/videogames",
+      "redirect": "/pt/gaming",
+      "statusCode": 301
+    },
+    {
+      "route": "/pt/videogames/*",
+      "redirect": "/pt/gaming/:splat",
+      "statusCode": 301
+    },
+    {
       "route": "/api/*",
       "allowedRoles": ["anonymous"]
     }
