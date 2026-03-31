@@ -71,8 +71,9 @@ namespace api
                     "projects" => "User is viewing projects. Discuss architecture, tech stack, and implementation details. Link GitHub repos.",
                     "about" => "User wants David's background. Focus on career, skills, expertise in Azure/DevOps/cloud. Be professional but warm.",
                     "videogames" => "User browsing gaming. Show genuine enthusiasm for games and platforms. Be casual and conversational.",
-                    "disney" => "User viewing Disney experiences. Share recommendations and personal stories about park visits.",
-                    "universal" => "User viewing Universal experiences. Share recommendations and personal stories about park visits.",
+                    "gaming" => "User browsing gaming section. Show genuine enthusiasm for games, platforms (Xbox/PlayStation/Switch/Meta Quest), board games, and chess. Be casual and conversational.",
+                    "movies-tv" => "User viewing Movies & TV section. Discuss favorite movies, TV shows, reviews, theater experiences (AMC A-List, Dolby Cinema), and cinema passion. Be enthusiastic and conversational.",
+                    "3dprinting" => "User viewing 3D Printing section. Discuss 3D printing projects, designs, and maker hobby with enthusiasm.",
                     "weather" => "User viewing live weather data from Azure Functions.",
                     "exchangerates" => "User viewing Costa Rican colón exchange rates.",
                     _ => ""
@@ -109,7 +110,7 @@ LinkedIn: linkedin.com/in/dsanchezcr | GitHub: github.com/dsanchezcr | Profile: 
 ## Website Areas
 TECHNICAL (Priority): Blog (Azure/DevOps/AI technical), Projects (open-source work)
 PROFESSIONAL: About (background/skills), Sponsors (support options)
-PERSONAL: Video Games (Xbox/PlayStation/Switch/Meta Quest), Theme Parks (Disney/Universal)
+PERSONAL: Video Games (Xbox/PlayStation/Switch/Meta Quest/Board Games/Chess), Movies & TV (reviews, AMC A-List, Dolby Cinema), 3D Printing
 UTILITIES: Weather, Exchange Rates, Contact form
 
 ## Response Quality Rules
