@@ -5,6 +5,7 @@ const platformColors = {
   'nintendo-switch': '#E4000F',
   'nintendo-switch-2': '#FF3C28',
   'meta-quest': '#1C1E20',
+  'phone-mobile': '#34A853',
 };
 
 const platformLabels = {
@@ -14,6 +15,7 @@ const platformLabels = {
   'nintendo-switch': 'Nintendo Switch',
   'nintendo-switch-2': 'Nintendo Switch 2',
   'meta-quest': 'Meta Quest',
+  'phone-mobile': 'Phone & Mobile',
 };
 
 const statusLabelsByLocale = {
