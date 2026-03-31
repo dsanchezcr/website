@@ -265,9 +265,26 @@ For non-trivial features, use specification templates from `specs/templates/` be
 | `api-endpoint-spec.md` | Creating a new Azure Functions endpoint |
 | `gaming-content-spec.md` | Adding games, platforms, or gaming features |
 
-Workflow: **Specify → Review → Implement → Verify**
+### Workflow: Specify → Review → Implement → Verify
+
+Use the prompts in `.github/prompts/` for each workflow step:
+
+| Prompt | Purpose |
+|--------|---------|
+| `/specify` | Create a new specification from a template |
+| `/review-spec` | Validate a spec against the constitution |
+| `/implement-spec` | Build from an approved specification |
+| `/verify-spec` | Confirm implementation meets acceptance criteria |
 
 Create spec files in `specs/` (e.g., `specs/FEAT-001-new-widget.md`) based on the appropriate template. Specs must define acceptance criteria, i18n requirements, and affected files before implementation begins.
+
+### Governance Files
+
+| File | Purpose |
+|------|---------|
+| `.specify/memory/constitution.md` | Non-negotiable project principles (all agents must comply) |
+| `.specify/memory/decisions.md` | Log of architectural and implementation decisions |
+| `.github/instructions/spec-driven-development.instructions.md` | Enforces spec workflow on relevant files |
 
 ## Agent Team
 
