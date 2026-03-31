@@ -270,11 +270,7 @@ const config = {
               {
                 label: 'About',
                 to: '/about',
-              },
-              {
-                label: '3D Printing',
-                to: '/3dprinting',
-              },
+              }
             ],
           },
           {
