@@ -5,8 +5,9 @@ const platformColors = {
   'nintendo-switch': '#E4000F',
   'nintendo-switch-2': '#FF3C28',
   'meta-quest': '#1C1E20',
-  'phone-mobile': '#34A853',
+  'phone-mobile': '#F9A825',
   'board-games': '#8B4513',
+  'chess': '#616161',
 };
 
 const platformLabels = {
@@ -18,6 +19,7 @@ const platformLabels = {
   'meta-quest': 'Meta Quest',
   'phone-mobile': 'Phone & Mobile',
   'board-games': 'Board Games',
+  'chess': 'Chess',
 };
 
 const statusLabelsByLocale = {
