@@ -17,7 +17,10 @@ Read `.github/copilot-instructions.md` and `.specify/memory/constitution.md` bef
 4. **Draft the English version**: Create the MDX file in `blog/` following the naming convention `YYYY-MM-DD-Title.mdx`.
 5. **Create Spanish translation**: Place in `i18n/es/docusaurus-plugin-content-blog/YYYY-MM-DD-Title.mdx`.
 6. **Create Portuguese translation**: Place in `i18n/pt/docusaurus-plugin-content-blog/YYYY-MM-DD-Title.mdx`.
-7. **Handle images**: If images are needed, note them for the `blog-image` agent or place references in `static/img/blog/`.
+7. **Generate hero image**: Invoke the `blog-image` agent to generate a hero image for the post using GitHub Models. The image should be saved to `static/img/blog/<date-slug>/` and referenced in frontmatter as:
+   ```
+   image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/<date-slug>/<image-name>.jpg
+   ```
 
 ## Frontmatter Requirements
 
@@ -29,6 +32,10 @@ description: "SEO-friendly description"
 slug: post-slug
 authors: [dsanchezcr]
 tags: [tag1, tag2]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/<date-slug>/<image-name>.jpg
+date: YYYY-MM-DDT10:00
 ---
 ```
 

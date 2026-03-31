@@ -275,6 +275,7 @@ Use the prompts in `.github/prompts/` for each workflow step:
 | `/review-spec` | Validate a spec against the constitution |
 | `/implement-spec` | Build from an approved specification |
 | `/verify-spec` | Confirm implementation meets acceptance criteria |
+| `/write-blog` | End-to-end blog post creation (spec + content + translations + hero image) |
 
 Create spec files in `specs/` (e.g., `specs/FEAT-001-new-widget.md`) based on the appropriate template. Specs must define acceptance criteria, i18n requirements, and affected files before implementation begins.
 
