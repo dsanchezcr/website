@@ -18,6 +18,9 @@
 | Backend Runtime | .NET Isolated Worker | 9.0 | Azure Functions programming model |
 | Hosting | Azure Static Web Apps | Managed Functions | Single deployment unit |
 | Infrastructure | Bicep | Latest | No Terraform, no ARM templates |
+| Testing (Frontend) | Vitest | 3.x | Behavior-focused, deterministic |
+| Testing (Backend) | xUnit | Latest | .NET test runner |
+| Testing (E2E) | Playwright | Latest | Chromium, smoke tests |
 | CI/CD | GitHub Actions | Latest | Single workflow for deploy |
 
 ## i18n Requirements
