@@ -1,0 +1,14 @@
+---
+title: Watchlist
+sidebar_position: 3
+description: TV shows on my watchlist that I plan to watch.
+---
+
+import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
+import seriesData from '@site/src/data/series.json';
+
+# Watchlist
+
+TV shows I'm planning to watch next.
+
+<MediaCardList items={seriesData} category="watchlist" />
