@@ -27,9 +27,13 @@
     "message": "Sobre",
     "description": "Navbar item with label About"
   },
-  "item.label.Video Games": {
-    "message": "Videogames",
-    "description": "Navbar item with label Video Games"
+  "item.label.Gaming": {
+    "message": "Gaming",
+    "description": "Navbar item with label Gaming"
+  },
+  "item.label.Movies & TV": {
+    "message": "Filmes e TV",
+    "description": "Navbar item with label Movies & TV"
   },
   "item.label.3D Printing": {
     "message": "Impressão 3D",
