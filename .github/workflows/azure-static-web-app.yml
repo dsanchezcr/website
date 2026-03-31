@@ -55,9 +55,15 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Run Frontend Tests
+        run: npm test
+
       - name: Build .NET API
         run: dotnet build --configuration Release
         working-directory: api
+
+      - name: Run Backend Tests
+        run: dotnet test api.tests/api.tests.csproj --configuration Release --no-restore
 
       - name: Build Docusaurus Website
         run: npm run build
