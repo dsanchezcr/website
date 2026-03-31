@@ -27,9 +27,13 @@
     "message": "Voluntariado",
     "description": "Navbar item with label Volunteering"
   },
-  "item.label.Video Games": {
-    "message": "Videojuegos",
-    "description": "Navbar item with label Video Games"
+  "item.label.Gaming": {
+    "message": "Gaming",
+    "description": "Navbar item with label Gaming"
+  },
+  "item.label.Movies & TV": {
+    "message": "Películas y TV",
+    "description": "Navbar item with label Movies & TV"
   },
   "item.label.3D Printing": {
     "message": "Impresión 3D",

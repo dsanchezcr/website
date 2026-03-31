@@ -214,16 +214,19 @@ function extractPages() {
     }
   }
 
-  // Add video games section pages
-  const videogamesDirs = [
-    { dir: 'videogames', subdir: null, title: 'Video Games', url: '/videogames' },
-    { dir: 'videogames', subdir: 'xbox', title: 'Xbox & PC', url: '/videogames/xbox' },
-    { dir: 'videogames', subdir: 'playstation', title: 'PlayStation', url: '/videogames/playstation' },
-    { dir: 'videogames', subdir: 'nintendo-switch', title: 'Nintendo Switch', url: '/videogames/nintendo-switch' },
-    { dir: 'videogames', subdir: 'meta-quest', title: 'Meta Quest', url: '/videogames/meta-quest' }
+  // Add gaming section pages
+  const gamingDirs = [
+    { dir: 'gaming', subdir: null, title: 'Gaming', url: '/gaming' },
+    { dir: 'gaming', subdir: 'xbox', title: 'Xbox & PC', url: '/gaming/xbox' },
+    { dir: 'gaming', subdir: 'playstation', title: 'PlayStation', url: '/gaming/playstation' },
+    { dir: 'gaming', subdir: 'nintendo-switch', title: 'Nintendo Switch', url: '/gaming/nintendo-switch' },
+    { dir: 'gaming', subdir: 'meta-quest', title: 'Meta Quest', url: '/gaming/meta-quest' },
+    { dir: 'gaming', subdir: 'board-games', title: 'Board Games', url: '/gaming/board-games' },
+    { dir: 'gaming', subdir: 'chess', title: 'Chess', url: '/gaming/chess' },
+    { dir: 'gaming', subdir: 'phone-mobile', title: 'Phone & Mobile', url: '/gaming/phone-mobile' }
   ];
 
-  for (const vg of videogamesDirs) {
+  for (const vg of gamingDirs) {
     try {
       const indexPath = vg.subdir
         ? path.join(__dirname, '..', vg.dir, vg.subdir, 'index.mdx')
@@ -231,7 +234,7 @@ function extractPages() {
       if (fs.existsSync(indexPath)) {
         const content = fs.readFileSync(indexPath, 'utf-8');
         const { frontmatter, body } = parseFrontmatter(content);
-        const id = vg.subdir ? `videogames-${vg.subdir}` : 'videogames';
+        const id = vg.subdir ? `gaming-${vg.subdir}` : 'gaming';
 
         pages.push({
           id: `page-${id}`,
@@ -239,7 +242,7 @@ function extractPages() {
           description: frontmatter.description || '',
           content: stripMarkdown(body).slice(0, 5000),
           url: vg.url,
-          category: 'videogames',
+          category: 'gaming',
           tags: Array.isArray(frontmatter.keywords)
             ? frontmatter.keywords.join(', ')
             : (frontmatter.keywords || ''),
@@ -247,7 +250,7 @@ function extractPages() {
         });
       }
     } catch (error) {
-      console.error(`Error processing videogames page ${vg.subdir || vg.dir}: ${error.message}`);
+      console.error(`Error processing gaming page ${vg.subdir || vg.dir}: ${error.message}`);
     }
   }
   
