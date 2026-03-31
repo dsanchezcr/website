@@ -194,6 +194,38 @@
   }
 }
 
+/* ---------- Countdown Banner ---------- */
+.countdownBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0;
+  background: linear-gradient(135deg, #ff6f00, #ff8f00);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+}
+
+.countdownLabel {
+  font-size: 0.85rem;
+}
+
+.countdownTimer {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.countdownBanner + .gameCardLink .gameCard,
+.countdownBanner + .gameCard {
+  border-radius: 0 0 12px 12px;
+  margin-top: 0;
+}
+
 /* ---------- QR Code ---------- */
 .friendCodeQR {
   display: block;
