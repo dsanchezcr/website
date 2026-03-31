@@ -1,0 +1,726 @@
+---
+title: "Construindo Aplicações de IA no Azure com GitHub Models: Do Playground à Produção"
+description: Um passo a passo prático e completo da jornada do desenvolvedor, desde experimentar com modelos no playground do GitHub Models até implantar uma aplicação de IA de nível produtivo no Azure usando Microsoft Foundry, Azure AI Services e GitHub Actions.
+slug: ai-apps-azure-github-models-playground-to-production
+authors: [dsanchezcr]
+tags: [AI, Azure, GitHub Models, Microsoft Foundry, Azure AI Services, GitHub Actions, RAG, DevOps]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2026-03-31-AIAppsAzureGitHubModels/ai-apps-azure-github-models.jpg
+date: 2026-03-31T10:00
+---
+
+# Construindo Aplicações de IA no Azure com GitHub Models: Do Playground à Produção
+
+## A Jornada que a Maioria dos Tutoriais Pula
+
+A maioria dos tutoriais de IA começa com "crie um recurso no Azure" e termina com "aqui está seu chat completion." Eles pulam a parte bagunçada do meio — a parte onde um desenvolvedor vai de *"me pergunto qual modelo funcionaria para isso"* a *"isso está rodando em produção, monitorado, seguro e custando o que eu esperava."*
+
+Essa jornada completa é o que este post aborda.
+
+<!--truncate-->
+
+![Construindo Aplicações de IA no Azure com GitHub Models](pathname:///img/blog/2026-03-31-AIAppsAzureGitHubModels/ai-apps-azure-github-models.jpg)
+
+No último ano, ajudei equipes em diferentes indústrias a ir de zero experiência em IA a rodar aplicações em produção fundamentadas em seus próprios dados. O padrão que funciona melhor segue cinco estágios: **Experimentar → Prototipar → Endurecer → Implantar → Monitorar**. Cada estágio tem ferramentas específicas, compensações específicas e momentos específicos onde os desenvolvedores ficam travados.
+
+Este post foca na jornada de infraestrutura — conectando a superfície de experimentação de modelos do GitHub com a plataforma de IA produtiva do Azure através do Microsoft Foundry.
+
+Deixe-me percorrer cada estágio.
+
+---
+
+## Arquitetura de Alto Nível: Do Playground à Produção
+
+Antes de mergulhar em cada estágio, aqui está a arquitetura que este post constrói. Mantenha essa imagem mental enquanto avançamos pelas cinco fases:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     JORNADA DO DESENVOLVEDOR                            │
+│                                                                         │
+│  ┌──────────────┐    ┌──────────────┐    ┌───────────────────────────┐  │
+│  │ EXPERIMENTAR │    │  PROTOTIPAR  │    │        ENDURECER          │  │
+│  │              │    │              │    │                           │  │
+│  │ GitHub Models│──▶│  Codespaces   │──▶│  Azure AI Foundry         │  │
+│  │  Playground  │    │  + Models API│    │  + AI Services            │  │
+│  │              │    │  + azd       │    │  + Content Safety         │  │
+│  │  Sem API key │    │  Baseado PAT │    │  + AI Search (RAG)        │  │
+│  │ Sem sub Azure│    │  Rate-limited│    │  Nível produção           │  │
+│  └──────────────┘    └──────────────┘    └───────────┬───────────────┘  │
+│                                                      │                  │
+│                                                      ▼                  │
+│                      ┌──────────────┐    ┌───────────────────────────┐  │
+│                      │  MONITORAR   │    │        IMPLANTAR          │  │
+│                      │              │    │                           │  │
+│                      │ Azure Monitor│◀──│  GitHub Actions CI/CD     │  │
+│                      │ App Insights │    │  Federação OIDC           │  │
+│                      │ Uso Tokens   │    │  azd up                   │  │
+│                      │ Latência     │    │  Staging → Produção       │  │
+│                      │ Logs Segur.  │    │                           │  │
+│                      └──────────────┘    └───────────────────────────┘  │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+O insight chave nesta arquitetura é que cada transição é projetada para ser mínima. A superfície de API entre GitHub Models e os serviços de Azure AI é intencionalmente compatível. O código que você escreve na fase de Experimentação segue adiante — você está mudando endpoints e credenciais, não reescrevendo lógica.
+
+---
+
+## Estágio 1: Experimentar (GitHub Models)
+
+### O Melhor Laboratório de IA Não Tem Configuração
+
+A maior fricção no desenvolvimento de IA não é escrever o código — é a configuração antes de escrever uma única linha. Criar recursos na nuvem, gerenciar chaves de API, configurar faturamento, preparar ambientes. Quando você terminou tudo isso, perdeu o impulso criativo que gerou a ideia em primeiro lugar.
+
+[GitHub Models](https://github.com/marketplace/models) elimina essa fricção completamente.
+
+GitHub Models dá a todo desenvolvedor com uma conta GitHub acesso ao catálogo de modelos de Azure AI diretamente do GitHub. Sem assinatura Azure. Sem cartão de crédito. Sem provisionamento de chaves de API. Você abre um navegador, escolhe um modelo e começa a experimentar.
+
+### O que Você Pode Fazer no Playground
+
+O playground do GitHub Models é mais do que uma demo — é uma superfície legítima de experimentação:
+
+- **Explorar o catálogo**: Modelos da OpenAI (GPT-4.1, GPT-4o, o3-mini, o4-mini), Meta (Llama 4 Scout, Llama 4 Maverick), Mistral (Mistral Large, Mistral Small), Cohere (Command R+), Microsoft (Phi-4, MAI) e DeepSeek (DeepSeek-R1) estão disponíveis para uso imediato.
+- **Comparar modelos lado a lado**: Abra múltiplas abas do playground e envie o mesmo prompt para diferentes modelos. Compare qualidade de resposta, latência, uso de tokens e profundidade de raciocínio. Isso é inestimável para seleção de modelos.
+- **Ajustar parâmetros visualmente**: Ajuste temperatura, top-p, tokens máximos e prompts de sistema. Veja como cada parâmetro afeta a qualidade de saída em tempo real.
+- **Testar capacidades multimodais**: Faça upload de imagens e teste modelos de visão. Envie entradas JSON estruturadas e valide formatos de saída.
+
+### Um Experimento Prático
+
+Deixe-me dar um exemplo concreto. Suponha que você está construindo uma aplicação de suporte ao cliente que precisa classificar tickets recebidos por urgência e encaminhá-los para a equipe correta. Antes de escrever qualquer código, você pode testar isso no playground:
+
+**Prompt do sistema:**
+```
+Você é um classificador de tickets de suporte ao cliente. Dado uma 
+mensagem do cliente, responda com um objeto JSON contendo:
+- "urgency": "critical", "high", "medium" ou "low"
+- "category": "billing", "technical", "account" ou "general"
+- "suggested_team": a equipe que deve lidar com isso
+- "summary": um resumo de uma frase do problema
+```
+
+**Entrada de teste:**
+```
+Não consigo fazer login na minha conta e tenho uma apresentação em 30 
+minutos que requer dados da sua plataforma. Já tentei redefinir minha 
+senha, mas o e-mail nunca chega.
+```
+
+Execute isso contra GPT-4.1, Llama 4 Scout e Mistral Large. Compare a estrutura JSON, a precisão da classificação e a latência de resposta. Em cinco minutos, você tem dados reais sobre qual modelo se encaixa no seu caso de uso — sem escrever uma linha de código ou gastar um dólar.
+
+### O que o GitHub Models É (e Não É)
+
+Isso é importante entender cedo: GitHub Models é uma superfície de experimentação, não uma plataforma de produção. Tem limites de taxa projetados para exploração (aproximadamente 150 solicitações por minuto para modelos de alta taxa, 10 por minuto para modelos de baixa taxa, dependendo do modelo e seu plano GitHub). É sustentado pela infraestrutura Azure AI, mas é intencionalmente limitado.
+
+Pense nisso como a bancada do laboratório. Você não enviaria produtos da bancada do laboratório, mas também nunca pularia a bancada do laboratório.
+
+---
+
+## Estágio 2: Prototipar (Codespaces + GitHub Models API)
+
+### De Cliques a Código
+
+O playground te diz *qual* modelo funciona. O próximo passo é provar que funciona *em código*. É aqui que GitHub Codespaces e a API do GitHub Models criam um fluxo de trabalho excepcional.
+
+GitHub Codespaces te dá um ambiente de desenvolvimento completo na nuvem em segundos. Combinado com a API do GitHub Models, você pode ir do experimento no playground para um protótipo funcional sem sair do ecossistema do GitHub.
+
+### Configurando o Protótipo
+
+A API do GitHub Models usa o mesmo padrão de endpoint que o Azure OpenAI. Seu token de acesso pessoal do GitHub (PAT) serve como chave de API, e o endpoint é `https://models.inference.ai.azure.com`. Aqui está um protótipo em Python usando o SDK de Azure AI Inference:
+
+```python
+from azure.ai.inference import ChatCompletionsClient
+from azure.ai.inference.models import SystemMessage, UserMessage
+from azure.core.credentials import AzureKeyCredential
+
+# Endpoint do GitHub Models — não precisa de assinatura Azure
+client = ChatCompletionsClient(
+    endpoint="https://models.inference.ai.azure.com",
+    credential=AzureKeyCredential(os.environ["GITHUB_TOKEN"]),
+)
+
+response = client.complete(
+    messages=[
+        SystemMessage(content="Você é um classificador de tickets de suporte..."),
+        UserMessage(content=ticket_text),
+    ],
+    model="gpt-4.1",  # Mude este único parâmetro para testar diferentes modelos
+    temperature=0.2,
+    response_format={"type": "json_object"},
+)
+
+classification = json.loads(response.choices[0].message.content)
+```
+
+A beleza aqui: **trocar de modelo é uma mudança de um único parâmetro**. Quer testar Llama 4 Scout? Mude `model="gpt-4.1"` para `model="Llama-4-Scout-17B-16E-Instruct"`. Mesmo código, mesmo SDK, modelo diferente. Isso torna trivial os testes A/B entre famílias de modelos.
+
+### Acelerando com Templates azd
+
+O [Azure Developer CLI (azd)](https://learn.microsoft.com/azure/developer/azure-developer-cli/) tem uma biblioteca crescente de templates de aplicações de IA que podem acelerar esta fase significativamente. Em vez de construir tudo do zero:
+
+```bash
+# Explorar templates específicos de IA
+azd template list --filter ai
+
+# Inicializar a partir de um template
+azd init --template azure-openai-chat
+
+# Isso te dá:
+# - Código de aplicação com integração do SDK de IA
+# - Infraestrutura como código (Bicep) para recursos Azure
+# - Configuração de pipeline CI/CD
+# - Gerenciamento de ambientes
+```
+
+Esses templates não são exemplos de brinquedo — incluem tratamento adequado de erros, suporte a streaming, gerenciamento de histórico de conversas e parsing de saída estruturada. Foram projetados para serem levados para produção.
+
+### Iterando Rápido no Codespaces
+
+O ambiente Codespaces torna a iteração rápida natural:
+
+1. **Variáveis de ambiente**: Configure `GITHUB_TOKEN` nos segredos do seu Codespace. Sem gerenciamento local de credenciais.
+2. **Redirecionamento de portas**: Construa uma interface web simples, e o Codespaces automaticamente redireciona a porta. Compartilhe a URL com colegas para feedback.
+3. **Containers pré-construídos**: Use um `devcontainer.json` com os SDKs de IA pré-instalados. Novos membros da equipe obtêm um ambiente funcional em menos de um minuto.
+4. **GitHub Copilot no ciclo**: Use [GitHub Copilot](https://github.com/features/copilot) para ajudar a escrever o código de integração. Ele entende os padrões do SDK de IA e pode gerar boilerplate, tratamento de erros e casos de teste.
+
+Neste estágio, seu protótipo é funcional mas não está pronto para produção. Está usando endpoints do GitHub Models com limites de taxa, não tem barreiras de segurança de conteúdo e não está fundamentado nos seus dados de domínio. Esse é exatamente o estado correto — você validou o conceito com investimento mínimo.
+
+---
+
+## Estágio 3: Endurecer (Azure AI Foundry e AI Services)
+
+### A Transição que Deveria Ser Entediante
+
+Este é o estágio onde a maioria dos desenvolvedores espera dor. Eles construíram um protótipo funcional contra uma API, e agora precisam "migrar" para uma plataforma de produção. Em muitos ecossistemas, isso significa reescrever partes significativas do código.
+
+Com GitHub Models e Azure AI, essa transição é intencionalmente entediante. E entediante é exatamente o que você quer.
+
+### A Mudança Mínima de Código
+
+A API do GitHub Models e os serviços Azure AI compartilham a mesma superfície de API por design. A migração fica assim:
+
+```python
+# ANTES: GitHub Models (protótipo)
+client = ChatCompletionsClient(
+    endpoint="https://models.inference.ai.azure.com",
+    credential=AzureKeyCredential(os.environ["GITHUB_TOKEN"]),
+)
+
+# DEPOIS: Azure AI Foundry (produção)
+client = ChatCompletionsClient(
+    endpoint=os.environ["AZURE_AI_ENDPOINT"],  # Seu endpoint do Foundry
+    credential=AzureKeyCredential(os.environ["AZURE_AI_KEY"]),
+)
+```
+
+Duas linhas alteradas. Toda sua lógica de aplicação, engenharia de prompts, parsing de saída, tratamento de erros — tudo inalterado. Este é o benefício da compatibilidade de superfície de API.
+
+### Microsoft Foundry: Sua Plataforma de IA Produtiva
+
+[Microsoft Foundry](https://ai.azure.com/) (anteriormente Azure AI Foundry) é onde a experimentação se torna produção. Ele fornece:
+
+- **Catálogo de modelos e implantação**: Implante os mesmos modelos que você testou no GitHub Models, mais modelos adicionais e variantes ajustadas. Você controla o SKU, a região e a configuração de escala.
+- **Endpoints gerenciados**: Obtenha endpoints de inferência dedicados com throughput garantido, disponibilidade respaldada por SLA e sem limites de taxa além do que você provisiona.
+- **Playground e avaliação**: Foundry tem seu próprio playground para testar modelos implantados, além de ferramentas de avaliação integradas para medir qualidade em escala.
+- **Organização de projetos**: Agrupe modelos, datasets e avaliações relacionados em projetos. Isso se torna crítico quando você tem múltiplas funcionalidades de IA na sua aplicação.
+
+### Configurando Seu Projeto no Foundry
+
+```bash
+# Usando Azure CLI para criar os recursos do Foundry
+az group create --name rg-ai-app --location eastus2
+
+# Criar um hub de Azure AI (o recurso organizacional de nível superior)
+az ml workspace create --kind hub --name ai-hub-prod \
+    --resource-group rg-ai-app --location eastus2
+
+# Criar um projeto dentro do hub
+az ml workspace create --kind project --name ticket-classifier \
+    --resource-group rg-ai-app --hub-id ai-hub-prod
+
+# Implantar um modelo
+az ml online-deployment create --file deployment.yml
+```
+
+### Adicionando Segurança de Conteúdo: Barreiras de IA Responsável
+
+Aplicações de IA em produção precisam de barreiras de segurança. [Azure AI Content Safety](https://learn.microsoft.com/azure/ai-services/content-safety/) fornece filtros configuráveis que executam em cada solicitação e resposta:
+
+- **Filtros por categoria**: Bloqueie ou sinalize conteúdo em categorias de ódio, violência, sexual e autolesão com limiares de severidade ajustáveis (baixo, médio, alto).
+- **Detecção de jailbreak**: Identifique e bloqueie tentativas de injeção de prompts — usuários tentando contornar seu prompt de sistema.
+- **Detecção de material protegido**: Sinalize respostas que contêm conteúdo com direitos autorais ou marca registrada.
+- **Detecção de fundamentação**: Verifique se as respostas do modelo estão realmente fundamentadas no contexto fornecido (crítico para aplicações RAG).
+
+Esses filtros são configurados no nível de implantação no Azure AI Foundry, então se aplicam automaticamente a cada chamada de API. Nenhuma mudança de código necessária na sua aplicação — a camada de segurança fica entre seu app e o modelo.
+
+```python
+# A segurança de conteúdo é configurada no nível de implantação no Foundry.
+# Seu código de aplicação não muda — mas você pode inspecionar os resultados do filtro:
+response = client.complete(messages=messages, model="gpt-4.1")
+
+# Verificar se o filtro de conteúdo foi acionado
+if response.choices[0].finish_reason == "content_filter":
+    logger.warning("Filtro de conteúdo acionado", extra={
+        "filter_results": response.choices[0].content_filter_results
+    })
+```
+
+### Fundamentação com RAG: Azure AI Search
+
+É aqui que sua aplicação de IA passa de "chatbot genérico" para "ferramenta empresarial útil." A Geração Aumentada por Recuperação (RAG) fundamenta as respostas do modelo nos seus próprios dados — artigos de base de conhecimento, documentação de produtos, políticas internas ou qualquer conteúdo específico de domínio.
+
+#### A Arquitetura RAG
+
+```
+Consulta do Usuário
+    │
+    ▼
+┌──────────────┐     ┌─────────────────┐     ┌──────────────┐
+│  Seu App     │───▶│  Azure AI Search │───▶│  Documentos  │
+│              │     │  (Busca Vetorial│     │  Recuperados │
+│              │     │  + Keyword)     │     │  (Top K)     │
+│              │◀───┤                  │◀───┤              │
+└──────┬───────┘     └─────────────────┘     └──────────────┘
+       │
+       │  Combinar: Prompt Sistema + Contexto Recuperado + Consulta Usuário
+       ▼
+┌──────────────┐
+│  Modelo      │
+│  Azure AI    │
+│  (GPT-4.1)   │
+│              │
+└──────┬───────┘
+       │
+       ▼
+  Resposta Fundamentada
+  (com citações)
+```
+
+#### Configurando Azure AI Search para RAG
+
+```python
+from azure.search.documents import SearchClient
+from azure.core.credentials import AzureKeyCredential
+
+search_client = SearchClient(
+    endpoint=os.environ["AZURE_SEARCH_ENDPOINT"],
+    index_name="knowledge-base",
+    credential=AzureKeyCredential(os.environ["AZURE_SEARCH_API_KEY"]),
+)
+
+def get_grounded_response(user_query: str) -> str:
+    # Passo 1: Recuperar documentos relevantes usando busca híbrida
+    search_results = search_client.search(
+        search_text=user_query,
+        vector_queries=[{
+            "kind": "text",
+            "text": user_query,
+            "fields": "content_vector",
+            "k_nearest_neighbors": 5,
+        }],
+        top=5,
+        semantic_configuration_name="default",
+        query_type="semantic",
+    )
+
+    # Passo 2: Construir contexto a partir dos resultados de busca
+    context_chunks = []
+    for result in search_results:
+        context_chunks.append(
+            f"[Fonte: {result['title']}]\n{result['content']}"
+        )
+    context = "\n\n---\n\n".join(context_chunks)
+
+    # Passo 3: Enviar ao modelo com o contexto recuperado
+    response = client.complete(
+        messages=[
+            SystemMessage(content=f"""Você é um assistente útil. Responda a 
+pergunta do usuário baseando-se APENAS no seguinte contexto. Se o contexto 
+não contiver informação suficiente, diga isso. Sempre cite a fonte.
+
+Contexto:
+{context}"""),
+            UserMessage(content=user_query),
+        ],
+        model="gpt-4.1",
+        temperature=0.3,  # Temperatura mais baixa para respostas factuais
+    )
+
+    return response.choices[0].message.content
+```
+
+### RAG vs. Fine-Tuning: Quando Usar O Quê
+
+Uma das perguntas mais comuns que ouço das equipes é: *"Devemos usar RAG ou fazer fine-tuning do modelo?"* A resposta depende do que você está tentando alcançar.
+
+| Dimensão | RAG | Fine-Tuning |
+|---|---|---|
+| **O que muda** | O *contexto* que o modelo vê | Os *pesos e comportamento* do modelo |
+| **Melhor para** | Fundamentar respostas em dados atuais e específicos do domínio | Ensinar ao modelo um novo estilo, formato ou raciocínio especializado |
+| **Frescor dos dados** | Sempre atual — atualize o índice de busca, as respostas se atualizam imediatamente | Estático no momento do treinamento — requer retreinamento para incorporar novos dados |
+| **Complexidade de configuração** | Moderada — precisa de um índice de busca e um pipeline de recuperação | Alta — precisa de datasets de treinamento curados, computação GPU, pipelines de avaliação |
+| **Custo** | Por consulta (busca + inferência) | Custo inicial de treinamento + inferência por consulta |
+| **Latência** | Ligeiramente maior (busca + inferência) | Igual à inferência do modelo base |
+| **Transparência** | Alta — você pode ver quais documentos foram recuperados e citados | Baixa — difícil explicar por que o modelo produz uma saída específica |
+
+#### Quando Escolher RAG
+
+- **Seus dados mudam frequentemente.** Catálogos de produtos, bases de conhecimento, documentos de políticas, preços — qualquer coisa que atualiza regularmente. RAG sempre recupera a versão mais recente.
+- **Você precisa de citações e rastreabilidade.** RAG naturalmente fornece atribuição de fontes. Usuários (e equipes de compliance) podem verificar de onde vêm as respostas.
+- **Você está começando do zero.** RAG é mais rápido de implementar e iterar. Você pode ter uma solução funcional em dias, não semanas.
+- **Múltiplas fontes de dados.** RAG permite que você busque em diferentes coleções de documentos, bancos de dados e APIs em uma única consulta.
+
+**Exemplo:** Um bot de suporte ao cliente que responde perguntas sobre seus produtos usando sua documentação de ajuda atual e artigos de base de conhecimento. Quando você atualiza um artigo, as respostas do bot se atualizam automaticamente.
+
+#### Quando Escolher Fine-Tuning
+
+- **Você precisa de um estilo ou formato de saída específico.** Se cada resposta deve seguir um esquema JSON rigoroso, usar terminologia médica corretamente ou combinar com o tom da sua marca, o fine-tuning incorpora esse comportamento ao modelo.
+- **Raciocínio específico do domínio.** Se o modelo precisa entender conceitos especializados que não estão bem representados nos seus dados de treinamento — raciocínio jurídico, padrões de código específicos ou jargão da indústria.
+- **Aplicações sensíveis à latência.** Fine-tuning evita a ida e volta extra ao serviço de busca. Para aplicações em tempo real onde cada milissegundo importa, isso pode ser significativo.
+- **Reduzir o tamanho do prompt.** Se seu prompt de sistema é extremamente longo porque você está inserindo instruções e exemplos nele, o fine-tuning pode absorver esse contexto nos pesos do modelo, reduzindo os custos de tokens por solicitação.
+
+**Exemplo:** Uma aplicação de escriba médico que deve produzir notas clínicas em um formato estruturado específico seguindo padrões HL7 FHIR, usando terminologia médica precisa conforme ditado pelos clínicos.
+
+#### A Abordagem Híbrida
+
+Na prática, muitas aplicações em produção usam ambos:
+
+1. **Fine-tune** o modelo para seu formato de saída desejado, tom e raciocínio específico do domínio.
+2. **Use RAG** para alimentá-lo com dados atuais e factuais no momento da inferência.
+
+Isso te dá o melhor dos dois mundos — um modelo que *pensa* como seu especialista de domínio e *conhece* seus dados mais recentes.
+
+---
+
+## Estágio 4: Implantar (Serviços Azure + GitHub Actions)
+
+### Tornando Real
+
+Você tem uma aplicação de IA endurecida, fundamentada e filtrada por segurança. Agora ela precisa rodar em algum lugar. Este estágio conecta sua aplicação à computação Azure e automatiza o pipeline de implantação com GitHub Actions.
+
+### Escolhendo Seu Destino de Computação no Azure
+
+O destino de computação correto depende da arquitetura da sua aplicação:
+
+| Serviço | Melhor Para | Padrão de Aplicação de IA |
+|---|---|---|
+| **Azure Container Apps** | Microsserviços em containers, escala por eventos | APIs de IA com carga variável, processamento em background |
+| **Azure App Service** | Aplicações web tradicionais, implantação rápida | Aplicações web com IA e escala padrão |
+| **Azure Functions** | Orientado a eventos, faturamento por solicitação | Processamento de IA acionado por eventos (filas, HTTP, timers) |
+| **Azure Kubernetes Service** | Arquiteturas multi-serviço complexas | Plataformas de IA em grande escala com necessidades de infraestrutura personalizada |
+| **Azure Static Web Apps** | Frontends estáticos com backend API | Interfaces de chat com IA e backend serverless |
+
+### Federação OIDC: Implantações sem Segredos
+
+Pare de colocar credenciais Azure nos GitHub Secrets. A federação OpenID Connect (OIDC) permite que GitHub Actions se autentique no Azure sem segredos de longa duração:
+
+```bash
+# Criar um service principal
+az ad sp create-for-rbac --name "github-actions-ai-app" \
+    --role contributor --scopes /subscriptions/<sub-id>/resourceGroups/rg-ai-app
+
+# Criar a credencial federada
+az ad app federated-credential create \
+    --id <app-object-id> \
+    --parameters '{
+        "name": "github-actions-main",
+        "issuer": "https://token.actions.githubusercontent.com",
+        "subject": "repo:your-org/your-repo:ref:refs/heads/main",
+        "audiences": ["api://AzureADTokenExchange"]
+    }'
+```
+
+No seu workflow do GitHub Actions:
+
+```yaml
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+```
+
+Sem senhas. Sem rotação de segredos. O token é emitido por execução de workflow, com escopo para seu repositório e branch específicos, e expira automaticamente.
+
+### Promoção Baseada em Ambientes
+
+Implantações em produção nunca devem ir diretamente de um commit para produção. Use GitHub Environments para promoção escalonada:
+
+```yaml
+name: Deploy AI Application
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests
+        run: |
+          python -m pytest tests/ -v
+          python -m pytest tests/ai/ -v --run-integration
+
+  deploy-staging:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install azd
+        uses: Azure/setup-azd@v2
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy to Staging
+        run: azd deploy --environment staging --no-prompt
+      - name: Run smoke tests against staging
+        run: python tests/smoke_test.py --endpoint ${{ vars.STAGING_URL }}
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: production  # Requer aprovação manual
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install azd
+        uses: Azure/setup-azd@v2
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy to Production
+        run: azd deploy --environment production --no-prompt
+```
+
+### O Atalho do azd up
+
+Para equipes que querem o caminho mais rápido de código à nuvem, `azd up` combina provisionamento e implantação em um único comando:
+
+```bash
+# Este único comando:
+# 1. Provisiona todos os recursos Azure definidos no seu Bicep/Terraform
+# 2. Constrói sua aplicação
+# 3. Implanta no Azure
+# 4. Configura variáveis de ambiente
+azd up --environment production
+```
+
+O arquivo `azure.yaml` no seu repositório diz ao `azd` o que provisionar e implantar:
+
+```yaml
+name: ai-ticket-classifier
+metadata:
+  template: ai-ticket-classifier
+services:
+  api:
+    project: ./src/api
+    host: containerapp
+    language: python
+  web:
+    project: ./src/web
+    host: staticwebapp
+    language: js
+```
+
+Combinado com arquivos Bicep no seu diretório `infra/`, `azd` cria um pipeline de implantação completamente reproduzível. Cada membro da equipe pode executar `azd up` e obter um ambiente idêntico.
+
+---
+
+## Estágio 5: Monitorar (Azure Monitor + Application Insights)
+
+### Fechando o Ciclo
+
+Implantar uma aplicação de IA sem monitoramento é como lançar um foguete e fechar os olhos. Aplicações de IA têm necessidades de monitoramento únicas além das aplicações web tradicionais — você precisa rastrear não apenas disponibilidade e latência, mas também comportamento do modelo, economia de tokens e atividade de filtros de segurança.
+
+### Configurando Application Insights
+
+Application Insights fornece a base de telemetria. Se você está usando templates `azd`, isso geralmente está pré-configurado. Caso contrário:
+
+```python
+from azure.monitor.opentelemetry import configure_azure_monitor
+
+# Configurar uma vez na inicialização da aplicação
+configure_azure_monitor(
+    connection_string=os.environ["APPLICATIONINSIGHTS_CONNECTION_STRING"],
+    enable_live_metrics=True,
+)
+```
+
+### Telemetria Personalizada para Aplicações de IA
+
+Métricas HTTP padrão não são suficientes para aplicações de IA. Você precisa de telemetria específica do domínio:
+
+```python
+from opentelemetry import metrics, trace
+
+meter = metrics.get_meter("ai-ticket-classifier")
+tracer = trace.get_tracer("ai-ticket-classifier")
+
+# Métricas personalizadas
+token_counter = meter.create_counter(
+    "ai.tokens.total",
+    description="Total de tokens consumidos por chamadas ao modelo de IA"
+)
+prompt_token_counter = meter.create_counter(
+    "ai.tokens.prompt",
+    description="Tokens em prompts enviados ao modelo"
+)
+completion_token_counter = meter.create_counter(
+    "ai.tokens.completion",
+    description="Tokens em completions do modelo"
+)
+model_latency = meter.create_histogram(
+    "ai.model.latency",
+    description="Latência de inferência do modelo em milissegundos",
+    unit="ms"
+)
+content_filter_counter = meter.create_counter(
+    "ai.content_filter.triggered",
+    description="Número de vezes que filtros de segurança foram acionados"
+)
+
+def classify_ticket(ticket_text: str) -> dict:
+    with tracer.start_as_current_span("classify_ticket") as span:
+        span.set_attribute("ai.model", "gpt-4.1")
+        span.set_attribute("ai.ticket_length", len(ticket_text))
+
+        start_time = time.time()
+        response = client.complete(
+            messages=[...],
+            model="gpt-4.1",
+        )
+        latency_ms = (time.time() - start_time) * 1000
+
+        # Registrar métricas
+        usage = response.usage
+        prompt_token_counter.add(usage.prompt_tokens, {"model": "gpt-4.1"})
+        completion_token_counter.add(usage.completion_tokens, {"model": "gpt-4.1"})
+        token_counter.add(usage.total_tokens, {"model": "gpt-4.1"})
+        model_latency.record(latency_ms, {"model": "gpt-4.1"})
+
+        # Rastrear eventos de filtro de conteúdo
+        if response.choices[0].finish_reason == "content_filter":
+            content_filter_counter.add(1, {"model": "gpt-4.1"})
+            span.set_attribute("ai.content_filter_triggered", True)
+
+        span.set_attribute("ai.tokens.total", usage.total_tokens)
+        span.set_attribute("ai.latency_ms", latency_ms)
+
+        return json.loads(response.choices[0].message.content)
+```
+
+### Consultas KQL para Monitoramento de IA
+
+Com a telemetria fluindo para o Application Insights, você pode construir dashboards e alertas usando KQL:
+
+**Consumo de tokens ao longo do tempo:**
+```kql
+customMetrics
+| where name == "ai.tokens.total"
+| summarize TotalTokens = sum(value) by bin(timestamp, 1h), 
+    Model = tostring(customDimensions["model"])
+| render timechart
+```
+
+**Latência P95 do modelo:**
+```kql
+customMetrics
+| where name == "ai.model.latency"
+| summarize P95Latency = percentile(value, 95) by bin(timestamp, 15m),
+    Model = tostring(customDimensions["model"])
+| render timechart
+```
+
+**Taxa de acionamento de filtros de conteúdo:**
+```kql
+customMetrics
+| where name == "ai.content_filter.triggered"
+| summarize FilterEvents = sum(value) by bin(timestamp, 1h)
+| join kind=leftouter (
+    requests
+    | summarize TotalRequests = count() by bin(timestamp, 1h)
+) on timestamp
+| extend FilterRate = FilterEvents * 100.0 / TotalRequests
+| project timestamp, FilterEvents, TotalRequests, FilterRate
+| render timechart
+```
+
+**Estimativa de custos (aproximada):**
+```kql
+customMetrics
+| where name in ("ai.tokens.prompt", "ai.tokens.completion")
+| summarize 
+    PromptTokens = sumif(value, name == "ai.tokens.prompt"),
+    CompletionTokens = sumif(value, name == "ai.tokens.completion")
+    by bin(timestamp, 1d), Model = tostring(customDimensions["model"])
+| extend EstimatedCostUSD = case(
+    Model == "gpt-4.1", (PromptTokens / 1000000.0 * 2.0) + (CompletionTokens / 1000000.0 * 8.0),
+    Model == "gpt-4o", (PromptTokens / 1000000.0 * 2.5) + (CompletionTokens / 1000000.0 * 10.0),
+    0.0)
+| render timechart
+```
+
+### Alertas que Você Deveria Configurar
+
+Configure alertas do Azure Monitor para estas condições específicas de IA:
+
+1. **Orçamento de tokens excedido**: Alerta quando o consumo diário de tokens excede seu limiar de orçamento.
+2. **Pico de latência**: Alerta quando a latência P95 do modelo excede 5 segundos (ajuste para seu SLA).
+3. **Surto de filtros de conteúdo**: Alerta quando a taxa de acionamento do filtro de conteúdo excede 5% — isso pode indicar um ataque ou um problema com sua validação de entrada.
+4. **Taxa de erros**: Alerta quando a taxa de erros da API do modelo excede 1%, o que pode indicar problemas de cota ou degradação do serviço.
+5. **Queda de fundamentação**: Se você está usando detecção de fundamentação no Content Safety, alerta quando a taxa de respostas não fundamentadas subir — sua recuperação RAG pode precisar de ajustes.
+
+---
+
+## Juntando Tudo: O Modelo Mental
+
+Veja como os cinco estágios se conectam em um ciclo contínuo:
+
+| Estágio | Ferramenta | O que Você Está Fazendo | Tempo até o Valor |
+|---|---|---|---|
+| **Experimentar** | GitHub Models Playground | Escolhendo o modelo certo para seu caso de uso | Minutos |
+| **Prototipar** | Codespaces + GitHub Models API | Provando que o conceito funciona em código | Horas |
+| **Endurecer** | Azure AI Foundry + AI Services | Adicionando segurança, fundamentação e escala produtiva | Dias |
+| **Implantar** | Azure + GitHub Actions | Automatizando entrega confiável com CI/CD | Horas |
+| **Monitorar** | Azure Monitor + App Insights | Rastreando custo, qualidade e segurança em produção | Contínuo |
+
+O princípio arquitetônico chave é o **custo mínimo de transição entre estágios**. O mesmo SDK funciona de Experimentar até Endurecer. A mesma infraestrutura como código funciona do `azd up` local até implantações impulsionadas por CI/CD. O mesmo SDK de telemetria funciona do desenvolvimento à produção.
+
+Isso não é acidental. A API do GitHub Models foi projetada com compatibilidade com a API do Azure AI desde o primeiro dia. Os templates `azd` incluem configuração de monitoramento desde o início. Os filtros de segurança de conteúdo são configurados no nível de implantação para que seu código de aplicação fique limpo.
+
+---
+
+## O que Vem a Seguir
+
+Este post cobriu a jornada de infraestrutura — os pipes, plataformas e práticas que levam uma aplicação de IA da ideia à produção. Mas infraestrutura é apenas metade da história.
+
+Em posts futuros, vou explorar:
+
+- **Pipelines de avaliação**: Como medir sistematicamente a qualidade de aplicações de IA usando avaliações automatizadas no Azure AI Foundry.
+- **Arquiteturas multi-modelo**: Quando e como rotear diferentes solicitações para diferentes modelos baseado em complexidade, custo ou requisitos de latência.
+- **Integração de agentes**: Como padrões de IA agêntica (como os que cobri em [Construindo Seu Time de Agentes de IA](/blog/building-your-ai-agent-team)) se conectam com os padrões de infraestrutura neste post.
+
+Se você está começando sua jornada de aplicações de IA, comece no playground do GitHub Models. Escolha um modelo, teste seu caso de uso e sinta as possibilidades antes de escrever uma única linha de código. O caminho de lá até produção é mais direto do que você pode imaginar.
+
+---
+
+*Tem perguntas sobre construir aplicações de IA no Azure? Entre em contato na [página de contato](/contact) — adoraria saber o que você está construindo.*
