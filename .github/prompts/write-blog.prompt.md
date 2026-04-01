@@ -38,7 +38,7 @@ Study 2-3 recent blog posts in `blog/` to match the author's voice and style. Pa
    tags: [tag1, tag2]
    enableComments: true
    hide_table_of_contents: true
-   image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/<date-slug>/<image-name>.jpg
+   image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/<date-slug>/<image-name>.<ext>
    date: <YYYY-MM-DD>T10:00
    ---
    ```
@@ -64,7 +64,7 @@ Invoke the `@blog-image` agent to generate a hero image:
    - `blog/<filename>.mdx` (English)
    - `i18n/es/docusaurus-plugin-content-blog/<filename>.mdx` (Spanish)
    - `i18n/pt/docusaurus-plugin-content-blog/<filename>.mdx` (Portuguese)
-   - `static/img/blog/<date-slug>/<image>.jpg` (Hero image)
+   - `static/img/blog/<date-slug>/<image>.<ext>` (Hero image)
    - `specs/BLOG-<ID>-<slug>.md` (Specification)
 2. Confirm frontmatter is consistent across all 3 language versions.
 3. Update the spec status to **Implemented**.
@@ -88,7 +88,7 @@ Return a summary table:
 | Blog post (EN) | Created | `blog/YYYY-MM-DD-Title.mdx` |
 | Translation (ES) | Created | `i18n/es/.../YYYY-MM-DD-Title.mdx` |
 | Translation (PT) | Created | `i18n/pt/.../YYYY-MM-DD-Title.mdx` |
-| Hero image | Generated | `static/img/blog/<date-slug>/image.jpg` |
+| Hero image | Generated | `static/img/blog/<date-slug>/image.<ext>` |
 
 ## Input
 

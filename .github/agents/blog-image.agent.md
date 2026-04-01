@@ -29,7 +29,7 @@ export $(grep -v '^#' .env.local | xargs)
    node scripts/generate-blog-image.mjs --slug "<post-slug>" --prompt "<detailed prompt>"
    ```
    Requires `GOOGLE_AI_KEY` in `.env.local` (free key from https://ai.google.dev).
-   The image is saved directly to `static/img/blog/<date-slug>/` as JPG.
+   The image is saved directly to `static/img/blog/<date-slug>/` with the extension derived from the API response mimeType (e.g., `.png`, `.jpg`, `.webp`).
 4. **Create Mermaid diagrams**: For architecture or flow diagrams, create Mermaid syntax that renders within MDX.
 5. **Verify placement**: Confirm the image exists at the correct path and matches the frontmatter `image` field.
 
@@ -46,12 +46,12 @@ When generating hero images for blog posts, craft prompts that:
 
 | Attribute | Requirement |
 |-----------|-------------|
-| Format | JPG for hero images, PNG for diagrams |
+| Format | PNG/JPG/WebP for hero images (derived from API mimeType), PNG for diagrams |
 | Max size | 500KB |
 | Naming | lowercase, hyphens, descriptive slug |
 | Alt text | Required for accessibility |
 | Location | `static/img/blog/<date-slug>/` for blog posts |
-| Frontmatter | `image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/<date-slug>/<filename>.jpg` |
+| Frontmatter | `image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/<date-slug>/<filename>.<ext>` (use the actual extension from the generated file) |
 
 ## Constraints
 
