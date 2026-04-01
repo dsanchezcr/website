@@ -29,7 +29,7 @@ Study 2-3 recent blog posts in `blog/` to match the author's voice and style. Pa
 
 ### Step 2: Draft the Blog Post (English)
 
-1. Research existing posts in `blog/` for related content and consistent style.
+1. Familiarize yourself with the voice and formatting style of recent posts in `blog/`.
 2. Create the MDX file at `blog/<YYYY-MM-DD>-<Title>.mdx` with complete frontmatter:
    ```yaml
    ---
@@ -58,13 +58,13 @@ Study 2-3 recent blog posts in `blog/` to match the author's voice and style. Pa
    ```powershell
    Get-Content .env.local | ForEach-Object { if ($_ -match '^([^#]\w+)=(.*)') { [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2]) } }
    ```
-2. Craft a detailed image prompt based on the blog post content — a professional, tech-themed illustration with relevant visual metaphors, no text in the image, clean modern style, **wide 16:9 aspect ratio**.
+2. Craft a detailed image prompt based on the blog post content — a professional, tech-themed illustration with relevant visual metaphors, no text in the image, bright and clean modern style with light backgrounds and vibrant accent colors (avoid dark palettes), rich detail and depth, **wide rectangular 16:9 aspect ratio**.
 3. Create the image directory: `static/img/blog/<date-slug>/`
 4. Run the generation script:
    ```bash
    node scripts/generate-blog-image.mjs --slug "<date-slug>" --prompt "<image prompt>"
    ```
-5. The script enforces **JPG format** and **16:9 aspect ratio** automatically.
+5. The script enforces **16:9 aspect ratio** automatically. The output file extension matches the actual format returned by the API (may be PNG, JPG, or WebP).
 6. Verify the image was created and update frontmatter `image` field if the filename differs.
 
 ### Step 5: Final Verification

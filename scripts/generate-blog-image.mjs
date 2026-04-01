@@ -67,12 +67,11 @@ async function generateImage() {
     body: JSON.stringify({
       contents: [{
         parts: [{
-          text: `Generate an image: ${prompt}. The image must be in wide 16:9 aspect ratio, landscape orientation, suitable for a blog hero image. Do not include any text in the image.`
+          text: `Generate an image: ${prompt}. The image must be in wide 16:9 aspect ratio (rectangular landscape, significantly wider than tall), suitable for a blog hero banner. Use a bright, clean, modern illustration style with light backgrounds and vibrant accent colors. Avoid dark or moody palettes. Include rich detail and depth in the composition. Do not include any text or words in the image.`
         }]
       }],
       generationConfig: {
-        responseModalities: ['IMAGE', 'TEXT'],
-        imageMimeType: 'image/jpeg'
+        responseModalities: ['IMAGE', 'TEXT']
       }
     }),
   });
@@ -101,9 +100,10 @@ async function generateImage() {
     process.exit(1);
   }
 
-  // Always output as JPG (enforced via imageMimeType in the API request)
-  const mimeType = imagePart.inlineData.mimeType || 'image/jpeg';
-  const ext = '.jpg';
+  // Use the actual mimeType from the response to determine the file extension
+  const mimeType = imagePart.inlineData.mimeType || 'image/png';
+  const extMap = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp' };
+  const ext = extMap[mimeType] || '.png';
   const imgName = `${imgBaseName}${ext}`;
   const outputPath = join(imgDir, imgName);
 

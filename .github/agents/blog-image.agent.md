@@ -29,7 +29,7 @@ export $(grep -v '^#' .env.local | xargs)
    node scripts/generate-blog-image.mjs --slug "<post-slug>" --prompt "<detailed prompt>"
    ```
    Requires `GOOGLE_AI_KEY` in `.env.local` (free key from https://ai.google.dev).
-   The image is saved directly to `static/img/blog/<date-slug>/` with the extension derived from the API response mimeType (e.g., `.png`, `.jpg`, `.webp`).
+   The image is saved directly to `static/img/blog/<date-slug>/` with the extension derived from the actual API response mimeType (e.g., `.png`, `.jpg`, `.webp`). The file extension must match the actual image format returned by the API — do NOT assume JPEG.
 4. **Create Mermaid diagrams**: For architecture or flow diagrams, create Mermaid syntax that renders within MDX.
 5. **Verify placement**: Confirm the image exists at the correct path and matches the frontmatter `image` field.
 
@@ -37,10 +37,12 @@ export $(grep -v '^#' .env.local | xargs)
 
 When generating hero images for blog posts, craft prompts that:
 - Describe a professional, tech-themed illustration (not photos of real people)
-- Use a clean, modern style consistent with a developer blog
+- Use a bright, clean, modern style with light backgrounds and vibrant accent colors — avoid dark or moody palettes
+- Include rich detail and depth in the composition — avoid overly simple or minimalist images
 - Include relevant visual metaphors for the topic (e.g., gears for DevOps, network nodes for agents)
-- **MUST** specify a wide 16:9 aspect ratio — all hero images are landscape orientation
+- **MUST** specify a wide 16:9 aspect ratio (rectangular landscape, significantly wider than tall) — all hero images are landscape banners
 - Avoid text in the image (text renders poorly in AI-generated images)
+- Describe specific scene elements, lighting, and composition to produce detailed results
 
 ## Image Standards
 

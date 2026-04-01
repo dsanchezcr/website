@@ -12,7 +12,7 @@ Read `.github/copilot-instructions.md` and `.specify/memory/constitution.md` bef
 ## Workflow
 
 1. **Check for a spec**: Look for a specification in `specs/` matching the requested topic. If none exists, create one using `specs/templates/blog-post-spec.md` as the template.
-2. **Research existing content**: Search `blog/` for related posts to maintain consistency in voice, depth, and formatting.
+2. **Review existing style**: Familiarize yourself with the voice and formatting of recent posts in `blog/` to maintain consistency.
 3. **Review `blog/authors.yml`**: Use valid author keys in frontmatter.
 4. **Draft the English version**: Create the MDX file in `blog/` following the naming convention `YYYY-MM-DD-Title.mdx`.
 5. **Create Spanish translation**: Place in `i18n/es/docusaurus-plugin-content-blog/YYYY-MM-DD-Title.mdx`.

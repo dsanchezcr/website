@@ -31,11 +31,10 @@ _Outline the main sections or arguments. Each should be a complete thought:_
 
 ## References & Research
 
-_Sources, links, prior art, related blog posts on the site:_
+_Sources, links, prior art:_
 
 - _Reference 1_
 - _Reference 2_
-- _Related post: `blog/YYYY-MM-DD-Title.mdx`_
 
 ## Visual Assets
 
