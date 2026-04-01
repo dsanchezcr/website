@@ -67,11 +67,12 @@ async function generateImage() {
     body: JSON.stringify({
       contents: [{
         parts: [{
-          text: `Generate an image: ${prompt}. The image should be wide landscape format suitable for a blog hero image. Do not include any text in the image.`
+          text: `Generate an image: ${prompt}. The image must be in wide 16:9 aspect ratio, landscape orientation, suitable for a blog hero image. Do not include any text in the image.`
         }]
       }],
       generationConfig: {
-        responseModalities: ['IMAGE', 'TEXT']
+        responseModalities: ['IMAGE', 'TEXT'],
+        imageMimeType: 'image/jpeg'
       }
     }),
   });
@@ -100,10 +101,9 @@ async function generateImage() {
     process.exit(1);
   }
 
-  // Derive file extension from the actual mimeType returned by the API
-  const mimeType = imagePart.inlineData.mimeType || 'image/png';
-  const extMap = { 'image/png': '.png', 'image/jpeg': '.jpg', 'image/webp': '.webp', 'image/gif': '.gif' };
-  const ext = extMap[mimeType] || '.png';
+  // Always output as JPG (enforced via imageMimeType in the API request)
+  const mimeType = imagePart.inlineData.mimeType || 'image/jpeg';
+  const ext = '.jpg';
   const imgName = `${imgBaseName}${ext}`;
   const outputPath = join(imgDir, imgName);
 

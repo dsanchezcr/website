@@ -1,6 +1,6 @@
 ---
 description: "Draft blog posts from topic specifications. Use when: writing a new blog post, creating blog content, drafting MDX articles, translating blog posts, generating blog frontmatter."
-tools: [read, edit, search, web]
+tools: [read, edit, search, web, execute, agent]
 ---
 
 You are the **Blog Writer** agent for dsanchezcr.com. Your job is to draft high-quality technical blog posts in MDX format with proper frontmatter, and ensure translations exist in all three locales (English, Spanish, Portuguese).
@@ -17,10 +17,17 @@ Read `.github/copilot-instructions.md` and `.specify/memory/constitution.md` bef
 4. **Draft the English version**: Create the MDX file in `blog/` following the naming convention `YYYY-MM-DD-Title.mdx`.
 5. **Create Spanish translation**: Place in `i18n/es/docusaurus-plugin-content-blog/YYYY-MM-DD-Title.mdx`.
 6. **Create Portuguese translation**: Place in `i18n/pt/docusaurus-plugin-content-blog/YYYY-MM-DD-Title.mdx`.
-7. **Generate hero image**: Invoke the `blog-image` agent to generate a hero image for the post using the Google Gemini API (via `scripts/generate-blog-image.mjs` and the `GOOGLE_AI_KEY` environment variable). The image should be saved to `static/img/blog/<date-slug>/` and referenced in frontmatter as:
-   ```
-   image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/<date-slug>/<image-name>.jpg
-   ```
+7. **Generate hero image** (automatic — do NOT skip or ask for confirmation):
+   a. Load the API key from `.env.local`:
+      ```powershell
+      Get-Content .env.local | ForEach-Object { if ($_ -match '^([^#]\w+)=(.*)') { [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2]) } }
+      ```
+   b. Craft a detailed image prompt from the blog content: professional tech illustration, relevant visual metaphors, no text, clean modern style, **16:9 wide aspect ratio**.
+   c. Run the generation script (outputs JPG automatically):
+      ```bash
+      node scripts/generate-blog-image.mjs --slug "<date-slug>" --prompt "<detailed image prompt>"
+      ```
+   d. Verify the image was created at `static/img/blog/<date-slug>/<image-name>.jpg` and confirm frontmatter matches.
 
 ## Frontmatter Requirements
 

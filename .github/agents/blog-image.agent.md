@@ -39,14 +39,15 @@ When generating hero images for blog posts, craft prompts that:
 - Describe a professional, tech-themed illustration (not photos of real people)
 - Use a clean, modern style consistent with a developer blog
 - Include relevant visual metaphors for the topic (e.g., gears for DevOps, network nodes for agents)
-- Specify a wide aspect ratio suitable for blog hero images (16:9 or similar)
+- **MUST** specify a wide 16:9 aspect ratio — all hero images are landscape orientation
 - Avoid text in the image (text renders poorly in AI-generated images)
 
 ## Image Standards
 
 | Attribute | Requirement |
 |-----------|-------------|
-| Format | JPG for hero images, PNG for diagrams |
+| Format | **JPG only** for hero images (enforced by the generation script) |
+| Aspect ratio | **16:9 wide landscape** (mandatory for all hero images) |
 | Max size | 500KB |
 | Naming | lowercase, hyphens, descriptive slug |
 | Alt text | Required for accessibility |
