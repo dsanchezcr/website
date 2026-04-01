@@ -1,3 +1,4 @@
+using api;
 using Xunit;
 
 namespace api.tests;

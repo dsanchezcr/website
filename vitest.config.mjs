@@ -9,8 +9,8 @@ export default defineConfig({
   esbuild: {
     jsx: 'automatic',
     loader: 'jsx',
-    include: /\.[jt]sx?$/,
-    exclude: [],
+    include: /src\/.*\.[jt]sx?$/,
+    exclude: /node_modules/,
   },
   test: {
     environment: 'jsdom',

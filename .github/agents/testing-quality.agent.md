@@ -21,7 +21,7 @@ Read `.github/repo-docs/coding-standards.md` and `.specify/memory/constitution.m
 
 ## Frontend Testing (Vitest)
 
-- **Config**: `vitest.config.js` at repo root
+- **Config**: `vitest.config.mjs` at repo root
 - **Test location**: `src/components/<ComponentName>/__tests__/<ComponentName>.test.js`
 - **Data validation**: `src/data/__tests__/*.test.js`
 - **Config tests**: `src/config/__tests__/*.test.js`
@@ -45,7 +45,7 @@ Read `.github/repo-docs/coding-standards.md` and `.specify/memory/constitution.m
 
 ## E2E Testing (Playwright)
 
-- **Config**: `playwright.config.js` at repo root
+- **Config**: `playwright.config.mjs` at repo root
 - **Test location**: `tests/e2e/*.spec.js`
 - **Patterns**:
   - Smoke tests: homepage loads, navigation works, blog renders

@@ -45,7 +45,7 @@ if (!existsSync(imgDir)) {
   mkdirSync(imgDir, { recursive: true });
 }
 
-const imgName = filename || `${slug.replace(/^\d{4}-\d{2}-\d{2}-/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')}.png`;
+const imgName = filename || `${slug.replace(/^\d{4}-\d{2}-\d{2}-/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')}.jpg`;
 const outputPath = join(imgDir, imgName);
 
 async function generateImage() {

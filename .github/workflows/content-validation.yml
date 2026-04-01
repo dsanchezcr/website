@@ -81,7 +81,8 @@ jobs:
           done
 
           if [ $errors -gt 0 ]; then
-            echo "::warning::Found $errors missing blog translations"
+            echo "::error::Found $errors missing blog translations"
+            exit 1
           fi
           echo "Blog i18n check completed"
 
@@ -90,7 +91,7 @@ jobs:
           echo "Checking gaming doc translations..."
           errors=0
 
-          for file in $(git diff --name-only --diff-filter=ACM origin/main -- 'gaming/**/*.mdx' 2>/dev/null || true); do
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'gaming/**/*.mdx' 2>/dev/null || true); do
             if [ ! -f "$file" ]; then continue; fi
             # Convert gaming/xbox/index.mdx -> current/xbox/index.mdx
             relative="${file#gaming/}"
