@@ -9,7 +9,7 @@ export default defineConfig({
   esbuild: {
     jsx: 'automatic',
     loader: 'jsx',
-    include: /src\/.*\.[jt]sx?$/,
+    include: /src[\\/].*\.[jt]sx?$/,
     exclude: /node_modules/,
   },
   test: {

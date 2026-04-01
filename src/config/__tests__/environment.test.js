@@ -41,6 +41,7 @@ describe('environment config', () => {
   describe('config.api', () => {
     it('defines production, qa, and local endpoints', () => {
       expect(config.api).toHaveProperty('production');
+      expect(config.api).toHaveProperty('qa');
       expect(config.api).toHaveProperty('local');
     });
 

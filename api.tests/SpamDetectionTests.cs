@@ -1,21 +1,14 @@
-using System.Text.RegularExpressions;
+using api;
 using Xunit;
 
 namespace api.tests;
 
 /// <summary>
 /// Tests for spam detection patterns used in SendEmail.
-/// These tests validate the regex patterns without requiring the full Azure Functions runtime.
+/// These tests exercise the actual SpamDetector logic shared with production code.
 /// </summary>
 public class SpamDetectionTests
 {
-    // Replicate the regex patterns from SendEmail.cs
-    private static readonly Regex UrlPattern = new(@"(https?://|www\.)", RegexOptions.IgnoreCase);
-    private static readonly Regex EmailPattern = new(@"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", RegexOptions.IgnoreCase);
-    private static readonly Regex SpamKeywords = new(@"(viagra|cialis|crypto|lottery|winner|prize|bitcoin|forex|casino|poker)", RegexOptions.IgnoreCase);
-    private static readonly Regex RepetitiveChars = new(@"(.)\1{10,}");
-    private static readonly Regex InvalidNameChars = new(@"[0-9@#$%^&*()+=\[\]{};:""\\|<>?/]");
-
     [Theory]
     [InlineData("Check out https://example.com and https://test.com and https://third.com", 3)]
     [InlineData("Visit www.example.com", 1)]
@@ -23,7 +16,7 @@ public class SpamDetectionTests
     [InlineData("One link: https://github.com", 1)]
     public void UrlPattern_DetectsCorrectCount(string message, int expectedCount)
     {
-        var matches = UrlPattern.Matches(message);
+        var matches = SpamDetector.UrlPattern().Matches(message);
         Assert.Equal(expectedCount, matches.Count);
     }
 
@@ -33,7 +26,7 @@ public class SpamDetectionTests
     [InlineData("No email addresses here", 0)]
     public void EmailPattern_DetectsCorrectCount(string message, int expectedCount)
     {
-        var matches = EmailPattern.Matches(message);
+        var matches = SpamDetector.EmailPattern().Matches(message);
         Assert.Equal(expectedCount, matches.Count);
     }
 
@@ -48,7 +41,7 @@ public class SpamDetectionTests
     [InlineData("Great work on your Azure blog post", false)]
     public void SpamKeywords_DetectsCorrectly(string message, bool shouldMatch)
     {
-        Assert.Equal(shouldMatch, SpamKeywords.IsMatch(message));
+        Assert.Equal(shouldMatch, SpamDetector.SpamKeywords().IsMatch(message));
     }
 
     [Theory]
@@ -57,7 +50,7 @@ public class SpamDetectionTests
     [InlineData("normal message", false)]
     public void RepetitiveChars_DetectsCorrectly(string message, bool shouldMatch)
     {
-        Assert.Equal(shouldMatch, RepetitiveChars.IsMatch(message));
+        Assert.Equal(shouldMatch, SpamDetector.RepetitiveChars().IsMatch(message));
     }
 
     [Theory]
@@ -69,24 +62,24 @@ public class SpamDetectionTests
     [InlineData("name#tag", true)]
     public void InvalidNameChars_DetectsCorrectly(string name, bool shouldMatch)
     {
-        Assert.Equal(shouldMatch, InvalidNameChars.IsMatch(name));
+        Assert.Equal(shouldMatch, SpamDetector.InvalidNameChars().IsMatch(name));
     }
 
     [Fact]
-    public void MessageTooShort_IsDetected()
+    public void CheckForSpam_MessageTooShort_IsRejected()
     {
-        var shortMessage = "Hi";
-        // Production threshold: messages under 10 chars are rejected
-        Assert.True(shortMessage.Length < 10, "Short messages should be under the 10-char threshold");
-        Assert.False(string.IsNullOrWhiteSpace(shortMessage), "Message should not be empty");
+        var result = SpamDetector.CheckForSpam("John Doe", "Hi");
+        Assert.False(result.IsValid);
+        Assert.Equal("Message too short", result.Reason);
     }
 
     [Fact]
-    public void MessageTooLong_IsDetected()
+    public void CheckForSpam_MessageTooLong_IsRejected()
     {
-        var longMessage = new string('a', 5001);
-        // Production threshold: messages over 5000 chars are rejected
-        Assert.True(longMessage.Length > 5000, "Long messages should exceed the 5000-char threshold");
+        var longMessage = new string('a', SpamDetector.MaxMessageLength + 1);
+        var result = SpamDetector.CheckForSpam("John Doe", longMessage);
+        Assert.False(result.IsValid);
+        Assert.Equal("Message too long", result.Reason);
     }
 
     [Theory]
@@ -94,17 +87,42 @@ public class SpamDetectionTests
     [InlineData("Hello!", true)]                             // 6 chars - too short
     [InlineData("Hey there!", false)]                        // 10 chars - at threshold
     [InlineData("Hello, I'd like to discuss a project", false)] // normal length
-    public void MessageLength_ThresholdBehavior(string message, bool isTooShort)
+    public void CheckForSpam_MessageLength_ThresholdBehavior(string message, bool shouldBeRejected)
     {
-        Assert.Equal(isTooShort, message.Length < 10);
+        var result = SpamDetector.CheckForSpam("John Doe", message);
+        Assert.Equal(shouldBeRejected, !result.IsValid && result.Reason.Contains("Message too short"));
     }
 
     [Theory]
     [InlineData(5000, false)]   // at max threshold
     [InlineData(5001, true)]    // over max threshold
-    public void MessageMaxLength_ThresholdBehavior(int length, bool isTooLong)
+    public void CheckForSpam_MessageMaxLength_ThresholdBehavior(int length, bool shouldBeRejected)
     {
         var message = new string('x', length);
-        Assert.Equal(isTooLong, message.Length > 5000);
+        var result = SpamDetector.CheckForSpam("John Doe", message);
+        Assert.Equal(shouldBeRejected, !result.IsValid && result.Reason.Contains("Message too long"));
+    }
+
+    [Fact]
+    public void CheckForSpam_ValidMessage_IsAccepted()
+    {
+        var result = SpamDetector.CheckForSpam("John Doe", "Hello, I'd like to discuss a project with you.");
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public void CheckForSpam_TooManyUrls_IsRejected()
+    {
+        var result = SpamDetector.CheckForSpam("John Doe", "Check https://a.com and https://b.com and https://c.com");
+        Assert.False(result.IsValid);
+        Assert.Equal("Too many URLs in message", result.Reason);
+    }
+
+    [Fact]
+    public void CheckForSpam_InvalidName_IsRejected()
+    {
+        var result = SpamDetector.CheckForSpam("user123", "Hello, I'd like to discuss a project.");
+        Assert.False(result.IsValid);
+        Assert.Equal("Invalid name format", result.Reason);
     }
 }

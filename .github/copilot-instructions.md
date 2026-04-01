@@ -167,11 +167,14 @@ onlineUsers: '/api/online-users'
 chat: '/api/nlweb/ask'
 health: '/api/health'
 healthConfig: '/api/health/config'
-reindex: '/api/reindex'  // Called by GitHub Actions, requires X-Reindex-Key header
 xboxProfile: '/api/gaming/xbox'
 playstationProfile: '/api/gaming/playstation'
 gamingRefresh: '/api/gaming/refresh'  // POST, requires X-Gaming-Refresh-Key header
 ```
+
+Additional API endpoints (not in frontend `config.routes` — backend/CI only):
+- `/api/reindex` — Called by GitHub Actions, requires `X-Reindex-Key` header
+- `/api/gaming/refresh` — Called manually, requires `X-Gaming-Refresh-Key` header
 
 ### CI/CD (Unified Deployment)
 Single GitHub Actions workflow deploys both frontend and managed API together:

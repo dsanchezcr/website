@@ -23,6 +23,18 @@ public enum HealthStatus
     Unhealthy
 }
 
+internal static class HealthStatusHelper
+{
+    internal static HealthStatus DetermineOverallStatus(IEnumerable<HealthStatus> statuses)
+    {
+        if (statuses.Any(s => s == HealthStatus.Unhealthy))
+            return HealthStatus.Unhealthy;
+        if (statuses.Any(s => s == HealthStatus.Degraded))
+            return HealthStatus.Degraded;
+        return HealthStatus.Healthy;
+    }
+}
+
 /// <summary>
 /// Health check endpoint for monitoring API status and configuration.
 /// 
@@ -212,18 +224,8 @@ public class HealthCheck
         healthResponse.Services = (await Task.WhenAll(services)).ToList();
 
         // Determine overall status
-        if (healthResponse.Services.Any(s => s.Status == HealthStatus.Unhealthy))
-        {
-            healthResponse.OverallStatus = HealthStatus.Unhealthy;
-        }
-        else if (healthResponse.Services.Any(s => s.Status == HealthStatus.Degraded))
-        {
-            healthResponse.OverallStatus = HealthStatus.Degraded;
-        }
-        else
-        {
-            healthResponse.OverallStatus = HealthStatus.Healthy;
-        }
+        healthResponse.OverallStatus = HealthStatusHelper.DetermineOverallStatus(
+            healthResponse.Services.Select(s => s.Status));
 
         // Use different HTTP status codes for monitoring systems:
         // 200 OK = Healthy, 207 Multi-Status = Degraded, 503 = Unhealthy

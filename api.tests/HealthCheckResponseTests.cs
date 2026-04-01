@@ -30,52 +30,42 @@ public class HealthCheckResponseTests
     [Fact]
     public void OverallStatus_WhenAnyUnhealthy_IsUnhealthy()
     {
-        var services = new List<HealthStatus>
+        var statuses = new List<HealthStatus>
         {
             HealthStatus.Healthy,
             HealthStatus.Unhealthy,
             HealthStatus.Degraded
         };
 
-        var overall = DetermineOverallStatus(services);
+        var overall = HealthStatusHelper.DetermineOverallStatus(statuses);
         Assert.Equal(HealthStatus.Unhealthy, overall);
     }
 
     [Fact]
     public void OverallStatus_WhenDegradedButNoUnhealthy_IsDegraded()
     {
-        var services = new List<HealthStatus>
+        var statuses = new List<HealthStatus>
         {
             HealthStatus.Healthy,
             HealthStatus.Degraded,
             HealthStatus.Healthy
         };
 
-        var overall = DetermineOverallStatus(services);
+        var overall = HealthStatusHelper.DetermineOverallStatus(statuses);
         Assert.Equal(HealthStatus.Degraded, overall);
     }
 
     [Fact]
     public void OverallStatus_WhenAllHealthy_IsHealthy()
     {
-        var services = new List<HealthStatus>
+        var statuses = new List<HealthStatus>
         {
             HealthStatus.Healthy,
             HealthStatus.Healthy,
             HealthStatus.Healthy
         };
 
-        var overall = DetermineOverallStatus(services);
+        var overall = HealthStatusHelper.DetermineOverallStatus(statuses);
         Assert.Equal(HealthStatus.Healthy, overall);
-    }
-
-    // Replicates the overall status determination logic from HealthCheck.cs
-    private static HealthStatus DetermineOverallStatus(List<HealthStatus> statuses)
-    {
-        if (statuses.Any(s => s == HealthStatus.Unhealthy))
-            return HealthStatus.Unhealthy;
-        if (statuses.Any(s => s == HealthStatus.Degraded))
-            return HealthStatus.Degraded;
-        return HealthStatus.Healthy;
     }
 }
