@@ -12,7 +12,7 @@
  */
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
-import { resolve, join } from 'path';
+import { resolve, join, basename } from 'path';
 
 // Parse CLI arguments
 const args = process.argv.slice(2);
@@ -56,9 +56,19 @@ if (!existsSync(imgDir)) {
 }
 
 // Derive base output filename (extension will be set after we know the response mimeType)
-const imgBaseName = filename
-  ? filename.replace(/\.[^.]+$/, '')
-  : slug.replace(/^\d{4}-\d{2}-\d{2}-/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+// Sanitize --filename: strip directory components and allow only safe characters
+let imgBaseName;
+if (filename) {
+  const safeBase = basename(filename).replace(/\.[^.]+$/, '');
+  if (!/^[a-z0-9][a-z0-9_-]*$/i.test(safeBase)) {
+    console.error(`Error: Invalid filename (sanitized to): "${safeBase}"`);
+    console.error('Filename must consist only of alphanumeric characters, hyphens, and underscores.');
+    process.exit(1);
+  }
+  imgBaseName = safeBase;
+} else {
+  imgBaseName = slug.replace(/^\d{4}-\d{2}-\d{2}-/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
+}
 
 async function generateImage() {
   console.log(`Generating image for blog post: ${slug}`);
