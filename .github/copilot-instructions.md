@@ -172,9 +172,9 @@ playstationProfile: '/api/gaming/playstation'
 gamingRefresh: '/api/gaming/refresh'  // POST, requires X-Gaming-Refresh-Key header
 ```
 
-Additional API endpoints (not in frontend `config.routes` — backend/CI only):
+Additional API endpoints (not used by the public UI — backend/CI/admin only):
 - `/api/reindex` — Called by GitHub Actions, requires `X-Reindex-Key` header
-- `/api/gaming/refresh` — Called manually, requires `X-Gaming-Refresh-Key` header
+- `/api/gaming/refresh` — Admin-only manual trigger, requires `X-Gaming-Refresh-Key` header
 
 ### CI/CD (Unified Deployment)
 Single GitHub Actions workflow deploys both frontend and managed API together:

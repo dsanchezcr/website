@@ -98,7 +98,8 @@ public class SpamDetectionTests
     [InlineData(5001, true)]    // over max threshold
     public void CheckForSpam_MessageMaxLength_ThresholdBehavior(int length, bool shouldBeRejected)
     {
-        var message = new string('x', length);
+        // Use alternating characters to avoid triggering RepetitiveChars() pattern
+        var message = string.Concat(Enumerable.Range(0, length).Select(i => i % 2 == 0 ? 'a' : 'b'));
         var result = SpamDetector.CheckForSpam("John Doe", message);
         Assert.Equal(shouldBeRejected, !result.IsValid && result.Reason.Contains("Message too long"));
     }
