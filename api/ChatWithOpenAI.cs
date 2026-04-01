@@ -190,14 +190,14 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
             _searchService = searchService;
             _gamingCacheService = gamingCacheService;
             
-            // Use environment variables for Azure OpenAI configuration
+            // Use environment variables for Microsoft Foundry configuration
             string? endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
             string? key = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY");
             string? deploymentName = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT");
             
             if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key) || string.IsNullOrEmpty(deploymentName))
             {
-                throw new InvalidOperationException("Azure OpenAI configuration is missing. Please set AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_KEY, and AZURE_OPENAI_DEPLOYMENT environment variables.");
+                throw new InvalidOperationException("Microsoft Foundry configuration is missing. Please set AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_KEY, and AZURE_OPENAI_DEPLOYMENT environment variables.");
             }
             
             AzureOpenAIClient azureClient = new AzureOpenAIClient(new Uri(endpoint), new AzureKeyCredential(key));

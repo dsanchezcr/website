@@ -1,0 +1,231 @@
+name: Content Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'blog/**'
+      - 'gaming/**'
+      - 'movies-tv/**'
+      - 'disney/**'
+      - 'universal/**'
+      - 'src/data/movies.json'
+      - 'src/data/series.json'
+      - 'i18n/**'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate:
+    name: Validate Content
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Blog Post Frontmatter
+        run: |
+          echo "Checking blog post frontmatter..."
+          errors=0
+
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'blog/**/*.mdx' 2>/dev/null || true); do
+            if [ ! -f "$file" ]; then continue; fi
+            echo "  Checking $file"
+
+            # Check required frontmatter fields
+            for field in title description tags authors; do
+              if ! head -50 "$file" | grep -qi "^${field}:"; then
+                echo "::error file=$file::Missing required frontmatter field: $field"
+                errors=$((errors + 1))
+              fi
+            done
+          done
+
+          if [ $errors -gt 0 ]; then
+            echo "::error::Found $errors frontmatter issues"
+            exit 1
+          fi
+          echo "Blog frontmatter validation passed"
+
+      - name: Validate Blog i18n Coverage
+        run: |
+          echo "Checking blog post translations..."
+          errors=0
+
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'blog/**/*.mdx' 2>/dev/null || true); do
+            if [ ! -f "$file" ]; then continue; fi
+            basename=$(basename "$file")
+            echo "  Checking translations for $basename"
+
+            es_path="i18n/es/docusaurus-plugin-content-blog/$basename"
+            pt_path="i18n/pt/docusaurus-plugin-content-blog/$basename"
+
+            if [ ! -f "$es_path" ]; then
+              echo "::error file=$file::Missing Spanish translation: $es_path"
+              errors=$((errors + 1))
+            fi
+
+            if [ ! -f "$pt_path" ]; then
+              echo "::error file=$file::Missing Portuguese translation: $pt_path"
+              errors=$((errors + 1))
+            fi
+          done
+
+          if [ $errors -gt 0 ]; then
+            echo "::error::Found $errors missing blog translations"
+            exit 1
+          fi
+          echo "Blog i18n check completed"
+
+      - name: Validate Gaming i18n Coverage
+        run: |
+          echo "Checking gaming doc translations..."
+          errors=0
+
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'gaming/**/*.mdx' 2>/dev/null || true); do
+            if [ ! -f "$file" ]; then continue; fi
+            # Convert gaming/xbox/index.mdx -> current/xbox/index.mdx
+            relative="${file#gaming/}"
+            echo "  Checking translations for $file"
+
+            es_path="i18n/es/docusaurus-plugin-content-docs-gaming/current/$relative"
+            pt_path="i18n/pt/docusaurus-plugin-content-docs-gaming/current/$relative"
+
+            if [ ! -f "$es_path" ]; then
+              echo "::warning file=$file::Missing Spanish gaming translation: $es_path"
+              errors=$((errors + 1))
+            fi
+
+            if [ ! -f "$pt_path" ]; then
+              echo "::warning file=$file::Missing Portuguese gaming translation: $pt_path"
+              errors=$((errors + 1))
+            fi
+          done
+
+          if [ $errors -gt 0 ]; then
+            echo "::error::Found $errors missing gaming translations"
+            exit 1
+          fi
+          echo "Gaming i18n check completed"
+
+      - name: Validate Media Data Schema
+        run: |
+          echo "Checking movies.json and series.json schema..."
+          node -e "
+          const fs = require('fs');
+          let errors = 0;
+
+          // Validate movies.json
+          if (fs.existsSync('src/data/movies.json')) {
+            const movies = JSON.parse(fs.readFileSync('src/data/movies.json', 'utf-8'));
+            if (!Array.isArray(movies)) {
+              console.log('::error file=src/data/movies.json::movies.json must be an array');
+              errors++;
+            }
+            const validCats = ['recently-watched', 'top-movies', 'watchlist'];
+            const ids = new Set();
+            movies.forEach((m, i) => {
+              if (!m.titleId || !/^tt\d+$/.test(m.titleId)) {
+                console.log('::error file=src/data/movies.json::Entry ' + i + ': invalid titleId');
+                errors++;
+              }
+              if (ids.has(m.titleId)) {
+                console.log('::error file=src/data/movies.json::Duplicate titleId: ' + m.titleId);
+                errors++;
+              }
+              ids.add(m.titleId);
+              if (!validCats.includes(m.category)) {
+                console.log('::error file=src/data/movies.json::Entry ' + m.titleId + ': invalid category \"' + m.category + '\"');
+                errors++;
+              }
+              if (!m.review || typeof m.review !== 'object') {
+                console.log('::error file=src/data/movies.json::Entry ' + m.titleId + ': missing review object');
+                errors++;
+              } else {
+                ['en', 'es', 'pt'].forEach(lang => {
+                  if (!(lang in m.review)) {
+                    console.log('::error file=src/data/movies.json::Entry ' + m.titleId + ': missing review.' + lang);
+                    errors++;
+                  }
+                });
+              }
+            });
+          }
+
+          // Validate series.json
+          if (fs.existsSync('src/data/series.json')) {
+            const series = JSON.parse(fs.readFileSync('src/data/series.json', 'utf-8'));
+            if (!Array.isArray(series)) {
+              console.log('::error file=src/data/series.json::series.json must be an array');
+              errors++;
+            }
+            const validCats = ['currently-watching', 'completed', 'watchlist'];
+            const ids = new Set();
+            series.forEach((s, i) => {
+              if (!s.titleId || !/^tt\d+$/.test(s.titleId)) {
+                console.log('::error file=src/data/series.json::Entry ' + i + ': invalid titleId');
+                errors++;
+              }
+              if (ids.has(s.titleId)) {
+                console.log('::error file=src/data/series.json::Duplicate titleId: ' + s.titleId);
+                errors++;
+              }
+              ids.add(s.titleId);
+              if (!validCats.includes(s.category)) {
+                console.log('::error file=src/data/series.json::Entry ' + s.titleId + ': invalid category \"' + s.category + '\"');
+                errors++;
+              }
+              if (!s.review || typeof s.review !== 'object') {
+                console.log('::error file=src/data/series.json::Entry ' + s.titleId + ': missing review object');
+                errors++;
+              } else {
+                ['en', 'es', 'pt'].forEach(lang => {
+                  if (!(lang in s.review)) {
+                    console.log('::error file=src/data/series.json::Entry ' + s.titleId + ': missing review.' + lang);
+                    errors++;
+                  }
+                });
+              }
+            });
+          }
+
+          if (errors > 0) {
+            console.log('::error::Found ' + errors + ' schema validation errors');
+            process.exit(1);
+          }
+          console.log('Media data schema validation passed');
+          "
+
+      - name: Validate Image References
+        run: |
+          echo "Checking that referenced gaming images exist..."
+          errors=0
+
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'gaming/**/*.mdx' 2>/dev/null || true); do
+            if [ ! -f "$file" ]; then continue; fi
+            # Extract image paths from imageUrl props
+            while IFS= read -r match; do
+              img_path=$(echo "$match" | sed 's/imageUrl="//;s/"//')
+              # Convert /img/... to static/img/...
+              local_path="static${img_path}"
+              if [ ! -f "$local_path" ]; then
+                echo "::warning file=$file::Referenced image not found: $local_path"
+                errors=$((errors + 1))
+              fi
+            done < <(grep -oP 'imageUrl="([^"]+)"' "$file" 2>/dev/null)
+          done
+
+          if [ $errors -gt 0 ]; then
+            echo "::error::Found $errors missing gaming images"
+            exit 1
+          fi
+          echo "Image reference check completed"

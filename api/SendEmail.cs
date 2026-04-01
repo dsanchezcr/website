@@ -115,16 +115,6 @@ public partial class SendEmail
         "spamfree24.net", "spamfree24.org", "spamgoes.in", "spamherelots.com",
         "spamhole.com", "spamify.com", "spaminator.de", "spamkill.info"
     };
-    
-    // Spam detection patterns
-    [GeneratedRegex(@"(https?://|www\.)", RegexOptions.IgnoreCase)]
-    private static partial Regex UrlPattern();
-    
-    [GeneratedRegex(@"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", RegexOptions.IgnoreCase)]
-    private static partial Regex EmailPattern();
-    
-    [GeneratedRegex(@"(viagra|cialis|crypto|lottery|winner|prize|bitcoin|forex|casino|poker)", RegexOptions.IgnoreCase)]
-    private static partial Regex SpamKeywords();
 
     // Data models
     private class ContactRequest
@@ -136,9 +126,6 @@ public partial class SendEmail
         public string RecaptchaToken { get; set; } = string.Empty;
         public string Website { get; set; } = string.Empty;
     }
-    
-    // VerificationData is now defined in Models/VerificationData.cs for sharing with VerifyEmail
-    private record SpamCheckResult(bool IsValid, string Reason);
     
     // Google reCAPTCHA API response format
     private class RecaptchaResponse
@@ -253,52 +240,9 @@ public partial class SendEmail
         _cache.Set(emailKey, emailCount + 1, TimeSpan.FromDays(1));
     }
 
-    private static SpamCheckResult CheckForSpam(ContactRequest contact)
+    private static SpamDetector.SpamCheckResult CheckForSpam(ContactRequest contact)
     {
-        // Check for excessive URLs
-        var urlMatches = UrlPattern().Matches(contact.Message);
-        if (urlMatches.Count > 2)
-        {
-            return new SpamCheckResult(false, "Too many URLs in message");
-        }
-
-        // Check for multiple email addresses (common in spam)
-        var emailMatches = EmailPattern().Matches(contact.Message);
-        if (emailMatches.Count > 1)
-        {
-            return new SpamCheckResult(false, "Multiple email addresses detected");
-        }
-
-        // Check for spam keywords
-        if (SpamKeywords().IsMatch(contact.Message))
-        {
-            return new SpamCheckResult(false, "Spam keywords detected");
-        }
-
-        // Check message length (too short or too long can be suspicious)
-        if (contact.Message.Length < 10)
-        {
-            return new SpamCheckResult(false, "Message too short");
-        }
-
-        if (contact.Message.Length > 5000)
-        {
-            return new SpamCheckResult(false, "Message too long");
-        }
-
-        // Check for repetitive characters (common in spam)
-        if (Regex.IsMatch(contact.Message, @"(.)\1{10,}"))
-        {
-            return new SpamCheckResult(false, "Repetitive characters detected");
-        }
-
-        // Check name format (should not contain numbers or special characters)
-        if (Regex.IsMatch(contact.Name, @"[0-9@#$%^&*()+=\[\]{};:""\\|<>?/]"))
-        {
-            return new SpamCheckResult(false, "Invalid name format");
-        }
-
-        return new SpamCheckResult(true, string.Empty);
+        return SpamDetector.CheckForSpam(contact.Name, contact.Message);
     }
 
     private static string GenerateVerificationToken()

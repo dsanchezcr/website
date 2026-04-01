@@ -10,7 +10,7 @@ import { config } from '../../config/environment';
 const translations = {
   en: {
     chatTitle: "Ask me about my website",
-    chatSubtitle: "Powered by Azure OpenAI",
+    chatSubtitle: "Powered by Microsoft Foundry",
     welcomeTitle: "👋 Hello Friend!",
     welcomeDescription: "You can ask me about:",
     welcomeItems: [
@@ -21,11 +21,11 @@ const translations = {
     ],
     inputPlaceholder: "Ask me anything about this website...",
     chatIconTooltip: "Chat with David's AI Assistant",
-    fallbackResponse: (query) => `Thanks for your question about "${query}". The NLWeb backend is currently being set up with Azure OpenAI integration. Meanwhile, you can explore David's blog for insights on Azure technologies, developer productivity, and his latest projects. Check out the blog, projects, and about sections to learn more!`
+    fallbackResponse: (query) => `Thanks for your question about "${query}". The NLWeb backend is currently being set up with Microsoft Foundry integration. Meanwhile, you can explore David's blog for insights on Azure technologies, developer productivity, and his latest projects. Check out the blog, projects, and about sections to learn more!`
   },
   es: {
     chatTitle: "Pregúntame sobre mi sitio web",
-    chatSubtitle: "Impulsado por Azure OpenAI",
+    chatSubtitle: "Impulsado por Microsoft Foundry",
     welcomeTitle: "👋 ¡Hola Amig@!",
     welcomeDescription: "Puedes preguntarme sobre:",
     welcomeItems: [
@@ -36,11 +36,11 @@ const translations = {
     ],
     inputPlaceholder: "Pregúntame cualquier cosa sobre este sitio web...",
     chatIconTooltip: "Chatea con el Asistente de IA de David",
-    fallbackResponse: (query) => `Gracias por tu pregunta sobre "${query}". El backend de NLWeb se está configurando actualmente con la integración de Azure OpenAI. Mientras tanto, puedes explorar el blog de David para obtener información sobre tecnologías de Azure, productividad del desarrollador y sus últimos proyectos. ¡Consulta las secciones de blog, proyectos y acerca de para obtener más información!`
+    fallbackResponse: (query) => `Gracias por tu pregunta sobre "${query}". El backend de NLWeb se está configurando actualmente con la integración de Microsoft Foundry. Mientras tanto, puedes explorar el blog de David para obtener información sobre tecnologías de Azure, productividad del desarrollador y sus últimos proyectos. ¡Consulta las secciones de blog, proyectos y acerca de para obtener más información!`
   },
   pt: {
     chatTitle: "Pergunte-me sobre meu site",
-    chatSubtitle: "Desenvolvido com Azure OpenAI",
+    chatSubtitle: "Desenvolvido com Microsoft Foundry",
     welcomeTitle: "👋 Olá amig@!",
     welcomeDescription: "Você pode me perguntar sobre:",
     welcomeItems: [
@@ -51,7 +51,7 @@ const translations = {
     ],
     inputPlaceholder: "Pergunte-me qualquer coisa sobre este site...",
     chatIconTooltip: "Converse com o Assistente de IA do David",
-    fallbackResponse: (query) => `Obrigado pela sua pergunta sobre "${query}". O backend do NLWeb está sendo configurado atualmente com integração do Azure OpenAI. Enquanto isso, você pode explorar o blog do David para insights sobre tecnologias Azure, produtividade do desenvolvedor e seus projetos mais recentes. Confira as seções blog, projetos e sobre para saber mais!`
+    fallbackResponse: (query) => `Obrigado pela sua pergunta sobre "${query}". O backend do NLWeb está sendo configurado atualmente com integração do Microsoft Foundry. Enquanto isso, você pode explorar o blog do David para insights sobre tecnologias Azure, produtividade do desenvolvedor e seus projetos mais recentes. Confira as seções blog, projetos e sobre para saber mais!`
   },
 };
 

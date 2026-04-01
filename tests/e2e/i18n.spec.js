@@ -1,0 +1,14 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('Language Switching', () => {
+  test('Spanish version loads', async ({ page }) => {
+    await page.goto('/es/');
+    // Page should have Spanish content
+    await expect(page.locator('html')).toHaveAttribute('lang', 'es-ES');
+  });
+
+  test('Portuguese version loads', async ({ page }) => {
+    await page.goto('/pt/');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'pt-BR');
+  });
+});

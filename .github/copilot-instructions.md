@@ -16,8 +16,8 @@ Both frontend and backend are hosted together on **Azure Static Web Apps**. The 
   - **Volunteering**: Displays volunteering experience with card-based layout, category badges, organization links, and pre-populated contact form for volunteer project inquiries
 - **Custom Components**: Reusable widgets in `src/components/` (Comments, NLWebChat, OnlineStatusWidget, WeatherWidget)
 - **i18n**: Translations in `i18n/es/` and `i18n/pt/` directories following Docusaurus i18n structure
-- **Video Games**: Docs in `videogames/` with images in `static/img/videogames/<platform>/`; status labels are localized in `GameCard`/`GameCardGroup` (keep status values like `completed`, `playing`, `backlog`, `dropped`)
-- **Custom Docs**: Three doc sections configured via plugins: `disney/`, `universal/`, and `videogames/`
+- **Gaming**: Docs in `gaming/` with images in `static/img/gaming/<platform>/`; status labels are localized in `GameCard`/`GameCardGroup` (keep status values like `completed`, `playing`, `backlog`, `dropped`)
+- **Custom Docs**: Four doc sections configured via plugins: `disney/`, `gaming/`, `movies-tv/`, and `universal/`
 
 ### Backend (Azure Functions - .NET 9 Isolated Worker)
 Located in `api/` directory:
@@ -25,7 +25,7 @@ Located in `api/` directory:
 - **VerifyEmail.cs**: Email verification endpoint (`/api/verify`) that completes the contact form submission after user clicks verification link
 - **GetWeather.cs**: Weather data endpoint (`/api/weather`)
 - **GetOnlineUsers.cs**: Analytics endpoint (`/api/online-users`) with Google Analytics Data API (24-hour visitor count)
-- **ChatWithOpenAI.cs**: AI chat endpoint (`/api/nlweb/ask`) using Azure OpenAI with RAG from Azure AI Search
+- **ChatWithOpenAI.cs**: AI chat endpoint (`/api/nlweb/ask`) using Microsoft Foundry with RAG from Azure AI Search
 - **HealthCheck.cs**: Health monitoring endpoint (`/api/health`) that validates all service configurations and connectivity
 - **ReindexContent.cs**: Search index update endpoint (`/api/reindex`) with secret key authentication, hybrid content indexing
 - **GetXboxProfile.cs**: Xbox profile endpoint (`/api/gaming/xbox`) using OpenXBL API with Table Storage caching
@@ -166,11 +166,15 @@ weather: '/api/weather'
 onlineUsers: '/api/online-users'
 chat: '/api/nlweb/ask'
 health: '/api/health'
-reindex: '/api/reindex'  // Called by GitHub Actions, requires X-Reindex-Key header
+healthConfig: '/api/health/config'
 xboxProfile: '/api/gaming/xbox'
 playstationProfile: '/api/gaming/playstation'
 gamingRefresh: '/api/gaming/refresh'  // POST, requires X-Gaming-Refresh-Key header
 ```
+
+Additional API endpoints (not used by the public UI — backend/CI/admin only):
+- `/api/reindex` — Called by GitHub Actions, requires `X-Reindex-Key` header
+- `/api/gaming/refresh` — Admin-only manual trigger, requires `X-Gaming-Refresh-Key` header
 
 ### CI/CD (Unified Deployment)
 Single GitHub Actions workflow deploys both frontend and managed API together:
@@ -181,7 +185,7 @@ Single GitHub Actions workflow deploys both frontend and managed API together:
 
 ### External Services
 - **Azure Communication Services**: Email sending (connection string in environment)
-- **Azure OpenAI**: Chat functionality with RAG (endpoint + key + deployment required)
+- **Microsoft Foundry**: Chat functionality with RAG (endpoint + key + deployment required)
 - **Azure AI Search**: Content search for RAG pattern in chatbot (endpoint + API key + index name)
 - **Azure Table Storage**: Persistent storage for email verification tokens (connection string)
 - **Google reCAPTCHA v3**: Site key `6LcGaAIsAAAAALzUAxzGFx5R1uJ2Wgxn4RmNsy2I` (client-side) + secret key (server-side)
@@ -197,7 +201,7 @@ RECAPTCHA_SECRET_KEY
 WEBSITE_URL
 API_URL
 
-# Azure OpenAI (Chat)
+# Microsoft Foundry (Chat)
 AZURE_OPENAI_ENDPOINT
 AZURE_OPENAI_KEY
 AZURE_OPENAI_DEPLOYMENT
@@ -236,18 +240,135 @@ APPLICATIONINSIGHTS_CONNECTION_STRING
 5. **i18n content sync**: When adding blog posts or pages, remember to check if translations exist in `i18n/es/` and `i18n/pt/`.
 6. **SWA API runtime**: Managed functions use .NET 9 isolated worker. Ensure `api.csproj` targets `net9.0`.
 
+## Repository Documentation
+
+Repository-level documentation (architecture, domain, coding standards, ADRs) lives in `.github/repo-docs/` — **NOT** in a root `docs/` folder. This separation prevents interference with Docusaurus content processing, which uses `disney/`, `gaming/`, `movies-tv/`, and `universal/` as doc plugin paths.
+
+```
+.github/repo-docs/
+├── architecture.md        # System design overview
+├── domain-overview.md     # Business context and content domains
+├── coding-standards.md    # Conventions and patterns
+└── adr/                   # Architecture Decision Records
+    ├── 001-docusaurus-ssg.md
+    ├── 002-azure-swa-managed-functions.md
+    ├── 003-rag-chatbot.md
+    └── 004-agentic-modernization.md
+```
+
+When making architectural decisions, create a new ADR in `.github/repo-docs/adr/` following the existing format (Status, Date, Context, Decision, Consequences).
+
+## Specification-Driven Development
+
+For non-trivial features, use specification templates from `specs/templates/` before implementation:
+
+| Template | Use When |
+|----------|----------|
+| `feature-spec.md` | Adding a new feature or modifying existing functionality |
+| `blog-post-spec.md` | Planning a new blog post |
+| `api-endpoint-spec.md` | Creating a new Azure Functions endpoint |
+| `gaming-content-spec.md` | Adding games, platforms, or gaming features |
+
+### Workflow: Specify → Review → Implement → Verify
+
+Use the prompts in `.github/prompts/` for each workflow step:
+
+| Prompt | Purpose |
+|--------|---------|
+| `/specify` | Create a new specification from a template |
+| `/review-spec` | Validate a spec against the constitution |
+| `/implement-spec` | Build from an approved specification |
+| `/verify-spec` | Confirm implementation meets acceptance criteria |
+| `/write-blog` | End-to-end blog post creation (spec + content + translations + hero image) |
+
+Create spec files in `specs/` (e.g., `specs/FEAT-001-new-widget.md`) based on the appropriate template. Specs must define acceptance criteria, i18n requirements, and affected files before implementation begins.
+
+### Governance Files
+
+| File | Purpose |
+|------|---------|
+| `.specify/memory/constitution.md` | Non-negotiable project principles (all agents must comply) |
+| `.specify/memory/decisions.md` | Log of architectural and implementation decisions |
+| `.github/instructions/spec-driven-development.instructions.md` | Enforces spec workflow on relevant files |
+
+## Agent Team
+
+This repository uses GitHub Copilot custom agents defined in `.github/agents/`. Each agent has a specialized role:
+
+| Agent | Role | Primary Focus |
+|-------|------|---------------|
+| `blog-writer` | Draft blog posts from topic specs | Blog content, MDX, frontmatter, i18n |
+| `blog-image` | Generate/source images for posts | Image assets, naming, formats |
+| `documentation` | Keep repo docs synced with code | ADRs, architecture, copilot-instructions |
+| `section-features` | Build features across content sections | Gaming, movies-tv, 3D printing, disney, universal |
+| `best-practices` | Review and propose improvements | Dependencies, security, accessibility, performance |
+| `testing-quality` | Write and maintain tests | Vitest, xUnit, Playwright, CI quality gates |
+| `innovation` | Propose new features and ideas | Content gaps, trend analysis, spec proposals |
+| `cicd-quality` | Improve CI/CD and deployment quality | Workflows, quality gates, validation |
+
+Agents follow the specification-driven workflow and must respect the project constitution (`.specify/memory/constitution.md`).
+
+## i18n Governance
+
+### Mandatory i18n Coverage
+All user-facing content **must** support English (default), Spanish, and Portuguese. This is enforced as follows:
+
+**Blog posts**: Every new `.mdx` file in `blog/` must have corresponding translations in:
+- `i18n/es/docusaurus-plugin-content-blog/<filename>.mdx`
+- `i18n/pt/docusaurus-plugin-content-blog/<filename>.mdx`
+
+**Gaming docs**: Every change in `gaming/<platform>/index.mdx` must be reflected in:
+- `i18n/es/docusaurus-plugin-content-docs-gaming/current/<platform>/index.mdx`
+- `i18n/pt/docusaurus-plugin-content-docs-gaming/current/<platform>/index.mdx`
+
+**Movies & TV docs**: Changes in `movies-tv/` must be reflected in:
+- `i18n/es/docusaurus-plugin-content-docs-movies-tv/current/`
+- `i18n/pt/docusaurus-plugin-content-docs-movies-tv/current/`
+
+**React pages with inline translations** (no i18n files needed — translations embedded in component):
+- `3dprinting.js`, `volunteering.js`, `sponsors.js` — use inline translation objects
+- `movies.js` — redirect only, no translation needed
+
+**Pages with i18n files**: `about.mdx`, `contact.js`, `exchangerates.js`, `index.js`, `projects.mdx`, `weather.js` have translations in:
+- `i18n/es/docusaurus-plugin-content-pages/`
+- `i18n/pt/docusaurus-plugin-content-pages/`
+
+**Movie/TV data**: Reviews in `src/data/movies.json` and `src/data/series.json` must include `review` objects with `en`, `es`, and `pt` keys.
+
+### i18n Patterns
+- **MDX content**: Place translated files in the appropriate `i18n/<locale>/docusaurus-plugin-content-*` directory
+- **React pages with dynamic text**: Use the `Translate` component or `translate()` function from `@docusaurus/Translate`
+- **React pages with static text blocks**: Use inline translation objects (`const translations = { en: {...}, es: {...}, pt: {...} }`)
+- **Backend emails**: Use `LocalizationHelper.cs` for localized email templates
+- **Game statuses**: Values (`completed`, `playing`, `backlog`, `dropped`) are localized in `GameCard` component code — do NOT translate the status values in MDX
+
 ## Adding New Features
 
 ### New Blog Post
-Create `.mdx` file in `blog/` with naming convention: `YYYY-MM-DD-Title.mdx`. Frontmatter should include `title`, `description`, `tags`, and `authors` (defined in `blog/authors.yml`).
+1. Create spec using `specs/templates/blog-post-spec.md` (optional for simple posts)
+2. Create `.mdx` file in `blog/` with naming convention: `YYYY-MM-DD-Title.mdx`
+3. Frontmatter must include `title`, `description`, `tags`, and `authors` (defined in `blog/authors.yml`)
+4. Create translations in `i18n/es/docusaurus-plugin-content-blog/` and `i18n/pt/docusaurus-plugin-content-blog/`
+5. Add images to `static/img/blog/` if needed
+
+### New Gaming Content
+1. Add `GameCard` entry to `gaming/<platform>/index.mdx`
+2. Add game image to `static/img/gaming/<platform>/<title-slug>.jpg`
+3. Update translations in both `i18n/es/.../gaming/` and `i18n/pt/.../gaming/`
+4. Use established status values: `completed`, `playing`, `backlog`, `dropped`
+
+### New Movie/TV Entry
+1. Add entry to `src/data/movies.json` or `src/data/series.json`
+2. Include `titleId` (IMDb), `myRating` (1-10), `review` with `en`/`es`/`pt` keys, and `category`
 
 ### New Azure Function
-1. Create new `.cs` file in `api/`
-2. Add `[Function("FunctionName")]` attribute to the method
-3. Use `HttpTrigger` with explicit `Route` parameter for consistent naming
-4. Register dependencies in `Program.cs` if needed
-5. Build and test locally before deploying
-6. Add route to `config.routes` in `src/config/environment.js`
+1. Create spec using `specs/templates/api-endpoint-spec.md`
+2. Create new `.cs` file in `api/`
+3. Add `[Function("FunctionName")]` attribute to the method
+4. Use `HttpTrigger` with explicit `Route` parameter for consistent naming
+5. Register dependencies in `Program.cs` if needed
+6. Build and test locally before deploying
+7. Add route to `config.routes` in `src/config/environment.js`
 
 ### New React Component
 Place in `src/components/ComponentName/` with index file. Import in pages using `@site/src/components/ComponentName`. Follow existing patterns (see `WeatherWidget/` or `OnlineStatusWidget/`).
@@ -256,3 +377,4 @@ Place in `src/components/ComponentName/` with index file. Import in pages using 
 1. Update `infra/main.bicep` with new resources or settings
 2. Run `az deployment group what-if` to preview changes
 3. Deploy with `az deployment group create`
+4. Create an ADR in `.github/repo-docs/adr/` for significant changes

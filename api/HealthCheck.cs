@@ -23,6 +23,18 @@ public enum HealthStatus
     Unhealthy
 }
 
+internal static class HealthStatusHelper
+{
+    internal static HealthStatus DetermineOverallStatus(IEnumerable<HealthStatus> statuses)
+    {
+        if (statuses.Any(s => s == HealthStatus.Unhealthy))
+            return HealthStatus.Unhealthy;
+        if (statuses.Any(s => s == HealthStatus.Degraded))
+            return HealthStatus.Degraded;
+        return HealthStatus.Healthy;
+    }
+}
+
 /// <summary>
 /// Health check endpoint for monitoring API status and configuration.
 /// 
@@ -109,10 +121,10 @@ public class HealthCheck
         { "AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING", ("Azure Communication Services connection string for sending emails", true) },
         { "RECAPTCHA_SECRET_KEY", ("Google reCAPTCHA v3 secret key for form protection", true) },
         
-        // Azure OpenAI / Chat
-        { "AZURE_OPENAI_ENDPOINT", ("Azure OpenAI service endpoint URL", true) },
-        { "AZURE_OPENAI_KEY", ("Azure OpenAI API key", true) },
-        { "AZURE_OPENAI_DEPLOYMENT", ("Azure OpenAI deployment/model name", true) },
+        // Microsoft Foundry / Chat
+        { "AZURE_OPENAI_ENDPOINT", ("Microsoft Foundry service endpoint URL", true) },
+        { "AZURE_OPENAI_KEY", ("Microsoft Foundry API key", true) },
+        { "AZURE_OPENAI_DEPLOYMENT", ("Microsoft Foundry deployment/model name", true) },
         
         // Google Analytics (optional - health check degrades gracefully if missing)
         { "GOOGLE_ANALYTICS_PROPERTY_ID", ("GA4 property ID for analytics", false) },
@@ -212,18 +224,8 @@ public class HealthCheck
         healthResponse.Services = (await Task.WhenAll(services)).ToList();
 
         // Determine overall status
-        if (healthResponse.Services.Any(s => s.Status == HealthStatus.Unhealthy))
-        {
-            healthResponse.OverallStatus = HealthStatus.Unhealthy;
-        }
-        else if (healthResponse.Services.Any(s => s.Status == HealthStatus.Degraded))
-        {
-            healthResponse.OverallStatus = HealthStatus.Degraded;
-        }
-        else
-        {
-            healthResponse.OverallStatus = HealthStatus.Healthy;
-        }
+        healthResponse.OverallStatus = HealthStatusHelper.DetermineOverallStatus(
+            healthResponse.Services.Select(s => s.Status));
 
         // Use different HTTP status codes for monitoring systems:
         // 200 OK = Healthy, 207 Multi-Status = Degraded, 503 = Unhealthy
@@ -365,7 +367,7 @@ public class HealthCheck
     {
         var health = new ServiceHealth
         {
-            Name = "Azure OpenAI"
+            Name = "Microsoft Foundry (Chat)"
         };
 
         var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
@@ -410,7 +412,7 @@ public class HealthCheck
         {
             health.Status = HealthStatus.Unhealthy;
             health.Message = $"Configuration error: {ex.Message}";
-            _logger.LogError(ex, "Azure OpenAI health check failed");
+            _logger.LogError(ex, "Microsoft Foundry health check failed");
         }
 
         return Task.FromResult(health);
