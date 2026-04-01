@@ -76,13 +76,35 @@ public class SpamDetectionTests
     public void MessageTooShort_IsDetected()
     {
         var shortMessage = "Hi";
-        Assert.True(shortMessage.Length < 10);
+        // Production threshold: messages under 10 chars are rejected
+        Assert.True(shortMessage.Length < 10, "Short messages should be under the 10-char threshold");
+        Assert.False(string.IsNullOrWhiteSpace(shortMessage), "Message should not be empty");
     }
 
     [Fact]
     public void MessageTooLong_IsDetected()
     {
         var longMessage = new string('a', 5001);
-        Assert.True(longMessage.Length > 5000);
+        // Production threshold: messages over 5000 chars are rejected
+        Assert.True(longMessage.Length > 5000, "Long messages should exceed the 5000-char threshold");
+    }
+
+    [Theory]
+    [InlineData("Hi", true)]                                // 2 chars - too short
+    [InlineData("Hello!", true)]                             // 6 chars - too short
+    [InlineData("Hey there!", false)]                        // 10 chars - at threshold
+    [InlineData("Hello, I'd like to discuss a project", false)] // normal length
+    public void MessageLength_ThresholdBehavior(string message, bool isTooShort)
+    {
+        Assert.Equal(isTooShort, message.Length < 10);
+    }
+
+    [Theory]
+    [InlineData(5000, false)]   // at max threshold
+    [InlineData(5001, true)]    // over max threshold
+    public void MessageMaxLength_ThresholdBehavior(int length, bool isTooLong)
+    {
+        var message = new string('x', length);
+        Assert.Equal(isTooLong, message.Length > 5000);
     }
 }

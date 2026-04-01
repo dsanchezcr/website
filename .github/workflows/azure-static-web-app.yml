@@ -63,7 +63,7 @@ jobs:
         working-directory: api
 
       - name: Run Backend Tests
-        run: dotnet test api.tests/api.tests.csproj --configuration Release --no-restore
+        run: dotnet test api.tests/api.tests.csproj --configuration Release
 
       - name: Build Docusaurus Website
         run: npm run build

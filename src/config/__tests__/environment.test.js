@@ -11,6 +11,7 @@ describe('environment config', () => {
         'onlineUsers',
         'chat',
         'health',
+        'healthConfig',
         'xboxProfile',
         'playstationProfile',
         'gamingRefresh',

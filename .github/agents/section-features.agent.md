@@ -13,7 +13,7 @@ Read `.github/copilot-instructions.md` and `.github/repo-docs/coding-standards.m
 
 ### Gaming
 - **Structure**: `gaming/<platform>/index.mdx` with `GameCard` and `GameCardGroup` components
-- **Components**: `src/components/GameCard/` (GameCard, GameCardGroup, gameCardConstants.js)
+- **Components**: `src/components/Gaming/` (GameCard, GameCardGroup, gameCardConstants.js)
 - **Images**: `static/img/gaming/<platform>/<title-slug>.jpg`
 - **Status values**: `completed`, `playing`, `backlog`, `dropped` (localized in component code — never translate in MDX)
 - **Profiles**: Live Xbox/PSN widgets from API endpoints
@@ -51,7 +51,7 @@ Read `.github/copilot-instructions.md` and `.github/repo-docs/coding-standards.m
 - DO NOT add content without translations in all 3 locales
 - DO NOT add movie/TV entries without all required fields (titleId, myRating, review with en/es/pt, category)
 - DO NOT add gaming images larger than 500KB
-- ONLY use platform constants from `src/components/GameCard/gameCardConstants.js`
+- ONLY use platform constants from `src/components/Gaming/gameCardConstants.js`
 
 ## Output Format
 

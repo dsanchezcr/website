@@ -15,7 +15,7 @@ Read `.github/copilot-instructions.md` for image organization patterns. Images a
 2. **Check existing assets**: Search `static/img/` for reusable images or consistent visual patterns.
 3. **Generate the hero image using GitHub Models**: Run the image generation script to create the hero image:
    ```bash
-   node scripts/generate-blog-image.js --slug "<post-slug>" --prompt "<detailed prompt>"
+   node scripts/generate-blog-image.mjs --slug "<post-slug>" --prompt "<detailed prompt>"
    ```
    This uses the GitHub Models API (gpt-image-1 via Azure OpenAI) to generate an image and save it directly to `static/img/blog/<date-slug>/`.
 4. **Create Mermaid diagrams**: For architecture or flow diagrams, create Mermaid syntax that renders within MDX.

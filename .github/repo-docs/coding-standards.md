@@ -32,7 +32,7 @@
 
 ### Gaming Content
 - Game status values: `completed`, `playing`, `backlog`, `dropped` (these are localized in component code)
-- Platform constants defined in `src/components/GameCard/gameCardConstants.js`
+- Platform constants defined in `src/components/Gaming/gameCardConstants.js`
 - Game images: `static/img/gaming/<platform>/<title-slug>.jpg`
 - Use `GameCard` and `GameCardGroup` components in MDX
 

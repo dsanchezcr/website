@@ -24,6 +24,8 @@ jobs:
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -35,7 +37,7 @@ jobs:
           echo "Checking blog post frontmatter..."
           errors=0
 
-          for file in $(git diff --name-only --diff-filter=ACM origin/main -- 'blog/*.mdx' 2>/dev/null || true); do
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'blog/*.mdx' 2>/dev/null || true); do
             if [ ! -f "$file" ]; then continue; fi
             echo "  Checking $file"
 
@@ -59,7 +61,7 @@ jobs:
           echo "Checking blog post translations..."
           errors=0
 
-          for file in $(git diff --name-only --diff-filter=ACM origin/main -- 'blog/*.mdx' 2>/dev/null || true); do
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'blog/*.mdx' 2>/dev/null || true); do
             if [ ! -f "$file" ]; then continue; fi
             basename=$(basename "$file")
             echo "  Checking translations for $basename"
@@ -206,10 +208,10 @@ jobs:
           echo "Checking that referenced gaming images exist..."
           errors=0
 
-          for file in $(git diff --name-only --diff-filter=ACM origin/main -- 'gaming/**/*.mdx' 2>/dev/null || true); do
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'gaming/**/*.mdx' 2>/dev/null || true); do
             if [ ! -f "$file" ]; then continue; fi
             # Extract image paths from imageUrl props
-            grep -oP 'imageUrl="([^"]+)"' "$file" 2>/dev/null | while IFS= read -r match; do
+            while IFS= read -r match; do
               img_path=$(echo "$match" | sed 's/imageUrl="//;s/"//')
               # Convert /img/... to static/img/...
               local_path="static${img_path}"
@@ -217,7 +219,7 @@ jobs:
                 echo "::warning file=$file::Referenced image not found: $local_path"
                 errors=$((errors + 1))
               fi
-            done
+            done < <(grep -oP 'imageUrl="([^"]+)"' "$file" 2>/dev/null)
           done
 
           echo "Image reference check completed"

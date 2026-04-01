@@ -55,7 +55,7 @@ Study 2-3 recent blog posts in `blog/` to match the author's voice and style. Pa
 Invoke the `@blog-image` agent to generate a hero image:
 1. Craft a detailed image prompt based on the blog post content — a professional, tech-themed illustration with relevant visual metaphors, no text in the image, clean modern style.
 2. Create the image directory: `static/img/blog/<date-slug>/`
-3. Run: `node scripts/generate-blog-image.js --slug "<date-slug>" --prompt "<image prompt>"`
+3. Run: `node scripts/generate-blog-image.mjs --slug "<date-slug>" --prompt "<image prompt>"`
 4. Verify the image was created and update frontmatter if the filename differs.
 
 ### Step 5: Final Verification

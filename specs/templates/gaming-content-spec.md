@@ -40,7 +40,7 @@
 | `i18n/es/docusaurus-plugin-content-docs-gaming/current/<platform>/index.mdx` | Modify | Spanish translation |
 | `i18n/pt/docusaurus-plugin-content-docs-gaming/current/<platform>/index.mdx` | Modify | Portuguese translation |
 | `static/img/gaming/<platform>/<image>.jpg` | Create | Game cover image |
-| `src/components/GameCard/gameCardConstants.js` | Modify | Only if adding new platform |
+| `src/components/Gaming/gameCardConstants.js` | Modify | Only if adding new platform |
 
 ## i18n Checklist
 

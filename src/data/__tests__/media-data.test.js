@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const movies = JSON.parse(readFileSync(resolve(__dirname, '../movies.json'), 'utf-8'));
 const series = JSON.parse(readFileSync(resolve(__dirname, '../series.json'), 'utf-8'));
 

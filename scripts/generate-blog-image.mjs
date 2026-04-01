@@ -7,8 +7,8 @@
  *   - GITHUB_TOKEN environment variable set (with GitHub Models access)
  *
  * Usage:
- *   node scripts/generate-blog-image.js --slug "2026-04-01-MyPost" --prompt "A futuristic..."
- *   node scripts/generate-blog-image.js --slug "2026-04-01-MyPost" --prompt "A futuristic..." --filename "my-image.png"
+ *   node scripts/generate-blog-image.mjs --slug "2026-04-01-MyPost" --prompt "A futuristic..."
+ *   node scripts/generate-blog-image.mjs --slug "2026-04-01-MyPost" --prompt "A futuristic..." --filename "my-image.png"
  */
 
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
@@ -26,7 +26,7 @@ const prompt = getArg('prompt');
 const filename = getArg('filename');
 
 if (!slug || !prompt) {
-  console.error('Usage: node scripts/generate-blog-image.js --slug "<date-slug>" --prompt "<image prompt>"');
+  console.error('Usage: node scripts/generate-blog-image.mjs --slug "<date-slug>" --prompt "<image prompt>"');
   console.error('  --slug     Blog post folder name (e.g., "2026-04-01-MyPost")');
   console.error('  --prompt   Image generation prompt');
   console.error('  --filename (optional) Output filename (default: derived from slug)');
