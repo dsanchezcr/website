@@ -73,11 +73,6 @@ jobs:
         continue-on-error: true
         uses: treosh/lighthouse-ci-action@v12
         with:
-          urls: |
-            http://localhost/
-            http://localhost/blog
-            http://localhost/gaming
-            http://localhost/contact
           staticDistDir: build
           configPath: .github/lighthouserc.json
 

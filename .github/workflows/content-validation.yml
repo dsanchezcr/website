@@ -112,7 +112,8 @@ jobs:
           done
 
           if [ $errors -gt 0 ]; then
-            echo "::warning::Found $errors missing gaming translations"
+            echo "::error::Found $errors missing gaming translations"
+            exit 1
           fi
           echo "Gaming i18n check completed"
 
@@ -223,4 +224,8 @@ jobs:
             done < <(grep -oP 'imageUrl="([^"]+)"' "$file" 2>/dev/null)
           done
 
+          if [ $errors -gt 0 ]; then
+            echo "::error::Found $errors missing gaming images"
+            exit 1
+          fi
           echo "Image reference check completed"

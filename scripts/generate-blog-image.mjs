@@ -91,6 +91,10 @@ async function generateImage() {
   } else if (imageData.url) {
     // Download the image from URL
     const imgResponse = await fetch(imageData.url);
+    if (!imgResponse.ok) {
+      console.error(`Failed to download image (${imgResponse.status}): ${imgResponse.statusText}`);
+      process.exit(1);
+    }
     const imgBuffer = Buffer.from(await imgResponse.arrayBuffer());
     writeFileSync(outputPath, imgBuffer);
     console.log(`Image saved to: ${outputPath} (${(imgBuffer.length / 1024).toFixed(0)}KB)`);

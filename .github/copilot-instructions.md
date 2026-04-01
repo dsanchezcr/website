@@ -166,6 +166,7 @@ weather: '/api/weather'
 onlineUsers: '/api/online-users'
 chat: '/api/nlweb/ask'
 health: '/api/health'
+healthConfig: '/api/health/config'
 reindex: '/api/reindex'  // Called by GitHub Actions, requires X-Reindex-Key header
 xboxProfile: '/api/gaming/xbox'
 playstationProfile: '/api/gaming/playstation'

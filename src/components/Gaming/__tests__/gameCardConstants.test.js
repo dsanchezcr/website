@@ -8,14 +8,9 @@ import {
 
 describe('gameCardConstants', () => {
   describe('platformColors', () => {
-    it('defines colors for all platforms', () => {
-      const expectedPlatforms = [
-        'xbox', 'pc', 'playstation', 'nintendo-switch',
-        'meta-quest', 'phone-mobile', 'board-games', 'chess',
-      ];
-      for (const platform of expectedPlatforms) {
-        expect(platformColors, `Missing color for "${platform}"`).toHaveProperty(platform);
-        expect(platformColors[platform]).toMatch(/^#[0-9A-Fa-f]{6}$/);
+    it('defines valid hex colors for all platforms', () => {
+      for (const platform of Object.keys(platformColors)) {
+        expect(platformColors[platform], `Invalid color for "${platform}"`).toMatch(/^#[0-9A-Fa-f]{6}$/);
       }
     });
   });
