@@ -29,8 +29,9 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
   ┌──────────────┐    ┌─────────────────────────────────┐
   │  Algolia      │    │  Azure Services                 │
   │  (Search UI)  │    │  - Communication Services       │
-  │               │    │  - OpenAI (GPT + RAG)           │    │  - Foundry (GPT + RAG + Images)  │
-  └──────────────┘    │  - AI Search (Content Index)    │
+  │               │    │  - OpenAI (GPT + RAG)           │
+  └──────────────┘    │  - Foundry (GPT + RAG + Images) │
+                      │  - AI Search (Content Index)    │
                       │  - Table Storage (Tokens/Cache) │
                       │  - Application Insights         │
                       └─────────────────────────────────┘

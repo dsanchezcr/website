@@ -48,18 +48,16 @@ if (!existsSync(imgDir)) {
   mkdirSync(imgDir, { recursive: true });
 }
 
-// Derive output filename - always enforce .jpg extension for optimal storage
-let imgName = filename || `${slug.replace(/^\d{4}-\d{2}-\d{2}-/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')}.jpg`;
-if (!imgName.endsWith('.jpg')) {
-  imgName = imgName.replace(/\.[^.]+$/, '.jpg') || `${imgName}.jpg`;
-}
-const outputPath = join(imgDir, imgName);
+// Derive base output filename (extension will be set after we know the response mimeType)
+const imgBaseName = filename
+  ? filename.replace(/\.[^.]+$/, '')
+  : slug.replace(/^\d{4}-\d{2}-\d{2}-/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '');
 
 async function generateImage() {
   console.log(`Generating image for blog post: ${slug}`);
   console.log(`Model: ${model}`);
   console.log(`Prompt: ${prompt}`);
-  console.log(`Output: ${outputPath}`);
+  console.log(`Output directory: ${imgDir}`);
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
@@ -102,9 +100,16 @@ async function generateImage() {
     process.exit(1);
   }
 
+  // Derive file extension from the actual mimeType returned by the API
+  const mimeType = imagePart.inlineData.mimeType || 'image/png';
+  const extMap = { 'image/png': '.png', 'image/jpeg': '.jpg', 'image/webp': '.webp', 'image/gif': '.gif' };
+  const ext = extMap[mimeType] || '.png';
+  const imgName = `${imgBaseName}${ext}`;
+  const outputPath = join(imgDir, imgName);
+
   const buffer = Buffer.from(imagePart.inlineData.data, 'base64');
   writeFileSync(outputPath, buffer);
-  console.log(`Image saved to: ${outputPath} (${(buffer.length / 1024).toFixed(0)}KB, ${imagePart.inlineData.mimeType})`);
+  console.log(`Image saved to: ${outputPath} (${(buffer.length / 1024).toFixed(0)}KB, ${mimeType})`);
 
   // Output the frontmatter image URL for easy copy
   const frontmatterUrl = `https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/${slug}/${imgName}`;
