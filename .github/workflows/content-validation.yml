@@ -37,7 +37,7 @@ jobs:
           echo "Checking blog post frontmatter..."
           errors=0
 
-          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'blog/*.mdx' 2>/dev/null || true); do
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'blog/**/*.mdx' 2>/dev/null || true); do
             if [ ! -f "$file" ]; then continue; fi
             echo "  Checking $file"
 
@@ -61,7 +61,7 @@ jobs:
           echo "Checking blog post translations..."
           errors=0
 
-          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'blog/*.mdx' 2>/dev/null || true); do
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'blog/**/*.mdx' 2>/dev/null || true); do
             if [ ! -f "$file" ]; then continue; fi
             basename=$(basename "$file")
             echo "  Checking translations for $basename"
@@ -70,12 +70,12 @@ jobs:
             pt_path="i18n/pt/docusaurus-plugin-content-blog/$basename"
 
             if [ ! -f "$es_path" ]; then
-              echo "::warning file=$file::Missing Spanish translation: $es_path"
+              echo "::error file=$file::Missing Spanish translation: $es_path"
               errors=$((errors + 1))
             fi
 
             if [ ! -f "$pt_path" ]; then
-              echo "::warning file=$file::Missing Portuguese translation: $pt_path"
+              echo "::error file=$file::Missing Portuguese translation: $pt_path"
               errors=$((errors + 1))
             fi
           done

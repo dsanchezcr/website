@@ -33,6 +33,13 @@ if (!slug || !prompt) {
   process.exit(1);
 }
 
+// Validate slug to prevent path traversal (must be YYYY-MM-DD-kebab-title format)
+if (!/^\d{4}-\d{2}-\d{2}-[a-z0-9-]+$/.test(slug)) {
+  console.error(`Error: Invalid slug format: "${slug}"`);
+  console.error('Slug must match YYYY-MM-DD-kebab-title (e.g., "2026-04-01-my-post"). No path separators or uppercase letters.');
+  process.exit(1);
+}
+
 const apiKey = process.env.GOOGLE_AI_KEY;
 if (!apiKey) {
   console.error('Error: GOOGLE_AI_KEY environment variable is required.');
