@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * Generate a blog hero image using GitHub Models (Azure OpenAI gpt-image-1).
+ * Generate a blog hero image using Google Gemini (gemini-2.5-flash-image).
  *
  * Prerequisites:
- *   - GITHUB_TOKEN environment variable set (with GitHub Models access)
+ *   - GOOGLE_AI_KEY environment variable set (from https://ai.google.dev)
  *
  * Usage:
  *   node scripts/generate-blog-image.mjs --slug "2026-04-01-MyPost" --prompt "A futuristic..."
@@ -33,11 +33,14 @@ if (!slug || !prompt) {
   process.exit(1);
 }
 
-const token = process.env.GITHUB_TOKEN;
-if (!token) {
-  console.error('Error: GITHUB_TOKEN environment variable is required for GitHub Models access.');
+const apiKey = process.env.GOOGLE_AI_KEY;
+if (!apiKey) {
+  console.error('Error: GOOGLE_AI_KEY environment variable is required.');
+  console.error('Get a free API key from https://ai.google.dev');
   process.exit(1);
 }
+
+const model = process.env.IMAGE_GEN_MODEL || 'gemini-2.5-flash-image';
 
 // Derive output path
 const imgDir = resolve('static', 'img', 'blog', slug);
@@ -45,63 +48,63 @@ if (!existsSync(imgDir)) {
   mkdirSync(imgDir, { recursive: true });
 }
 
-const imgName = filename || `${slug.replace(/^\d{4}-\d{2}-\d{2}-/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')}.jpg`;
+// Derive output filename - always enforce .jpg extension for optimal storage
+let imgName = filename || `${slug.replace(/^\d{4}-\d{2}-\d{2}-/, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+$/, '')}.jpg`;
+if (!imgName.endsWith('.jpg')) {
+  imgName = imgName.replace(/\.[^.]+$/, '.jpg') || `${imgName}.jpg`;
+}
 const outputPath = join(imgDir, imgName);
 
 async function generateImage() {
   console.log(`Generating image for blog post: ${slug}`);
+  console.log(`Model: ${model}`);
   console.log(`Prompt: ${prompt}`);
   console.log(`Output: ${outputPath}`);
 
-  const response = await fetch('https://models.github.ai/inference/images/generations', {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+  const response = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'openai/gpt-image-1',
-      prompt: prompt,
-      n: 1,
-      size: '1536x1024',
+      contents: [{
+        parts: [{
+          text: `Generate an image: ${prompt}. The image should be wide landscape format suitable for a blog hero image. Do not include any text in the image.`
+        }]
+      }],
+      generationConfig: {
+        responseModalities: ['IMAGE', 'TEXT']
+      }
     }),
   });
 
   if (!response.ok) {
     const errorBody = await response.text();
-    console.error(`GitHub Models API error (${response.status}): ${errorBody}`);
+    console.error(`Gemini API error (${response.status}): ${errorBody}`);
     process.exit(1);
   }
 
   const result = await response.json();
 
-  if (!result.data || !result.data[0]) {
-    console.error('No image returned from the API.');
+  if (!result.candidates?.[0]?.content?.parts) {
+    console.error('No content returned from Gemini API.');
     console.error('Response:', JSON.stringify(result, null, 2));
     process.exit(1);
   }
 
-  // The API returns base64-encoded image data or a URL
-  const imageData = result.data[0];
-
-  if (imageData.b64_json) {
-    const buffer = Buffer.from(imageData.b64_json, 'base64');
-    writeFileSync(outputPath, buffer);
-    console.log(`Image saved to: ${outputPath} (${(buffer.length / 1024).toFixed(0)}KB)`);
-  } else if (imageData.url) {
-    // Download the image from URL
-    const imgResponse = await fetch(imageData.url);
-    if (!imgResponse.ok) {
-      console.error(`Failed to download image (${imgResponse.status}): ${imgResponse.statusText}`);
-      process.exit(1);
+  // Find the image part in the response
+  const imagePart = result.candidates[0].content.parts.find(p => p.inlineData);
+  if (!imagePart) {
+    console.error('No image generated. Response parts:');
+    for (const p of result.candidates[0].content.parts) {
+      if (p.text) console.error(`  Text: ${p.text}`);
     }
-    const imgBuffer = Buffer.from(await imgResponse.arrayBuffer());
-    writeFileSync(outputPath, imgBuffer);
-    console.log(`Image saved to: ${outputPath} (${(imgBuffer.length / 1024).toFixed(0)}KB)`);
-  } else {
-    console.error('Unexpected API response format:', JSON.stringify(imageData, null, 2));
     process.exit(1);
   }
+
+  const buffer = Buffer.from(imagePart.inlineData.data, 'base64');
+  writeFileSync(outputPath, buffer);
+  console.log(`Image saved to: ${outputPath} (${(buffer.length / 1024).toFixed(0)}KB, ${imagePart.inlineData.mimeType})`);
 
   // Output the frontmatter image URL for easy copy
   const frontmatterUrl = `https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/${slug}/${imgName}`;

@@ -121,10 +121,10 @@ public class HealthCheck
         { "AZURE_COMMUNICATION_SERVICES_CONNECTION_STRING", ("Azure Communication Services connection string for sending emails", true) },
         { "RECAPTCHA_SECRET_KEY", ("Google reCAPTCHA v3 secret key for form protection", true) },
         
-        // Azure OpenAI / Chat
-        { "AZURE_OPENAI_ENDPOINT", ("Azure OpenAI service endpoint URL", true) },
-        { "AZURE_OPENAI_KEY", ("Azure OpenAI API key", true) },
-        { "AZURE_OPENAI_DEPLOYMENT", ("Azure OpenAI deployment/model name", true) },
+        // Microsoft Foundry / Chat
+        { "AZURE_OPENAI_ENDPOINT", ("Microsoft Foundry service endpoint URL", true) },
+        { "AZURE_OPENAI_KEY", ("Microsoft Foundry API key", true) },
+        { "AZURE_OPENAI_DEPLOYMENT", ("Microsoft Foundry deployment/model name", true) },
         
         // Google Analytics (optional - health check degrades gracefully if missing)
         { "GOOGLE_ANALYTICS_PROPERTY_ID", ("GA4 property ID for analytics", false) },
@@ -367,7 +367,7 @@ public class HealthCheck
     {
         var health = new ServiceHealth
         {
-            Name = "Azure OpenAI"
+            Name = "Microsoft Foundry (Chat)"
         };
 
         var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
@@ -412,7 +412,7 @@ public class HealthCheck
         {
             health.Status = HealthStatus.Unhealthy;
             health.Message = $"Configuration error: {ex.Message}";
-            _logger.LogError(ex, "Azure OpenAI health check failed");
+            _logger.LogError(ex, "Microsoft Foundry health check failed");
         }
 
         return Task.FromResult(health);

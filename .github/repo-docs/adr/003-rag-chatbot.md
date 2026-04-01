@@ -1,4 +1,4 @@
-# ADR-003: RAG Chatbot with Azure OpenAI and AI Search
+# ADR-003: RAG Chatbot with Microsoft Foundry and AI Search
 
 ## Status
 Accepted
@@ -12,7 +12,7 @@ Wanted to add an AI chatbot to the website that can answer questions about the s
 ## Decision
 Implement a **Retrieval-Augmented Generation (RAG)** pattern using:
 - **Azure AI Search** as the knowledge store (content indexed from MDX files and GitHub repos)
-- **Azure OpenAI** (GPT model) for natural language generation
+- **Microsoft Foundry** (GPT model) for natural language generation
 - **Automatic indexing** triggered by GitHub Actions after each deployment
 - **Content extraction** via `scripts/extract-content.js` (Node.js script that parses MDX files)
 
@@ -27,6 +27,6 @@ Implement a **Retrieval-Augmented Generation (RAG)** pattern using:
 - **Positive**: Chatbot answers are grounded in actual site content — reduces hallucination
 - **Positive**: Content stays current automatically (reindexed on every deployment)
 - **Positive**: Rate limiting and abuse detection protect the AI endpoint
-- **Negative**: Requires Azure OpenAI and AI Search resources (cost)
+- **Negative**: Requires Microsoft Foundry and AI Search resources (cost)
 - **Negative**: Index update is best-effort (`continue-on-error: true`) — stale index possible
 - **Negative**: Session memory is in-memory only — lost on function restart

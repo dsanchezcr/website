@@ -25,7 +25,7 @@ Located in `api/` directory:
 - **VerifyEmail.cs**: Email verification endpoint (`/api/verify`) that completes the contact form submission after user clicks verification link
 - **GetWeather.cs**: Weather data endpoint (`/api/weather`)
 - **GetOnlineUsers.cs**: Analytics endpoint (`/api/online-users`) with Google Analytics Data API (24-hour visitor count)
-- **ChatWithOpenAI.cs**: AI chat endpoint (`/api/nlweb/ask`) using Azure OpenAI with RAG from Azure AI Search
+- **ChatWithOpenAI.cs**: AI chat endpoint (`/api/nlweb/ask`) using Microsoft Foundry with RAG from Azure AI Search
 - **HealthCheck.cs**: Health monitoring endpoint (`/api/health`) that validates all service configurations and connectivity
 - **ReindexContent.cs**: Search index update endpoint (`/api/reindex`) with secret key authentication, hybrid content indexing
 - **GetXboxProfile.cs**: Xbox profile endpoint (`/api/gaming/xbox`) using OpenXBL API with Table Storage caching
@@ -185,7 +185,7 @@ Single GitHub Actions workflow deploys both frontend and managed API together:
 
 ### External Services
 - **Azure Communication Services**: Email sending (connection string in environment)
-- **Azure OpenAI**: Chat functionality with RAG (endpoint + key + deployment required)
+- **Microsoft Foundry**: Chat functionality with RAG (endpoint + key + deployment required)
 - **Azure AI Search**: Content search for RAG pattern in chatbot (endpoint + API key + index name)
 - **Azure Table Storage**: Persistent storage for email verification tokens (connection string)
 - **Google reCAPTCHA v3**: Site key `6LcGaAIsAAAAALzUAxzGFx5R1uJ2Wgxn4RmNsy2I` (client-side) + secret key (server-side)
@@ -201,7 +201,7 @@ RECAPTCHA_SECRET_KEY
 WEBSITE_URL
 API_URL
 
-# Azure OpenAI (Chat)
+# Microsoft Foundry (Chat)
 AZURE_OPENAI_ENDPOINT
 AZURE_OPENAI_KEY
 AZURE_OPENAI_DEPLOYMENT

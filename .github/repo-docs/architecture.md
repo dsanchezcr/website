@@ -29,7 +29,7 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
   ┌──────────────┐    ┌─────────────────────────────────┐
   │  Algolia      │    │  Azure Services                 │
   │  (Search UI)  │    │  - Communication Services       │
-  │               │    │  - OpenAI (GPT + RAG)           │
+  │               │    │  - OpenAI (GPT + RAG)           │    │  - Foundry (GPT + RAG + Images)  │
   └──────────────┘    │  - AI Search (Content Index)    │
                       │  - Table Storage (Tokens/Cache) │
                       │  - Application Insights         │
@@ -67,7 +67,7 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 | VerifyEmail | `/api/verify` | Two-step email verification completion |
 | GetWeather | `/api/weather` | Weather data proxy |
 | GetOnlineUsers | `/api/online-users` | Google Analytics 24h visitor count |
-| ChatWithOpenAI | `/api/nlweb/ask` | RAG chatbot (Azure OpenAI + AI Search) |
+| ChatWithOpenAI | `/api/nlweb/ask` | RAG chatbot (Microsoft Foundry + AI Search) |
 | HealthCheck | `/api/health` | Service health monitoring |
 | ReindexContent | `/api/reindex` | Search index update (CI/CD triggered) |
 | GetXboxProfile | `/api/gaming/xbox` | Xbox Live profile with Table Storage cache |

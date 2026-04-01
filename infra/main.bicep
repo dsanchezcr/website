@@ -73,14 +73,14 @@ param azureCommunicationServicesConnectionString string = ''
 @secure()
 param recaptchaSecretKey string = ''
 
-@description('Azure OpenAI endpoint URL.')
+@description('Microsoft Foundry endpoint URL.')
 param azureOpenAIEndpoint string = ''
 
-@description('Azure OpenAI API key.')
+@description('Microsoft Foundry API key.')
 @secure()
 param azureOpenAIKey string = ''
 
-@description('Azure OpenAI deployment name.')
+@description('Microsoft Foundry deployment name.')
 param azureOpenAIDeployment string = 'gpt-4'
 
 @description('Google Analytics Property ID for the online users widget.')
@@ -218,7 +218,7 @@ resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2024-04-01' = {
     // Google reCAPTCHA v3
     RECAPTCHA_SECRET_KEY: recaptchaSecretKey
     
-    // Azure OpenAI configuration
+    // Microsoft Foundry configuration
     AZURE_OPENAI_ENDPOINT: azureOpenAIEndpoint
     AZURE_OPENAI_KEY: azureOpenAIKey
     AZURE_OPENAI_DEPLOYMENT: azureOpenAIDeployment
