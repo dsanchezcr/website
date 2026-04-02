@@ -435,6 +435,16 @@ button[class*='toggleButton'] svg {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .about-image-highlight img {
+    transition: none;
+  }
+
+  .about-image-highlight img:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+}
 .about-image-highlight em {
   display: block;
   margin-top: 0.5rem;
