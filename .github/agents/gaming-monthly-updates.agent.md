@@ -56,6 +56,7 @@ keywords: [gaming, <Month> <Year>]
 ---
 
 import Comments from '@site/src/components/Comments';
+import YouTubeEmbed from '@site/src/components/YouTubeEmbed';
 
 # <Month> <Year> Gaming Update
 
@@ -68,11 +69,7 @@ Here are the <Month> <Year> releases I'm most excited about:
 ### <Game Title> — <Month> <Day>
 <2–3 sentence description of the game.> Available on **<platforms>**.
 
-<div style={{position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', marginBottom: '1.5rem'}}>
-  <iframe style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}} src="https://www.youtube-nocookie.com/embed/<VIDEO_ID>" title="<Game Title> Trailer" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-</div>
-
-{/* Repeat for each game release */}
+<YouTubeEmbed videoId="<VIDEO_ID>" title="<Game Title> Trailer" />
 
 ## What I'm Playing
 
@@ -96,7 +93,7 @@ Use the same structure but translate all prose to Spanish:
 - Demo labels: `(Demo Gratuita Disponible)` instead of `(Free Demo Available)`
 - Closing CTA: `*¿Qué juegos te emocionan más este mes? ¡Deja un comentario abajo!*`
 - Keep game titles in original language (do NOT translate game names)
-- Keep YouTube embed blocks identical (same video IDs)
+- Keep `YouTubeEmbed` component usage identical (same `videoId` and `title` props)
 
 ### Portuguese — `i18n/pt/docusaurus-plugin-content-docs-gaming/current/monthly-updates/<month>-<year>.mdx`
 
@@ -108,25 +105,21 @@ Use the same structure but translate all prose to Portuguese:
 - Demo labels: `(Demo Gratuita Disponível)` instead of `(Free Demo Available)`
 - Closing CTA: `*Quais jogos te empolgam mais neste mês? Deixe um comentário abaixo!*`
 - Keep game titles in original language (do NOT translate game names)
-- Keep YouTube embed blocks identical (same video IDs)
+- Keep `YouTubeEmbed` component usage identical (same `videoId` and `title` props)
 
 ## YouTube Video Embeds
 
-For each game, include a responsive 16:9 YouTube embed using the privacy-enhanced domain:
+For each game, use the `YouTubeEmbed` component from `@site/src/components/YouTubeEmbed`. It handles responsive 16:9 sizing, the privacy-enhanced `youtube-nocookie.com` domain, and `loading="lazy"` automatically:
 
 ```jsx
-<div style={{position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', marginBottom: '1.5rem'}}>
-  <iframe style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}} src="https://www.youtube-nocookie.com/embed/<VIDEO_ID>" title="<Game Title> Trailer" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-</div>
+<YouTubeEmbed videoId="<VIDEO_ID>" title="<Game Title> Trailer" />
 ```
 
 If you cannot find a trailer URL during research, leave a placeholder:
 
 ```jsx
 {/* TODO: Add YouTube trailer — replace VIDEO_ID_HERE */}
-<div style={{position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', marginBottom: '1.5rem'}}>
-  <iframe style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%'}} src="https://www.youtube-nocookie.com/embed/VIDEO_ID_HERE" title="<Game Title> Trailer" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-</div>
+<YouTubeEmbed videoId="VIDEO_ID_HERE" title="<Game Title> Trailer" />
 ```
 
 ## Sidebar Ordering (Reverse Chronological)
@@ -167,5 +160,5 @@ The `monthly-updates` section uses a **generated index** configured in `_categor
 - DO NOT change the `_category_.json` sidebar configuration
 - ALL entries must use `hide_table_of_contents: true`
 - `sidebar_position` must decrement from the most recent entry (check existing files first)
-- Use `youtube-nocookie.com` for all video embeds (privacy-enhanced mode)
+- Use `YouTubeEmbed` component for all video embeds (`loading="lazy"` and `youtube-nocookie.com` are handled automatically)
 - Leave a `{/* TODO */}` comment for any video ID you cannot find
