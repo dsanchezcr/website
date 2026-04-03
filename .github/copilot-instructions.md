@@ -303,6 +303,7 @@ This repository uses GitHub Copilot custom agents defined in `.github/agents/`. 
 | `section-features` | Build features across content sections | Gaming, movies-tv, 3D printing, disney, universal |
 | `best-practices` | Review and propose improvements | Dependencies, security, accessibility, performance |
 | `testing-quality` | Write and maintain tests | Vitest, xUnit, Playwright, CI quality gates |
+| `gaming-monthly-updates` | Draft monthly gaming roundup posts | Game releases, trailers, announcements, i18n |
 | `innovation` | Propose new features and ideas | Content gaps, trend analysis, spec proposals |
 | `cicd-quality` | Improve CI/CD and deployment quality | Workflows, quality gates, validation |
 
