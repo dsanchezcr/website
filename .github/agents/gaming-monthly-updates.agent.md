@@ -15,7 +15,7 @@ Study the existing entries to match style and structure:
 - **English**: `gaming/monthly-updates/april-2026.mdx`
 - **Spanish**: `i18n/es/docusaurus-plugin-content-docs-gaming/current/monthly-updates/april-2026.mdx`
 - **Portuguese**: `i18n/pt/docusaurus-plugin-content-docs-gaming/current/monthly-updates/april-2026.mdx`
-- **Hub page**: `gaming/monthly-updates/index.mdx` (update the "Latest Updates" list when adding a new month)
+- **Hub page**: The `monthly-updates` section uses a generated index (via `_category_.json`) — there is no `index.mdx` file to update
 
 ## Research Phase
 
@@ -131,7 +131,7 @@ If you cannot find a trailer URL during research, leave a placeholder:
 
 ## Sidebar Ordering (Reverse Chronological)
 
-The hub `index.mdx` uses `sidebar_position: 1`. Monthly entries use **descending** `sidebar_position` values so that newer months appear first in the sidebar.
+The sidebar is configured via `_category_.json` with `"link": { "type": "generated-index" }`, so Docusaurus automatically generates the index page — no `index.mdx` is needed.
 
 Before creating a new entry, **check the most recent entry's `sidebar_position`** in `gaming/monthly-updates/` and subtract 1. For example:
 - April 2026 = `999`
@@ -141,18 +141,9 @@ Before creating a new entry, **check the most recent entry's `sidebar_position`*
 
 This ensures newest months always sort to the top of the sidebar.
 
-The hub page's "Latest Updates" list should also be maintained in reverse chronological order (newest first).
+## Hub Page
 
-## Hub Page Update
-
-After creating a new monthly entry, update `gaming/monthly-updates/index.mdx` (and its es/pt translations) to add the new month at the **top** of the "Latest Updates" list:
-
-```mdx
-## Latest Updates
-
-- [<New Month> <Year>](./<month>-<year>) — <Brief highlights>
-- [April 2026](./april-2026) — Mouse: P.I. For Hire, Hades II on consoles, Pragmata, and more
-```
+The `monthly-updates` section uses a **generated index** configured in `_category_.json` — there is no `index.mdx` hub page to maintain. Docusaurus automatically lists all monthly entries on the generated index page.
 
 ## Workflow
 
@@ -165,8 +156,7 @@ After creating a new monthly entry, update `gaming/monthly-updates/index.mdx` (a
 7. **Draft the English version** at `gaming/monthly-updates/<month>-<year>.mdx`.
 8. **Draft the Spanish translation** at `i18n/es/docusaurus-plugin-content-docs-gaming/current/monthly-updates/<month>-<year>.mdx`.
 9. **Draft the Portuguese translation** at `i18n/pt/docusaurus-plugin-content-docs-gaming/current/monthly-updates/<month>-<year>.mdx`.
-10. **Update hub pages** (all 3 locales) to include the new entry link.
-11. **Present a summary** of files created and any placeholder video IDs that need to be filled in.
+10. **Present a summary** of files created and any placeholder video IDs that need to be filled in.
 
 ## Constraints
 
@@ -174,7 +164,7 @@ After creating a new monthly entry, update `gaming/monthly-updates/index.mdx` (a
 - DO NOT include industry business news (layoffs, closures, leadership changes)
 - DO NOT skip translations — all 3 locales (en, es, pt) are mandatory
 - DO NOT modify existing monthly entries unless explicitly asked
-- DO NOT change the `_category_.json` or `index.mdx` sidebar configuration
+- DO NOT change the `_category_.json` sidebar configuration
 - ALL entries must use `hide_table_of_contents: true`
 - `sidebar_position` must decrement from the most recent entry (check existing files first)
 - Use `youtube-nocookie.com` for all video embeds (privacy-enhanced mode)
