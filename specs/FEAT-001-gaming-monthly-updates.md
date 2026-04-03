@@ -76,6 +76,7 @@ Monthly posts use descending `sidebar_position` values (April 2026 = `999`) so n
 - [x] Full MDX content translated in ES and PT
 - [x] Agent instructions specify translation guidelines for each locale
 - [x] Game titles kept in original language (not translated)
+- [x] `YouTubeEmbed` `title` prop localized for accessibility (e.g., "Tráiler de ..." in ES, "Trailer de ..." in PT)
 
 ## Acceptance Criteria
 

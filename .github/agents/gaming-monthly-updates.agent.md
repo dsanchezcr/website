@@ -93,7 +93,7 @@ Use the same structure but translate all prose to Spanish:
 - Demo labels: `(Demo Gratuita Disponible)` instead of `(Free Demo Available)`
 - Closing CTA: `*¿Qué juegos te emocionan más este mes? ¡Deja un comentario abajo!*`
 - Keep game titles in original language (do NOT translate game names)
-- Keep `YouTubeEmbed` component usage identical (same `videoId` and `title` props)
+- Localize the `title` prop of `YouTubeEmbed` for accessibility (e.g., `title="Tráiler de <Game Title>"`) — keep `videoId` identical
 
 ### Portuguese — `i18n/pt/docusaurus-plugin-content-docs-gaming/current/monthly-updates/<month>-<year>.mdx`
 
@@ -105,7 +105,7 @@ Use the same structure but translate all prose to Portuguese:
 - Demo labels: `(Demo Gratuita Disponível)` instead of `(Free Demo Available)`
 - Closing CTA: `*Quais jogos te empolgam mais neste mês? Deixe um comentário abaixo!*`
 - Keep game titles in original language (do NOT translate game names)
-- Keep `YouTubeEmbed` component usage identical (same `videoId` and `title` props)
+- Localize the `title` prop of `YouTubeEmbed` for accessibility (e.g., `title="Trailer de <Game Title>"`) — keep `videoId` identical
 
 ## YouTube Video Embeds
 
