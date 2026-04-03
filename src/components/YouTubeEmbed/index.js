@@ -1,8 +1,15 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import styles from './YouTubeEmbed.module.css';
 
+const YOUTUBE_ID_PATTERN = /^[a-zA-Z0-9_-]{11}$/;
+
 export default function YouTubeEmbed({ videoId, title }) {
+  if (!YOUTUBE_ID_PATTERN.test(videoId)) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`YouTubeEmbed: invalid videoId "${videoId}"`);
+    }
+    return null;
+  }
   return (
     <div className={styles.wrapper}>
       <iframe
@@ -16,8 +23,3 @@ export default function YouTubeEmbed({ videoId, title }) {
     </div>
   );
 }
-
-YouTubeEmbed.propTypes = {
-  videoId: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-};
