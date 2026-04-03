@@ -10,12 +10,17 @@ export default function YouTubeEmbed({ videoId, title }) {
     }
     return null;
   }
+  const normalizedTitle = typeof title === 'string' ? title.trim() : '';
+  const iframeTitle = normalizedTitle || `YouTube video ${videoId}`;
+  if (!normalizedTitle && process.env.NODE_ENV === 'development') {
+    console.warn(`YouTubeEmbed: missing or empty title for videoId "${videoId}", falling back to "${iframeTitle}"`);
+  }
   return (
     <div className={styles.wrapper}>
       <iframe
         className={styles.iframe}
         src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-        title={title}
+        title={iframeTitle}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
         loading="lazy"

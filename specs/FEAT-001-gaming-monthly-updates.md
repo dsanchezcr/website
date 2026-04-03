@@ -62,7 +62,7 @@ import YouTubeEmbed from '@site/src/components/YouTubeEmbed';
 
 ### Sidebar Ordering
 
-Monthly posts use descending `sidebar_position` values (April 2026 = `999`) so newer months sort to the top as lower positions are assigned to newer entries.
+Monthly posts use decreasing `sidebar_position` values (for example, April 2026 = `999`, then newer entries use lower values such as `998`) so newer months sort to the top.
 
 ## Edge Cases
 
