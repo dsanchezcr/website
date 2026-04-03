@@ -386,3 +386,130 @@ button[class*='toggleButton'] svg {
   right: auto !important;
   box-shadow: none !important;
 }
+
+/* ==========================================
+   About Page Styles
+   ========================================== */
+
+/* Hero section with gradient accent */
+.about-hero {
+  text-align: center;
+  padding: 2rem 1rem 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 3px solid var(--ifm-color-primary);
+  background: linear-gradient(180deg, rgba(44, 82, 130, 0.05) 0%, transparent 100%);
+  border-radius: 1rem 1rem 0 0;
+}
+
+.about-hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.about-hero p {
+  font-size: 1.15rem;
+  color: var(--ifm-color-emphasis-700);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+[data-theme='dark'] .about-hero {
+  background: linear-gradient(180deg, rgba(74, 158, 222, 0.08) 0%, transparent 100%);
+}
+
+/* Conference image highlight */
+.about-image-highlight {
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.about-image-highlight img {
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  max-width: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about-image-highlight img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-image-highlight img {
+    transition: none;
+  }
+
+  .about-image-highlight img:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+}
+.about-image-highlight em {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-600);
+}
+
+/* Health & Wellbeing before/after images */
+.health-images {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 2rem auto;
+  max-width: 700px;
+}
+
+.health-images figure {
+  margin: 0;
+  text-align: center;
+}
+
+.health-images img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.health-images img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .health-images img {
+    transition: none;
+  }
+
+  .health-images img:hover {
+    transform: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.health-images figcaption {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ifm-color-emphasis-700);
+}
+
+/* Mobile: stack images vertically */
+@media (max-width: 600px) {
+  .health-images {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .health-images img {
+    height: 250px;
+  }
+
+  .about-hero h1 {
+    font-size: 2rem;
+  }
+}
