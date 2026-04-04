@@ -205,8 +205,8 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
         
         private async Task<string> GetLiveGamingDataAsync(PageContext? currentPage)
         {
-            // Only fetch gaming data if user is on a videogames page
-            if (currentPage?.Section != "videogames")
+            // Only fetch gaming data if user is on a gaming page
+            if (currentPage?.Section != "gaming")
                 return string.Empty;
 
             try
@@ -560,7 +560,7 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                     // Validate section is from known list
                     if (!string.IsNullOrEmpty(chatRequest.CurrentPage.Section))
                     {
-                        var validSections = new[] { "blog", "projects", "about", "videogames", "disney", "universal", "weather", "exchangerates", "home" };
+                        var validSections = new[] { "blog", "projects", "about", "gaming", "movies-tv", "3dprinting", "disney", "universal", "weather", "exchangerates", "contact", "sponsors", "home" };
                         if (!validSections.Contains(chatRequest.CurrentPage.Section))
                             chatRequest.CurrentPage.Section = "home";
                     }
@@ -619,7 +619,7 @@ UNCERTAINTY: Be honest when lacking info. Suggest alternatives. Never guess or f
                     }
                 }
                 
-                // Inject live gaming data if user is on videogames pages
+                // Inject live gaming data if user is on gaming pages
                 try
                 {
                     var gamingData = await GetLiveGamingDataAsync(chatRequest.CurrentPage);
