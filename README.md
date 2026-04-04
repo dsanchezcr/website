@@ -15,7 +15,7 @@ The site uses **Azure Static Web Apps** with a **managed API** architecture:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                  Azure Static Web Apps                       │
+│                  Azure Static Web Apps                      │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌─────────────────────┐    ┌─────────────────────────────┐ │
 │  │   Docusaurus Site   │    │    .NET 9 Managed API       │ │

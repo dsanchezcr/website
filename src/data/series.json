@@ -1,4 +1,4 @@
 [
-  {"titleId": "tt0903747", "myRating": 10, "review": {"en": "One of the best TV series ever made.", "es": "Una de las mejores series de televisión jamás creadas.", "pt": "Uma das melhores séries de TV já feitas."}, "category": "completed"},
-  {"titleId": "tt31938062", "myRating": 9, "review": {"en": "Impressive narrative, really highlights the daily lives of healthcare professionals.", "es": "Narrativa impresionante, realmente destaca la vida diaria de los profesionales de la salud.", "pt": "Narrativa impressionante, realmente destaca a vida diária dos profissionais de saúde."}, "category": "currently-watching"}
+  {"titleId": "tt0903747", "myRating": 10, "review": {"en": "One of the best TV series ever made.", "es": "Una de las mejores series de televisión jamás creadas.", "pt": "Uma das melhores séries de TV já feitas."}, "category": "completed", "order": 1},
+  {"titleId": "tt31938062", "myRating": 9, "review": {"en": "Impressive narrative, really highlights the daily lives of healthcare professionals.", "es": "Narrativa impresionante, realmente destaca la vida diaria de los profesionales de la salud.", "pt": "Narrativa impressionante, realmente destaca a vida diária dos profissionais de saúde."}, "category": "currently-watching", "order": 1}
 ]

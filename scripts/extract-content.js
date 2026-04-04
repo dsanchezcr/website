@@ -253,6 +253,76 @@ function extractPages() {
       console.error(`Error processing gaming page ${vg.subdir || vg.dir}: ${error.message}`);
     }
   }
+
+  // Add gaming monthly updates
+  try {
+    const monthlyDir = path.join(__dirname, '..', 'gaming', 'monthly-updates');
+    if (fs.existsSync(monthlyDir)) {
+      const mdxFiles = fs.readdirSync(monthlyDir).filter(f => f.endsWith('.mdx'));
+      for (const file of mdxFiles) {
+        const filePath = path.join(monthlyDir, file);
+        if (fs.statSync(filePath).isDirectory()) continue;
+        const content = fs.readFileSync(filePath, 'utf-8');
+        const { frontmatter, body } = parseFrontmatter(content);
+        const slug = file.replace(/\.mdx?$/, '');
+
+        pages.push({
+          id: `page-gaming-monthly-${slug}`,
+          title: frontmatter.title || slug,
+          description: frontmatter.description || '',
+          content: stripMarkdown(body).slice(0, 5000),
+          url: `/gaming/monthly-updates/${slug}`,
+          category: 'gaming',
+          tags: Array.isArray(frontmatter.keywords)
+            ? frontmatter.keywords.join(', ')
+            : (frontmatter.keywords || ''),
+          date: null
+        });
+      }
+    }
+  } catch (error) {
+    console.error(`Error processing gaming monthly updates: ${error.message}`);
+  }
+
+  // Add Movies & TV section pages
+  const moviesTvPages = [
+    { dir: 'movies-tv', subdir: null, title: 'Movies & TV', url: '/movies-tv' },
+    { dir: 'movies-tv', subdir: 'movies', title: 'Movies', url: '/movies-tv/movies' },
+    { dir: 'movies-tv', subdir: 'series', title: 'TV Shows', url: '/movies-tv/series' }
+  ];
+
+  for (const mt of moviesTvPages) {
+    try {
+      const dirPath = mt.subdir
+        ? path.join(__dirname, '..', mt.dir, mt.subdir)
+        : path.join(__dirname, '..', mt.dir);
+      const mdxFiles = fs.readdirSync(dirPath).filter(f => f.endsWith('.mdx'));
+      for (const file of mdxFiles) {
+        const filePath = path.join(dirPath, file);
+        if (fs.statSync(filePath).isDirectory()) continue;
+        const content = fs.readFileSync(filePath, 'utf-8');
+        const { frontmatter, body } = parseFrontmatter(content);
+        const slug = file.replace(/\.mdx?$/, '');
+        const id = mt.subdir ? `movies-tv-${mt.subdir}-${slug}` : `movies-tv-${slug}`;
+        const url = mt.subdir ? `${mt.url}/${slug}` : mt.url;
+
+        pages.push({
+          id: `page-${id}`,
+          title: frontmatter.title || mt.title,
+          description: frontmatter.description || '',
+          content: stripMarkdown(body).slice(0, 5000),
+          url,
+          category: 'movies-tv',
+          tags: Array.isArray(frontmatter.keywords)
+            ? frontmatter.keywords.join(', ')
+            : (frontmatter.keywords || ''),
+          date: null
+        });
+      }
+    } catch (error) {
+      console.error(`Error processing movies-tv page ${mt.subdir || mt.dir}: ${error.message}`);
+    }
+  }
   
   return pages;
 }

@@ -6,7 +6,10 @@ import MediaCard from './MediaCard';
 const MediaCardList = ({ items, category }) => {
   const locale = useLocale();
   const filtered = useMemo(
-    () => category ? items.filter(item => item.category === category) : items,
+    () => {
+      const result = category ? items.filter(item => item.category === category) : items;
+      return result.slice().sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
+    },
     [items, category]
   );
 
