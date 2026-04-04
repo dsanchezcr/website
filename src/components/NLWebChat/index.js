@@ -16,8 +16,8 @@ const translations = {
     welcomeItems: [
       "Blog posts or technical articles.",
       "Projects and contributions.",     
-      "Speaking topics and presentations",
-      "Tech behind the website."
+      "Gaming: Xbox, PlayStation, Switch, board games, chess, monthly updates.",
+      "Movies & TV reviews, About me & health journey."
     ],
     inputPlaceholder: "Ask me anything about this website...",
     chatIconTooltip: "Chat with David's AI Assistant",
@@ -31,8 +31,8 @@ const translations = {
     welcomeItems: [
       "Publicaciones de blog o artículos técnicos.",
       "Proyectos y contribuciones.",
-      "Temas de charlas y presentaciones",
-      "Tecnología detrás del sitio web."
+      "Gaming: Xbox, PlayStation, Switch, juegos de mesa, ajedrez, actualizaciones mensuales.",
+      "Reseñas de películas y series, Sobre mí y mi viaje de salud."
     ],
     inputPlaceholder: "Pregúntame cualquier cosa sobre este sitio web...",
     chatIconTooltip: "Chatea con el Asistente de IA de David",
@@ -46,8 +46,8 @@ const translations = {
     welcomeItems: [
       "Posts no blog ou artigos técnicos.",
       "Projetos e contribuições.",
-      "Tópicos de palestras e apresentações",
-      "Tecnologia por trás do site."
+      "Gaming: Xbox, PlayStation, Switch, jogos de tabuleiro, xadrez, atualizações mensais.",
+      "Resenhas de filmes e séries, Sobre mim e minha jornada de saúde."
     ],
     inputPlaceholder: "Pergunte-me qualquer coisa sobre este site...",
     chatIconTooltip: "Converse com o Assistente de IA do David",
@@ -82,8 +82,10 @@ const getPageContext = () => {
   let section = 'home';
   if (normalizedPath.startsWith('/blog')) section = 'blog';
   else if (normalizedPath.startsWith('/gaming')) section = 'gaming';
+  else if (normalizedPath.startsWith('/movies-tv')) section = 'movies-tv';
   else if (normalizedPath.startsWith('/disney')) section = 'disney';
   else if (normalizedPath.startsWith('/universal')) section = 'universal';
+  else if (normalizedPath.startsWith('/3dprinting')) section = '3dprinting';
   else if (normalizedPath.startsWith('/about')) section = 'about';
   else if (normalizedPath.startsWith('/projects')) section = 'projects';
   else if (normalizedPath.startsWith('/contact')) section = 'contact';

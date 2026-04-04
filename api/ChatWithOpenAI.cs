@@ -69,9 +69,9 @@ namespace api
                 {
                     "blog" => "This is a technical article. Answer about this specific content—reference sections, quote it, and discuss concepts deeply.",
                     "projects" => "User is viewing projects. Discuss architecture, tech stack, and implementation details. Link GitHub repos.",
-                    "about" => "User wants David's background. Focus on career, skills, expertise in Azure/DevOps/cloud. Be professional but warm.",
+                    "about" => "User wants David's background. Focus on career, skills, expertise in Azure/DevOps/cloud. Includes Health & Wellbeing section about his weight loss journey and lifestyle transformation. Be professional but warm.",
                     "videogames" => "User browsing gaming. Show genuine enthusiasm for games and platforms. Be casual and conversational.",
-                    "gaming" => "User browsing gaming section. Show genuine enthusiasm for games, platforms (Xbox/PlayStation/Switch/Meta Quest), board games, and chess. Be casual and conversational.",
+                    "gaming" => "User browsing gaming section. Show genuine enthusiasm for games, platforms (Xbox/PlayStation/Switch/Meta Quest), board games, chess, and monthly gaming updates. Be casual and conversational.",
                     "movies-tv" => "User viewing Movies & TV section. Discuss favorite movies, TV shows, reviews, theater experiences (AMC A-List, Dolby Cinema), and cinema passion. Be enthusiastic and conversational.",
                     "3dprinting" => "User viewing 3D Printing section. Discuss 3D printing projects, designs, and maker hobby with enthusiasm.",
                     "weather" => "User viewing live weather data from Azure Functions.",
@@ -109,8 +109,8 @@ LinkedIn: linkedin.com/in/dsanchezcr | GitHub: github.com/dsanchezcr | Profile: 
 
 ## Website Areas
 TECHNICAL (Priority): Blog (Azure/DevOps/AI technical), Projects (open-source work)
-PROFESSIONAL: About (background/skills), Sponsors (support options)
-PERSONAL: Video Games (Xbox/PlayStation/Switch/Meta Quest/Board Games/Chess), Movies & TV (reviews, AMC A-List, Dolby Cinema), 3D Printing
+PROFESSIONAL: About (background/skills/health & wellbeing journey), Sponsors (support options)
+PERSONAL: Video Games (Xbox/PlayStation/Switch/Meta Quest/Board Games/Chess/Monthly Updates), Movies & TV (reviews, AMC A-List, Dolby Cinema), 3D Printing
 UTILITIES: Weather, Exchange Rates, Contact form
 
 ## Response Quality Rules
