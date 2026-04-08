@@ -5,12 +5,12 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  // Treat .js files as JSX (Docusaurus convention)
-  esbuild: {
-    jsx: 'automatic',
-    loader: 'jsx',
-    include: /src[\\/].*\.[jt]sx?$/,
-    exclude: /node_modules/,
+  // Configure OXC to handle JSX in .js files (Docusaurus convention)
+  oxc: {
+    include: /\.[jt]sx?$/,
+    exclude: [],
+    jsx: { runtime: 'automatic' },
+    lang: 'jsx',
   },
   test: {
     environment: 'jsdom',
