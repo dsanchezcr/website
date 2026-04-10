@@ -8,8 +8,13 @@ var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
     .ConfigureServices(services =>
     {
-        services.AddApplicationInsightsTelemetryWorkerService();
-        services.ConfigureFunctionsApplicationInsights();
+        // Only enable Application Insights when a connection string is configured
+        // (avoids crash during local development without AI setup)
+        var aiConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
+        if (!string.IsNullOrEmpty(aiConnectionString))
+        {
+            services.AddApplicationInsightsTelemetryWorkerService();
+        }
         services.AddHttpClient();
         services.AddMemoryCache();
         
@@ -70,6 +75,14 @@ var host = new HostBuilder()
             var inMemoryLogger = sp.GetRequiredService<ILogger<InMemoryGamingCacheService>>();
             return new InMemoryGamingCacheService(memoryCache, inMemoryLogger);
         });
+    })
+    .ConfigureLogging(logging =>
+    {
+        // Replaces ConfigureFunctionsApplicationInsights() log filtering
+        // Prevents duplicate logs from Functions host and App Insights
+        logging.AddFilter("Microsoft", LogLevel.Warning);
+        logging.AddFilter("System", LogLevel.Warning);
+        logging.AddFilter("Function", LogLevel.Information);
     })
     .Build();
 
