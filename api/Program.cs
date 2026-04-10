@@ -11,11 +11,13 @@ var host = new HostBuilder()
     .ConfigureServices(services =>
     {
         // Only enable Application Insights when a connection string is configured
-        // (avoids missing function telemetry during local development without AI setup)
+        // (avoids crash during local development without AI setup)
+        // Note: Using WorkerService 3.1.0 directly (OpenTelemetry-based).
+        // The Functions-specific Worker.ApplicationInsights package (2.50.0) is
+        // incompatible with AI 3.x due to removed ITelemetryInitializer types.
         if (!string.IsNullOrEmpty(aiConnectionString))
         {
             services.AddApplicationInsightsTelemetryWorkerService();
-            services.ConfigureFunctionsApplicationInsights();
         }
         services.AddHttpClient();
         services.AddMemoryCache();
