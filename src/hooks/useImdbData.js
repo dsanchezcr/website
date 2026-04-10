@@ -66,6 +66,7 @@ export function useImdbData(items) {
     if (!items.length) return;
 
     let cancelled = false;
+    let retryTimer = null;
     const cachedResults = {};
     const toFetch = [];
 
@@ -125,7 +126,7 @@ export function useImdbData(items) {
         // Schedule auto-retry if there are failed items without cache
         if (failedIds.length > 0 && retryCount < MAX_RETRIES) {
           const delay = Math.min(3000 * Math.pow(2, retryCount), 24000);
-          setTimeout(() => {
+          retryTimer = setTimeout(() => {
             if (!cancelled) setRetryCount(prev => prev + 1);
           }, delay);
         }
@@ -133,7 +134,10 @@ export function useImdbData(items) {
     };
 
     fetchAll();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      if (retryTimer) clearTimeout(retryTimer);
+    };
   }, [titleIdsKey, retryCount]);
 
   return data;
