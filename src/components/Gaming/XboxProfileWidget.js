@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styles from './styles.module.css';
 import { config } from '../../config/environment';
 
@@ -6,14 +6,22 @@ const XboxProfileWidget = () => {
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
+  const abortRef = useRef(null);
 
-  const fetchProfile = useCallback(async () => {
+  const fetchProfile = useCallback(async (isAutoRetry = false) => {
+    // Abort any in-flight request before starting a new one
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setIsLoading(true);
     setError(null);
 
     try {
       const apiEndpoint = config.getApiEndpoint();
-      const response = await fetch(`${apiEndpoint}${config.routes.xboxProfile}`);
+      const response = await fetch(`${apiEndpoint}${config.routes.xboxProfile}`, { signal: controller.signal });
 
       if (!response.ok) {
         throw new Error(`Failed to load Xbox profile (${response.status})`);
@@ -21,17 +29,38 @@ const XboxProfileWidget = () => {
 
       const data = await response.json();
       setProfile(data);
+      setRetryCount(0);
     } catch (err) {
+      if (err.name === 'AbortError') return;
       console.error('Error fetching Xbox profile:', err);
       setError(err.message);
+      if (!isAutoRetry) setRetryCount(0);
     } finally {
-      setIsLoading(false);
+      if (!controller.signal.aborted) setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
+
+  // Abort any in-flight request when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (abortRef.current) abortRef.current.abort();
+    };
+  }, []);
+
+  // Auto-retry with exponential backoff on failure
+  useEffect(() => {
+    if (!error || retryCount >= MAX_RETRIES) return;
+    const delay = Math.min(2000 * Math.pow(2, retryCount), 16000);
+    const timer = setTimeout(() => {
+      setRetryCount(prev => prev + 1);
+      fetchProfile(true);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [error, retryCount, fetchProfile]);
 
   if (isLoading) {
     return (
@@ -49,9 +78,15 @@ const XboxProfileWidget = () => {
       <div className={styles.profileWidget}>
         <div className={styles.profileError}>
           <p>⚠️ Unable to load Xbox profile data.</p>
-          <button className="button button--primary button--sm" onClick={fetchProfile}>
-            Try Again
-          </button>
+          {retryCount < MAX_RETRIES ? (
+            <p style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-500)' }}>
+              Retrying automatically... ({retryCount + 1}/{MAX_RETRIES})
+            </p>
+          ) : (
+            <button className="button button--primary button--sm" onClick={() => { setRetryCount(0); fetchProfile(); }}>
+              Try Again
+            </button>
+          )}
         </div>
       </div>
     );

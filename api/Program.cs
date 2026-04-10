@@ -4,12 +4,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using api.Services;
 
+var aiConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
+
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
     .ConfigureServices(services =>
     {
-        services.AddApplicationInsightsTelemetryWorkerService();
-        services.ConfigureFunctionsApplicationInsights();
+        // Only enable Application Insights when a connection string is configured
+        // (avoids crash during local development without AI setup)
+        // Note: Using WorkerService 3.1.0 directly (OpenTelemetry-based).
+        // The Functions-specific Worker.ApplicationInsights package (2.50.0) is
+        // incompatible with AI 3.x due to removed ITelemetryInitializer types.
+        if (!string.IsNullOrEmpty(aiConnectionString))
+        {
+            services.AddApplicationInsightsTelemetryWorkerService();
+        }
         services.AddHttpClient();
         services.AddMemoryCache();
         
@@ -70,6 +79,18 @@ var host = new HostBuilder()
             var inMemoryLogger = sp.GetRequiredService<ILogger<InMemoryGamingCacheService>>();
             return new InMemoryGamingCacheService(memoryCache, inMemoryLogger);
         });
+    })
+    .ConfigureLogging(logging =>
+    {
+        // Only suppress verbose Microsoft/System logs when AI is active to prevent
+        // duplicate logs from the Functions host and App Insights sinks.
+        // When AI is not configured (local dev) leave defaults so diagnostics are visible.
+        if (!string.IsNullOrEmpty(aiConnectionString))
+        {
+            logging.AddFilter("Microsoft", LogLevel.Warning);
+            logging.AddFilter("System", LogLevel.Warning);
+            logging.AddFilter("Function", LogLevel.Information);
+        }
     })
     .Build();
 
