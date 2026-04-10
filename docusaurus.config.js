@@ -11,6 +11,7 @@ const config = {
   // Client modules for global initializations
   clientModules: [
     require.resolve('./src/clientModules/aosInit.js'),
+    require.resolve('./src/clientModules/jsonLd.js'),
   ],
 
   // Enables future flags for performance and compatibility

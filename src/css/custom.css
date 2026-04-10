@@ -635,3 +635,75 @@ article {
     animation: none;
   }
 }
+
+/* ===========================================
+   Mobile UX Improvements
+   =========================================== */
+
+/* Touch targets — minimum 44x44px per WCAG */
+@media (max-width: 996px) {
+  .navbar__link,
+  .dropdown__link {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* Blog post readability on mobile */
+@media (max-width: 768px) {
+  article {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  article h1 {
+    font-size: 1.75rem;
+    line-height: 1.25;
+  }
+
+  article h2 {
+    font-size: 1.4rem;
+  }
+
+  article h3 {
+    font-size: 1.2rem;
+  }
+
+  /* Constrain content width for readability */
+  .markdown {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Code blocks scroll horizontally */
+  .markdown pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Images don't overflow */
+  .markdown img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Small phone adjustments */
+@media (max-width: 480px) {
+  /* Tighter padding for content */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Footer readability */
+  .footer {
+    padding: 2rem 1rem;
+  }
+
+  .footer .footer__links {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
