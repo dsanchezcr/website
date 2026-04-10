@@ -4,16 +4,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using api.Services;
 
+var aiConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
+
 var host = new HostBuilder()
     .ConfigureFunctionsWorkerDefaults()
     .ConfigureServices(services =>
     {
         // Only enable Application Insights when a connection string is configured
-        // (avoids crash during local development without AI setup)
-        var aiConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
+        // (avoids missing function telemetry during local development without AI setup)
         if (!string.IsNullOrEmpty(aiConnectionString))
         {
             services.AddApplicationInsightsTelemetryWorkerService();
+            services.ConfigureFunctionsApplicationInsights();
         }
         services.AddHttpClient();
         services.AddMemoryCache();
@@ -78,11 +80,15 @@ var host = new HostBuilder()
     })
     .ConfigureLogging(logging =>
     {
-        // Replaces ConfigureFunctionsApplicationInsights() log filtering
-        // Prevents duplicate logs from Functions host and App Insights
-        logging.AddFilter("Microsoft", LogLevel.Warning);
-        logging.AddFilter("System", LogLevel.Warning);
-        logging.AddFilter("Function", LogLevel.Information);
+        // Only suppress verbose Microsoft/System logs when AI is active to prevent
+        // duplicate logs from the Functions host and App Insights sinks.
+        // When AI is not configured (local dev) leave defaults so diagnostics are visible.
+        if (!string.IsNullOrEmpty(aiConnectionString))
+        {
+            logging.AddFilter("Microsoft", LogLevel.Warning);
+            logging.AddFilter("System", LogLevel.Warning);
+            logging.AddFilter("Function", LogLevel.Information);
+        }
     })
     .Build();
 

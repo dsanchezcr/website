@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styles from './styles.module.css';
 import { config } from '../../config/environment';
 
@@ -8,14 +8,20 @@ const XboxProfileWidget = () => {
   const [error, setError] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
   const MAX_RETRIES = 3;
+  const abortRef = useRef(null);
 
   const fetchProfile = useCallback(async (isAutoRetry = false) => {
+    // Abort any in-flight request before starting a new one
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     setIsLoading(true);
     setError(null);
 
     try {
       const apiEndpoint = config.getApiEndpoint();
-      const response = await fetch(`${apiEndpoint}${config.routes.xboxProfile}`);
+      const response = await fetch(`${apiEndpoint}${config.routes.xboxProfile}`, { signal: controller.signal });
 
       if (!response.ok) {
         throw new Error(`Failed to load Xbox profile (${response.status})`);
@@ -25,17 +31,25 @@ const XboxProfileWidget = () => {
       setProfile(data);
       setRetryCount(0);
     } catch (err) {
+      if (err.name === 'AbortError') return;
       console.error('Error fetching Xbox profile:', err);
       setError(err.message);
       if (!isAutoRetry) setRetryCount(0);
     } finally {
-      setIsLoading(false);
+      if (!controller.signal.aborted) setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
+
+  // Abort any in-flight request when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (abortRef.current) abortRef.current.abort();
+    };
+  }, []);
 
   // Auto-retry with exponential backoff on failure
   useEffect(() => {
