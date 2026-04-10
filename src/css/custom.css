@@ -1,36 +1,52 @@
 /* Root variables for light theme */
 :root {
-  /* Primary color palette - optimized for readability */
-  --ifm-color-primary: #2c5282;
-  --ifm-color-primary-dark: #274875;
-  --ifm-color-primary-darker: #213d63;
-  --ifm-color-primary-darkest: #1a3251;
-  --ifm-color-primary-light: #326198;
-  --ifm-color-primary-lighter: #3b72b5;
-  --ifm-color-primary-lightest: #4488d4;
-  
+  /* Brand color palette — Tropical Tech Teal */
+  --ifm-color-primary: #0d9488;
+  --ifm-color-primary-dark: #0f766e;
+  --ifm-color-primary-darker: #115e59;
+  --ifm-color-primary-darkest: #134e4a;
+  --ifm-color-primary-light: #14b8a6;
+  --ifm-color-primary-lighter: #2dd4bf;
+  --ifm-color-primary-lightest: #5eead4;
+
+  /* Accent colors */
+  --brand-accent: #f59e0b;
+  --brand-accent-dark: #d97706;
+  --brand-accent-light: #fbbf24;
+
   --content-background: #ffffff;
-  --text-color: #000000;
-  --border-color: #cccccc;
-  
-  /* Docusaurus v4 compatibility */
+  --text-color: #1a1a2e;
+  --border-color: #e2e8f0;
+
+  /* Typography */
+  --ifm-heading-font-family: 'Plus Jakarta Sans', var(--ifm-font-family-base);
+  --ifm-heading-font-weight: 700;
+  --ifm-h1-font-size: 2.5rem;
+  --ifm-h2-font-size: 2rem;
+  --ifm-h3-font-size: 1.5rem;
+  --ifm-h4-font-size: 1.25rem;
+  --ifm-h5-font-size: 1.1rem;
   --ifm-code-font-size: 95%;
-  --ifm-heading-font-weight: 600;
 }
 
-/* Dark theme overrides - softer colors */
+/* Dark theme overrides — richer teal personality */
 [data-theme='dark'] {
-  --ifm-color-primary: #4a9ede;
-  --ifm-color-primary-dark: #3588c9;
-  --ifm-color-primary-darker: #2d74b0;
-  --ifm-color-primary-darkest: #246291;
-  --ifm-color-primary-light: #6aafe3;
-  --ifm-color-primary-lighter: #89bfe8;
-  --ifm-color-primary-lightest: #a8cfed;
-  
-  --content-background: #111827;
+  --ifm-color-primary: #2dd4bf;
+  --ifm-color-primary-dark: #14b8a6;
+  --ifm-color-primary-darker: #0d9488;
+  --ifm-color-primary-darkest: #0f766e;
+  --ifm-color-primary-light: #5eead4;
+  --ifm-color-primary-lighter: #99f6e4;
+  --ifm-color-primary-lightest: #ccfbf1;
+
+  /* Accent colors — dark mode */
+  --brand-accent: #fbbf24;
+  --brand-accent-dark: #f59e0b;
+  --brand-accent-light: #fde68a;
+
+  --content-background: #0a1628;
   --text-color: #e5e7eb;
-  --border-color: #1f2937;
+  --border-color: #1e3a5f;
   --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.1);
 }
 
@@ -149,11 +165,18 @@ button {
   background-color: var(--ifm-color-primary);
   color: #fff;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 button:hover {
   background-color: var(--ifm-color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 /* Loading spinner */
@@ -397,7 +420,7 @@ button[class*='toggleButton'] svg {
   padding: 2rem 1rem 1rem;
   margin-bottom: 1.5rem;
   border-bottom: 3px solid var(--ifm-color-primary);
-  background: linear-gradient(180deg, rgba(44, 82, 130, 0.05) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(13, 148, 136, 0.05) 0%, transparent 100%);
   border-radius: 1rem 1rem 0 0;
 }
 
@@ -414,7 +437,7 @@ button[class*='toggleButton'] svg {
 }
 
 [data-theme='dark'] .about-hero {
-  background: linear-gradient(180deg, rgba(74, 158, 222, 0.08) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(45, 212, 191, 0.08) 0%, transparent 100%);
 }
 
 /* Conference image highlight */
@@ -511,5 +534,42 @@ button[class*='toggleButton'] svg {
 
   .about-hero h1 {
     font-size: 2rem;
+  }
+}
+
+/* ===========================================
+   Content Link Underline Animation
+   =========================================== */
+
+.markdown a,
+article a {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.markdown a:hover,
+article a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ===========================================
+   Reduced Motion — Global
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+
+  button:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .markdown a,
+  article a {
+    transition: none;
   }
 }

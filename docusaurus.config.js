@@ -36,6 +36,21 @@ const config = {
         href: 'https://fonts.googleapis.com',
       },
     },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preconnect',
+        href: 'https://fonts.gstatic.com',
+        crossorigin: 'anonymous',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap',
+      },
+    },
   ],
 
   markdown: {
@@ -211,7 +226,7 @@ const config = {
       announcementBar: {
         id: 'announcement',
         content: '🚀 <a href="/blog">Check out my latest blog posts!</a>',
-        backgroundColor: '#2c5282',
+        backgroundColor: '#115e59',
         textColor: '#ffffff',
         isCloseable: true,
       },

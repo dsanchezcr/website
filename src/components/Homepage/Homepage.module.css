@@ -1,0 +1,159 @@
+/* ===========================================
+   Homepage Shared Styles
+   Used by en, es, and pt index pages
+   =========================================== */
+
+.heroBanner {
+  padding: 3rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--ifm-color-primary-darkest) 0%, var(--ifm-color-primary-dark) 40%, var(--ifm-color-primary) 100%);
+  color: #ffffff;
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+  color: #ffffff;
+}
+
+.heroSubtitle {
+  font-size: 1.3rem;
+  font-weight: 500;
+  opacity: 0.95;
+  margin-bottom: 0.25rem;
+  color: #ffffff;
+}
+
+.heroTagline {
+  font-size: 1.15rem;
+  font-weight: 400;
+  opacity: 0.85;
+  color: #ffffff;
+}
+
+.weatherWidgetContainer {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  max-width: 300px;
+}
+
+.visitorWidgetContainer {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 10;
+  max-width: 220px;
+}
+
+.homePageContainer {
+  position: relative;
+}
+
+.features {
+  display: flex;
+  align-items: center;
+  padding: 3rem 0;
+  width: 100%;
+}
+
+.featureSvg {
+  height: 270px;
+  width: 270px;
+}
+
+.featureSvgHomeFeatures {
+  height: 170px;
+  width: 170px;
+  margin: 0 auto 1rem auto;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+/* Feature card hover effects */
+.featureCard {
+  display: block;
+  padding: 1.5rem 1rem;
+  border-radius: 0.75rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.featureCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.featureCard:hover .featureSvgHomeFeatures {
+  transform: scale(1.05);
+}
+
+/* Responsive */
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .visitorWidgetContainer {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    max-width: 180px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .weatherWidgetContainer {
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1.1rem;
+  }
+
+  .visitorWidgetContainer {
+    position: static;
+    margin: 0 auto 0.5rem auto;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .weatherWidgetContainer {
+    position: static;
+    max-width: 100%;
+    margin-bottom: 1rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .featureCard,
+  .featureSvgHomeFeatures {
+    transition: none;
+  }
+
+  .featureCard:hover {
+    transform: none;
+  }
+
+  .featureCard:hover .featureSvgHomeFeatures {
+    transform: none;
+  }
+}
