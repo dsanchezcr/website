@@ -43,6 +43,10 @@
     "message": "Patrocinadores",
     "description": "Navbar item with label Sponsors"
   },
+  "item.label.Interests": {
+    "message": "Interesses",
+    "description": "Navbar item with label Interests"
+  },
   "item.label.Facebook": {
     "message": "Facebook",
     "description": "Navbar item with label Facebook"

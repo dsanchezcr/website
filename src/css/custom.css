@@ -223,10 +223,10 @@ button:active {
 }
 
 .footer {
-  --ifm-footer-background-color: #111827;
+  --ifm-footer-background-color: #0a1628;
   --ifm-footer-color: #e5e7eb;
   --ifm-footer-link-color: #d1d5db;
-  --ifm-footer-title-color: #f3f4f6;
+  --ifm-footer-title-color: #5eead4;
 }
 
 .footer .footer__link:hover {
@@ -236,11 +236,13 @@ button:active {
 }
 
 .footer__copyright {
-  color: #d1d5db;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  line-height: 1.6;
 }
 
 .footer__copyright a {
-  color: #e5e7eb;
+  color: #5eead4;
 }
 
 .footer__copyright a:hover {
@@ -572,4 +574,37 @@ article a:hover {
   article a {
     transition: none;
   }
+}
+
+/* ===========================================
+   CTA / Accent Button Styles
+   =========================================== */
+
+.button--accent,
+button.button--accent {
+  background-color: var(--brand-accent);
+  color: #1a1a2e;
+  font-weight: 600;
+}
+
+.button--accent:hover,
+button.button--accent:hover {
+  background-color: var(--brand-accent-dark);
+  color: #1a1a2e;
+}
+
+[data-theme='dark'] .button--accent,
+[data-theme='dark'] button.button--accent {
+  color: #1a1a2e;
+}
+
+/* Section headers — use primary for visual hierarchy */
+.markdown h2,
+article h2 {
+  color: var(--ifm-color-primary-dark);
+}
+
+[data-theme='dark'] .markdown h2,
+[data-theme='dark'] article h2 {
+  color: var(--ifm-color-primary-light);
 }

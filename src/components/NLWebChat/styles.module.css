@@ -85,14 +85,38 @@
 /* Responsive adjustments */
 @media (max-width: 480px) {
   .chatWidget {
-    width: calc(100vw - 40px);
-    right: -10px;
-    height: 450px;
+    position: fixed;
+    width: calc(100vw - 20px);
+    height: calc(100vh - 100px);
+    max-height: 500px;
+    bottom: 70px;
+    right: 10px;
+    left: 10px;
+    border-radius: 12px;
   }
-  
+
   .chatBubbleContainer {
-    bottom: 15px;
-    right: 15px;
+    bottom: 12px;
+    right: 12px;
+  }
+
+  .chatBubbleIcon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) and (min-width: 481px) {
+  .chatWidget {
+    width: calc(100vw - 60px);
+    right: 0;
+    max-width: 380px;
+  }
+
+  .chatBubbleContainer {
+    bottom: 16px;
+    right: 16px;
   }
 }
 
