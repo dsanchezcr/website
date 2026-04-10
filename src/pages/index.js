@@ -43,7 +43,7 @@ export default function Home() {
       <div className={styles.homePageContainer}>
         <HomepageHeader
           greeting="Hello, I am"
-          subtitle="Director Go-To-Market Developer Audience at Microsoft."
+          subtitle="Director of Developer Audience at Microsoft."
           tagline="Helping people build innovative solutions with technology. 🚀"
         />
         <main>
