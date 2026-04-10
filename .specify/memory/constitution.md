@@ -48,7 +48,18 @@
 - **Tests must be deterministic**: No flaky tests, no timing dependencies
 - **Accessibility**: Alt text on images, semantic HTML, keyboard navigation
 - **Performance**: Lighthouse scores should not regress significantly
-- **Dependencies**: Keep up to date; run `npm audit` and `dotnet outdated` regularly
+
+## Dependency Management
+
+> **Principle: Always use the latest stable versions. Adapt the code to the packages, never pin old packages to avoid code changes.**
+
+- **npm**: All packages in `dependencies` and `devDependencies` must use the latest stable versions. Run `npx npm-check-updates -u` and `npm audit` before merging dependency PRs.
+- **NuGet**: All packages in `api.csproj` and `api.tests.csproj` must use the latest stable versions. Run `dotnet list package --outdated` before merging.
+- **When upgrading causes breaking changes**: Adapt the codebase (update API calls, fix type changes, adjust configuration) rather than downgrading or pinning old versions.
+- **Incompatible transitive dependencies**: If two packages conflict (e.g., AI SDK major version mismatch), remove the less critical package and replicate its functionality in code. Never keep incompatible packages together.
+- **Security vulnerabilities**: Fix immediately by updating the vulnerable package or its override. Use `npm audit` and `dotnet list package --vulnerable`.
+- **Overrides/resolutions**: Only use npm `overrides` to fix transitive dependency vulnerabilities. Use `^x.y.z` syntax (not `>=`) for deterministic installs.
+- **Pre-release packages**: Only acceptable when no stable version exists (e.g., `Google.Analytics.Data.V1Beta`).
 
 ## Content Standards
 

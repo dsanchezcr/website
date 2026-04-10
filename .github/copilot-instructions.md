@@ -239,6 +239,22 @@ APPLICATIONINSIGHTS_CONNECTION_STRING
 4. **Email verification tokens expire**: 24-hour TTL in MemoryCache. Expired tokens will fail verification.
 5. **i18n content sync**: When adding blog posts or pages, remember to check if translations exist in `i18n/es/` and `i18n/pt/`.
 6. **SWA API runtime**: Managed functions use .NET 9 isolated worker. Ensure `api.csproj` targets `net9.0`.
+7. **ApplicationInsights compatibility**: `Microsoft.Azure.Functions.Worker.ApplicationInsights` (2.x) is incompatible with `Microsoft.ApplicationInsights.WorkerService` 3.x due to removed `ITelemetryInitializer` types. Use WorkerService 3.x directly with `AddApplicationInsightsTelemetryWorkerService()` only. When a compatible Functions AI package is released, re-add it.
+
+## Dependency Management Policy
+
+> **Always use the latest stable package versions. Adapt code to the packages, never pin old versions to avoid code changes.**
+
+### npm
+- Run `npx npm-check-updates -u` to update `package.json` to latest stable versions
+- Run `npm audit` and fix all vulnerabilities before merging
+- Use `^x.y.z` syntax (not `>=`) in `overrides` for deterministic installs
+
+### NuGet
+- Run `dotnet list package --outdated` and update to latest stable versions
+- When a package upgrade introduces breaking changes (removed types, changed APIs), adapt the codebase — do not downgrade
+- If two packages have incompatible transitive dependencies, remove the less critical one and replicate its functionality in code
+- Pre-release packages are only acceptable when no stable version exists
 
 ## Repository Documentation
 
