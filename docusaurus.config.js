@@ -8,6 +8,11 @@ const config = {
   onBrokenAnchors: 'throw',
   favicon: 'img/favicon.ico',
 
+  // Client modules for global initializations
+  clientModules: [
+    require.resolve('./src/clientModules/aosInit.js'),
+  ],
+
   // Enables future flags for performance and compatibility
   future: {
     v4: true,

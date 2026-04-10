@@ -608,3 +608,30 @@ article h2 {
 [data-theme='dark'] article h2 {
   color: var(--ifm-color-primary-light);
 }
+
+/* ===========================================
+   Page Transition — Fade In
+   =========================================== */
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main,
+article {
+  animation: pageFadeIn 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main,
+  article {
+    animation: none;
+  }
+}

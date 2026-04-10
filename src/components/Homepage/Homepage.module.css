@@ -32,8 +32,31 @@
 .heroTagline {
   font-size: 1.15rem;
   font-weight: 400;
-  opacity: 0.85;
+  opacity: 0;
   color: #ffffff;
+  transition: opacity 0.5s ease;
+}
+
+.heroTaglineVisible {
+  opacity: 0.85;
+}
+
+/* Typewriter cursor */
+.typewriterCursor {
+  display: inline;
+  font-weight: 300;
+  animation: blink 0.8s step-end infinite;
+  margin-left: 1px;
+}
+
+.typewriterCursorDone {
+  animation: blink 0.8s step-end infinite 2s;
+  animation-fill-mode: forwards;
+  opacity: 1;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
 }
 
 .weatherWidgetContainer {
@@ -155,5 +178,14 @@
 
   .featureCard:hover .featureSvgHomeFeatures {
     transform: none;
+  }
+
+  .heroTagline {
+    opacity: 0.85;
+    transition: none;
+  }
+
+  .typewriterCursor {
+    display: none;
   }
 }
