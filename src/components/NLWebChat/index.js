@@ -21,7 +21,16 @@ const translations = {
     ],
     inputPlaceholder: "Ask me anything about this website...",
     chatIconTooltip: "Chat with David's AI Assistant",
-    fallbackResponse: (query) => `Thanks for your question about "${query}". The NLWeb backend is currently being set up with Microsoft Foundry integration. Meanwhile, you can explore David's blog for insights on Azure technologies, developer productivity, and his latest projects. Check out the blog, projects, and about sections to learn more!`
+    fallbackResponse: (query) => `Thanks for your question about "${query}". The NLWeb backend is currently being set up with Microsoft Foundry integration. Meanwhile, you can explore David's blog for insights on Azure technologies, developer productivity, and his latest projects. Check out the blog, projects, and about sections to learn more!`,
+    greetings: {
+      home: "👋 Hi! Ask me anything about this site.",
+      blog: "📝 Have questions about this post?",
+      gaming: "🎮 Ask about my gaming collection!",
+      'movies-tv': "🎬 Curious about my reviews?",
+      projects: "🚀 Want to know more about a project?",
+      about: "👋 Want to know more about David?",
+      default: "💬 Need help? Ask me anything!",
+    },
   },
   es: {
     chatTitle: "Pregúntame sobre mi sitio web",
@@ -36,7 +45,16 @@ const translations = {
     ],
     inputPlaceholder: "Pregúntame cualquier cosa sobre este sitio web...",
     chatIconTooltip: "Chatea con el Asistente de IA de David",
-    fallbackResponse: (query) => `Gracias por tu pregunta sobre "${query}". El backend de NLWeb se está configurando actualmente con la integración de Microsoft Foundry. Mientras tanto, puedes explorar el blog de David para obtener información sobre tecnologías de Azure, productividad del desarrollador y sus últimos proyectos. ¡Consulta las secciones de blog, proyectos y acerca de para obtener más información!`
+    fallbackResponse: (query) => `Gracias por tu pregunta sobre "${query}". El backend de NLWeb se está configurando actualmente con la integración de Microsoft Foundry. Mientras tanto, puedes explorar el blog de David para obtener información sobre tecnologías de Azure, productividad del desarrollador y sus últimos proyectos. ¡Consulta las secciones de blog, proyectos y acerca de para obtener más información!`,
+    greetings: {
+      home: "👋 ¡Hola! Pregúntame lo que quieras.",
+      blog: "📝 ¿Tienes preguntas sobre este artículo?",
+      gaming: "🎮 ¡Pregunta sobre mi colección de juegos!",
+      'movies-tv': "🎬 ¿Curiosidad sobre mis reseñas?",
+      projects: "🚀 ¿Quieres saber más de un proyecto?",
+      about: "👋 ¿Quieres saber más sobre David?",
+      default: "💬 ¿Necesitas ayuda? ¡Pregúntame!",
+    },
   },
   pt: {
     chatTitle: "Pergunte-me sobre meu site",
@@ -51,7 +69,16 @@ const translations = {
     ],
     inputPlaceholder: "Pergunte-me qualquer coisa sobre este site...",
     chatIconTooltip: "Converse com o Assistente de IA do David",
-    fallbackResponse: (query) => `Obrigado pela sua pergunta sobre "${query}". O backend do NLWeb está sendo configurado atualmente com integração do Microsoft Foundry. Enquanto isso, você pode explorar o blog do David para insights sobre tecnologias Azure, produtividade do desenvolvedor e seus projetos mais recentes. Confira as seções blog, projetos e sobre para saber mais!`
+    fallbackResponse: (query) => `Obrigado pela sua pergunta sobre "${query}". O backend do NLWeb está sendo configurado atualmente com integração do Microsoft Foundry. Enquanto isso, você pode explorar o blog do David para insights sobre tecnologias Azure, produtividade do desenvolvedor e seus projetos mais recentes. Confira as seções blog, projetos e sobre para saber mais!`,
+    greetings: {
+      home: "👋 Olá! Pergunte-me qualquer coisa.",
+      blog: "📝 Tem perguntas sobre este artigo?",
+      gaming: "🎮 Pergunte sobre minha coleção de jogos!",
+      'movies-tv': "🎬 Curioso sobre minhas resenhas?",
+      projects: "🚀 Quer saber mais sobre um projeto?",
+      about: "👋 Quer saber mais sobre o David?",
+      default: "💬 Precisa de ajuda? Pergunte-me!",
+    },
   },
 };
 
@@ -102,6 +129,7 @@ const NLWebChat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [sessionId, setSessionId] = useState(null); // Store session ID for conversation continuity
+  const [showGreeting, setShowGreeting] = useState(false);
   const messagesEndRef = useRef(null);
   
   // Use shared locale hook for consistency
@@ -110,6 +138,34 @@ const NLWebChat = () => {
   
   // Feature flag check - moved after hooks to comply with Rules of Hooks
   const isFeatureEnabled = config.features.aiChat;
+
+  // Contextual greeting tooltip — show after 5 seconds, hide after 8 more
+  useEffect(() => {
+    if (!isFeatureEnabled) return;
+    const showTimer = setTimeout(() => {
+      if (!isOpen) setShowGreeting(true);
+    }, 5000);
+    const hideTimer = setTimeout(() => {
+      setShowGreeting(false);
+    }, 13000);
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    };
+  }, [isFeatureEnabled]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Get contextual greeting based on current page section
+  const getGreetingText = () => {
+    if (typeof window === 'undefined') return t.greetings?.default || '';
+    const path = window.location.pathname;
+    const normalizedPath = path.replace(/^\/(es|pt)(?=\/|$)/, '') || '/';
+    const greetings = t.greetings || {};
+    if (normalizedPath === '/' || normalizedPath === '') return greetings.home || greetings.default;
+    for (const [key, text] of Object.entries(greetings)) {
+      if (key !== 'default' && key !== 'home' && normalizedPath.startsWith(`/${key}`)) return text;
+    }
+    return greetings.default || '';
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -196,9 +252,28 @@ const NLWebChat = () => {
     <>
       {/* Floating Chat Bubble */}
       <div className={styles.chatBubbleContainer}>
+        {/* Contextual greeting tooltip */}
+        {showGreeting && !isOpen && (
+          <div
+            className={styles.greetingTooltip}
+            onClick={() => { setShowGreeting(false); setIsOpen(true); }}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => { if (e.key === 'Enter') { setShowGreeting(false); setIsOpen(true); } }}
+          >
+            <span>{getGreetingText()}</span>
+            <button
+              className={styles.greetingClose}
+              onClick={(e) => { e.stopPropagation(); setShowGreeting(false); }}
+              aria-label="Dismiss"
+            >
+              ✕
+            </button>
+          </div>
+        )}
         <button
           className={clsx(styles.chatBubbleIcon, { [styles.chatOpen]: isOpen })}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => { setIsOpen(!isOpen); setShowGreeting(false); }}
           title={t.chatIconTooltip}
           aria-label={t.chatIconTooltip}
         >

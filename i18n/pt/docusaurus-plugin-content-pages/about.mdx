@@ -8,6 +8,8 @@ keywords: [David Sanchez, engenheiro de software, Azure, GitHub, Microsoft, dese
 
 <div className="about-hero">
 
+import ImageCompareSlider from '@site/src/components/ImageCompareSlider';
+
 # Oi, Amig@! 👋
 
 Eu sou David Sanchez, Engenheiro de Sistemas, Desenvolvedor, Blogueiro, Palestrante e apaixonado de coração por Tecnologia e Inovação.
@@ -63,16 +65,14 @@ _AI Innovation Summit 2025 - San José, Costa Rica_
 
 Compartilho uma jornada que foi incrivelmente transformadora para mim. Em 2024, fui diagnosticado com colesterol alto e um caso grave de fígado gorduroso, um alerta após anos de hábitos alimentares pouco saudáveis e um estilo de vida sedentário. Diante dessa notícia preocupante, soube que era hora de fazer uma mudança real.
 
-<div className="health-images">
-  <figure>
-    <img src={require('@site/static/img/about/health-before.jpg').default} alt="Antes de iniciar minha jornada de saúde" loading="lazy" decoding="async" />
-    <figcaption>Antes</figcaption>
-  </figure>
-  <figure>
-    <img src={require('@site/static/img/about/health-now.jpg').default} alt="Depois de transformar minha saúde" loading="lazy" decoding="async" />
-    <figcaption>Agora</figcaption>
-  </figure>
-</div>
+<ImageCompareSlider
+  beforeSrc={require('@site/static/img/about/health-before.jpg').default}
+  afterSrc={require('@site/static/img/about/health-now.jpg').default}
+  beforeAlt="Antes de iniciar minha jornada de saúde"
+  afterAlt="Depois de transformar minha saúde"
+  beforeLabel="Antes"
+  afterLabel="Agora"
+/>
 
 Encontrei o apoio e os recursos necessários para transformar minha vida. Através de uma abordagem mais consciente da nutrição, exercícios regulares, uma mudança completa de hábitos e orientação médica, consegui alcançar algo que um dia pensei ser impossível.
 

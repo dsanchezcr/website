@@ -8,6 +8,8 @@ keywords: [David Sanchez, software engineer, Azure, GitHub, Microsoft, developer
 
 <div className="about-hero">
 
+import ImageCompareSlider from '@site/src/components/ImageCompareSlider';
+
 # Hello Friend! 👋
 
 I am David Sanchez, a Computer Systems Engineer, Developer, Blogger, Speaker, and Passionate at heart about Technology & Innovation.
@@ -63,16 +65,14 @@ _AI Innovation Summit 2025 - San Jose, Costa Rica_
 
 Sharing a journey that has been incredibly transformative for me. In 2024, I was diagnosed with high cholesterol and a severe case of fatty liver, a wake-up call after years of unhealthy eating habits and a sedentary lifestyle. Faced with this daunting news, I knew it was time for a real change.
 
-<div className="health-images">
-  <figure>
-    <img src={require('@site/static/img/about/health-before.jpg').default} alt="Before starting my health journey" loading="lazy" decoding="async" />
-    <figcaption>Before</figcaption>
-  </figure>
-  <figure>
-    <img src={require('@site/static/img/about/health-now.jpg').default} alt="After transforming my health" loading="lazy" decoding="async" />
-    <figcaption>Now</figcaption>
-  </figure>
-</div>
+<ImageCompareSlider
+  beforeSrc={require('@site/static/img/about/health-before.jpg').default}
+  afterSrc={require('@site/static/img/about/health-now.jpg').default}
+  beforeAlt="Before starting my health journey"
+  afterAlt="After transforming my health"
+  beforeLabel="Before"
+  afterLabel="Now"
+/>
 
 I found the support and resources I needed to turn my life around. Through a more conscious approach to nutrition, regular exercise, a complete change of habits, and medical guidance, I was able to achieve something I once thought was impossible.
 

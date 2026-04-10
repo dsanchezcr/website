@@ -8,6 +8,8 @@ keywords: [David Sánchez, ingeniero de software, Azure, GitHub, Microsoft, desa
 
 <div className="about-hero">
 
+import ImageCompareSlider from '@site/src/components/ImageCompareSlider';
+
 # ¡Hola Amig@! 👋
 
 Soy David Sánchez, Ingeniero de Sistemas, Desarrollador, Bloguero, Expositor y apasionado de corazón por la Tecnología e Innovación.
@@ -63,16 +65,14 @@ _AI Innovation Summit 2025 - San José, Costa Rica_
 
 Comparto un camino que ha sido increíblemente transformador para mí. En 2024, me diagnosticaron colesterol alto y un caso severo de hígado graso, una llamada de atención después de años de malos hábitos alimenticios y un estilo de vida sedentario. Ante esta noticia alarmante, supe que era momento de hacer un cambio real.
 
-<div className="health-images">
-  <figure>
-    <img src={require('@site/static/img/about/health-before.jpg').default} alt="Antes de iniciar mi camino hacia la salud" loading="lazy" decoding="async" />
-    <figcaption>Antes</figcaption>
-  </figure>
-  <figure>
-    <img src={require('@site/static/img/about/health-now.jpg').default} alt="Después de transformar mi salud" loading="lazy" decoding="async" />
-    <figcaption>Ahora</figcaption>
-  </figure>
-</div>
+<ImageCompareSlider
+  beforeSrc={require('@site/static/img/about/health-before.jpg').default}
+  afterSrc={require('@site/static/img/about/health-now.jpg').default}
+  beforeAlt="Antes de iniciar mi camino hacia la salud"
+  afterAlt="Después de transformar mi salud"
+  beforeLabel="Antes"
+  afterLabel="Ahora"
+/>
 
 Encontré el apoyo y los recursos que necesitaba para darle un giro a mi vida. A través de un enfoque más consciente de la nutrición, ejercicio regular, un cambio completo de hábitos y orientación médica, logré algo que alguna vez pensé que era imposible.
 
