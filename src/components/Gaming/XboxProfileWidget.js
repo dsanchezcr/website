@@ -6,8 +6,10 @@ const XboxProfileWidget = () => {
   const [profile, setProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
 
-  const fetchProfile = useCallback(async () => {
+  const fetchProfile = useCallback(async (isAutoRetry = false) => {
     setIsLoading(true);
     setError(null);
 
@@ -21,9 +23,11 @@ const XboxProfileWidget = () => {
 
       const data = await response.json();
       setProfile(data);
+      setRetryCount(0);
     } catch (err) {
       console.error('Error fetching Xbox profile:', err);
       setError(err.message);
+      if (!isAutoRetry) setRetryCount(0);
     } finally {
       setIsLoading(false);
     }
@@ -32,6 +36,17 @@ const XboxProfileWidget = () => {
   useEffect(() => {
     fetchProfile();
   }, [fetchProfile]);
+
+  // Auto-retry with exponential backoff on failure
+  useEffect(() => {
+    if (!error || retryCount >= MAX_RETRIES) return;
+    const delay = Math.min(2000 * Math.pow(2, retryCount), 16000);
+    const timer = setTimeout(() => {
+      setRetryCount(prev => prev + 1);
+      fetchProfile(true);
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [error, retryCount, fetchProfile]);
 
   if (isLoading) {
     return (
@@ -49,9 +64,15 @@ const XboxProfileWidget = () => {
       <div className={styles.profileWidget}>
         <div className={styles.profileError}>
           <p>⚠️ Unable to load Xbox profile data.</p>
-          <button className="button button--primary button--sm" onClick={fetchProfile}>
-            Try Again
-          </button>
+          {retryCount < MAX_RETRIES ? (
+            <p style={{ fontSize: '0.85rem', color: 'var(--ifm-color-emphasis-500)' }}>
+              Retrying automatically... ({retryCount + 1}/{MAX_RETRIES})
+            </p>
+          ) : (
+            <button className="button button--primary button--sm" onClick={() => { setRetryCount(0); fetchProfile(); }}>
+              Try Again
+            </button>
+          )}
         </div>
       </div>
     );

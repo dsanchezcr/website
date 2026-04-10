@@ -48,6 +48,23 @@ const config = {
   projectName: 'website',
 
   plugins: [
+    // Suppress harmless "Critical dependency" warning from vscode-languageserver-types
+    // (transitive dep: theme-mermaid → mermaid → langium → vscode-languageserver-types)
+    function ignoreVscodeLanguageServerWarning() {
+      return {
+        name: 'ignore-vscode-languageserver-warning',
+        configureWebpack() {
+          return {
+            ignoreWarnings: [
+              {
+                module: /vscode-languageserver-types/,
+                message: /Critical dependency/,
+              },
+            ],
+          };
+        },
+      };
+    },
     [
       '@docusaurus/plugin-google-gtag',
       {

@@ -59,6 +59,8 @@ export function useImdbData(items) {
       error: null,
     }))
   );
+  const [retryCount, setRetryCount] = useState(0);
+  const MAX_RETRIES = 3;
 
   useEffect(() => {
     if (!items.length) return;
@@ -92,6 +94,7 @@ export function useImdbData(items) {
     // Fetch in batches of 5 (API limit)
     const fetchAll = async () => {
       const fetched = {};
+      const failedIds = [];
       for (let i = 0; i < toFetch.length; i += 5) {
         const batch = toFetch.slice(i, i + 5);
         try {
@@ -104,6 +107,7 @@ export function useImdbData(items) {
           // Batch failed — use stale cached data as fallback
           batch.forEach(id => {
             if (cachedResults[id]) fetched[id] = cachedResults[id];
+            else failedIds.push(id);
           });
         }
       }
@@ -117,12 +121,20 @@ export function useImdbData(items) {
             ? 'Failed to load title data'
             : null,
         })));
+
+        // Schedule auto-retry if there are failed items without cache
+        if (failedIds.length > 0 && retryCount < MAX_RETRIES) {
+          const delay = Math.min(3000 * Math.pow(2, retryCount), 24000);
+          setTimeout(() => {
+            if (!cancelled) setRetryCount(prev => prev + 1);
+          }, delay);
+        }
       }
     };
 
     fetchAll();
     return () => { cancelled = true; };
-  }, [titleIdsKey]);
+  }, [titleIdsKey, retryCount]);
 
   return data;
 }
