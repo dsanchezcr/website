@@ -63,6 +63,10 @@ export function useImdbData(items) {
   const MAX_RETRIES = 3;
 
   useEffect(() => {
+    setRetryCount(0);
+  }, [titleIdsKey]);
+
+  useEffect(() => {
     if (!items.length) return;
 
     let cancelled = false;
