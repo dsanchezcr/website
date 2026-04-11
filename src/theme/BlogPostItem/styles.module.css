@@ -1,0 +1,41 @@
+.blogPostWithImage {
+  margin-bottom: 0.5rem;
+}
+
+.thumbnailLink {
+  display: block;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.thumbnail {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.thumbnail:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .thumbnail {
+    height: 180px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .thumbnail {
+    transition: none;
+  }
+
+  .thumbnail:hover {
+    transform: none;
+  }
+}

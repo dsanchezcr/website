@@ -8,6 +8,12 @@ const config = {
   onBrokenAnchors: 'throw',
   favicon: 'img/favicon.ico',
 
+  // Client modules for global initializations
+  clientModules: [
+    require.resolve('./src/clientModules/aosInit.js'),
+    require.resolve('./src/clientModules/jsonLd.js'),
+  ],
+
   // Enables future flags for performance and compatibility
   future: {
     v4: true,
@@ -34,6 +40,21 @@ const config = {
       attributes: {
         rel: 'preconnect',
         href: 'https://fonts.googleapis.com',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'preconnect',
+        href: 'https://fonts.gstatic.com',
+        crossorigin: 'anonymous',
+      },
+    },
+    {
+      tagName: 'link',
+      attributes: {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap',
       },
     },
   ],
@@ -94,6 +115,14 @@ const config = {
         id: 'movies-tv',
         path: 'movies-tv',
         routeBasePath: 'movies-tv'
+      },
+    ],
+    [
+      '@docusaurus/plugin-content-docs',
+      {
+        id: 'projects',
+        path: 'projects',
+        routeBasePath: 'projects',
       },
     ],
     [
@@ -207,14 +236,6 @@ const config = {
         {property: 'og:type', content: 'website'},
         {property: 'og:site_name', content: 'David Sanchez'},
       ],
-      // Announcement bar for important updates
-      announcementBar: {
-        id: 'announcement',
-        content: '🚀 <a href="/blog">Check out my latest blog posts!</a>',
-        backgroundColor: '#2c5282',
-        textColor: '#ffffff',
-        isCloseable: true,
-      },
       // Color mode configuration
       colorMode: {
         defaultMode: 'light',
@@ -252,13 +273,20 @@ const config = {
         },
         items: [
           {to: '/blog', label: 'Blog', position: 'left'},
-          {to: '/projects', label: 'Projects', position: 'left'},          
-          {to: '/volunteering', label: 'Volunteering', position: 'left'},
-          {to: '/gaming', label: 'Gaming', position: 'left'},
-          {to: '/movies-tv', label: 'Movies & TV', position: 'left'},
-          {to: '/3dprinting', label: '3D Printing', position: 'left'},
+          {to: '/projects', label: 'Projects', position: 'left'},
           {to: '/about', label: 'About', position: 'left'},
           {to: '/contact', label: 'Contact', position: 'left'},
+          {
+            type: 'dropdown',
+            label: 'Interests',
+            position: 'left',
+            items: [
+              {to: '/gaming', label: 'Gaming'},
+              {to: '/movies-tv', label: 'Movies & TV'},
+              {to: '/3dprinting', label: '3D Printing'},
+              {to: '/volunteering', label: 'Volunteering'},
+            ],
+          },
           {to: '/sponsors', label: 'Sponsors', position: 'right'},
           {
             type: 'localeDropdown',
@@ -325,7 +353,7 @@ const config = {
             ],
           },
         ],                      
-        copyright: `Copyright © ${new Date().getFullYear()} David Sanchez. Built with <a href='https://docusaurus.io' target='_blank'>Docusaurus</a>. Running on <a href='https://learn.microsoft.com/azure/static-web-apps/overview' target='_blank'>Azure Static Web Apps</a>. Deployed with <a href='https://github.com/dsanchezcr/website/actions/workflows/azure-static-web-apps-delightful-moss-07d95f50f.yml' target='_blank'>GitHub Actions</a>. <br />The views expressed on this site are my own and do not necessarily reflect the views of my employer.`,
+        copyright: `Copyright © ${new Date().getFullYear()} David Sanchez. Built with <a href='https://docusaurus.io' target='_blank'>Docusaurus</a> · <a href='https://learn.microsoft.com/azure/static-web-apps/overview' target='_blank'>Azure Static Web Apps</a> · <a href='https://github.com/dsanchezcr/website' target='_blank'>Source on GitHub</a><br />The views expressed on this site are my own and do not necessarily reflect the views of my employer.`,
       },
     }),
 };

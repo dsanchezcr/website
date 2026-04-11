@@ -58,6 +58,7 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 | Movies & TV | `movies-tv/` | plugin-content-docs | `/movies-tv` |
 | Disney | `disney/` | plugin-content-docs | `/disney` |
 | Universal | `universal/` | plugin-content-docs | `/universal` |
+| Projects | `projects/` | plugin-content-docs | `/projects` |
 | Pages | `src/pages/` | preset-classic pages | `/about`, `/contact`, etc. |
 
 ### Backend Services
@@ -121,7 +122,8 @@ gaming/                 ← Gaming docs (Docusaurus plugin)
 movies-tv/              ← Movies & TV docs (Docusaurus plugin)
 disney/                 ← Disney docs (Docusaurus plugin)
 universal/              ← Universal docs (Docusaurus plugin)
-src/                    ← React components, pages, data, CSS
+projects/               ← Projects docs (Docusaurus plugin)
+src/                    ← React components, pages, hooks, data, CSS
 api/                    ← .NET 9 Azure Functions backend
 infra/                  ← Bicep infrastructure templates
 i18n/                   ← Translations (es, pt)
@@ -131,4 +133,4 @@ specs/                  ← Feature and content specifications
 .specify/               ← Spec Kit constitution and governance
 ```
 
-> **Important**: Repository documentation lives in `.github/repo-docs/` to avoid any interference with Docusaurus content processing. Docusaurus uses `disney/`, `gaming/`, `movies-tv/`, and `universal/` as doc plugin paths — never place agent/repository docs in those directories or in a root `docs/` folder.
+> **Important**: Repository documentation lives in `.github/repo-docs/` to avoid any interference with Docusaurus content processing. Docusaurus uses `disney/`, `gaming/`, `movies-tv/`, `projects/`, and `universal/` as doc plugin paths — never place agent/repository docs in those directories or in a root `docs/` folder.

@@ -6,6 +6,10 @@ image: pathname:///img/about/devops-conf.jpg
 keywords: [David Sanchez, engenheiro de software, Azure, GitHub, Microsoft, desenvolvedor, Costa Rica, Orlando]
 ---
 
+import ImageCompareSlider from '@site/src/components/ImageCompareSlider';
+import CareerTimeline from '@site/src/components/CareerTimeline';
+import { CertBadge, CertGrid } from '@site/src/components/CertBadge';
+
 <div className="about-hero">
 
 # Oi, Amig@! 👋
@@ -36,7 +40,21 @@ Minhas contribuições estão focadas na tecnologia da **Microsoft e GitHub**. �
 
 Tenho mais de **15 anos de experiência** na indústria de tecnologia com foco em desenvolvimento de software e plataformas de colaboração.
 
-### 🎯 Hobbies
+## Trajetória Profissional
+
+<CareerTimeline items={[
+  { year: '2011', icon: '🎓', title: 'Engenheiro de Sistemas', location: 'Costa Rica', description: 'Me formei como Engenheiro de Sistemas, iniciando minha carreira criando aplicações com tecnologias Microsoft.' },
+  { year: '2013', icon: '🏆', title: 'Microsoft MVP', location: 'Costa Rica', description: 'Reconhecido como Microsoft Most Valuable Professional por contribuições à comunidade e expertise técnica.' },
+  { year: '2015', icon: '🏢', title: 'Ingressei na Microsoft Costa Rica', location: 'Costa Rica', description: 'Comecei a trabalhar na subsidiária da Microsoft na Costa Rica, focado em ferramentas para desenvolvedores e plataformas Azure.' },
+  { year: '2018', icon: '✈️', title: 'Mudança para os EUA e Ingresso na Microsoft Corp', location: 'Seattle, WA', description: 'Mudei-me para Seattle para ingressar na sede corporativa da Microsoft, trabalhando mais próximo dos times de produto.' },
+  { year: '2022', icon: '🔄', title: 'Consultor em Empresas Parceiras da Microsoft', location: 'Orlando, FL', description: 'Deixei a Microsoft para ingressar em empresas parceiras (Xpirit, Xebia, Atmosera) como consultor, mudando-me para Orlando, Flórida.' },
+  { year: '2024', icon: '🚀', title: 'Retornei à Microsoft como Global Black Belt', location: 'Orlando, FL', description: 'Retornei à Microsoft como Global Black Belt para Developer Audience, focado em GitHub e Azure.' },
+  { year: '2024', icon: '💪', title: 'Transformação de Saúde', location: 'Orlando, FL', description: 'Iniciei uma jornada de saúde transformadora — perdi quase 45 kg com nutrição, exercício e disciplina.' },
+  { year: '2025', icon: '🏫', title: 'Mestrado na UCF', location: 'Orlando, FL', description: 'Iniciei um Mestrado em Engenharia de Sistemas na Universidade da Flórida Central (UCF).' },
+  { year: '2026', icon: '🎯', title: 'Director, Developer Audience', location: 'Orlando, FL', description: 'Promovido a Director de Developer Audience na Microsoft, liderando a estratégia Go-To-Market para GitHub e Azure.' },
+]} />
+
+### 🕐 Hobbies
 
 Como este é um site pessoal, também compartilho alguns dos meus hobbies:
 - 🎬 Filmes
@@ -48,7 +66,18 @@ Como este é um site pessoal, também compartilho alguns dos meus hobbies:
 
 ## Credenciais
 
-Sou [Profissional e Instrutor Certificado pela Microsoft](https://learn.microsoft.com/users/dsanchezcr/transcript/7o62li8gpo3z6qr).
+Sou Profissional e Instrutor Certificado pela Microsoft. Estas são algumas das minhas certificações principais:
+
+<CertGrid>
+  <CertBadge name="Azure Solutions Architect Expert" image="/img/certs/azure-solutions-architect-expert.svg" type="expert" />
+  <CertBadge name="Azure DevOps Engineer Expert" image="/img/certs/azure-devops-engineer-expert.svg" type="expert" />
+  <CertBadge name="Azure Administrator Associate" image="/img/certs/azure-administrator-associate.svg" type="associate" />
+  <CertBadge name="Azure Developer Associate" image="/img/certs/azure-developer-associate.svg" type="associate" />
+  <CertBadge name="Microsoft Certified Trainer" image="/img/certs/mct.png" type="trainer" />
+  <CertBadge name="Applied Skills" icon="⚡" type="applied" />
+</CertGrid>
+
+📜 [Ver transcrição completa no Microsoft Learn](https://learn.microsoft.com/users/dsanchezcr/transcript/7o62li8gpo3z6qr)
 
 Antes de ingressar na Microsoft, participei do programa [Microsoft Most Valuable Professional](https://mvp.microsoft.com). Adoro palestras (conferências e eventos da comunidade técnica), trabalho voluntário e ajudar as pessoas a crescerem em suas carreiras pessoais e profissionais. 🚀
 
@@ -63,16 +92,14 @@ _AI Innovation Summit 2025 - San José, Costa Rica_
 
 Compartilho uma jornada que foi incrivelmente transformadora para mim. Em 2024, fui diagnosticado com colesterol alto e um caso grave de fígado gorduroso, um alerta após anos de hábitos alimentares pouco saudáveis e um estilo de vida sedentário. Diante dessa notícia preocupante, soube que era hora de fazer uma mudança real.
 
-<div className="health-images">
-  <figure>
-    <img src={require('@site/static/img/about/health-before.jpg').default} alt="Antes de iniciar minha jornada de saúde" loading="lazy" decoding="async" />
-    <figcaption>Antes</figcaption>
-  </figure>
-  <figure>
-    <img src={require('@site/static/img/about/health-now.jpg').default} alt="Depois de transformar minha saúde" loading="lazy" decoding="async" />
-    <figcaption>Agora</figcaption>
-  </figure>
-</div>
+<ImageCompareSlider
+  beforeSrc={require('@site/static/img/about/health-before.jpg').default}
+  afterSrc={require('@site/static/img/about/health-now.jpg').default}
+  beforeAlt="Antes de iniciar minha jornada de saúde"
+  afterAlt="Depois de transformar minha saúde"
+  beforeLabel="Antes"
+  afterLabel="Agora"
+/>
 
 Encontrei o apoio e os recursos necessários para transformar minha vida. Através de uma abordagem mais consciente da nutrição, exercícios regulares, uma mudança completa de hábitos e orientação médica, consegui alcançar algo que um dia pensei ser impossível.
 

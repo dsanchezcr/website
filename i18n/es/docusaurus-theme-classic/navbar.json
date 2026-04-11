@@ -42,5 +42,9 @@
   "item.label.Sponsors": {
     "message": "Patrocinadores",
     "description": "Navbar item with label Sponsors"
+  },
+  "item.label.Interests": {
+    "message": "Intereses",
+    "description": "Navbar item with label Interests"
   }
 }

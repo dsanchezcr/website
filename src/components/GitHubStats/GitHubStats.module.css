@@ -1,0 +1,47 @@
+.statsContainer {
+  display: inline-flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--ifm-color-emphasis-100);
+  color: var(--ifm-color-emphasis-800);
+  border: 1px solid var(--ifm-color-emphasis-200);
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .badge {
+  background: var(--ifm-color-emphasis-200);
+  border-color: var(--ifm-color-emphasis-300);
+  color: var(--ifm-color-emphasis-800);
+}
+
+.archivedBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .archivedBadge {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.3);
+}

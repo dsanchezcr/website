@@ -6,6 +6,10 @@ image: pathname:///img/about/devops-conf.jpg
 keywords: [David Sanchez, software engineer, Azure, GitHub, Microsoft, developer, Costa Rica, Orlando]
 ---
 
+import ImageCompareSlider from '@site/src/components/ImageCompareSlider';
+import CareerTimeline from '@site/src/components/CareerTimeline';
+import { CertBadge, CertGrid } from '@site/src/components/CertBadge';
+
 <div className="about-hero">
 
 # Hello Friend! 👋
@@ -36,7 +40,21 @@ My contributions are focused on the **Microsoft & GitHub** technology stack. �
 
 I have over **15 years of experience** in the technology industry focused on software development and collaboration platforms.
 
-### 🎯 Hobbies
+## Career Journey
+
+<CareerTimeline items={[
+  { year: '2011', icon: '🎓', title: 'Computer Systems Engineer', location: 'Costa Rica', description: 'Graduated as a Computer Systems Engineer, starting my career building applications with Microsoft technologies.' },
+  { year: '2013', icon: '🏆', title: 'Microsoft MVP', location: 'Costa Rica', description: 'Recognized as a Microsoft Most Valuable Professional for community contributions and technical expertise.' },
+  { year: '2015', icon: '🏢', title: 'Joined Microsoft Costa Rica', location: 'Costa Rica', description: 'Started working at Microsoft subsidiary in Costa Rica, focused on developer tools and Azure platforms.' },
+  { year: '2018', icon: '✈️', title: 'Moved to the US & Joined Microsoft Corp', location: 'Seattle, WA', description: 'Relocated to Seattle to join Microsoft Corporate headquarters, working closer to the product teams.' },
+  { year: '2022', icon: '🔄', title: 'Consultant at Microsoft Partner Companies', location: 'Orlando, FL', description: 'Left Microsoft to join partner companies (Xpirit, Xebia, Atmosera) as a consultant, relocating to Orlando, Florida.' },
+  { year: '2024', icon: '🚀', title: 'Rejoined Microsoft as Global Black Belt', location: 'Orlando, FL', description: 'Returned to Microsoft as Global Black Belt for Developer Audience, focusing on GitHub and Azure.' },
+  { year: '2024', icon: '💪', title: 'Health Transformation', location: 'Orlando, FL', description: 'Started a life-changing health journey — lost nearly 100 pounds through nutrition, exercise, and discipline.' },
+  { year: '2025', icon: '🏫', title: "Master's Degree at UCF", location: 'Orlando, FL', description: "Started a Master's degree in Systems Engineering at the University of Central Florida (UCF)." },
+  { year: '2026', icon: '🎯', title: 'Director, Developer Audience', location: 'Orlando, FL', description: 'Promoted to Director of Developer Audience at Microsoft, leading Go-To-Market strategy for GitHub and Azure.' },
+]} />
+
+### 🕐 Hobbies
 
 Since this is a personal website, I'm also sharing some of my hobbies:
 - 🎬 Movies
@@ -48,7 +66,18 @@ Since this is a personal website, I'm also sharing some of my hobbies:
 
 ## Credentials
 
-I am a [Microsoft Certified Professional and Trainer](https://learn.microsoft.com/users/dsanchezcr/transcript/7o62li8gpo3z6qr).
+I am a Microsoft Certified Professional and Trainer. Here are some of my key certifications:
+
+<CertGrid>
+  <CertBadge name="Azure Solutions Architect Expert" image="/img/certs/azure-solutions-architect-expert.svg" type="expert" />
+  <CertBadge name="Azure DevOps Engineer Expert" image="/img/certs/azure-devops-engineer-expert.svg" type="expert" />
+  <CertBadge name="Azure Administrator Associate" image="/img/certs/azure-administrator-associate.svg" type="associate" />
+  <CertBadge name="Azure Developer Associate" image="/img/certs/azure-developer-associate.svg" type="associate" />
+  <CertBadge name="Microsoft Certified Trainer" image="/img/certs/mct.png" type="trainer" />
+  <CertBadge name="Applied Skills" icon="⚡" type="applied" />
+</CertGrid>
+
+📜 [View full transcript on Microsoft Learn](https://learn.microsoft.com/users/dsanchezcr/transcript/7o62li8gpo3z6qr)
 
 Before joining Microsoft, I was part of the [Microsoft Most Valuable Professional](https://mvp.microsoft.com) program. I love public speaking engagements (conferences & technical community events), volunteering and helping people grow in their personal and professional careers. 🚀
 
@@ -63,16 +92,14 @@ _AI Innovation Summit 2025 - San Jose, Costa Rica_
 
 Sharing a journey that has been incredibly transformative for me. In 2024, I was diagnosed with high cholesterol and a severe case of fatty liver, a wake-up call after years of unhealthy eating habits and a sedentary lifestyle. Faced with this daunting news, I knew it was time for a real change.
 
-<div className="health-images">
-  <figure>
-    <img src={require('@site/static/img/about/health-before.jpg').default} alt="Before starting my health journey" loading="lazy" decoding="async" />
-    <figcaption>Before</figcaption>
-  </figure>
-  <figure>
-    <img src={require('@site/static/img/about/health-now.jpg').default} alt="After transforming my health" loading="lazy" decoding="async" />
-    <figcaption>Now</figcaption>
-  </figure>
-</div>
+<ImageCompareSlider
+  beforeSrc={require('@site/static/img/about/health-before.jpg').default}
+  afterSrc={require('@site/static/img/about/health-now.jpg').default}
+  beforeAlt="Before starting my health journey"
+  afterAlt="After transforming my health"
+  beforeLabel="Before"
+  afterLabel="Now"
+/>
 
 I found the support and resources I needed to turn my life around. Through a more conscious approach to nutrition, regular exercise, a complete change of habits, and medical guidance, I was able to achieve something I once thought was impossible.
 

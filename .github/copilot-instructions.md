@@ -14,10 +14,11 @@ Both frontend and backend are hosted together on **Azure Static Web Apps**. The 
 - **Blog**: MDX files in `blog/` with frontmatter metadata
 - **Static Pages**: React components in `src/pages/` (e.g., `contact.js`, `weather.js`, `exchangerates.js`, `volunteering.js`)
   - **Volunteering**: Displays volunteering experience with card-based layout, category badges, organization links, and pre-populated contact form for volunteer project inquiries
-- **Custom Components**: Reusable widgets in `src/components/` (Comments, NLWebChat, OnlineStatusWidget, WeatherWidget)
+- **Custom Components**: Reusable widgets in `src/components/` (CareerTimeline, Comments, ErrorBoundary, ExchangeRatesWidget, Gaming, GitHubStats, Homepage, ImageCompareSlider, MediaCard, Movies, NLWebChat, OnlineStatusWidget, WeatherWidget, YouTubeEmbed)
+- **Shared Homepage**: The `Homepage` component (`src/components/Homepage/`) is shared across all three locale index pages — editing one component updates all locales. Locale-specific text is passed as props.
 - **i18n**: Translations in `i18n/es/` and `i18n/pt/` directories following Docusaurus i18n structure
 - **Gaming**: Docs in `gaming/` with images in `static/img/gaming/<platform>/`; status labels are localized in `GameCard`/`GameCardGroup` (keep status values like `completed`, `playing`, `backlog`, `dropped`)
-- **Custom Docs**: Four doc sections configured via plugins: `disney/`, `gaming/`, `movies-tv/`, and `universal/`
+- **Custom Docs**: Five doc sections configured via plugins: `disney/`, `gaming/`, `movies-tv/`, `projects/`, and `universal/`
 
 ### Backend (Azure Functions - .NET 9 Isolated Worker)
 Located in `api/` directory:
@@ -239,6 +240,22 @@ APPLICATIONINSIGHTS_CONNECTION_STRING
 4. **Email verification tokens expire**: 24-hour TTL in MemoryCache. Expired tokens will fail verification.
 5. **i18n content sync**: When adding blog posts or pages, remember to check if translations exist in `i18n/es/` and `i18n/pt/`.
 6. **SWA API runtime**: Managed functions use .NET 9 isolated worker. Ensure `api.csproj` targets `net9.0`.
+7. **ApplicationInsights compatibility**: `Microsoft.Azure.Functions.Worker.ApplicationInsights` (2.x) is incompatible with `Microsoft.ApplicationInsights.WorkerService` 3.x due to removed `ITelemetryInitializer` types. Use WorkerService 3.x directly with `AddApplicationInsightsTelemetryWorkerService()` only. When a compatible Functions AI package is released, re-add it.
+
+## Dependency Management Policy
+
+> **Always use the latest stable package versions. Adapt code to the packages, never pin old versions to avoid code changes.**
+
+### npm
+- Run `npx npm-check-updates -u` to update `package.json` to latest stable versions
+- Run `npm audit` and fix all vulnerabilities before merging
+- Use `^x.y.z` syntax (not `>=`) in `overrides` for deterministic installs
+
+### NuGet
+- Run `dotnet list package --outdated` and update to latest stable versions
+- When a package upgrade introduces breaking changes (removed types, changed APIs), adapt the codebase — do not downgrade
+- If two packages have incompatible transitive dependencies, remove the less critical one and replicate its functionality in code
+- Pre-release packages are only acceptable when no stable version exists
 
 ## Repository Documentation
 
@@ -330,9 +347,13 @@ All user-facing content **must** support English (default), Spanish, and Portugu
 - `3dprinting.js`, `volunteering.js`, `sponsors.js` — use inline translation objects
 - `movies.js` — redirect only, no translation needed
 
-**Pages with i18n files**: `about.mdx`, `contact.js`, `exchangerates.js`, `index.js`, `projects.mdx`, `weather.js` have translations in:
+**Pages with i18n files**: `about.mdx`, `contact.js`, `exchangerates.js`, `index.js`, `weather.js` have translations in:
 - `i18n/es/docusaurus-plugin-content-pages/`
 - `i18n/pt/docusaurus-plugin-content-pages/`
+
+**Projects docs**: Projects is now a docs plugin (not a page). Changes in `projects/` must be reflected in:
+- `i18n/es/docusaurus-plugin-content-docs-projects/current/`
+- `i18n/pt/docusaurus-plugin-content-docs-projects/current/`
 
 **Movie/TV data**: Reviews in `src/data/movies.json` and `src/data/series.json` must include `review` objects with `en`, `es`, and `pt` keys.
 

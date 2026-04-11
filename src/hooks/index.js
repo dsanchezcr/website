@@ -5,3 +5,4 @@
 
 export { useLocale, useTranslations } from './useLocale';
 export { useApi } from './useApi';
+export { default as useTypewriter } from './useTypewriter';

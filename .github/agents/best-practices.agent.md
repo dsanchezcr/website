@@ -12,11 +12,14 @@ Read `.github/repo-docs/coding-standards.md` and `.specify/memory/constitution.m
 ## Review Areas
 
 ### Dependencies
-- Run `npm outdated` to check for frontend package updates
+- Run `npx npm-check-updates` to check for frontend package updates
 - Run `dotnet list api/api.csproj package --outdated` for backend packages
 - Run `npm audit` to check for known vulnerabilities
 - Check `package.json` and `api/api.csproj` for deprecated packages
 - Review `.github/dependabot.yml` configuration
+- **Always upgrade to latest stable versions** — adapt code to the packages, never pin old versions to avoid code changes
+- When upgrading causes breaking API changes, adapt the codebase (update API calls, fix type changes, adjust configuration)
+- If two packages conflict (incompatible transitive dependencies), remove the less critical one and replicate its functionality in code
 
 ### Security
 - Review API input validation in `api/*.cs` files

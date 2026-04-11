@@ -37,3 +37,23 @@
 **Decision**: Adopt spec-driven workflow with constitution, templates, and prompts. Defer CLI integration.
 **Rationale**: The workflow patterns deliver value independently. Constitution + templates + prompts provide structure without external dependencies.
 **Spec**: See ADR `.github/repo-docs/adr/004-agentic-modernization.md`
+
+### [2026-04-10] UI/UX Design Overhaul — 5-Phase Implementation
+**Context**: Design session feedback identified improvements across brand identity, layout, animations, content structure, and SEO.
+**Decision**: Implemented in 5 phases: (1) Brand palette (teal) + typography (Plus Jakarta Sans) + micro-interactions, (2) Navigation dropdown + footer + mobile chatbot fix, (3) Typewriter effect + AOS scroll animations + page transitions, (4) ImageCompareSlider + CareerTimeline + chatbot contextual greetings, (5) JSON-LD structured data + GitHubStats + mobile UX fixes.
+**Rationale**: Phased approach allowed incremental review and reduced risk. Each phase was independently buildable and testable.
+
+### [2026-04-10] Projects Migrated from Page to Docs Plugin
+**Context**: Projects page was a single monolithic MDX file with side-to-side table of contents, making it hard to navigate with growing project count.
+**Decision**: Converted to a Docusaurus docs plugin (`projects/`) with individual pages per project and a "Previous Roles" subcategory. Full i18n coverage.
+**Rationale**: Better SEO (individual URLs per project), sidebar navigation, scalable structure. Follows the pattern already used by Gaming and Movies sections.
+
+### [2026-04-10] Shared Homepage Component Pattern
+**Context**: Homepage code was duplicated across 3 locale files (en/es/pt) with identical layout logic.
+**Decision**: Created `src/components/Homepage/` as a shared component. Locale pages only pass translated props (greeting, subtitle, tagline, features).
+**Rationale**: Eliminates ~70 lines of duplication per locale. Style/layout changes propagate to all locales automatically.
+
+### [2026-04-10] AOS for Scroll Animations
+**Context**: Needed scroll-triggered animations for homepage and content sections.
+**Decision**: Adopted AOS (Animate on Scroll) library via Docusaurus clientModules with debounced MutationObserver for SPA route refreshes.
+**Rationale**: Lightweight (~6KB), declarative (`data-aos` attributes), works in MDX without React wrappers. Respects `prefers-reduced-motion`.

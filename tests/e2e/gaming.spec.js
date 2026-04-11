@@ -8,8 +8,9 @@ test.describe('Gaming Section', () => {
 
   test('gaming page has platform links', async ({ page }) => {
     await page.goto('/gaming');
-    // Should have links to platform subpages
-    await expect(page.getByRole('link', { name: /Xbox/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: /PlayStation/i })).toBeVisible();
+    // Should have links to platform subpages in sidebar
+    const sidebar = page.getByLabel('Docs sidebar');
+    await expect(sidebar.getByRole('link', { name: /Xbox/i }).first()).toBeVisible();
+    await expect(sidebar.getByRole('link', { name: /PlayStation/i }).first()).toBeVisible();
   });
 });
