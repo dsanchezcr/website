@@ -52,8 +52,10 @@ export default function ImageCompareSlider({
       aria-valuemax={100}
       tabIndex={0}
       onKeyDown={(e) => {
-        if (e.key === 'ArrowLeft') setPosition((p) => Math.max(0, p - 2));
-        if (e.key === 'ArrowRight') setPosition((p) => Math.min(100, p + 2));
+        if (e.key === 'ArrowLeft') { e.preventDefault(); setPosition((p) => Math.max(0, p - 2)); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); setPosition((p) => Math.min(100, p + 2)); }
+        if (e.key === 'Home') { e.preventDefault(); setPosition(0); }
+        if (e.key === 'End') { e.preventDefault(); setPosition(100); }
       }}
     >
       {/* After image (full width, underneath) */}

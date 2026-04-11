@@ -640,13 +640,32 @@ article {
    Mobile UX Improvements
    =========================================== */
 
-/* Touch targets — minimum 44x44px per WCAG */
+/* Touch targets — minimum 44x44px per WCAG (sidebar menu only) */
 @media (max-width: 996px) {
-  .navbar__link,
-  .dropdown__link {
+  .navbar-sidebar .menu__link {
     min-height: 44px;
-    display: flex;
-    align-items: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* Mobile navbar fixes */
+@media (max-width: 996px) {
+  /* Fit hamburger toggle inside the navbar bar */
+  .navbar__toggle {
+    margin-right: 0.5rem;
+    width: 30px;
+    height: 30px;
+  }
+
+  .navbar__toggle svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Dropdown items in mobile sidebar */
+  .navbar-sidebar .dropdown .dropdown__menu {
+    padding-left: 1rem;
   }
 }
 

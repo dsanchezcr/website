@@ -20,5 +20,7 @@ if (ExecutionEnvironment.canUseDOM) {
     if (refreshTimer) clearTimeout(refreshTimer);
     refreshTimer = setTimeout(() => AOS.refresh(), 200);
   });
-  observer.observe(document.body, { childList: true, subtree: false });
+  // Observe the Docusaurus app root for content changes during SPA navigation
+  const appRoot = document.getElementById('__docusaurus') || document.body;
+  observer.observe(appRoot, { childList: true, subtree: true });
 }

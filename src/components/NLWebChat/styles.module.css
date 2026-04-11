@@ -87,9 +87,9 @@
   .chatWidget {
     position: fixed;
     width: calc(100vw - 20px);
-    height: calc(100vh - 100px);
-    max-height: 500px;
-    bottom: 70px;
+    height: calc(100dvh - 140px);
+    max-height: 450px;
+    bottom: 75px;
     right: 10px;
     left: 10px;
     border-radius: 12px;
@@ -101,8 +101,8 @@
   }
 
   .chatBubbleIcon {
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     font-size: 20px;
   }
 }
@@ -467,16 +467,36 @@
   right: 0;
   background: var(--ifm-color-primary-darkest, #134e4a);
   color: #ffffff;
-  padding: 0.6rem 2rem 0.6rem 0.85rem;
+  padding: 0;
   border-radius: 12px;
   font-size: 0.85rem;
   font-weight: 500;
   line-height: 1.3;
   white-space: nowrap;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
   animation: greetingSlideIn 0.4s ease-out;
   z-index: 999998;
+  display: flex;
+  align-items: center;
+}
+
+.greetingAction {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.6rem 2rem 0.6rem 0.85rem;
+  cursor: pointer;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.greetingAction:hover {
+  background: none;
+  transform: none;
+  box-shadow: none;
+  opacity: 0.9;
 }
 
 .greetingTooltip::after {
@@ -527,6 +547,12 @@
     right: -8px;
     font-size: 0.8rem;
     max-width: calc(100vw - 80px);
+    white-space: normal;
+    bottom: 60px;
+  }
+
+  .greetingAction {
+    font-size: 0.8rem;
     white-space: normal;
   }
 }

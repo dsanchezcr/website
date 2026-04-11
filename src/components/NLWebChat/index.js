@@ -21,6 +21,7 @@ const translations = {
     ],
     inputPlaceholder: "Ask me anything about this website...",
     chatIconTooltip: "Chat with David's AI Assistant",
+    dismissLabel: "Dismiss",
     fallbackResponse: (query) => `Thanks for your question about "${query}". The NLWeb backend is currently being set up with Microsoft Foundry integration. Meanwhile, you can explore David's blog for insights on Azure technologies, developer productivity, and his latest projects. Check out the blog, projects, and about sections to learn more!`,
     greetings: {
       home: "👋 Hi! Ask me anything about this site.",
@@ -45,6 +46,7 @@ const translations = {
     ],
     inputPlaceholder: "Pregúntame cualquier cosa sobre este sitio web...",
     chatIconTooltip: "Chatea con el Asistente de IA de David",
+    dismissLabel: "Cerrar",
     fallbackResponse: (query) => `Gracias por tu pregunta sobre "${query}". El backend de NLWeb se está configurando actualmente con la integración de Microsoft Foundry. Mientras tanto, puedes explorar el blog de David para obtener información sobre tecnologías de Azure, productividad del desarrollador y sus últimos proyectos. ¡Consulta las secciones de blog, proyectos y acerca de para obtener más información!`,
     greetings: {
       home: "👋 ¡Hola! Pregúntame lo que quieras.",
@@ -69,6 +71,7 @@ const translations = {
     ],
     inputPlaceholder: "Pergunte-me qualquer coisa sobre este site...",
     chatIconTooltip: "Converse com o Assistente de IA do David",
+    dismissLabel: "Fechar",
     fallbackResponse: (query) => `Obrigado pela sua pergunta sobre "${query}". O backend do NLWeb está sendo configurado atualmente com integração do Microsoft Foundry. Enquanto isso, você pode explorar o blog do David para insights sobre tecnologias Azure, produtividade do desenvolvedor e seus projetos mais recentes. Confira as seções blog, projetos e sobre para saber mais!`,
     greetings: {
       home: "👋 Olá! Pergunte-me qualquer coisa.",
@@ -130,7 +133,11 @@ const NLWebChat = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [sessionId, setSessionId] = useState(null); // Store session ID for conversation continuity
   const [showGreeting, setShowGreeting] = useState(false);
+  const isOpenRef = useRef(false);
   const messagesEndRef = useRef(null);
+  
+  // Keep ref in sync with state for use in timers
+  useEffect(() => { isOpenRef.current = isOpen; }, [isOpen]);
   
   // Use shared locale hook for consistency
   const locale = useLocale();
@@ -143,7 +150,7 @@ const NLWebChat = () => {
   useEffect(() => {
     if (!isFeatureEnabled) return;
     const showTimer = setTimeout(() => {
-      if (!isOpen) setShowGreeting(true);
+      if (!isOpenRef.current) setShowGreeting(true);
     }, 5000);
     const hideTimer = setTimeout(() => {
       setShowGreeting(false);
@@ -152,7 +159,7 @@ const NLWebChat = () => {
       clearTimeout(showTimer);
       clearTimeout(hideTimer);
     };
-  }, [isFeatureEnabled]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isFeatureEnabled]);
 
   // Get contextual greeting based on current page section
   const getGreetingText = () => {
@@ -254,15 +261,18 @@ const NLWebChat = () => {
       <div className={styles.chatBubbleContainer}>
         {/* Contextual greeting tooltip */}
         {showGreeting && !isOpen && (
-          <div
-            className={styles.greetingTooltip}
-            onClick={() => { setShowGreeting(false); setIsOpen(true); }}
-          >
-            <span>{getGreetingText()}</span>
+          <div className={styles.greetingTooltip}>
+            <button
+              className={styles.greetingAction}
+              onClick={() => { setShowGreeting(false); setIsOpen(true); }}
+              aria-label={getGreetingText()}
+            >
+              {getGreetingText()}
+            </button>
             <button
               className={styles.greetingClose}
               onClick={(e) => { e.stopPropagation(); setShowGreeting(false); }}
-              aria-label="Dismiss"
+              aria-label={t.dismissLabel}
             >
               ✕
             </button>
