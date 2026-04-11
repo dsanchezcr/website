@@ -1,6 +1,6 @@
 ---
-title: "O multitarefa focado: como a IA está reconfigurando a forma como os engenheiros pensam"
-description: "A ciência diz que o multitarefa destrói a produtividade. A IA exige que os engenheiros gerenciem múltiplos fluxos de trabalho em paralelo. A solução não é fazer mais ao mesmo tempo, mas passar da execução para a orquestração e desenvolver uma nova habilidade cognitiva: o meta-foco."
+title: "A multitarefa focada: como a IA está reconfigurando a forma como os engenheiros pensam"
+description: "A ciência diz que a multitarefa destrói a produtividade. A IA exige que os engenheiros gerenciem múltiplos fluxos de trabalho em paralelo. A solução não é fazer mais ao mesmo tempo, mas passar da execução para a orquestração e desenvolver uma nova habilidade cognitiva: o meta-foco."
 slug: focused-multitasker-ai-rewiring-engineers-think
 authors: [dsanchezcr]
 tags: [AI, Agentic AI, GitHub Copilot, Software Engineering, Productivity, Cognitive Science]
@@ -10,9 +10,9 @@ image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/stat
 date: 2026-04-11T10:00
 ---
 
-# O multitarefa focado: guia do engenheiro de software para pensar com agentes de IA
+# A multitarefa focada: guia do engenheiro de software para pensar com agentes de IA
 
-Existe uma contradição com a qual me deparo continuamente. Cada pesquisa em ciência cognitiva que li diz a mesma coisa: concentre-se em uma tarefa de cada vez. O multitarefa é um mito. Seu cérebro não consegue fazer duas coisas exigentes simultaneamente sem pagar um alto custo de desempenho.
+Existe uma contradição com a qual me deparo continuamente. Cada pesquisa em ciência cognitiva que li diz a mesma coisa: concentre-se em uma tarefa de cada vez. A multitarefa é um mito. Seu cérebro não consegue fazer duas coisas exigentes simultaneamente sem pagar um alto custo de desempenho.
 
 E, no entanto, todos os dias me encontro revisando um pull request que o [agente na nuvem do GitHub Copilot](https://docs.github.com/enterprise-cloud@latest/copilot/concepts/agents/cloud-agent/about-cloud-agent) abriu, enquanto um pipeline de CI/CD roda em uma segunda branch com código gerado por IA. Mais fluxos de trabalho em paralelo do que jamais gerenciei antes da IA entrar no meu fluxo de trabalho, e de alguma forma parece *menos* caótico do que antes.
 
@@ -20,11 +20,11 @@ Algo não bate. Ou a ciência está errada, ou o que estou fazendo não é realm
 
 {/* truncate */}
 
-![O multitarefa focado](pathname:///img/blog/2026-04-11-focusedmultitasker/focused-multitasker.jpg)
+![A multitarefa focada](pathname:///img/blog/2026-04-11-focusedmultitasker/focused-multitasker.jpg)
 
 ---
 
-## O que a ciência diz sobre o multitarefa
+## O que a ciência diz sobre a multitarefa
 
 A pesquisa sobre multitarefa não é ambígua. É uma das descobertas mais replicadas em psicologia cognitiva.
 
@@ -34,17 +34,17 @@ O trabalho anterior de Meyer e David Kieras construiu a base teórica para essa 
 
 Os números práticos são impressionantes. A [Associação Americana de Psicologia documentou](https://www.apa.org/topics/research/multitasking) que alternar entre tarefas pode custar até 40% do tempo produtivo, e que recuperar o foco total após uma interrupção leva entre 15 e 23 minutos. Isso significa que um desenvolvedor que muda de contexto quatro vezes em uma manhã pode ter perdido mais de uma hora de trabalho profundo antes do almoço, apenas pela sobrecarga neurológica da troca em si.
 
-Uma síntese mais recente vem de [Tambun, Yudoko e Aldianto (2024)](https://doi.org/10.24940/theijbm/2024/v12/i9/bm2409-012), cuja revisão arquivística no *The International Journal of Business and Management* examinou como o multitarefa afeta a aprendizagem, a estrutura cerebral e a função cognitiva de longo prazo. Suas descobertas reforçam o que a literatura experimental anterior estabeleceu: os custos não são apenas imediatos, mas cumulativos, com a troca habitual de tarefas afetando a capacidade de atenção e a memória de trabalho ao longo do tempo.
+Uma síntese mais recente vem de [Tambun, Yudoko e Aldianto (2024)](https://doi.org/10.24940/theijbm/2024/v12/i9/bm2409-012), cuja revisão arquivística no *The International Journal of Business and Management* examinou como a multitarefa afeta a aprendizagem, a estrutura cerebral e a função cognitiva de longo prazo. Suas descobertas reforçam o que a literatura experimental anterior estabeleceu: os custos não são apenas imediatos, mas cumulativos, com a troca habitual de tarefas afetando a capacidade de atenção e a memória de trabalho ao longo do tempo.
 
 Isso não é ciência controversa. É bem estabelecida e bem replicada. A questão é o que isso significa para uma profissão que cada vez mais envolve supervisionar múltiplos agentes de IA trabalhando em paralelo.
 
 ---
 
-## O multitarefa antigo vs. a nova orquestração
+## A multitarefa antiga vs. a nova orquestração
 
 Pense em um técnico de futebol observando múltiplas jogadas se desenvolverem no campo, não correndo entre posições ele mesmo, mas avaliando cada jogada e tomando decisões sobre cada uma. Isso se aproxima mais do que a engenharia assistida por IA parece do que a imagem de um desenvolvedor trocando freneticamente entre abas abertas do editor.
 
-O multitarefa tradicional, o tipo contra o qual a pesquisa alerta, envolve uma única pessoa tentando *executar* múltiplas tarefas cognitivamente exigentes simultaneamente: escrever código enquanto revisa um documento de design enquanto responde mensagens no Slack. Cada atividade requer seu próprio modelo mental, sua própria carga de memória de trabalho, seu próprio conjunto de regras ativas. Cada troca entre elas desencadeia o custo total que Rubinstein e Meyer mediram.
+A multitarefa tradicional, o tipo contra o qual a pesquisa alerta, envolve uma única pessoa tentando *executar* múltiplas tarefas cognitivamente exigentes simultaneamente: escrever código enquanto revisa um documento de design enquanto responde mensagens no Slack. Cada atividade requer seu próprio modelo mental, sua própria carga de memória de trabalho, seu próprio conjunto de regras ativas. Cada troca entre elas desencadeia o custo total que Rubinstein e Meyer mediram.
 
 O que está acontecendo com a engenharia assistida por IA é estruturalmente diferente. O engenheiro não está executando múltiplas tarefas. O engenheiro está *delegando* múltiplas tarefas e depois avaliando os resultados. A carga cognitiva muda da execução para a supervisão, da produção para o julgamento. Considere a diferença:
 
@@ -91,7 +91,7 @@ Uma IA redige três respostas de e-mail. Leio cada uma, ajusto o tom em uma, apr
 
 O fio comum merece seu próprio enquadramento. A IA move os humanos da **camada de produção** para a **camada de validação**. Não são apenas tarefas diferentes. São modos cognitivos diferentes. A produção requer execução específica da tarefa: lembrar sintaxe, gerenciar estado, gerar algo do nada. A validação requer julgamento que se transfere entre tarefas: comparar o que existe contra um padrão, identificar o que está faltando ou errado, decidir se aceita ou redireciona. E o julgamento, diferente da execução, carrega muito menos sobrecarga de troca de contexto porque a lente avaliativa permanece constante mesmo quando o conteúdo muda.
 
-Essa é a mudança subjacente que faz o trabalho assistido por IA parecer diferente do multitarefa tradicional. Você não está fazendo mais coisas. Está fazendo um *tipo* diferente de coisa, um que seu cérebro lida com muito menos fricção ao se mover entre instâncias dele.
+Essa é a mudança subjacente que faz o trabalho assistido por IA parecer diferente da multitarefa tradicional. Você não está fazendo mais coisas. Está fazendo um *tipo* diferente de coisa, um que seu cérebro lida com muito menos fricção ao se mover entre instâncias dele.
 
 ---
 
@@ -131,9 +131,9 @@ O hábito mais perigoso nos fluxos de trabalho agênticos é cair no modo de exe
 
 ## O engenheiro que melhor se concentra
 
-O paradoxo do início deste artigo se resolve sozinho uma vez que você vê a diferença estrutural entre o multitarefa cognitivo e a delegação orquestrada.
+O paradoxo do início deste artigo se resolve sozinho uma vez que você vê a diferença estrutural entre a multitarefa cognitiva e a delegação orquestrada.
 
-O multitarefa tradicional, tentar executar múltiplas tarefas exigentes simultaneamente, continua tão destrutivo quanto Rubinstein, Meyer e cada pesquisador subsequente demonstraram. Isso não mudou. Seu cérebro ainda tem um gargalo de controle executivo. Trocar entre contextos de execução ainda custa de 15 a 23 minutos de tempo de recuperação. A produtividade ainda cai até 40% quando você fragmenta sua atenção entre tarefas concorrentes.
+A multitarefa tradicional, tentar executar múltiplas tarefas exigentes simultaneamente, continua tão destrutiva quanto Rubinstein, Meyer e cada pesquisador subsequente demonstraram. Isso não mudou. Seu cérebro ainda tem um gargalo de controle executivo. Trocar entre contextos de execução ainda custa de 15 a 23 minutos de tempo de recuperação. A produtividade ainda cai até 40% quando você fragmenta sua atenção entre tarefas concorrentes.
 
 O que mudou é o *tipo de trabalho* que os engenheiros fazem. Quando agentes de IA lidam com a execução, a tarefa cognitiva do engenheiro se reduz à supervisão, avaliação e julgamento. Essas atividades compartilham um framework mental comum. Mover-se entre elas não desencadeia os mesmos custos catastróficos de troca que mover-se entre diferentes tarefas de execução.
 

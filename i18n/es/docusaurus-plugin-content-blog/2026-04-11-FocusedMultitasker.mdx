@@ -1,6 +1,6 @@
 ---
-title: "El multitarea enfocado: cómo la IA está reconfigurando la forma en que piensan los ingenieros"
-description: "La ciencia dice que el multitarea destruye la productividad. La IA exige que los ingenieros gestionen múltiples flujos de trabajo en paralelo. La solución no es hacer más a la vez, sino pasar de la ejecución a la orquestación y desarrollar una nueva habilidad cognitiva: el meta-enfoque."
+title: "La multitarea enfocada: cómo la IA está reconfigurando la forma en que piensan los ingenieros"
+description: "La ciencia dice que la multitarea destruye la productividad. La IA exige que los ingenieros gestionen múltiples flujos de trabajo en paralelo. La solución no es hacer más a la vez, sino pasar de la ejecución a la orquestación y desarrollar una nueva habilidad cognitiva: el meta-enfoque."
 slug: focused-multitasker-ai-rewiring-engineers-think
 authors: [dsanchezcr]
 tags: [AI, Agentic AI, GitHub Copilot, Software Engineering, Productivity, Cognitive Science]
@@ -10,9 +10,9 @@ image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/stat
 date: 2026-04-11T10:00
 ---
 
-# El multitarea enfocado: guía del ingeniero de software para pensar con agentes de IA
+# La multitarea enfocada: guía del ingeniero de software para pensar con agentes de IA
 
-Hay una contradicción con la que me encuentro continuamente. Cada investigación en ciencia cognitiva que he leído dice lo mismo: concéntrate en una tarea a la vez. El multitarea es un mito. Tu cerebro no puede hacer dos cosas exigentes simultáneamente sin pagar un alto costo en rendimiento.
+Hay una contradicción con la que me encuentro continuamente. Cada investigación en ciencia cognitiva que he leído dice lo mismo: concéntrate en una tarea a la vez. La multitarea es un mito. Tu cerebro no puede hacer dos cosas exigentes simultáneamente sin pagar un alto costo en rendimiento.
 
 Y sin embargo, cada día me encuentro revisando un pull request que abrió el [agente en la nube de GitHub Copilot](https://docs.github.com/enterprise-cloud@latest/copilot/concepts/agents/cloud-agent/about-cloud-agent), mientras un pipeline de CI/CD se ejecuta en una segunda rama con código generado por IA. Más flujos de trabajo en paralelo que los que jamás gestioné antes de que la IA entrara en mi flujo de trabajo, y de alguna manera se siente *menos* caótico que antes.
 
@@ -20,13 +20,13 @@ Algo no cuadra. O la ciencia está equivocada, o lo que estoy haciendo no es rea
 
 {/* truncate */}
 
-![El multitarea enfocado](pathname:///img/blog/2026-04-11-focusedmultitasker/focused-multitasker.jpg)
+![La multitarea enfocada](pathname:///img/blog/2026-04-11-focusedmultitasker/focused-multitasker.jpg)
 
 ---
 
-## Lo que dice la ciencia sobre el multitarea
+## Lo que dice la ciencia sobre la multitarea
 
-La investigación sobre el multitarea no es ambigua. Es uno de los hallazgos más replicados en psicología cognitiva.
+La investigación sobre la multitarea no es ambigua. Es uno de los hallazgos más replicados en psicología cognitiva.
 
 En 2001, Joshua Rubinstein, David Meyer y Jeffrey Evans publicaron un estudio fundamental en el *Journal of Experimental Psychology: Human Perception and Performance* que cuantificó lo que sucede cuando las personas alternan entre tareas. Sus experimentos mostraron que cada cambio de tarea impone dos costos distintos: el tiempo que tu cerebro emplea en desactivar las reglas y el contexto de la tarea anterior, y el tiempo que emplea en cargar las reglas y el contexto de la nueva. Estos "costos de cambio" se acumulan. Cuanto más complejas son las tareas, mayor es la penalización. Sus datos mostraron pérdidas de tiempo medibles en cada cambio, pérdidas que escalaban con la complejidad de la tarea, incluso cuando los participantes sabían que el cambio venía. Puedes leer el estudio completo aquí: [Rubinstein, J. S., Meyer, D. E. & Evans, J. E. (2001). Executive control of cognitive processes in task switching. *Journal of Experimental Psychology: Human Perception and Performance*, 27(4), 763–797](https://doi.org/10.1037/0096-1523.27.4.763).
 
@@ -34,17 +34,17 @@ El trabajo previo de Meyer y David Kieras construyó la base teórica para este 
 
 Las cifras prácticas son impactantes. La [Asociación Americana de Psicología ha documentado](https://www.apa.org/topics/research/multitasking) que alternar entre tareas puede costar hasta un 40% del tiempo productivo, y que recuperar la concentración plena después de una interrupción toma entre 15 y 23 minutos. Esto significa que un desarrollador que cambia de contexto cuatro veces en una mañana puede haber perdido más de una hora de trabajo profundo antes del almuerzo, solo por la sobrecarga neurológica del cambio en sí.
 
-Una síntesis más reciente proviene de [Tambun, Yudoko y Aldianto (2024)](https://doi.org/10.24940/theijbm/2024/v12/i9/bm2409-012), cuya revisión archivística en *The International Journal of Business and Management* examinó cómo el multitarea afecta el aprendizaje, la estructura cerebral y la función cognitiva a largo plazo. Sus hallazgos refuerzan lo que la literatura experimental anterior estableció: los costos no son solo inmediatos sino acumulativos, con el cambio habitual de tareas afectando la capacidad de atención y la memoria de trabajo con el tiempo.
+Una síntesis más reciente proviene de [Tambun, Yudoko y Aldianto (2024)](https://doi.org/10.24940/theijbm/2024/v12/i9/bm2409-012), cuya revisión archivística en *The International Journal of Business and Management* examinó cómo la multitarea afecta el aprendizaje, la estructura cerebral y la función cognitiva a largo plazo. Sus hallazgos refuerzan lo que la literatura experimental anterior estableció: los costos no son solo inmediatos sino acumulativos, con el cambio habitual de tareas afectando la capacidad de atención y la memoria de trabajo con el tiempo.
 
 Esto no es ciencia controvertida. Está bien establecida y bien replicada. La pregunta es qué significa para una profesión que cada vez más implica supervisar múltiples agentes de IA trabajando en paralelo.
 
 ---
 
-## El multitarea antiguo vs. la nueva orquestación
+## La multitarea antigua vs. la nueva orquestación
 
 Piensa en un entrenador de fútbol observando múltiples jugadas desarrollarse en el campo, no corriendo entre posiciones él mismo, sino evaluando cada jugada y tomando decisiones sobre cada una. Eso se acerca más a lo que parece la ingeniería asistida por IA que la imagen de un desarrollador cambiando frenéticamente entre pestañas abiertas del editor.
 
-El multitarea tradicional, del tipo contra el que advierte la investigación, involucra a una sola persona intentando *ejecutar* múltiples tareas cognitivamente exigentes simultáneamente: escribir código mientras revisas un documento de diseño mientras respondes mensajes de Slack. Cada actividad requiere su propio modelo mental, su propia carga de memoria de trabajo, su propio conjunto de reglas activas. Cada cambio entre ellas desencadena el costo completo que midieron Rubinstein y Meyer.
+La multitarea tradicional, del tipo contra el que advierte la investigación, involucra a una sola persona intentando *ejecutar* múltiples tareas cognitivamente exigentes simultáneamente: escribir código mientras revisas un documento de diseño mientras respondes mensajes de Slack. Cada actividad requiere su propio modelo mental, su propia carga de memoria de trabajo, su propio conjunto de reglas activas. Cada cambio entre ellas desencadena el costo completo que midieron Rubinstein y Meyer.
 
 Lo que sucede con la ingeniería asistida por IA es estructuralmente diferente. El ingeniero no está ejecutando múltiples tareas. El ingeniero está *delegando* múltiples tareas y luego evaluando los resultados. La carga cognitiva cambia de la ejecución a la supervisión, de la producción al juicio. Considera la diferencia:
 
@@ -91,7 +91,7 @@ Una IA redacta tres respuestas de correo electrónico. Leo cada una, ajusto el t
 
 El hilo común merece su propio encuadre. La IA mueve a los humanos de la **capa de producción** a la **capa de validación**. No son solo tareas diferentes. Son modos cognitivos diferentes. La producción requiere ejecución específica de la tarea: recordar sintaxis, gestionar estado, generar algo de la nada. La validación requiere juicio que se transfiere entre tareas: comparar lo que existe contra un estándar, identificar lo que falta o está mal, decidir si aceptar o redirigir. Y el juicio, a diferencia de la ejecución, conlleva mucho menos sobrecarga de cambio de contexto porque la lente evaluativa se mantiene constante incluso cuando el contenido cambia.
 
-Este es el cambio subyacente que hace que el trabajo asistido por IA se sienta diferente del multitarea tradicional. No estás haciendo más cosas. Estás haciendo un *tipo* diferente de cosa, uno que tu cerebro maneja con mucha menos fricción al moverse entre instancias de lo mismo.
+Este es el cambio subyacente que hace que el trabajo asistido por IA se sienta diferente de la multitarea tradicional. No estás haciendo más cosas. Estás haciendo un *tipo* diferente de cosa, uno que tu cerebro maneja con mucha menos fricción al moverse entre instancias de lo mismo.
 
 ---
 
@@ -131,9 +131,9 @@ El hábito más peligroso en los flujos de trabajo agénticos es caer en modo de
 
 ## El ingeniero que mejor se enfoca
 
-La paradoja del inicio de este artículo se resuelve sola una vez que ves la diferencia estructural entre el multitarea cognitivo y la delegación orquestada.
+La paradoja del inicio de este artículo se resuelve sola una vez que ves la diferencia estructural entre la multitarea cognitiva y la delegación orquestada.
 
-El multitarea tradicional, intentar ejecutar múltiples tareas exigentes simultáneamente, sigue siendo tan destructivo como Rubinstein, Meyer y cada investigador posterior han demostrado. Eso no ha cambiado. Tu cerebro aún tiene un cuello de botella de control ejecutivo. Cambiar entre contextos de ejecución aún cuesta de 15 a 23 minutos de tiempo de recuperación. La productividad aún cae hasta un 40% cuando fragmentas tu atención entre tareas en competencia.
+La multitarea tradicional, intentar ejecutar múltiples tareas exigentes simultáneamente, sigue siendo tan destructiva como Rubinstein, Meyer y cada investigador posterior han demostrado. Eso no ha cambiado. Tu cerebro aún tiene un cuello de botella de control ejecutivo. Cambiar entre contextos de ejecución aún cuesta de 15 a 23 minutos de tiempo de recuperación. La productividad aún cae hasta un 40% cuando fragmentas tu atención entre tareas en competencia.
 
 Lo que ha cambiado es el *tipo de trabajo* que hacen los ingenieros. Cuando los agentes de IA manejan la ejecución, la tarea cognitiva del ingeniero se reduce a la supervisión, la evaluación y el juicio. Estas actividades comparten un marco mental común. Moverse entre ellas no desencadena los mismos costos catastróficos de cambio que moverse entre diferentes tareas de ejecución.
 
