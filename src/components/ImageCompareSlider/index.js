@@ -44,6 +44,7 @@ export default function ImageCompareSlider({
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
       role="slider"
       aria-label="Image comparison slider"
       aria-valuenow={Math.round(position)}

@@ -257,9 +257,6 @@ const NLWebChat = () => {
           <div
             className={styles.greetingTooltip}
             onClick={() => { setShowGreeting(false); setIsOpen(true); }}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => { if (e.key === 'Enter') { setShowGreeting(false); setIsOpen(true); } }}
           >
             <span>{getGreetingText()}</span>
             <button

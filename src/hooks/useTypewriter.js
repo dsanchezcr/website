@@ -16,22 +16,25 @@ export default function useTypewriter(text, speed = 50, delay = 500) {
       return;
     }
 
+    let intervalId = null;
     const timeout = setTimeout(() => {
       let i = 0;
-      const interval = setInterval(() => {
+      intervalId = setInterval(() => {
         if (i < text.length) {
           setDisplayText(text.slice(0, i + 1));
           i++;
         } else {
           setIsComplete(true);
-          clearInterval(interval);
+          clearInterval(intervalId);
+          intervalId = null;
         }
       }, speed);
-
-      return () => clearInterval(interval);
     }, delay);
 
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(timeout);
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [text, speed, delay]);
 
   return { displayText, isComplete };

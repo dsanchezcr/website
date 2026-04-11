@@ -14,10 +14,11 @@ Both frontend and backend are hosted together on **Azure Static Web Apps**. The 
 - **Blog**: MDX files in `blog/` with frontmatter metadata
 - **Static Pages**: React components in `src/pages/` (e.g., `contact.js`, `weather.js`, `exchangerates.js`, `volunteering.js`)
   - **Volunteering**: Displays volunteering experience with card-based layout, category badges, organization links, and pre-populated contact form for volunteer project inquiries
-- **Custom Components**: Reusable widgets in `src/components/` (Comments, NLWebChat, OnlineStatusWidget, WeatherWidget)
+- **Custom Components**: Reusable widgets in `src/components/` (CareerTimeline, Comments, ErrorBoundary, ExchangeRatesWidget, Gaming, GitHubStats, Homepage, ImageCompareSlider, MediaCard, Movies, NLWebChat, OnlineStatusWidget, WeatherWidget, YouTubeEmbed)
+- **Shared Homepage**: The `Homepage` component (`src/components/Homepage/`) is shared across all three locale index pages — editing one component updates all locales. Locale-specific text is passed as props.
 - **i18n**: Translations in `i18n/es/` and `i18n/pt/` directories following Docusaurus i18n structure
 - **Gaming**: Docs in `gaming/` with images in `static/img/gaming/<platform>/`; status labels are localized in `GameCard`/`GameCardGroup` (keep status values like `completed`, `playing`, `backlog`, `dropped`)
-- **Custom Docs**: Four doc sections configured via plugins: `disney/`, `gaming/`, `movies-tv/`, and `universal/`
+- **Custom Docs**: Five doc sections configured via plugins: `disney/`, `gaming/`, `movies-tv/`, `projects/`, and `universal/`
 
 ### Backend (Azure Functions - .NET 9 Isolated Worker)
 Located in `api/` directory:
@@ -346,9 +347,13 @@ All user-facing content **must** support English (default), Spanish, and Portugu
 - `3dprinting.js`, `volunteering.js`, `sponsors.js` — use inline translation objects
 - `movies.js` — redirect only, no translation needed
 
-**Pages with i18n files**: `about.mdx`, `contact.js`, `exchangerates.js`, `index.js`, `projects.mdx`, `weather.js` have translations in:
+**Pages with i18n files**: `about.mdx`, `contact.js`, `exchangerates.js`, `index.js`, `weather.js` have translations in:
 - `i18n/es/docusaurus-plugin-content-pages/`
 - `i18n/pt/docusaurus-plugin-content-pages/`
+
+**Projects docs**: Projects is now a docs plugin (not a page). Changes in `projects/` must be reflected in:
+- `i18n/es/docusaurus-plugin-content-docs-projects/current/`
+- `i18n/pt/docusaurus-plugin-content-docs-projects/current/`
 
 **Movie/TV data**: Reviews in `src/data/movies.json` and `src/data/series.json` must include `review` objects with `en`, `es`, and `pt` keys.
 

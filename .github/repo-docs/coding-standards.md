@@ -12,8 +12,10 @@
 ### File Organization
 - **Pages**: `src/pages/<pagename>.js` — React components for standalone pages
 - **Components**: `src/components/<ComponentName>/index.js` — reusable widgets with their own directory
+- **Hooks**: `src/hooks/<hookName>.js` — shared custom hooks, exported via `src/hooks/index.js`
+- **Client Modules**: `src/clientModules/<module>.js` — global initializations (AOS animations, JSON-LD injection)
 - **Data**: `src/data/<datafile>.json` — JSON data files driving dynamic content
-- **Styles**: `src/css/custom.css` for global styles; component-specific styles via CSS modules
+- **Styles**: `src/css/custom.css` for global styles; component-specific styles via CSS modules (`<Component>.module.css`)
 - **Images**: `static/img/<section>/<subsection>/` — organized by content section
 
 ### Component Conventions

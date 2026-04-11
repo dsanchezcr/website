@@ -14,9 +14,11 @@ if (ExecutionEnvironment.canUseDOM) {
     });
   });
 
-  // Refresh AOS on route changes (SPA navigation)
+  // Refresh AOS on route changes (SPA navigation) — debounced
+  let refreshTimer = null;
   const observer = new MutationObserver(() => {
-    AOS.refresh();
+    if (refreshTimer) clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(() => AOS.refresh(), 200);
   });
-  observer.observe(document.body, { childList: true, subtree: true });
+  observer.observe(document.body, { childList: true, subtree: false });
 }

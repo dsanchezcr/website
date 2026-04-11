@@ -29,7 +29,7 @@ Portfolio of 3D printed objects with printer specifications (Bambu Lab P1S, Flas
 Theme park tips and experiences for Disney and Universal parks.
 
 ### Projects
-Showcase of open-source projects and professional work.
+Showcase of open-source projects and professional work. Organized as a Docusaurus docs section (`projects/`) with individual pages per project and a "Previous Roles" subcategory. Features dynamic GitHub stars/forks badges via the `GitHubStats` component. Full i18n coverage (en/es/pt).
 
 ### Volunteering
 Volunteering experience with organizations (Nemours, MicroMentor, Guatemala Village Health, FundaVida) displayed as cards with category badges and contact CTA.

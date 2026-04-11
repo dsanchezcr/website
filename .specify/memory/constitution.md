@@ -71,7 +71,7 @@
 ## Architectural Boundaries
 
 - Repository documentation lives in `.github/repo-docs/` — never in a root `docs/` folder
-- Docusaurus content paths are reserved: `disney/`, `gaming/`, `movies-tv/`, `universal/`
+- Docusaurus content paths are reserved: `disney/`, `gaming/`, `movies-tv/`, `projects/`, `universal/`
 - Agent definitions live in `.github/agents/`
 - Specification files go in `specs/`
 - The constitution lives here: `.specify/memory/constitution.md`
