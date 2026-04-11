@@ -5,6 +5,7 @@ description: Minha coleção de gaming incluindo videogames no Xbox, PlayStation
 hide_table_of_contents: true
 keywords: [gaming, videogames, jogos de tabuleiro, Xbox, PlayStation, Nintendo Switch, Meta Quest, jogos móveis]
 ---
+import { PlatformCard, PlatformGrid } from '@site/src/components/PlatformCard';
 
 # 🎮 Gaming
 
@@ -17,98 +18,63 @@ Eu jogo pela história, não pelos 100% de conquistas, a vida é muito curta par
 
 ## Videogames
 
-### 🟢 Xbox & PC
+<PlatformGrid>
+  <PlatformCard
+    name="Xbox & PC"
+    description="Minhas plataformas principais com Game Pass, conquistas e comunidade Xbox."
+    image="/img/gaming/xbox.jpg"
+    link="/gaming/xbox"
+    items={["Dados ao vivo do Xbox Live", "Jogos recentes", "Listas e status"]}
+  />
+  <PlatformCard
+    name="PlayStation"
+    description="Exclusivos incríveis e a experiência de caçar troféus."
+    image="/img/gaming/playstation.jpg"
+    link="/gaming/playstation"
+    items={["Coleção de troféus", "Jogos recentes", "Listas e status"]}
+  />
+  <PlatformCard
+    name="Nintendo Switch"
+    description="Os incríveis títulos first-party da Nintendo."
+    image="/img/gaming/nintendo-switch.jpg"
+    link="/gaming/nintendo-switch"
+    items={["Jogos favoritos da Nintendo", "Atualizações e notas"]}
+  />
+  <PlatformCard
+    name="Meta Quest"
+    description="Realidade virtual e mista com Quest 3S."
+    image="/img/gaming/meta-quest.jpg"
+    link="/gaming/meta-quest"
+    items={["Jogos favoritos de VR/MR", "Atualizações e notas"]}
+  />
+  <PlatformCard
+    name="Telefone e Mobile"
+    description="Gaming casual no telefone e tablet Samsung."
+    icon="📱"
+    link="/gaming/phone-mobile"
+    items={["Jogos casuais", "Favoritos para partidas rápidas"]}
+  />
+</PlatformGrid>
 
-**Xbox & PC** são minhas plataformas principais de jogos. Como alguém que trabalha na Microsoft, estou profundamente integrado no ecossistema Xbox com Game Pass, conquistas e a comunidade Xbox.
+## Jogos de Tabuleiro e Xadrez
 
-**O que você encontrará:**
-- Dados ao vivo do meu perfil Xbox Live (gamertag, gamerscore, conquistas)
-- Jogos jogados recentemente
-- Listas de jogos e status
-
-👉 [Explore minha coleção de Xbox & PC](/gaming/xbox)
-
----
-
-### 🔵 PlayStation
-
-**PlayStation** sempre fez parte da minha vida gamer, com exclusivos incríveis e a experiência de caçar troféus.
-
-**O que você encontrará:**
-- Coleção de troféus e progresso
-- Jogos jogados recentemente
-- Listas de jogos e status
-
-👉 [Explore minha coleção de PlayStation](/gaming/playstation)
-
----
-
-### 🔴 Nintendo Switch
-
-**Nintendo Switch** pelos incríveis títulos first-party da Nintendo.
-
-**O que você encontrará:**
-- Meus jogos favoritos da Nintendo
-- Atualizações de status e notas
-- Dicas e opiniões
-
-👉 [Explore minha coleção de Nintendo Switch](/gaming/nintendo-switch)
-
----
-
-### 🥽 Meta Quest
-
-**Meta Quest** é minha porta de entrada para jogos de realidade virtual e mista com o Quest 3S.
-
-**O que você encontrará:**
-- Meus jogos favoritos de VR/MR
-- Atualizações de status e notas
-- Dicas e opiniões
-
-👉 [Explore minha coleção de Meta Quest](/gaming/meta-quest)
-
----
-
-### 📱 Telefone e Mobile
-
-**Telefone e Mobile** é onde eu jogo casualmente no meu telefone e tablet Samsung. Embora eu não jogue tanto no celular, esses jogos são perfeitos para sessões rápidas.
-
-**O que você encontrará:**
-- Jogos casuais e adaptações de jogos de tabuleiro
-- Favoritos mobile para partidas rápidas
-
-👉 [Explore meus jogos de Telefone e Mobile](/gaming/phone-mobile)
+<PlatformGrid>
+  <PlatformCard
+    name="Jogos de Tabuleiro"
+    description="De clássicos de estratégia a favoritos de festa para tempo de qualidade."
+    image="/img/gaming/board-games.jpg"
+    link="/gaming/board-games"
+    items={["Estratégia, festa e cartas", "Jogos com expansões"]}
+  />
+  <PlatformCard
+    name="Xadrez"
+    description="Entusiasta do xadrez desde criança — estatísticas ao vivo do Chess.com."
+    image="/img/gaming/chess-com.jpg"
+    link="/gaming/chess"
+    items={["Dados ao vivo do Chess.com", "Rápida, Blitz e Diária"]}
+  />
+</PlatformGrid>
 
 ---
 
-## Jogos de Tabuleiro
-
-### 🎲 Jogos de Tabuleiro
-
-**Os jogos de tabuleiro** são uma ótima maneira de se desconectar das telas e aproveitar tempo de qualidade com família e amigos. De clássicos de estratégia a favoritos de festa, esses jogos de mesa reúnem as pessoas.
-
-**O que você encontrará:**
-- Jogos de estratégia, festa e cartas
-- Jogos com expansões agrupados
-- Breves descrições de cada jogo
-
-👉 [Explore minha coleção de Jogos de Tabuleiro](/gaming/board-games)
-
----
-
-## Xadrez
-
-### ♟️ Xadrez
-
-Sou um **entusiasta do xadrez** desde criança. Hoje em dia jogo por diversão, não competitivamente, mas ainda adoro uma boa partida. Meu perfil do Chess.com apresenta estatísticas ao vivo da API pública.
-
-**O que você encontrará:**
-- Dados ao vivo do perfil do Chess.com (ratings, histórico de vitórias/derrotas)
-- Estatísticas nos modos Rápida, Blitz e Diária
-- Link para me desafiar para uma partida
-
-👉 [Explore meu perfil de Xadrez](/gaming/chess)
-
----
-
-> **Nota:** A seção de Xbox & PC apresenta dados ao vivo do meu perfil Xbox. Os dados do PlayStation e Xadrez são obtidos ao vivo de suas respectivas APIs. O conteúdo do Nintendo Switch, Meta Quest, Telefone e Mobile, e Jogos de Tabuleiro é curado manualmente.
+> **Nota:** Xbox, PlayStation e Xadrez apresentam dados ao vivo de suas respectivas APIs. As demais seções são curadas manualmente.
