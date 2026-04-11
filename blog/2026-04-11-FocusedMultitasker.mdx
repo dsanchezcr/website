@@ -1,0 +1,142 @@
+---
+title: "The focused multitasker: how AI is rewiring the way engineers think"
+description: "Science says multitasking destroys productivity. AI demands engineers manage multiple parallel workstreams. The resolution isn't doing more at once, it's shifting from execution to orchestration and developing a new cognitive skill: meta-focus."
+slug: focused-multitasker-ai-rewiring-engineers-think
+authors: [dsanchezcr]
+tags: [AI, Agentic AI, GitHub Copilot, Software Engineering, Productivity, Cognitive Science]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2026-04-11-focusedmultitasker/focused-multitasker.jpg
+date: 2026-04-11T10:00
+---
+
+# The focused multitasker: a software engineer's guide to thinking with AI agents
+
+Here is a contradiction I keep running into. Every piece of cognitive science research I have read says the same thing: focus on one task at a time. Multitasking is a myth. Your brain cannot do two demanding things simultaneously without paying a steep performance penalty.
+
+And yet, every day I find myself reviewing a pull request that [GitHub Copilot cloud agent](https://docs.github.com/enterprise-cloud@latest/copilot/concepts/agents/cloud-agent/about-cloud-agent) opened, while a CI/CD pipeline runs on a second branch triggered by AI-generated code. More parallel workstreams than I ever managed before AI entered my workflow and somehow it feels *less* chaotic than before.
+
+Something does not add up. Either the science is wrong, or what I am doing is not actually multitasking. I think it is the latter, and the distinction matters for every engineer adapting to agentic workflows.
+
+{/* truncate */}
+
+![The focused multitasker](pathname:///img/blog/2026-04-11-focusedmultitasker/focused-multitasker.jpg)
+
+---
+
+## What science says about multitasking
+
+The research on multitasking is not ambiguous. It is one of the most replicated findings in cognitive psychology.
+
+In 2001, Joshua Rubinstein, David Meyer, and Jeffrey Evans published a landmark study in the *Journal of Experimental Psychology: Human Perception and Performance* that quantified what happens when people switch between tasks. Their experiments showed that every task switch imposes two distinct costs: the time your brain spends deactivating the rules and context of the previous task, and the time it spends loading the rules and context of the new one. These "switch costs" compound. The more complex the tasks, the steeper the penalty. Their data showed measurable time losses on every switch, losses that scaled with task complexity, even when participants knew the switch was coming. You can read the full study here: [Rubinstein, J. S., Meyer, D. E. & Evans, J. E. (2001). Executive control of cognitive processes in task switching. *Journal of Experimental Psychology: Human Perception and Performance*, 27(4), 763–797](https://doi.org/10.1037/0096-1523.27.4.763).
+
+Earlier work by Meyer and David Kieras built the theoretical foundation for this finding. Their computational model of executive cognitive control explained why the human brain struggles with concurrent demanding tasks: the executive processes that manage task priorities, working memory allocation, and goal tracking operate as a bottleneck. You only have one set of executive control processes, and they can only be configured for one task at a time. The original papers are: [Meyer, D. E. & Kieras, D. E. (1997a). A computational theory of executive cognitive processes and multiple-task performance: Part 1. Basic mechanisms. *Psychological Review*, 104(1), 3–65](https://doi.org/10.1037/0033-295X.104.1.3) and [Part 2. Accounts of psychological refractory-period phenomena. *Psychological Review*, 104(4), 749–791](https://doi.org/10.1037/0033-295X.104.4.749).
+
+The practical numbers are startling. The [American Psychological Association has documented](https://www.apa.org/topics/research/multitasking) that switching between tasks can cost as much as 40% of productive time, and that recovering full focus after an interruption takes between 15 and 23 minutes. That means a developer who switches contexts four times in a morning may have lost over an hour of deep work before lunch, just from the neurological overhead of switching itself.
+
+More recent synthesis comes from [Tambun, Yudoko, and Aldianto (2024)](https://doi.org/10.24940/theijbm/2024/v12/i9/bm2409-012), whose archival review in *The International Journal of Business and Management* examined how multitasking affects learning, brain structure, and long-term cognitive function. Their findings reinforce what the earlier experimental literature established: the costs are not just immediate but cumulative, with habitual task-switching affecting attention span and working memory over time.
+
+This is not controversial science. It is well-established and well-replicated. The question is what it means for a profession that increasingly involves overseeing multiple AI agents working in parallel.
+
+---
+
+## The old multitasking vs. the new orchestration
+
+Think of a football coach watching multiple plays unfold across the field, not running between positions herself, but evaluating each play and making decisions about each one. That is closer to what AI-assisted engineering looks like than the image of a developer frantically switching between open editor tabs.
+
+Traditional multitasking, the kind the research warns against, involves a single person trying to *execute* multiple cognitively demanding tasks simultaneously: writing code while reviewing a design document while responding to Slack messages. Each activity requires its own mental model, its own working memory load, its own set of active rules. Every switch between them triggers the full cost that Rubinstein and Meyer measured.
+
+What is happening with AI-assisted engineering is structurally different. The engineer is not executing multiple tasks. The engineer is *delegating* multiple tasks and then evaluating the results. The cognitive load shifts from execution to oversight, from production to judgment. Consider the difference:
+
+| Traditional multitasking | AI-assisted orchestration |
+|---|---|
+| You write a feature, then switch to fix a bug, then switch to review a PR | An agent writes the feature, a second agent fixes the bug, you review both PRs sequentially |
+| Each switch requires loading a new codebase context into working memory | Each review uses the same cognitive mode: reading, evaluating, deciding |
+| You alternate between *producing* and *producing something else* | You maintain a single stance: *evaluating what was produced* |
+| Switch cost is high because execution contexts differ radically | Switch cost is reduced because the evaluation framework stays consistent across reviews |
+
+The Tambun et al. synthesis mentioned above is relevant here too: when workers shift from direct execution to evaluative oversight, the cognitive architecture changes in ways that reduce the classic switch-cost penalty. The supervisory role involves a different and more consistent cognitive mode than execution does.
+
+---
+
+## What this looks like in software engineering
+
+That pattern is easier to see in concrete examples.
+
+### Parallel PR review
+
+I assign a GitHub issue to [GitHub Copilot cloud agent](https://docs.github.com/en/enterprise-cloud@latest/copilot/concepts/agents/cloud-agent/about-cloud-agent). While the agent works, independently creating a branch, writing code, and running tests, I open a second agent's completed pull request from an earlier task. I review the diff, check test coverage, verify that the implementation matches the specification, and leave comments or approve.
+
+In the old model, I would have been writing both implementations myself. Every switch between them would have required rebuilding mental context from scratch. In the new model, both implementations happen in parallel, and I review them in sequence using the same evaluative mindset. The cognitive framework I carry from one PR to the next is the same: is this correct, well-tested, and aligned with what was asked?
+
+### Delegated refactor with intermediate checkpoints
+
+I ask an agent to refactor a module, breaking a large file into smaller, well-separated concerns. While the agent works, I do not sit idle. I analyze the commits as they appear. But I am not writing code. I am judging code. Is the separation clean? Did the agent move dependencies correctly? Are the imports pointing to the right files?
+
+Judging code and writing code are different cognitive tasks. Judging uses pattern recognition, domain knowledge, and evaluative reasoning. Writing requires those plus the additional overhead of syntax management, API recall, and incremental debugging. The evaluation-only mode is cognitively lighter, which means moving between evaluations carries a smaller switch cost.
+
+### Pipeline monitoring across branches
+
+Three branches are running through CI/CD pipelines, each containing AI-generated code. I watch the pipeline dashboards. One build fails. I look at the error, identify it as a flaky test unrelated to the change, and re-trigger. Another pipeline passes. I merge. The third is still running. I move on.
+
+Air traffic control is an apt comparison here, not because of the stakes, but because of the attentional structure. Controllers do not fly planes. They maintain situational awareness across many simultaneous trajectories and intervene only when a decision is required. The cognitive skill is not execution; it is pattern recognition at altitude. Engineers monitoring agentic pipelines are developing something similar: the ability to hold multiple process states in peripheral awareness and know which ones need attention right now. None of this requires deep cognitive engagement with any single task. It is supervisory attention: scanning for anomalies, making binary decisions (pass/fail, merge/investigate), and routing work forward.
+
+---
+
+## Everyday tasks follow the same pattern
+
+This shift is not limited to code. The same dynamic plays out in everyday professional work.
+
+An AI drafts three email responses. I read each one, adjust tone on one, approve the other two. I am not writing three emails. I am editing and validating three proposals. An agent prepares meeting notes from a transcript. I scan the summary, correct one attribution, and move to a document that another AI tool summarized. Again, the task is evaluation, not production.
+
+The common thread deserves its own framing. AI moves humans from the **production layer** to the **validation layer**. These are not just different tasks. They are different cognitive modes. Production requires task-specific execution: remembering syntax, managing state, generating something from nothing. Validation requires judgment that transfers across tasks: comparing what exists against a standard, identifying what is missing or wrong, deciding whether to accept or redirect. And judgment, unlike execution, carries far less context-switching overhead because the evaluative lens stays constant even as the content changes.
+
+This is the underlying shift that makes AI-assisted work feel different from traditional multitasking. You are not doing more things. You are doing a different *kind* of thing, one that your brain handles with far less friction when moving between instances of it.
+
+---
+
+## The mental model shift: meta-focus
+
+If the engineer's job is no longer executing individual tasks but overseeing multiple agents that execute on their behalf, the core cognitive skill changes. I think of this new skill as **meta-focus**: the ability to maintain sustained attention on the *quality of oversight itself*, rather than on any single task being overseen.
+
+Meta-focus is single-tasking at a higher level of abstraction. You are not focused on writing a function or debugging a test. You are focused on ensuring that the agents writing functions and debugging tests are doing so correctly, safely, and in alignment with the system's goals.
+
+This connects to research by [Anthony Sali at Wake Forest University](https://news.wfu.edu/2024/04/16/the-switch-cost-of-multitasking/), whose work using fMRI and EEG examines how the brain manages cognitive flexibility during task-switching. Sali's research suggests that the brain's management of cognitive flexibility is more nuanced than a simple bottleneck model, and that the nature of the task being switched between matters as much as the switching itself. A brain moving between instances of the same evaluative mode behaves differently from a brain alternating between two unrelated execution contexts. The supervisory mode appears to impose less interference precisely because it does not require the brain to maintain competing execution contexts in working memory.
+
+The practical implication is this: the engineers who will succeed in agentic workflows are not those who learn to multitask faster. They are those who learn to stop multitasking on execution entirely and develop their capacity for sustained evaluative attention.
+
+---
+
+## Practical implications for engineers adopting agentic workflows
+
+Understanding the cognitive science is useful, but what do you do with it? Here are four concrete recommendations.
+
+### Time-box review sessions, not execution sessions
+
+In the old model, you time-boxed how long you would spend *writing* code for a task. In the agentic model, time-box how long you spend *reviewing* agent output. Give yourself 20-minute review blocks and then step away. This prevents review fatigue from degrading the quality of your oversight, which is now your primary contribution.
+
+### Use async agent runs to create natural evaluation windows
+
+Assign tasks to agents before you start a deep focus block on something else. By the time you finish, the agent has results ready for review. This creates a natural rhythm, similar to a Pomodoro pattern but structured around delegation rather than time pressure: assign, focus elsewhere, return and evaluate. You are not interrupting yourself. The agent's work completes on its own schedule, and you integrate review into the gaps between your focused sessions.
+
+### Practice deliberate context switching with a consistent evaluative lens
+
+When reviewing multiple agent outputs in sequence, use a consistent checklist: correctness, test coverage, security implications, alignment with specifications. This standardized lens reduces the cognitive cost of switching between different codebases or features. Your evaluation framework stays stable even as the content changes, and that stability is what keeps the switch cost low.
+
+### Resist the pull of execution
+
+The most dangerous habit in agentic workflows is dropping into execution mode when you should stay in evaluation mode. You see an agent's code and think: *I would have done that differently, let me just rewrite this part.* That instinct is not bad discipline. It is domain expertise expressing itself. Engineers who are good at coding will want to fix the code they see, and that impulse comes from competence, not impatience. But acting on it pulls you out of the supervisory role and back into the switch-cost penalty zone. Unless the agent's output is fundamentally wrong, provide feedback through comments or updated specifications and let the agent iterate. Stay in the evaluation lane.
+
+---
+
+## The engineer who focuses best
+
+The paradox from the beginning of this post resolves itself once you see the structural difference between cognitive multitasking and orchestrated delegation.
+
+Traditional multitasking, trying to execute multiple demanding tasks simultaneously, remains as destructive as Rubinstein, Meyer, and every subsequent researcher has demonstrated. That has not changed. Your brain still has one executive control bottleneck. Switching between execution contexts still costs 15 to 23 minutes of recovery time. Productivity still drops by up to 40% when you fragment your attention across competing tasks.
+
+What has changed is the *type of work* engineers do. When AI agents handle execution, the engineer's cognitive task narrows to oversight, evaluation, and judgment. These activities share a common mental framework. Moving between them does not trigger the same catastrophic switch costs that moving between different execution tasks does.
+
+The engineers who thrive in this era will not be those who learn to multitask better. They will be those who learn to focus with precision on *what actually requires their attention* and let everything else run in the background.
+
+That is not multitasking. That is the deepest kind of focus there is.
