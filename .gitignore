@@ -7,6 +7,10 @@
 build
 *.lscache
 
+# Test outputs
+test-results/
+playwright-report/
+
 # Misc
 yarn.lock
 .DS_Store
