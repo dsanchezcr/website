@@ -42,6 +42,7 @@ export default function GitHubStats({ repo }) {
           stars: data.stargazers_count,
           forks: data.forks_count,
           language: data.language,
+          archived: data.archived,
         };
         setCache(repo, result);
         setStats(result);
@@ -55,6 +56,11 @@ export default function GitHubStats({ repo }) {
 
   return (
     <span className={styles.statsContainer}>
+      {stats.archived && (
+        <span className={styles.archivedBadge} title="Archived">
+          📦 Archived
+        </span>
+      )}
       {stats.stars > 0 && (
         <span className={styles.badge} title="GitHub Stars">
           ⭐ {stats.stars}

@@ -5,7 +5,7 @@ description: Open source projects by David Sanchez - Azure, GitHub Actions, .NET
 hide_table_of_contents: true
 keywords: [open source, Azure, GitHub Actions, .NET, projects, David Sanchez]
 ---
-import GitHubStats from '@site/src/components/GitHubStats';
+import ProjectCard, { ProjectCardGrid } from '@site/src/components/ProjectCard';
 
 # 🚀 Projects
 
@@ -13,41 +13,104 @@ Welcome to my open source project showcase! All projects are available on [GitHu
 
 ## My Projects
 
-### 🎄 [Secret Santa](/projects/secret-santa) <GitHubStats repo="dsanchezcr/secretsanta" />
-Azure-powered multilingual gift exchange application.
-
-### 📋 [Issue Importer Action](/projects/issue-importer) <GitHubStats repo="dsanchezcr/issue-importer-action" />
-GitHub Action for bulk importing issues from CSV/JSON.
-
-### 💱 [Colones Exchange Rate](/projects/colones-exchange-rate) <GitHubStats repo="dsanchezcr/ColonesExchangeRate" />
-NuGet & npm packages for Costa Rican currency exchange rates.
-
-### 📭 [Contact Form with Azure](/projects/contact-form) <GitHubStats repo="dsanchezcr/ContactFormWithAzure" />
-Contact form using Azure Communication Services, Azure Functions & GitHub Actions.
-
-### 🧪 [Load Testing Demo](/projects/load-testing) <GitHubStats repo="dsanchezcr/LoadTestingDemo" />
-.NET ASP.NET with Azure Cosmos DB, Azure Load Testing & GitHub.
+<ProjectCardGrid>
+  <ProjectCard
+    title="Secret Santa"
+    description="Azure-powered multilingual gift exchange application for teams, friends, and family."
+    link="/projects/secret-santa"
+    repo="dsanchezcr/secretsanta"
+    image="/img/projects/secret-santa.jpg"
+    tags={["Azure", "React", ".NET"]}
+  />
+  <ProjectCard
+    title="Issue Importer Action"
+    description="GitHub Action for bulk importing issues from CSV/JSON — perfect for Copilot Agent Mode."
+    link="/projects/issue-importer"
+    repo="dsanchezcr/issue-importer-action"
+    image="/img/projects/action-importer.jpg"
+    tags={["GitHub Actions", "Node.js"]}
+  />
+  <ProjectCard
+    title="Colones Exchange Rate"
+    description="NuGet & npm packages for Costa Rican currency exchange rates from Hacienda API."
+    link="/projects/colones-exchange-rate"
+    repo="dsanchezcr/ColonesExchangeRate"
+    image="/img/blog/2023-11-06-ColonesExchangeRate/Icon.png"
+    tags={[".NET", "npm", "NuGet"]}
+  />
+  <ProjectCard
+    title="Contact Form with Azure"
+    description="Contact form using Azure Communication Services, Azure Functions & GitHub Actions."
+    link="/projects/contact-form"
+    repo="dsanchezcr/ContactFormWithAzure"
+    image="/img/blog/2023-04-23-BuildContactForm/ContactFormResult.jpg"
+    tags={["Azure Functions", "Azure Communication Services"]}
+    archived={true}
+  />
+  <ProjectCard
+    title="Load Testing Demo"
+    description=".NET ASP.NET with Azure Cosmos DB, Azure Load Testing & GitHub CI/CD integration."
+    link="/projects/load-testing"
+    repo="dsanchezcr/LoadTestingDemo"
+    image="/img/blog/2022-12-21-LoadTesting/LoadTestingWebApp.jpg"
+    tags={[".NET", "Azure Cosmos DB", "Load Testing"]}
+    archived={true}
+  />
+</ProjectCardGrid>
 
 ---
 
 ## Projects from Previous Roles
 
-In my past roles I had the opportunity to build the following open source projects. Check them out to learn more about Azure services and software development.
+In my past roles I had the opportunity to build the following open source projects.
 
-### 🗺️ [Sample Delivery Service](/projects/previous-roles/sample-delivery-service) <GitHubStats repo="dsanchezcr/SampleDeliveryService" />
-Azure Maps project with Cosmos DB, App Service, Key Vault and .NET.
-
-### ✊ [Rock, Paper, Scissors, Lizard, Spock](/projects/previous-roles/rpsls) <GitHubStats repo="microsoft/RockPaperScissorsLizardSpock" />
-Microsoft Ignite 2019 demo application running on Azure.
-
-### 🛒 [Tailwind Traders](/projects/previous-roles/tailwind-traders) <GitHubStats repo="microsoft/TailwindTraders" />
-Intelligent application reference architecture powered by Azure.
-
-### 🏨 [SmartHotel360](/projects/previous-roles/smarthotel360) <GitHubStats repo="microsoft/SmartHotel360" />
-Connected travel reference architecture showcasing smart hospitality.
-
-### ⛈️ [Thundercloud](/projects/previous-roles/thundercloud) <GitHubStats repo="dsanchezcr/Thundercloud" />
-Azure IoT project with LED cloud controlled via MXChip and Azure IoT Hub.
+<ProjectCardGrid>
+  <ProjectCard
+    title="Sample Delivery Service"
+    description="Azure Maps project with Cosmos DB, App Service, Key Vault and .NET with JavaScript."
+    link="/projects/previous-roles/sample-delivery-service"
+    repo="dsanchezcr/SampleDeliveryService"
+    image="https://raw.githubusercontent.com/dsanchezcr/SampleDeliveryService/main/Images/App.gif"
+    tags={["Azure Maps", "Cosmos DB", ".NET"]}
+    archived={true}
+  />
+  <ProjectCard
+    title="Rock, Paper, Scissors, Lizard, Spock"
+    description="Microsoft Ignite 2019 demo application running on Azure."
+    link="/projects/previous-roles/rpsls"
+    repo="microsoft/RockPaperScissorsLizardSpock"
+    image="https://raw.githubusercontent.com/microsoft/RockPaperScissorsLizardSpock/main/Documents/Images/RPSLS.gif"
+    tags={["Azure", "Ignite 2019"]}
+    archived={true}
+  />
+  <ProjectCard
+    title="Tailwind Traders"
+    description="Intelligent application reference architecture powered by Azure cloud and AI."
+    link="/projects/previous-roles/tailwind-traders"
+    repo="microsoft/TailwindTraders"
+    image="https://raw.githubusercontent.com/microsoft/TailwindTraders/master/Documents/Images/Logo.png"
+    tags={["Azure", "AI", "Reference Architecture"]}
+    archived={true}
+  />
+  <ProjectCard
+    title="SmartHotel360"
+    description="Connected travel reference architecture showcasing smart hospitality on Azure."
+    link="/projects/previous-roles/smarthotel360"
+    repo="microsoft/SmartHotel360"
+    image="https://raw.githubusercontent.com/microsoft/SmartHotel360/master/Documents/Images/Logo.png"
+    tags={["Azure", "IoT", "Microservices"]}
+    archived={true}
+  />
+  <ProjectCard
+    title="Thundercloud"
+    description="Azure IoT project — LED cloud controlled remotely via MXChip and Azure IoT Hub."
+    link="/projects/previous-roles/thundercloud"
+    repo="dsanchezcr/Thundercloud"
+    image="https://raw.githubusercontent.com/dsanchezcr/Thundercloud/main/Images/Thundercloud.gif"
+    tags={["Azure IoT", "MXChip", "Azure Functions"]}
+    archived={true}
+  />
+</ProjectCardGrid>
 
 ---
 
