@@ -1,0 +1,74 @@
+[
+  {
+    "parkId": "magic-kingdom",
+    "name": { "en": "Magic Kingdom", "es": "Magic Kingdom", "pt": "Magic Kingdom" },
+    "description": {
+      "en": "The flagship park featuring classic attractions, enchanting shows, and themed lands including Fantasyland and Tomorrowland.",
+      "es": "El parque insignia con atracciones clásicas, espectáculos encantadores y áreas temáticas como Fantasyland y Tomorrowland.",
+      "pt": "O parque principal com atrações clássicas, espetáculos encantadores e áreas temáticas como Fantasyland e Tomorrowland."
+    },
+    "mapCenter": [28.4177, -81.5812],
+    "mapZoom": 16,
+    "items": []
+  },
+  {
+    "parkId": "epcot",
+    "name": { "en": "EPCOT", "es": "EPCOT", "pt": "EPCOT" },
+    "description": {
+      "en": "A celebration of innovation, culture, and world cuisine featuring World Showcase pavilions and cutting-edge attractions.",
+      "es": "Una celebración de la innovación, cultura y gastronomía mundial con pabellones del World Showcase y atracciones de vanguardia.",
+      "pt": "Uma celebração da inovação, cultura e gastronomia mundial com pavilhões do World Showcase e atrações de ponta."
+    },
+    "mapCenter": [28.3747, -81.5494],
+    "mapZoom": 16,
+    "items": []
+  },
+  {
+    "parkId": "hollywood-studios",
+    "name": { "en": "Hollywood Studios", "es": "Hollywood Studios", "pt": "Hollywood Studios" },
+    "description": {
+      "en": "Where movies come alive with thrilling rides, immersive lands, and spectacular shows.",
+      "es": "Donde las películas cobran vida con emocionantes atracciones, áreas inmersivas y espectáculos increíbles.",
+      "pt": "Onde os filmes ganham vida com atrações emocionantes, áreas imersivas e espetáculos incríveis."
+    },
+    "mapCenter": [28.3575, -81.5583],
+    "mapZoom": 16,
+    "items": []
+  },
+  {
+    "parkId": "animal-kingdom",
+    "name": { "en": "Animal Kingdom", "es": "Animal Kingdom", "pt": "Animal Kingdom" },
+    "description": {
+      "en": "Nature, adventure, and world-class attractions set in a lush, immersive environment.",
+      "es": "Naturaleza, aventura y atracciones de clase mundial en un entorno exuberante e inmersivo.",
+      "pt": "Natureza, aventura e atrações de classe mundial em um ambiente exuberante e imersivo."
+    },
+    "mapCenter": [28.3553, -81.5901],
+    "mapZoom": 16,
+    "items": []
+  },
+  {
+    "parkId": "disney-springs",
+    "name": { "en": "Disney Springs", "es": "Disney Springs", "pt": "Disney Springs" },
+    "description": {
+      "en": "A vibrant open-air shopping, dining, and entertainment complex — no admission required.",
+      "es": "Un vibrante complejo de compras, restaurantes y entretenimiento al aire libre — sin entrada requerida.",
+      "pt": "Um vibrante complexo de compras, restaurantes e entretenimento ao ar livre — sem ingresso necessário."
+    },
+    "mapCenter": [28.3696, -81.5175],
+    "mapZoom": 16,
+    "items": []
+  },
+  {
+    "parkId": "boardwalk",
+    "name": { "en": "BoardWalk", "es": "BoardWalk", "pt": "BoardWalk" },
+    "description": {
+      "en": "A charming waterfront promenade with restaurants, nightlife, and resort entertainment — no admission required.",
+      "es": "Un encantador paseo marítimo con restaurantes, vida nocturna y entretenimiento de resort — sin entrada requerida.",
+      "pt": "Um charmoso calçadão à beira-mar com restaurantes, vida noturna e entretenimento de resort — sem ingresso necessário."
+    },
+    "mapCenter": [28.3672, -81.5547],
+    "mapZoom": 17,
+    "items": []
+  }
+]

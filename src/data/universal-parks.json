@@ -1,0 +1,99 @@
+[
+  {
+    "parkId": "universal-studios",
+    "name": { "en": "Universal Studios Florida", "es": "Universal Studios Florida", "pt": "Universal Studios Florida" },
+    "description": {
+      "en": "Ride the movies with thrilling attractions, live shows, and immersive themed areas.",
+      "es": "Vive las películas con emocionantes atracciones, espectáculos en vivo y áreas temáticas inmersivas.",
+      "pt": "Viva os filmes com atrações emocionantes, shows ao vivo e áreas temáticas imersivas."
+    },
+    "mapCenter": [28.4754, -81.4682],
+    "mapZoom": 16,
+    "items": [
+        {
+            "id": "The Bourne Stuntacular",
+            "name": { "en": "The Bourne Stuntacular", "es": "The Bourne Stuntacular", "pt": "The Bourne Stuntacular" },
+            "category": "show",
+            "review": { "en": "Great show, highly recommended!", "es": "Gran espectáculo, ¡muy recomendable!", "pt": "Ótimo show, altamente recomendado!" },
+            "rating": 5,
+            "url":"https://www.universalorlando.com/web/en/us/things-to-do/shows/the-bourne-stuntacular",
+            "mustDo": true,
+            "coordinates": [28.475930, -81.467007],
+            "tips": { "en": "Check the time of the show before planning your visit.", "es": "Verifica el horario del espectáculo antes de planificar tu visita.", "pt": "Verifique o horário do show antes de planejar sua visita." },
+            "order": 1
+        },
+        {
+            "id": "Horror Make-Up Show",
+            "name": { "en": "Horror Make-Up Show", "es": "Espectáculo de Maquillaje de Terror", "pt": "Espetáculo de Maquiagem de Terror" },
+            "category": "show",
+            "review": { "en": "Old, but classic, recommended if you liked classic horror movies.", "es": "Antiguo, pero clásico, recomendado si te gustan las películas de terror clásicas.", "pt": "Antigo, mas clássico, recomendado se você gosta de filmes de terror clássicos." },
+            "rating": 5,
+            "url":"https://www.universalorlando.com/web/en/us/things-to-do/shows/universal-orlandos-horror-make-up-show",
+            "mustDo": false,
+            "coordinates": [28.4766568,-81.4670539,20],
+            "tips": { "en": "Check the time of the show before planning your visit.", "es": "Verifica el horario del espectáculo antes de planificar tu visita.", "pt": "Verifique o horário do show antes de planejar sua visita." },
+            "order": 2
+        }
+    ]
+  },
+  {
+    "parkId": "islands-of-adventure",
+    "name": { "en": "Islands of Adventure", "es": "Islands of Adventure", "pt": "Islands of Adventure" },
+    "description": {
+      "en": "An adventure across themed islands with world-class coasters and immersive experiences.",
+      "es": "Una aventura a través de islas temáticas con montañas rusas de clase mundial y experiencias inmersivas.",
+      "pt": "Uma aventura através de ilhas temáticas com montanhas-russas de classe mundial e experiências imersivas."
+    },
+    "mapCenter": [28.4712, -81.4708],
+    "mapZoom": 16,
+    "items": []
+  },
+  {
+    "parkId": "epic-universe",
+    "name": { "en": "Epic Universe", "es": "Epic Universe", "pt": "Epic Universe" },
+    "description": {
+      "en": "The newest and most ambitious theme park, featuring groundbreaking lands and next-generation attractions.",
+      "es": "El parque temático más nuevo y ambicioso, con áreas revolucionarias y atracciones de última generación.",
+      "pt": "O parque temático mais novo e ambicioso, com áreas revolucionárias e atrações de última geração."
+    },
+    "mapCenter": [28.4727, -81.4345],
+    "mapZoom": 16,
+    "items": []
+  },
+  {
+    "parkId": "citywalk",
+    "name": { "en": "CityWalk", "es": "CityWalk", "pt": "CityWalk" },
+    "description": {
+      "en": "Dining, shopping, and nightlife entertainment connecting the Universal parks — no admission required.",
+      "es": "Restaurantes, compras y entretenimiento nocturno que conecta los parques de Universal — sin entrada requerida.",
+      "pt": "Restaurantes, compras e entretenimento noturno conectando os parques da Universal — sem ingresso necessário."
+    },
+    "mapCenter": [28.4735, -81.4665],
+    "mapZoom": 17,
+    "items": []
+  },
+  {
+    "parkId": "halloween-horror-nights",
+    "name": { "en": "Halloween Horror Nights", "es": "Halloween Horror Nights", "pt": "Halloween Horror Nights" },
+    "description": {
+      "en": "A seasonal after-hours event featuring haunted houses, scare zones, and themed entertainment.",
+      "es": "Un evento nocturno de temporada con casas embrujadas, zonas de terror y entretenimiento temático.",
+      "pt": "Um evento noturno sazonal com casas assombradas, zonas de terror e entretenimento temático."
+    },
+    "mapCenter": [28.4754, -81.4682],
+    "mapZoom": 16,
+    "items": []
+  },
+  {
+    "parkId": "holiday-season",
+    "name": { "en": "Holiday Season", "es": "Temporada Festiva", "pt": "Temporada de Festas" },
+    "description": {
+      "en": "Seasonal celebrations including Holidays, Mardi Gras, and other special events throughout the year.",
+      "es": "Celebraciones de temporada incluyendo las Fiestas, Mardi Gras y otros eventos especiales durante todo el año.",
+      "pt": "Celebrações sazonais incluindo as Festas, Mardi Gras e outros eventos especiais durante todo o ano."
+    },
+    "mapCenter": [28.4754, -81.4682],
+    "mapZoom": 16,
+    "items": []
+  }
+]

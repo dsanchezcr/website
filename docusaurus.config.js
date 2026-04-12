@@ -283,6 +283,8 @@ const config = {
             items: [
               {to: '/gaming', label: 'Gaming'},
               {to: '/movies-tv', label: 'Movies & TV'},
+              {to: '/disney', label: 'Disney World'},
+              {to: '/universal', label: 'Universal Orlando'},
               {to: '/3dprinting', label: '3D Printing'},
               {to: '/volunteering', label: 'Volunteering'},
             ],
