@@ -384,6 +384,10 @@ button[class*='toggleButton'] svg {
 
 /* Ensure search doesn't overflow on smaller screens */
 @media (max-width: 996px) {
+  .navbar .DocSearch {
+    margin-right: 0;
+  }
+
   .navbar__toggle {
     display: inline-flex;
     align-items: center;
@@ -434,6 +438,7 @@ button[class*='toggleButton'] svg {
   .navbar .DocSearch-Button {
     padding: 0 10px;
     width: 36px;
+    min-width: 36px;
     justify-content: center;
   }
   
@@ -443,7 +448,53 @@ button[class*='toggleButton'] svg {
   }
   
   .navbar__items--right {
+    display: flex;
     gap: 8px;
+    align-items: center;
+    margin-left: auto;
+    position: relative;
+  }
+
+  .navbar__items--right > .navbar__item.navbar__link {
+    display: none;
+  }
+
+  .navbar__items--right > .dropdown--right {
+    display: none;
+  }
+
+  .navbar__items--right [class*='colorModeToggle'] {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    flex: 0 0 auto;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+
+  .navbar__items--right [class*='colorModeToggle'] button,
+  .navbar__items--right button[class*='toggleButton'] {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  .navbar__items--right .navbarSearchContainer_Bca1 {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    padding-right: 40px;
+  }
+
+  .navbar-sidebar [class*='colorModeToggle'],
+  .navbar-sidebar__brand [class*='colorModeToggle'],
+  .navbar-sidebar .toggle_vylO,
+  .navbar-sidebar__brand .toggle_vylO {
+    display: none !important;
   }
 }
 
@@ -733,16 +784,8 @@ article {
 
 /* Mobile navbar fixes */
 @media (max-width: 996px) {
-  /* Fit hamburger toggle inside the navbar bar */
   .navbar__toggle {
     margin-right: 0.5rem;
-    width: 30px;
-    height: 30px;
-  }
-
-  .navbar__toggle svg {
-    width: 20px;
-    height: 20px;
   }
 
   /* Dropdown items in mobile sidebar */
