@@ -1,0 +1,102 @@
+[
+  {
+    "parkId": "universal-studios",
+    "name": { "en": "Universal Studios Florida", "es": "Universal Studios Florida", "pt": "Universal Studios Florida" },
+    "description": {
+      "en": "Ride the movies with thrilling attractions, live shows, and immersive themed areas.",
+      "es": "Vive las películas con emocionantes atracciones, espectáculos en vivo y áreas temáticas inmersivas.",
+      "pt": "Viva os filmes com atrações emocionantes, shows ao vivo e áreas temáticas imersivas."
+    },
+    "mapCenter": [28.4754, -81.4682],
+    "mapZoom": 16,
+    "items": [
+      { "id": "us-revenge-mummy", "name": { "en": "Revenge of the Mummy", "es": "Revenge of the Mummy", "pt": "Revenge of the Mummy" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4751, -81.4683], "tips": { "en": "", "es": "", "pt": "" }, "order": 3 },
+      { "id": "us-transformers", "name": { "en": "TRANSFORMERS: The Ride-3D", "es": "TRANSFORMERS: The Ride-3D", "pt": "TRANSFORMERS: The Ride-3D" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4756, -81.4693], "tips": { "en": "", "es": "", "pt": "" }, "order": 4 },
+      { "id": "us-escape-gringotts", "name": { "en": "Harry Potter and the Escape from Gringotts", "es": "Harry Potter and the Escape from Gringotts", "pt": "Harry Potter and the Escape from Gringotts" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4797, -81.4684], "tips": { "en": "", "es": "", "pt": "" }, "order": 5 },
+      { "id": "us-men-in-black", "name": { "en": "MEN IN BLACK Alien Attack", "es": "MEN IN BLACK Alien Attack", "pt": "MEN IN BLACK Alien Attack" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4744, -81.4654], "tips": { "en": "", "es": "", "pt": "" }, "order": 6 },
+      { "id": "us-et-adventure", "name": { "en": "E.T. Adventure", "es": "E.T. Adventure", "pt": "E.T. Adventure" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4740, -81.4657], "tips": { "en": "", "es": "", "pt": "" }, "order": 7 },
+      { "id": "us-simpsons-ride", "name": { "en": "The Simpsons Ride", "es": "The Simpsons Ride", "pt": "The Simpsons Ride" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4748, -81.4669], "tips": { "en": "", "es": "", "pt": "" }, "order": 8 },
+      { "id": "us-hogwarts-express", "name": { "en": "Hogwarts Express", "es": "Hogwarts Express", "pt": "Hogwarts Express" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4791, -81.4692], "tips": { "en": "", "es": "", "pt": "" }, "order": 9 },
+      { "id": "us-bourne-stuntacular", "name": { "en": "The Bourne Stuntacular", "es": "The Bourne Stuntacular", "pt": "The Bourne Stuntacular" }, "category": "show", "review": { "en": "Great show, highly recommended!", "es": "Gran espectáculo, ¡muy recomendable!", "pt": "Ótimo show, altamente recomendado!" }, "rating": 5, "url": "https://www.universalorlando.com/web/en/us/things-to-do/shows/the-bourne-stuntacular", "mustDo": true, "coordinates": [28.4759, -81.4670], "tips": { "en": "Check the time of the show before planning your visit.", "es": "Verifica el horario del espectáculo antes de planificar tu visita.", "pt": "Verifique o horário do show antes de planejar sua visita." }, "order": 10 },
+      { "id": "us-horror-makeup", "name": { "en": "Horror Make-Up Show", "es": "Espectáculo de Maquillaje de Terror", "pt": "Espetáculo de Maquiagem de Terror" }, "category": "show", "review": { "en": "Old, but classic, recommended if you liked classic horror movies.", "es": "Antiguo, pero clásico, recomendado si te gustan las películas de terror clásicas.", "pt": "Antigo, mas clássico, recomendado se você gosta de filmes de terror clássicos." }, "rating": 5, "url": "https://www.universalorlando.com/web/en/us/things-to-do/shows/universal-orlandos-horror-make-up-show", "mustDo": false, "coordinates": [28.4767, -81.4670], "tips": { "en": "Check the time of the show before planning your visit.", "es": "Verifica el horario del espectáculo antes de planificar tu visita.", "pt": "Verifique o horário do show antes de planejar sua visita." }, "order": 11 },
+      { "id": "us-lombards", "name": { "en": "Lombard's Seafood Grille", "es": "Lombard's Seafood Grille", "pt": "Lombard's Seafood Grille" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4758, -81.4660], "tips": { "en": "", "es": "", "pt": "" }, "order": 15 },
+      { "id": "us-fast-food-blvd", "name": { "en": "Fast Food Boulevard (Springfield)", "es": "Fast Food Boulevard (Springfield)", "pt": "Fast Food Boulevard (Springfield)" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4749, -81.4665], "tips": { "en": "", "es": "", "pt": "" }, "order": 16 }
+    ]
+  },
+  {
+    "parkId": "islands-of-adventure",
+    "name": { "en": "Islands of Adventure", "es": "Islands of Adventure", "pt": "Islands of Adventure" },
+    "description": {
+      "en": "An adventure across themed islands with world-class coasters and immersive experiences.",
+      "es": "Una aventura a través de islas temáticas con montañas rusas de clase mundial y experiencias inmersivas.",
+      "pt": "Uma aventura através de ilhas temáticas com montanhas-russas de classe mundial e experiências imersivas."
+    },
+    "mapCenter": [28.4712, -81.4708],
+    "mapZoom": 16,
+    "items": [
+      { "id": "ioa-forbidden-journey", "name": { "en": "Harry Potter and the Forbidden Journey", "es": "Harry Potter and the Forbidden Journey", "pt": "Harry Potter and the Forbidden Journey" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4723, -81.4731], "tips": { "en": "", "es": "", "pt": "" }, "order": 1 },
+      { "id": "ioa-spider-man", "name": { "en": "The Amazing Adventures of Spider-Man", "es": "The Amazing Adventures of Spider-Man", "pt": "The Amazing Adventures of Spider-Man" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4717, -81.4695], "tips": { "en": "", "es": "", "pt": "" }, "order": 3 },
+      { "id": "ioa-jurassic-river", "name": { "en": "Jurassic Park River Adventure", "es": "Jurassic Park River Adventure", "pt": "Jurassic Park River Adventure" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4715, -81.4740], "tips": { "en": "", "es": "", "pt": "" }, "order": 5 },
+      { "id": "ioa-three-broomsticks", "name": { "en": "Three Broomsticks", "es": "Three Broomsticks", "pt": "Three Broomsticks" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4724, -81.4729], "tips": { "en": "", "es": "", "pt": "" }, "order": 10 },
+      { "id": "ioa-mythos", "name": { "en": "Mythos Restaurant", "es": "Mythos Restaurant", "pt": "Mythos Restaurant" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4712, -81.4710], "tips": { "en": "", "es": "", "pt": "" }, "order": 11 },
+      { "id": "ioa-thunder-falls", "name": { "en": "Thunder Falls Terrace", "es": "Thunder Falls Terrace", "pt": "Thunder Falls Terrace" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4716, -81.4742], "tips": { "en": "", "es": "", "pt": "" }, "order": 13 }
+    ]
+  },
+  {
+    "parkId": "epic-universe",
+    "name": { "en": "Epic Universe", "es": "Epic Universe", "pt": "Epic Universe" },
+    "description": {
+      "en": "The newest and most ambitious theme park, featuring groundbreaking lands and next-generation attractions.",
+      "es": "El parque temático más nuevo y ambicioso, con áreas revolucionarias y atracciones de última generación.",
+      "pt": "O parque temático mais novo e ambicioso, com áreas revolucionárias e atrações de última geração."
+    },
+    "mapCenter": [28.4727, -81.4345],
+    "mapZoom": 16,
+    "items": [
+      { "id": "eu-mario-kart", "name": { "en": "Mario Kart: Bowser's Challenge", "es": "Mario Kart: Bowser's Challenge", "pt": "Mario Kart: Bowser's Challenge" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4735, -81.4350], "tips": { "en": "", "es": "", "pt": "" }, "order": 1 },
+      { "id": "eu-yoshi-adventure", "name": { "en": "Yoshi's Adventure", "es": "Yoshi's Adventure", "pt": "Yoshi's Adventure" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4733, -81.4348], "tips": { "en": "", "es": "", "pt": "" }, "order": 2 },
+      { "id": "eu-donkey-kong", "name": { "en": "Mine-Cart Madness", "es": "Mine-Cart Madness", "pt": "Mine-Cart Madness" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4737, -81.4355], "tips": { "en": "", "es": "", "pt": "" }, "order": 7 },
+      { "id": "eu-toadstool-cafe", "name": { "en": "Toadstool Cafe", "es": "Toadstool Cafe", "pt": "Toadstool Cafe" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4734, -81.4347], "tips": { "en": "", "es": "", "pt": "" }, "order": 8 }
+    ]
+  },
+  {
+    "parkId": "citywalk",
+    "name": { "en": "CityWalk", "es": "CityWalk", "pt": "CityWalk" },
+    "description": {
+      "en": "Dining, shopping, and nightlife entertainment connecting the Universal parks — no admission required.",
+      "es": "Restaurantes, compras y entretenimiento nocturno que conecta los parques de Universal — sin entrada requerida.",
+      "pt": "Restaurantes, compras e entretenimento noturno conectando os parques da Universal — sem ingresso necessário."
+    },
+    "mapCenter": [28.4735, -81.4665],
+    "mapZoom": 17,
+    "items": [
+      { "id": "cw-toothsome", "name": { "en": "Toothsome Chocolate Emporium", "es": "Toothsome Chocolate Emporium", "pt": "Toothsome Chocolate Emporium" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4738, -81.4658], "tips": { "en": "", "es": "", "pt": "" }, "order": 1 },
+      { "id": "cw-nbc-sports", "name": { "en": "NBC Sports Grill & Brew", "es": "NBC Sports Grill & Brew", "pt": "NBC Sports Grill & Brew" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4742, -81.4655], "tips": { "en": "", "es": "", "pt": "" }, "order": 6 },
+      { "id": "cw-universal-store", "name": { "en": "Universal Studios Store", "es": "Universal Studios Store", "pt": "Universal Studios Store" }, "category": "shopping", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4737, -81.4672], "tips": { "en": "", "es": "", "pt": "" }, "order": 8 }
+    ]
+  },
+  {
+    "parkId": "halloween-horror-nights",
+    "name": { "en": "Halloween Horror Nights", "es": "Halloween Horror Nights", "pt": "Halloween Horror Nights" },
+    "description": {
+      "en": "A seasonal after-hours event featuring haunted houses, scare zones, and themed entertainment.",
+      "es": "Un evento nocturno de temporada con casas embrujadas, zonas de terror y entretenimiento temático.",
+      "pt": "Um evento noturno sazonal com casas assombradas, zonas de terror e entretenimento temático."
+    },
+    "mapCenter": [28.4754, -81.4682],
+    "mapZoom": 16,
+    "items": []
+  },
+  {
+    "parkId": "holiday-season",
+    "name": { "en": "Holiday Season", "es": "Temporada Festiva", "pt": "Temporada de Festas" },
+    "description": {
+      "en": "Seasonal celebrations including Holidays, Mardi Gras, and other special events throughout the year.",
+      "es": "Celebraciones de temporada incluyendo las Fiestas, Mardi Gras y otros eventos especiales durante todo el año.",
+      "pt": "Celebrações sazonais incluindo as Festas, Mardi Gras e outros eventos especiais durante todo o ano."
+    },
+    "mapCenter": [28.4754, -81.4682],
+    "mapZoom": 16,
+    "items": []
+  }
+]

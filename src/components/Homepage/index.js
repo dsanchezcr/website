@@ -2,7 +2,7 @@ import React from 'react';
 import clsx from 'clsx';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Link from '@docusaurus/Link';
-import Svg from '@site/static/img/logo.svg';
+import logo from '@site/static/img/logo.png';
 import CompactWeatherWidget from '@site/src/components/WeatherWidget/CompactWeatherWidget';
 import OnlineStatusWidget from '@site/src/components/OnlineStatusWidget';
 import ErrorBoundary from '@site/src/components/ErrorBoundary';
@@ -55,7 +55,7 @@ export function HomepageHeader({greeting, subtitle, tagline}) {
             <CompactWeatherWidget />
           </ErrorBoundary>
         </div>
-        <Svg className={styles.featureSvg} role="img" />
+        <img src={logo} className={styles.featureSvg} alt="David Sanchez logo" />
         <h1 className={styles.heroTitle}>{greeting} {siteConfig.title}.</h1>
         <p className={styles.heroSubtitle}>
           <span aria-label={subtitle}>

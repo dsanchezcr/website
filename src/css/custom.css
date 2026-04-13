@@ -316,6 +316,41 @@ button:active {
   flex-shrink: 0;
 }
 
+/* Locale dropdown: hide globe icon and add flag SVGs */
+.iconLanguage_nlXk {
+  display: none !important;
+}
+
+.navbar__items--right .dropdown--right .navbar__link::before,
+.dropdown__link[lang='en-US']::before,
+.dropdown__link[lang='es-ES']::before,
+.dropdown__link[lang='pt-BR']::before {
+  content: '';
+  display: inline-block;
+  width: 1rem;
+  height: 0.75rem;
+  margin-right: 0.5rem;
+  background-size: cover;
+  background-position: center;
+  border-radius: 2px;
+  vertical-align: -1px;
+}
+
+[lang='en-US'] .navbar__items--right .dropdown--right .navbar__link::before,
+.dropdown__link[lang='en-US']::before {
+  background-image: url('/img/flags/us.svg');
+}
+
+[lang='es-ES'] .navbar__items--right .dropdown--right .navbar__link::before,
+.dropdown__link[lang='es-ES']::before {
+  background-image: url('/img/flags/cr.svg');
+}
+
+[lang='pt-BR'] .navbar__items--right .dropdown--right .navbar__link::before,
+.dropdown__link[lang='pt-BR']::before {
+  background-image: url('/img/flags/br.svg');
+}
+
 /* Color mode toggle button - show sun/moon emoji icons */
 [class*='colorModeToggle'] button,
 button[class*='toggleButton'] {
@@ -349,9 +384,76 @@ button[class*='toggleButton'] svg {
 
 /* Ensure search doesn't overflow on smaller screens */
 @media (max-width: 996px) {
+  .navbar__inner {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    align-items: center;
+    column-gap: 6px;
+  }
+
+  .navbar__items:not(.navbar__items--right) {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .navbar .DocSearch {
+    margin-right: 0;
+  }
+
+  .navbar__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    color: #ffffff !important;
+    min-width: 88px;
+    height: 36px;
+    padding: 0 0.75rem;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+
+  .navbar__toggle svg {
+    display: none;
+  }
+
+  .navbar__toggle::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 12px;
+    flex: 0 0 16px;
+    background-image: linear-gradient(
+      to bottom,
+      #ffffff 0,
+      #ffffff 2px,
+      transparent 2px,
+      transparent 5px,
+      #ffffff 5px,
+      #ffffff 7px,
+      transparent 7px,
+      transparent 10px,
+      #ffffff 10px,
+      #ffffff 12px
+    );
+  }
+
+  .navbar__toggle::after {
+    content: 'Menu';
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
   .navbar .DocSearch-Button {
     padding: 0 10px;
     width: 36px;
+    min-width: 36px;
     justify-content: center;
   }
   
@@ -361,7 +463,99 @@ button[class*='toggleButton'] svg {
   }
   
   .navbar__items--right {
-    gap: 8px;
+    display: contents;
+  }
+
+  .navbar__items--right > .navbar__item.navbar__link {
+    display: none;
+  }
+
+  .navbar__items--right > .dropdown--right {
+    display: flex;
+    flex: 0 0 auto;
+    order: 1;
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .navbar__items--right > .dropdown--right .navbar__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 0;
+    line-height: 0;
+  }
+
+  .navbar__items--right > .dropdown--right .navbar__link::before {
+    margin-right: 0;
+  }
+
+  .navbar__items--right [class*='colorModeToggle'] {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    flex: 0 0 auto;
+    order: 2;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: start;
+    align-self: center;
+  }
+
+  .navbar__items--right [class*='colorModeToggle'] button,
+  .navbar__items--right button[class*='toggleButton'] {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    width: 32px;
+    height: 32px;
+  }
+
+  .navbar__items--right .navbarSearchContainer_Bca1 {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    padding-right: 0;
+    order: 3;
+    grid-column: 4;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .navbar__items--right .DocSearch-Button {
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+  }
+
+  .navbar-sidebar .dropdown:has(.dropdown__link[lang='en-US']),
+  .navbar-sidebar .menu__list-item:has(.dropdown__link[lang='en-US']) {
+    display: none !important;
+  }
+
+  .navbar-sidebar .menu__list-item:has(.dropdownNavbarItemMobile_J0Sd .iconLanguage_nlXk),
+  .navbar-sidebar .menu__list-item-collapsible:has(.dropdownNavbarItemMobile_J0Sd .iconLanguage_nlXk),
+  .navbar-sidebar .dropdownNavbarItemMobile_J0Sd:has(.iconLanguage_nlXk) {
+    display: none !important;
+  }
+
+  .navbar-sidebar .navbar__item.dropdown.dropdown--hoverable.dropdown--right,
+  .navbar-sidebar__items .navbar__item.dropdown.dropdown--hoverable.dropdown--right {
+    display: none !important;
+  }
+
+  .navbar-sidebar [class*='colorModeToggle'],
+  .navbar-sidebar__brand [class*='colorModeToggle'],
+  .navbar-sidebar .toggle_vylO,
+  .navbar-sidebar__brand .toggle_vylO {
+    display: none !important;
   }
 }
 
@@ -651,16 +845,8 @@ article {
 
 /* Mobile navbar fixes */
 @media (max-width: 996px) {
-  /* Fit hamburger toggle inside the navbar bar */
   .navbar__toggle {
     margin-right: 0.5rem;
-    width: 30px;
-    height: 30px;
-  }
-
-  .navbar__toggle svg {
-    width: 20px;
-    height: 20px;
   }
 
   /* Dropdown items in mobile sidebar */

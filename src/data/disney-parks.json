@@ -1,0 +1,117 @@
+[
+  {
+    "parkId": "magic-kingdom",
+    "name": { "en": "Magic Kingdom", "es": "Magic Kingdom", "pt": "Magic Kingdom" },
+    "description": {
+      "en": "The flagship park featuring classic attractions, great shows, and themed lands.",
+      "es": "El parque insignia con atracciones clásicas, espectáculos geniales y áreas temáticas.",
+      "pt": "O parque principal com atrações clássicas, ótimos espetáculos e áreas temáticas."
+    },
+    "mapCenter": [28.4177, -81.5812],
+    "mapZoom": 16,
+    "items": [
+      { "id": "mk-pirates", "name": { "en": "Pirates of the Caribbean", "es": "Piratas del Caribe", "pt": "Piratas do Caribe" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4182, -81.5842], "tips": { "en": "", "es": "", "pt": "" }, "order": 3 },
+      { "id": "mk-haunted-mansion", "name": { "en": "Haunted Mansion", "es": "Haunted Mansion", "pt": "Haunted Mansion" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4206, -81.5830], "tips": { "en": "", "es": "", "pt": "" }, "order": 2 },
+      { "id": "mk-buzz-lightyear", "name": { "en": "Buzz Lightyear's Space Ranger Spin", "es": "Buzz Lightyear's Space Ranger Spin", "pt": "Buzz Lightyear's Space Ranger Spin" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4188, -81.5792], "tips": { "en": "", "es": "", "pt": "" }, "order": 4 },
+      { "id": "mk-tron", "name": { "en": "TRON Lightcycle / Run", "es": "TRON Lightcycle / Run", "pt": "TRON Lightcycle / Run" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4202, -81.5775], "tips": { "en": "", "es": "", "pt": "" }, "order": 1 },
+      { "id": "mk-jungle-cruise", "name": { "en": "Jungle Cruise", "es": "Jungle Cruise", "pt": "Jungle Cruise" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4180, -81.5837], "tips": { "en": "", "es": "", "pt": "" }, "order": 5 }
+     ]
+  },
+  {
+    "parkId": "epcot",
+    "name": { "en": "EPCOT", "es": "EPCOT", "pt": "EPCOT" },
+    "description": {
+      "en": "A celebration of innovation, culture, and world cuisine featuring World Showcase pavilions and cutting-edge attractions.",
+      "es": "Una celebración de la innovación, cultura y gastronomía mundial con pabellones del World Showcase y atracciones de vanguardia.",
+      "pt": "Uma celebração da inovação, cultura e gastronomia mundial com pavilhões do World Showcase e atrações de ponta."
+    },
+    "mapCenter": [28.3747, -81.5494],
+    "mapZoom": 16,
+    "items": [
+      { "id": "ep-guardians", "name": { "en": "Guardians of the Galaxy: Cosmic Rewind", "es": "Guardians of the Galaxy: Cosmic Rewind", "pt": "Guardians of the Galaxy: Cosmic Rewind" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3741, -81.5467], "tips": { "en": "", "es": "", "pt": "" }, "order": 1 },
+      { "id": "ep-test-track", "name": { "en": "Test Track", "es": "Test Track", "pt": "Test Track" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3735, -81.5474], "tips": { "en": "", "es": "", "pt": "" }, "order": 2 },
+      { "id": "ep-remy", "name": { "en": "Remy's Ratatouille Adventure", "es": "Remy's Ratatouille Adventure", "pt": "Remy's Ratatouille Adventure" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3688, -81.5525], "tips": { "en": "", "es": "", "pt": "" }, "order": 4 },
+      { "id": "ep-soarin", "name": { "en": "Soarin' Around the World", "es": "Soarin' Around the World", "pt": "Soarin' Around the World" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3736, -81.5523], "tips": { "en": "", "es": "", "pt": "" }, "order": 5 },
+      { "id": "ep-spaceship-earth", "name": { "en": "Spaceship Earth", "es": "Spaceship Earth", "pt": "Spaceship Earth" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3756, -81.5494], "tips": { "en": "", "es": "", "pt": "" }, "order": 6 },
+      { "id": "ep-living-seas", "name": { "en": "The Seas with Nemo & Friends", "es": "The Seas with Nemo & Friends", "pt": "The Seas with Nemo & Friends" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3749, -81.5510], "tips": { "en": "", "es": "", "pt": "" }, "order": 7 },
+      { "id": "ep-figment", "name": { "en": "Journey Into Imagination With Figment", "es": "Journey Into Imagination With Figment", "pt": "Journey Into Imagination With Figment" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3730, -81.5510], "tips": { "en": "", "es": "", "pt": "" }, "order": 8 },
+      { "id": "ep-luminous", "name": { "en": "Luminous The Symphony of Us (Fireworks)", "es": "Luminous The Symphony of Us (Fuegos artificiales)", "pt": "Luminous The Symphony of Us (Fogos de artifício)" }, "category": "show", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3714, -81.5494], "tips": { "en": "", "es": "", "pt": "" }, "order": 9 },
+      { "id": "ep-san-angel", "name": { "en": "San Angel Inn Restaurante (Mexico)", "es": "San Angel Inn Restaurante (México)", "pt": "San Angel Inn Restaurante (México)" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3698, -81.5464], "tips": { "en": "", "es": "", "pt": "" }, "order": 11 },
+      { "id": "ep-la-hacienda", "name": { "en": "La Hacienda de San Angel (Mexico)", "es": "La Hacienda de San Angel (México)", "pt": "La Hacienda de San Angel (México)" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3700, -81.5460], "tips": { "en": "", "es": "", "pt": "" }, "order": 12 },
+      { "id": "ep-teppan-edo", "name": { "en": "Teppan Edo (Japan)", "es": "Teppan Edo (Japón)", "pt": "Teppan Edo (Japão)" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3699, -81.5530], "tips": { "en": "", "es": "", "pt": "" }, "order": 15 }
+    ]
+  },
+  {
+    "parkId": "hollywood-studios",
+    "name": { "en": "Hollywood Studios", "es": "Hollywood Studios", "pt": "Hollywood Studios" },
+    "description": {
+      "en": "Where movies come alive with thrilling rides, immersive lands, and spectacular shows.",
+      "es": "Donde las películas cobran vida con emocionantes atracciones, áreas inmersivas y espectáculos increíbles.",
+      "pt": "Onde os filmes ganham vida com atrações emocionantes, áreas imersivas e espetáculos incríveis."
+    },
+    "mapCenter": [28.3575, -81.5583],
+    "mapZoom": 16,
+    "items": [
+      { "id": "hs-rise-resistance", "name": { "en": "Rise of the Resistance", "es": "Rise of the Resistance", "pt": "Rise of the Resistance" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3548, -81.5599], "tips": { "en": "", "es": "", "pt": "" }, "order": 1 },
+      { "id": "hs-smugglers-run", "name": { "en": "Millennium Falcon: Smugglers Run", "es": "Millennium Falcon: Smugglers Run", "pt": "Millennium Falcon: Smugglers Run" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3540, -81.5607], "tips": { "en": "", "es": "", "pt": "" }, "order": 2 },
+      { "id": "hs-tower-of-terror", "name": { "en": "Tower of Terror", "es": "Tower of Terror", "pt": "Tower of Terror" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3594, -81.5598], "tips": { "en": "", "es": "", "pt": "" }, "order": 3 },
+      { "id": "hs-toy-story-mania", "name": { "en": "Toy Story Mania!", "es": "Toy Story Mania!", "pt": "Toy Story Mania!" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3561, -81.5617], "tips": { "en": "", "es": "", "pt": "" }, "order": 6 },
+      { "id": "hs-mickey-runaway", "name": { "en": "Mickey & Minnie's Runaway Railway", "es": "Mickey & Minnie's Runaway Railway", "pt": "Mickey & Minnie's Runaway Railway" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3569, -81.5580], "tips": { "en": "", "es": "", "pt": "" }, "order": 7 },
+      { "id": "hs-fantasmic", "name": { "en": "Fantasmic!", "es": "Fantasmic!", "pt": "Fantasmic!" }, "category": "show", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3588, -81.5620], "tips": { "en": "", "es": "", "pt": "" }, "order": 9 },
+      { "id": "hs-indiana-jones", "name": { "en": "Indiana Jones Epic Stunt Spectacular!", "es": "Indiana Jones Epic Stunt Spectacular!", "pt": "Indiana Jones Epic Stunt Spectacular!" }, "category": "show", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3568, -81.5570], "tips": { "en": "", "es": "", "pt": "" }, "order": 10 },
+      { "id": "hs-sci-fi-dine-in", "name": { "en": "Sci-Fi Dine-In Theater Restaurant", "es": "Sci-Fi Dine-In Theater Restaurant", "pt": "Sci-Fi Dine-In Theater Restaurant" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3571, -81.5589], "tips": { "en": "", "es": "", "pt": "" }, "order": 12 },
+      { "id": "hs-ogas-cantina", "name": { "en": "Oga's Cantina", "es": "Oga's Cantina", "pt": "Oga's Cantina" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3545, -81.5605], "tips": { "en": "", "es": "", "pt": "" }, "order": 14 }
+    ]
+  },
+  {
+    "parkId": "animal-kingdom",
+    "name": { "en": "Animal Kingdom", "es": "Animal Kingdom", "pt": "Animal Kingdom" },
+    "description": {
+      "en": "Nature, adventure, and world-class attractions set in a lush, immersive environment.",
+      "es": "Naturaleza, aventura y atracciones de clase mundial en un entorno exuberante e inmersivo.",
+      "pt": "Natureza, aventura e atrações de classe mundial em um ambiente exuberante e imersivo."
+    },
+    "mapCenter": [28.3553, -81.5901],
+    "mapZoom": 16,
+    "items": [
+      { "id": "ak-flight-passage", "name": { "en": "Avatar Flight of Passage", "es": "Avatar Flight of Passage", "pt": "Avatar Flight of Passage" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3559, -81.5925], "tips": { "en": "", "es": "", "pt": "" }, "order": 1 },
+      { "id": "ak-navi-river", "name": { "en": "Na'vi River Journey", "es": "Na'vi River Journey", "pt": "Na'vi River Journey" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3555, -81.5921], "tips": { "en": "", "es": "", "pt": "" }, "order": 2 },
+      { "id": "ak-expedition-everest", "name": { "en": "Expedition Everest", "es": "Expedition Everest", "pt": "Expedition Everest" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3560, -81.5878], "tips": { "en": "", "es": "", "pt": "" }, "order": 3 },
+      { "id": "ak-kilimanjaro-safari", "name": { "en": "Kilimanjaro Safaris", "es": "Kilimanjaro Safaris", "pt": "Kilimanjaro Safaris" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3579, -81.5913], "tips": { "en": "", "es": "", "pt": "" }, "order": 4 }
+    ]
+  },
+  {
+    "parkId": "disney-springs",
+    "name": { "en": "Disney Springs", "es": "Disney Springs", "pt": "Disney Springs" },
+    "description": {
+      "en": "A vibrant open-air shopping, dining, and entertainment complex — no admission required.",
+      "es": "Un vibrante complejo de compras, restaurantes y entretenimiento al aire libre — sin entrada requerida.",
+      "pt": "Um vibrante complexo de compras, restaurantes e entretenimento ao ar livre — sem ingresso necessário."
+    },
+    "mapCenter": [28.3696, -81.5175],
+    "mapZoom": 16,
+    "items": [
+      { "id": "ds-chicken-guy", "name": { "en": "Chicken Guy!", "es": "Chicken Guy!", "pt": "Chicken Guy!" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3702, -81.5180], "tips": { "en": "", "es": "", "pt": "" }, "order": 5 },
+      { "id": "ds-world-of-disney", "name": { "en": "World of Disney", "es": "World of Disney", "pt": "World of Disney" }, "category": "shopping", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3706, -81.5185], "tips": { "en": "", "es": "", "pt": "" }, "order": 6 },
+      { "id": "ds-lego-store", "name": { "en": "LEGO Store", "es": "LEGO Store", "pt": "LEGO Store" }, "category": "shopping", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3708, -81.5190], "tips": { "en": "", "es": "", "pt": "" }, "order": 7 },
+      { "id": "ds-cirque-drawn", "name": { "en": "Cirque du Soleil - Drawn to Life", "es": "Cirque du Soleil - Drawn to Life", "pt": "Cirque du Soleil - Drawn to Life" }, "category": "entertainment", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3710, -81.5200], "tips": { "en": "", "es": "", "pt": "" }, "order": 8 },
+      { "id": "ds-bowling", "name": { "en": "Splitsville Luxury Lanes", "es": "Splitsville Luxury Lanes", "pt": "Splitsville Luxury Lanes" }, "category": "entertainment", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3695, -81.5155], "tips": { "en": "", "es": "", "pt": "" }, "order": 9 }
+    ]
+  },
+  {
+    "parkId": "boardwalk",
+    "name": { "en": "BoardWalk", "es": "BoardWalk", "pt": "BoardWalk" },
+    "description": {
+      "en": "A charming waterfront promenade with restaurants, nightlife, and resort entertainment — no admission required.",
+      "es": "Un encantador paseo marítimo con restaurantes, vida nocturna y entretenimiento de resort — sin entrada requerida.",
+      "pt": "Um charmoso calçadão à beira-mar com restaurantes, vida noturna e entretenimento de resort — sem ingresso necessário."
+    },
+    "mapCenter": [28.3672, -81.5547],
+    "mapZoom": 17,
+    "items": [
+      { "id": "bw-trattoria", "name": { "en": "Trattoria al Forno", "es": "Trattoria al Forno", "pt": "Trattoria al Forno" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3670, -81.5547], "tips": { "en": "", "es": "", "pt": "" }, "order": 1 },
+      { "id": "bw-big-river", "name": { "en": "Big River Grille & Brewing Works", "es": "Big River Grille & Brewing Works", "pt": "Big River Grille & Brewing Works" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3672, -81.5551], "tips": { "en": "", "es": "", "pt": "" }, "order": 2 },
+      { "id": "bw-pizza-window", "name": { "en": "BoardWalk Pizza Window", "es": "BoardWalk Pizza Window", "pt": "BoardWalk Pizza Window" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3674, -81.5545], "tips": { "en": "", "es": "", "pt": "" }, "order": 3 }
+    ]
+  }
+]

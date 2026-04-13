@@ -248,7 +248,7 @@ const config = {
         maxHeadingLevel: 4,
       },
       // Image zoom on click
-      image: 'img/logo.svg',
+      image: 'img/logo.png',
       codeblock: {
         showGithubLink: true,
         githubLinkLabel: 'View on GitHub',
@@ -269,7 +269,7 @@ const config = {
         hideOnScroll: true,
         logo: {
           alt: 'David Sanchez - Website',
-          src: 'img/logo.svg',
+          src: 'img/logo.png',
         },
         items: [
           {to: '/blog', label: 'Blog', position: 'left'},
@@ -283,6 +283,8 @@ const config = {
             items: [
               {to: '/gaming', label: 'Gaming'},
               {to: '/movies-tv', label: 'Movies & TV'},
+              {to: '/disney', label: 'Disney World'},
+              {to: '/universal', label: 'Universal Orlando'},
               {to: '/3dprinting', label: '3D Printing'},
               {to: '/volunteering', label: 'Volunteering'},
             ],
