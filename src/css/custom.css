@@ -384,6 +384,53 @@ button[class*='toggleButton'] svg {
 
 /* Ensure search doesn't overflow on smaller screens */
 @media (max-width: 996px) {
+  .navbar__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    color: #ffffff !important;
+    min-width: 88px;
+    height: 36px;
+    padding: 0 0.75rem;
+    border-radius: 8px;
+    box-sizing: border-box;
+  }
+
+  .navbar__toggle svg {
+    display: none;
+  }
+
+  .navbar__toggle::before {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 12px;
+    flex: 0 0 16px;
+    background-image: linear-gradient(
+      to bottom,
+      #ffffff 0,
+      #ffffff 2px,
+      transparent 2px,
+      transparent 5px,
+      #ffffff 5px,
+      #ffffff 7px,
+      transparent 7px,
+      transparent 10px,
+      #ffffff 10px,
+      #ffffff 12px
+    );
+  }
+
+  .navbar__toggle::after {
+    content: 'Menu';
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
   .navbar .DocSearch-Button {
     padding: 0 10px;
     width: 36px;
