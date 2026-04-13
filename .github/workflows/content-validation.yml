@@ -11,6 +11,7 @@ on:
       - 'universal/**'
       - 'src/data/movies.json'
       - 'src/data/series.json'
+      - 'src/data/gaming/**'
       - 'src/data/disney-parks.json'
       - 'src/data/universal-parks.json'
       - 'i18n/**'
@@ -373,6 +374,263 @@ jobs:
           }
 
           console.log('Theme parks data schema validation passed');
+          "
+
+      - name: Validate Gaming Data Schema
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          echo "Checking src/data/gaming/*.json schema..."
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          const { execSync } = require('child_process');
+
+          let errors = 0;
+          const validStatuses = new Set(['completed', 'playing', 'backlog', 'dropped']);
+
+          const isObject = (value) => value && typeof value === 'object' && !Array.isArray(value);
+
+          const validateCardLike = (entry, file, label) => {
+            if (!isObject(entry)) {
+              console.log('::error file=' + file + '::' + label + ' must be an object');
+              errors++;
+              return;
+            }
+
+            if (!entry.title || typeof entry.title !== 'string') {
+              console.log('::error file=' + file + '::' + label + '.title must be a non-empty string');
+              errors++;
+            }
+
+            if (!entry.platform || typeof entry.platform !== 'string') {
+              console.log('::error file=' + file + '::' + label + '.platform must be a non-empty string');
+              errors++;
+            }
+
+            if (entry.status != null && !validStatuses.has(entry.status)) {
+              console.log('::error file=' + file + '::' + label + '.status must be one of: completed, playing, backlog, dropped');
+              errors++;
+            }
+
+            if (entry.imageUrl != null && (typeof entry.imageUrl !== 'string' || !entry.imageUrl.startsWith('/img/'))) {
+              console.log('::error file=' + file + '::' + label + '.imageUrl must be a string starting with /img/');
+              errors++;
+            }
+
+            if (entry.url != null && typeof entry.url !== 'string') {
+              console.log('::error file=' + file + '::' + label + '.url must be a string when provided');
+              errors++;
+            }
+
+            if (entry.recommendation != null && typeof entry.recommendation !== 'string') {
+              console.log('::error file=' + file + '::' + label + '.recommendation must be a string when provided');
+              errors++;
+            }
+
+            if (entry.description != null && typeof entry.description !== 'string') {
+              console.log('::error file=' + file + '::' + label + '.description must be a string when provided');
+              errors++;
+            }
+
+            if (entry.coOp != null && typeof entry.coOp !== 'boolean') {
+              console.log('::error file=' + file + '::' + label + '.coOp must be boolean when provided');
+              errors++;
+            }
+
+            if (entry.online != null && typeof entry.online !== 'boolean') {
+              console.log('::error file=' + file + '::' + label + '.online must be boolean when provided');
+              errors++;
+            }
+          };
+
+          const validateEntry = (entry, file, label) => {
+            if (!isObject(entry)) {
+              console.log('::error file=' + file + '::' + label + ' must be an object');
+              errors++;
+              return;
+            }
+
+            if (entry.type === 'card') {
+              validateCardLike(entry, file, label);
+              return;
+            }
+
+            if (entry.type === 'group') {
+              if (!entry.title || typeof entry.title !== 'string') {
+                console.log('::error file=' + file + '::' + label + '.title must be a non-empty string');
+                errors++;
+              }
+
+              if (!entry.platform || typeof entry.platform !== 'string') {
+                console.log('::error file=' + file + '::' + label + '.platform must be a non-empty string');
+                errors++;
+              }
+
+              if (entry.status != null && !validStatuses.has(entry.status)) {
+                console.log('::error file=' + file + '::' + label + '.status must be one of: completed, playing, backlog, dropped');
+                errors++;
+              }
+
+              if (!Array.isArray(entry.games) || entry.games.length === 0) {
+                console.log('::error file=' + file + '::' + label + '.games must be a non-empty array');
+                errors++;
+                return;
+              }
+
+              entry.games.forEach((game, gameIndex) => {
+                validateCardLike(game, file, label + '.games[' + gameIndex + ']');
+              });
+              return;
+            }
+
+            console.log('::error file=' + file + '::' + label + '.type must be either card or group');
+            errors++;
+          };
+
+          const changedFiles = new Set(
+            execSync(
+              'git diff --name-only --diff-filter=ACM ' + process.env.BASE_SHA + '...' + process.env.HEAD_SHA,
+              { encoding: 'utf-8' }
+            )
+              .split(/\r?\n/)
+              .map((line) => line.trim())
+              .filter(Boolean)
+          );
+
+          const gamingDir = 'src/data/gaming';
+          if (!fs.existsSync(gamingDir)) {
+            console.log('No src/data/gaming directory found, skipping');
+            process.exit(0);
+          }
+
+          const candidateFiles = fs
+            .readdirSync(gamingDir)
+            .filter((file) => file.endsWith('.json'))
+            .map((file) => path.posix.join(gamingDir, file));
+
+          const filesToValidate = candidateFiles.filter((file) => changedFiles.has(file));
+          if (filesToValidate.length === 0) {
+            console.log('No gaming data files changed, skipping schema validation');
+            process.exit(0);
+          }
+
+          filesToValidate.forEach((file) => {
+            let parsed;
+            try {
+              parsed = JSON.parse(fs.readFileSync(file, 'utf-8'));
+            } catch (error) {
+              console.log('::error file=' + file + '::Invalid JSON: ' + error.message);
+              errors++;
+              return;
+            }
+
+            if (!isObject(parsed)) {
+              console.log('::error file=' + file + '::Root must be an object containing section arrays');
+              errors++;
+              return;
+            }
+
+            Object.entries(parsed).forEach(([sectionName, entries]) => {
+              if (!Array.isArray(entries)) {
+                console.log('::error file=' + file + '::Section ' + sectionName + ' must be an array');
+                errors++;
+                return;
+              }
+
+              entries.forEach((entry, index) => {
+                validateEntry(entry, file, sectionName + '[' + index + ']');
+              });
+            });
+          });
+
+          if (errors > 0) {
+            console.log('::error::Found ' + errors + ' gaming data schema validation errors');
+            process.exit(1);
+          }
+
+          console.log('Gaming data schema validation passed');
+          "
+
+      - name: Validate Gaming Data Image References
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          echo "Checking gaming data image references..."
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          const { execSync } = require('child_process');
+
+          let errors = 0;
+          const changedFiles = new Set(
+            execSync(
+              'git diff --name-only --diff-filter=ACM ' + process.env.BASE_SHA + '...' + process.env.HEAD_SHA,
+              { encoding: 'utf-8' }
+            )
+              .split(/\r?\n/)
+              .map((line) => line.trim())
+              .filter(Boolean)
+          );
+
+          const gamingDir = 'src/data/gaming';
+          if (!fs.existsSync(gamingDir)) {
+            console.log('No src/data/gaming directory found, skipping');
+            process.exit(0);
+          }
+
+          const candidateFiles = fs
+            .readdirSync(gamingDir)
+            .filter((file) => file.endsWith('.json'))
+            .map((file) => path.posix.join(gamingDir, file));
+
+          const filesToValidate = candidateFiles.filter((file) => changedFiles.has(file));
+          if (filesToValidate.length === 0) {
+            console.log('No gaming data files changed, skipping image validation');
+            process.exit(0);
+          }
+
+          const checkImagePath = (file, label, imageUrl) => {
+            if (!imageUrl || typeof imageUrl !== 'string') return;
+            if (!imageUrl.startsWith('/img/')) return;
+
+            const localPath = path.join('static', imageUrl.replace(/^\//, ''));
+            if (!fs.existsSync(localPath)) {
+              console.log('::error file=' + file + '::' + label + ' references missing image: ' + localPath);
+              errors++;
+            }
+          };
+
+          filesToValidate.forEach((file) => {
+            let parsed;
+            try {
+              parsed = JSON.parse(fs.readFileSync(file, 'utf-8'));
+            } catch {
+              return;
+            }
+
+            Object.entries(parsed || {}).forEach(([sectionName, entries]) => {
+              if (!Array.isArray(entries)) return;
+
+              entries.forEach((entry, index) => {
+                checkImagePath(file, sectionName + '[' + index + '].imageUrl', entry.imageUrl);
+                if (entry.type === 'group' && Array.isArray(entry.games)) {
+                  entry.games.forEach((game, gameIndex) => {
+                    checkImagePath(file, sectionName + '[' + index + '].games[' + gameIndex + '].imageUrl', game.imageUrl);
+                  });
+                }
+              });
+            });
+          });
+
+          if (errors > 0) {
+            console.log('::error::Found ' + errors + ' missing gaming data images');
+            process.exit(1);
+          }
+
+          console.log('Gaming data image reference check passed');
           "
 
       - name: Validate Image References

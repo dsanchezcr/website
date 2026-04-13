@@ -36,7 +36,9 @@
 - Game status values: `completed`, `playing`, `backlog`, `dropped` (these are localized in component code)
 - Platform constants defined in `src/components/Gaming/gameCardConstants.js`
 - Game images: `static/img/gaming/<platform>/<title-slug>.jpg`
-- Use `GameCard` and `GameCardGroup` components in MDX
+- Gaming data is stored per platform in `src/data/gaming/<platform>.json`
+- Use `GamingEntriesRenderer` in MDX pages to render JSON sections
+- JSON entries must use `type: "card"` or `type: "group"` (`games` array for groups)
 
 ### Movies & TV Content
 - Data-driven via `src/data/movies.json` and `src/data/series.json`

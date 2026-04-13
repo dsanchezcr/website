@@ -23,6 +23,14 @@
 | **Status** | `completed` / `playing` / `backlog` / `dropped` |
 | **Recommendation** | _Emoji + short text (e.g., "⭐ Highly recommended")_ |
 | **Image** | _Filename for `static/img/gaming/<platform>/`_ |
+| **Entry Type** | `card` / `group` |
+
+### JSON Entry Shape
+
+- `card` entry:
+	- `{"type":"card","title":"...","platform":"...","status":"...","imageUrl":"/img/...","recommendation":"...","url":"...","coOp":true,"online":false}`
+- `group` entry:
+	- `{"type":"group","title":"...","platform":"...","status":"...","recommendation":"...","games":[{...cardProps}]}`
 
 ### New Platform (if adding a platform)
 
@@ -36,7 +44,8 @@
 
 | File | Action | Description |
 |------|--------|-------------|
-| `gaming/<platform>/index.mdx` | Modify | Add GameCard entry |
+| `src/data/gaming/<platform>.json` | Modify | Add or update platform game entries |
+| `gaming/<platform>/index.mdx` | Modify | Update sections/layout only when needed (data remains in JSON) |
 | `i18n/es/docusaurus-plugin-content-docs-gaming/current/<platform>/index.mdx` | Modify | Spanish translation |
 | `i18n/pt/docusaurus-plugin-content-docs-gaming/current/<platform>/index.mdx` | Modify | Portuguese translation |
 | `static/img/gaming/<platform>/<image>.jpg` | Create | Game cover image |
@@ -44,8 +53,9 @@
 
 ## i18n Checklist
 
-- [ ] Game description/recommendation updated in all 3 languages
-- [ ] MDX file updated in `gaming/`, `i18n/es/...`, and `i18n/pt/...`
+- [ ] If user-facing page copy changes, translations are updated in all 3 languages
+- [ ] `gaming/<platform>/index.mdx` and locale docs remain aligned when structure/headings/widgets change
+- [ ] JSON data entries use canonical status values and do not localize status tokens
 - [ ] Status value uses one of: `completed`, `playing`, `backlog`, `dropped`
 
 ## Image Requirements

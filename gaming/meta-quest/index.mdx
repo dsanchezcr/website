@@ -7,8 +7,9 @@ description: My Meta Quest VR/MR game collection, ratings, and recommendations.
 keywords: [Meta Quest, Meta Quest 3S, VR, Mixed Reality, gaming, Oculus]
 ---
 
-import GameCard from '@site/src/components/Gaming/GameCard';
-import GameCardGroup from '@site/src/components/Gaming/GameCardGroup';
+import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
+import metaQuestGamingData from '@site/src/data/gaming/meta-quest.json';
+
 
 # 🥽 Meta Quest
 
@@ -16,31 +17,4 @@ Meta Quest 3S is my gateway to virtual and mixed reality gaming. While there's n
 
 ## My Games
 
-<GameCard title="Batman: Arkham Shadow" platform="meta-quest" status="playing" imageUrl="/img/gaming/meta-quest/batman.jpg" recommendation="Be the Batman in VR. Came bundled with my Quest 3S." url="https://www.meta.com/experiences/search/?q=Batman:+Arkham+Shadow" />
-
-<GameCard title="Marvel's Deadpool VR" platform="meta-quest" status="playing" imageUrl="/img/gaming/meta-quest/deadpool.jpg" recommendation="Deadpool in VR is as chaotic and fun as you'd expect." url="https://www.meta.com/experiences/search/?q=Marvel's+Deadpool+VR" />
-
-<GameCard title="Thief VR: Legacy of Shadow" platform="meta-quest" status="playing" imageUrl="/img/gaming/meta-quest/thief.jpg" recommendation="Stealth gameplay in VR. Atmospheric and tense." url="https://www.meta.com/experiences/search/?q=Thief+VR:+Legacy+of+Shadow" />
-
-<GameCard title="The House of Da Vinci VR" platform="meta-quest" status="playing" imageUrl="/img/gaming/meta-quest/davinci.jpg" recommendation="Beautifully crafted puzzle rooms in VR." url="https://www.meta.com/experiences/search/?q=The+House+of+Da+Vinci+VR" />
-
-<GameCard title="Assassin's Creed Nexus VR" platform="meta-quest" status="playing" imageUrl="/img/gaming/meta-quest/assasin.jpg" recommendation="Parkour and stealth in VR. A stunning AC experience." url="https://www.meta.com/experiences/search/?q=Assassin's+Creed+Nexus+VR" />
-
-<GameCard title="Five Nights at Freddy's: Help Wanted 2" platform="meta-quest" status="playing" imageUrl="/img/gaming/meta-quest/freddy2.jpg" recommendation="FNAF in VR takes the scares to another level." url="https://www.meta.com/experiences/search/?q=Five+Nights+at+Freddy's:+Help+Wanted+2" />
-
-<GameCard title="Resident Evil 4" platform="meta-quest" status="playing" imageUrl="/img/gaming/meta-quest/residentevil4.jpg" recommendation="A masterpiece reimagined for VR. Terrifying and immersive." url="https://www.meta.com/experiences/search/?q=Resident+Evil+4" />
-
-<GameCardGroup title="Moss Series" platform="meta-quest" recommendation="Two-book VR adventure with Quill at its heart.">
-	<GameCard title="Moss" platform="meta-quest" imageUrl="/img/gaming/meta-quest/moss.jpg" url="https://www.meta.com/experiences/search/?q=Moss" />
-	<GameCard title="Moss: Book II" platform="meta-quest" imageUrl="/img/gaming/meta-quest/mossII.jpg" url="https://www.meta.com/experiences/search/?q=Moss:+Book+II" />
-</GameCardGroup>
-
-<GameCardGroup title="Vader Immortal Series" platform="meta-quest" recommendation="Three short but incredible Star Wars VR episodes.">
-	<GameCard title="Vader Immortal: Episode I" platform="meta-quest" imageUrl="/img/gaming/meta-quest/vaderI.jpg" url="https://www.meta.com/experiences/search/?q=Vader+Immortal:+Episode+I" />
-	<GameCard title="Vader Immortal: Episode II" platform="meta-quest" imageUrl="/img/gaming/meta-quest/vaderII.jpg" url="https://www.meta.com/experiences/search/?q=Vader+Immortal:+Episode+II" />
-	<GameCard title="Vader Immortal: Episode III" platform="meta-quest" imageUrl="/img/gaming/meta-quest/vaderIII.jpg" url="https://www.meta.com/experiences/search/?q=Vader+Immortal:+Episode+III" />
-</GameCardGroup>
-
-<GameCard title="Angry Birds VR: Isle of Pigs" platform="meta-quest" status="completed" imageUrl="/img/gaming/meta-quest/angrybird.jpg" recommendation="Angry Birds in 3D VR. Fun and casual." url="https://www.meta.com/experiences/search/?q=Angry+Birds+VR:+Isle+of+Pigs" />
-
-<GameCard title="Beat Saber" platform="meta-quest" status="playing" imageUrl="/img/gaming/meta-quest/beatsaber.jpg" recommendation="The definitive VR rhythm game. A must-have for any Quest owner." url="https://www.meta.com/experiences/search/?q=Beat+Saber" />
+<GamingEntriesRenderer items={metaQuestGamingData.games} />

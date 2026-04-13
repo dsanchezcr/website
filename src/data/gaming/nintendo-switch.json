@@ -1,0 +1,179 @@
+{
+  "games": [
+    {
+      "type": "group",
+      "title": "Donkey Kong Bananza",
+      "status": "completed",
+      "platform": "nintendo-switch-2",
+      "recommendation": "My favorite game on the launch of Nintendo Switch 2. The base game is a blast, fun platforming and insanely creative levels. The DLC didn't quite hit the mark for me, but it was nice to revisit DK's island anyway.",
+      "games": [
+        {
+          "title": "Donkey Kong Bananza",
+          "platform": "nintendo-switch-2",
+          "status": "completed",
+          "imageUrl": "/img/gaming/nintendo/dk-bananza.jpg",
+          "recommendation": "Best DK game ever!",
+          "url": "https://www.nintendo.com/us/search/#q=Donkey+Kong+Bananza"
+        },
+        {
+          "title": "Donkey Kong Bananza: DK Island & Emerald Rush",
+          "platform": "nintendo-switch-2",
+          "status": "completed",
+          "imageUrl": "/img/gaming/nintendo/dk-bananza-dlc.jpg",
+          "url": "https://www.nintendo.com/us/search/#q=Donkey+Kong+Bananza:+DK+Island+&+Emerald+Rush"
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "title": "Mario Kart World",
+      "platform": "nintendo-switch-2",
+      "status": "completed",
+      "imageUrl": "/img/gaming/nintendo/mario-kart-world.jpg",
+      "recommendation": "A fresh take on Mario Kart that keeps the chaos alive. Perfect for quick races and 'friendly' competitions.",
+      "url": "https://www.nintendo.com/us/search/#q=Mario+Kart+World",
+      "online": true
+    },
+    {
+      "type": "card",
+      "title": "Super Mario Party Jamboree",
+      "platform": "nintendo-switch-2",
+      "imageUrl": "/img/gaming/nintendo/mario-party-jamboree.jpg",
+      "recommendation": "Party gaming at its best, tons of minigames and boards to keep the fun going with friends. Although I do not use the camera that much, it is fun what they did with the gameplay when camera is enabled.",
+      "url": "https://www.nintendo.com/us/search/#q=Super+Mario+Party+Jamboree+–+Switch+2+Edition",
+      "online": true
+    },
+    {
+      "type": "group",
+      "title": "Donkey Kong Country Series",
+      "platform": "nintendo-switch",
+      "recommendation": "The best 2D platforming challenges on Switch.",
+      "games": [
+        {
+          "title": "Donkey Kong Country: Tropical Freeze",
+          "platform": "nintendo-switch",
+          "status": "playing",
+          "imageUrl": "/img/gaming/nintendo/dk-tropical-freeze.jpg",
+          "recommendation": "One of the best 2D platformers. Incredible level design.",
+          "url": "https://www.nintendo.com/us/search/#q=Donkey+Kong+Country:+Tropical+Freeze"
+        },
+        {
+          "title": "Donkey Kong Country Returns HD",
+          "platform": "nintendo-switch",
+          "status": "completed",
+          "imageUrl": "/img/gaming/nintendo/dk-tropical-country.jpg",
+          "recommendation": "Classic DK remastered in HD. Challenging and rewarding.",
+          "url": "https://www.nintendo.com/us/search/#q=Donkey+Kong+Country+Returns+HD"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Luigi's Mansion Series",
+      "status": "completed",
+      "platform": "nintendo-switch",
+      "recommendation": "A delightfully spooky adventure series. Each one brings its own charm and puzzle-solving fun.",
+      "games": [
+        {
+          "title": "Luigi's Mansion 2 HD",
+          "platform": "nintendo-switch",
+          "status": "playing",
+          "imageUrl": "/img/gaming/nintendo/luigis-mansion-2.jpg",
+          "recommendation": "Luigi's ghost-hunting adventure.",
+          "url": "https://www.nintendo.com/us/search/#q=Luigi's+Mansion+2+HD"
+        },
+        {
+          "title": "Luigi's Mansion 3",
+          "platform": "nintendo-switch",
+          "status": "completed",
+          "imageUrl": "/img/gaming/nintendo/luigis-mansion-3.jpg",
+          "recommendation": "The best Luigi's Mansion. Creative boss fights and co-op.",
+          "url": "https://www.nintendo.com/us/search/#q=Luigi's+Mansion+3",
+          "coOp": true
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "title": "Super Mario Galaxy + Super Mario Galaxy 2",
+      "platform": "nintendo-switch",
+      "status": "playing",
+      "imageUrl": "/img/gaming/nintendo/sm-galaxy.jpg",
+      "recommendation": "Gravity-defying adventures that are just mind-bending in the best way. Extra hyped after seeing the new movie trailer!",
+      "url": "https://www.nintendo.com/us/search/#q=Super+Mario+Galaxy+++Super+Mario+Galaxy+2"
+    },
+    {
+      "type": "card",
+      "title": "Super Mario Bros. Wonder",
+      "platform": "nintendo-switch",
+      "status": "completed",
+      "imageUrl": "/img/gaming/nintendo/mario-bros-wonder.jpg",
+      "recommendation": "A breath of fresh air for 2D Mario. Creative and joyful.",
+      "url": "https://www.nintendo.com/us/search/#q=Super+Mario+Bros.+Wonder",
+      "coOp": true
+    },
+    {
+      "type": "card",
+      "title": "New Super Mario Bros. U Deluxe",
+      "platform": "nintendo-switch",
+      "status": "playing",
+      "imageUrl": "/img/gaming/nintendo/nsmbu-deluxe.jpg",
+      "recommendation": "Solid 2D platforming that's both challenging and satisfying. Great for when you want that classic Mario feel.",
+      "url": "https://www.nintendo.com/us/store/products/new-super-mario-bros-u-deluxe-switch/"
+    },
+    {
+      "type": "card",
+      "title": "Super Mario Odyssey",
+      "platform": "nintendo-switch",
+      "status": "playing",
+      "imageUrl": "/img/gaming/nintendo/mario-odyssey.jpg",
+      "recommendation": "Pure joy in platformer form. Possessing enemies and exploring creative worlds never gets old.",
+      "url": "https://www.nintendo.com/us/search/#q=Super+Mario+Odyssey"
+    },
+    {
+      "type": "card",
+      "title": "Super Mario 3D World + Bowser's Fury",
+      "platform": "nintendo-switch",
+      "status": "playing",
+      "imageUrl": "/img/gaming/nintendo/sm3dw-bowsers-fury.jpg",
+      "recommendation": "A fantastic 3D Mario with an incredible bonus adventure.",
+      "url": "https://www.nintendo.com/us/search/#q=Super+Mario+3D+World+++Bowser's+Fury"
+    },
+    {
+      "type": "card",
+      "title": "Mario + Rabbids Kingdom Battle",
+      "platform": "nintendo-switch",
+      "status": "playing",
+      "imageUrl": "/img/gaming/nintendo/mario-rabbids.jpg",
+      "recommendation": "XCOM meets Mario. Surprisingly deep and strategic.",
+      "url": "https://www.nintendo.com/us/search/#q=Mario+++Rabbids+Kingdom+Battle"
+    },
+    {
+      "type": "card",
+      "title": "Super Mario Party",
+      "platform": "nintendo-switch",
+      "status": "completed",
+      "imageUrl": "/img/gaming/nintendo/super-mario-party.jpg",
+      "recommendation": "Classic party fun with tons of minigames. Always reliable for a good time with friends. Although since I got Jamboree I stopped playing it as much.",
+      "url": "https://www.nintendo.com/us/search/#q=Super+Mario+Party"
+    },
+    {
+      "type": "card",
+      "title": "Mario Kart 8 Deluxe + Booster Course Pass",
+      "platform": "nintendo-switch",
+      "status": "completed",
+      "imageUrl": "/img/gaming/nintendo/mario-kart-8.jpg",
+      "recommendation": "The definitive kart racing game. Really recommend the Booster Course Pass since adds great new tracks.",
+      "url": "https://www.nintendo.com/us/search/#q=Mario+Kart+8+Deluxe+++Booster+Course+Pass"
+    },
+    {
+      "type": "card",
+      "title": "Mario Kart Live: Home Circuit",
+      "platform": "nintendo-switch",
+      "status": "completed",
+      "imageUrl": "/img/gaming/nintendo/mario-kart-live.jpg",
+      "recommendation": "AR Mario Kart in your living room. Creative concept.",
+      "url": "https://www.nintendo.com/us/search/#q=Mario+Kart+Live:+Home+Circuit"
+    }
+  ]
+}

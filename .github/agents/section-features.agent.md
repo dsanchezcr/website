@@ -12,8 +12,8 @@ Read `.github/copilot-instructions.md` and `.github/repo-docs/coding-standards.m
 ## Section-Specific Knowledge
 
 ### Gaming
-- **Structure**: `gaming/<platform>/index.mdx` with `GameCard` and `GameCardGroup` components
-- **Components**: `src/components/Gaming/` (GameCard, GameCardGroup, gameCardConstants.js)
+- **Structure**: `src/data/gaming/<platform>.json` stores entries; `gaming/<platform>/index.mdx` renders sections
+- **Components**: `src/components/Gaming/` (GamingEntriesRenderer, GameCard, GameCardGroup, gameCardConstants.js)
 - **Images**: `static/img/gaming/<platform>/<title-slug>.jpg`
 - **Status values**: `completed`, `playing`, `backlog`, `dropped` (localized in component code — never translate in MDX)
 - **Profiles**: Live Xbox/PSN widgets from API endpoints
@@ -40,7 +40,7 @@ Read `.github/copilot-instructions.md` and `.github/repo-docs/coding-standards.m
 
 1. **Check for a spec**: Look in `specs/` for a relevant specification. If adding a game, use `specs/templates/gaming-content-spec.md`.
 2. **Understand existing content**: Read the relevant section files to match formatting and style.
-3. **Implement the change**: Add content following section-specific patterns above.
+3. **Implement the change**: Update `src/data/gaming/<platform>.json` for game entries; only update MDX when structure/headings/widgets need changes.
 4. **Update translations**: Ensure all 3 locales are updated (en, es, pt).
 5. **Verify images**: Check that referenced images exist in the correct `static/img/` subdirectory.
 

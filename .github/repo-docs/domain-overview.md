@@ -17,7 +17,7 @@ dsanchezcr.com is the personal website and blog of David Sanchez — a software 
 Technical articles about software engineering, cloud development, AI agents, and developer productivity. Published in English with Spanish and Portuguese translations. Topics include Azure, GitHub, DevOps, AI, and open source.
 
 ### Gaming
-Multi-platform gaming portfolio organized by platform: Xbox & PC, PlayStation, Nintendo Switch, Meta Quest (VR), Phone/Mobile, Board Games, Chess. Features live profile widgets (Xbox Gamerscore, PSN Trophies) and per-game status tracking (Completed, Playing, Backlog, Dropped).
+Multi-platform gaming portfolio organized by platform: Xbox & PC, PlayStation, Nintendo Switch, Meta Quest (VR), Phone/Mobile, Board Games, Chess. Features live profile widgets (Xbox Gamerscore, PSN Trophies), per-game status tracking (Completed, Playing, Backlog, Dropped), and data-driven game catalogs in `src/data/gaming/*.json` rendered by platform docs.
 
 ### Movies & TV
 Personal movie and TV series reviews with IMDb integration. Data-driven via JSON files (`src/data/movies.json`, `src/data/series.json`) with personal ratings (1-10) and multilingual reviews. Categories: recently watched, top movies, watchlist, currently watching, completed.

@@ -17,7 +17,7 @@ Both frontend and backend are hosted together on **Azure Static Web Apps**. The 
 - **Custom Components**: Reusable widgets in `src/components/` (CareerTimeline, Comments, ErrorBoundary, ExchangeRatesWidget, Gaming, GitHubStats, Homepage, ImageCompareSlider, MediaCard, Movies, NLWebChat, OnlineStatusWidget, WeatherWidget, YouTubeEmbed)
 - **Shared Homepage**: The `Homepage` component (`src/components/Homepage/`) is shared across all three locale index pages — editing one component updates all locales. Locale-specific text is passed as props.
 - **i18n**: Translations in `i18n/es/` and `i18n/pt/` directories following Docusaurus i18n structure
-- **Gaming**: Docs in `gaming/` with images in `static/img/gaming/<platform>/`; status labels are localized in `GameCard`/`GameCardGroup` (keep status values like `completed`, `playing`, `backlog`, `dropped`)
+- **Gaming**: Docs in `gaming/` are data-driven via per-platform files in `src/data/gaming/*.json`, rendered with `GamingEntriesRenderer` + `GameCard`/`GameCardGroup`; images are in `static/img/gaming/<platform>/`; keep status values like `completed`, `playing`, `backlog`, `dropped`
 - **Custom Docs**: Five doc sections configured via plugins: `disney/`, `gaming/`, `movies-tv/`, `projects/`, and `universal/`
 
 ### Backend (Azure Functions - .NET 9 Isolated Worker)
@@ -374,10 +374,11 @@ All user-facing content **must** support English (default), Spanish, and Portugu
 5. Add images to `static/img/blog/` if needed
 
 ### New Gaming Content
-1. Add `GameCard` entry to `gaming/<platform>/index.mdx`
-2. Add game image to `static/img/gaming/<platform>/<title-slug>.jpg`
-3. Update translations in both `i18n/es/.../gaming/` and `i18n/pt/.../gaming/`
-4. Use established status values: `completed`, `playing`, `backlog`, `dropped`
+1. Add or update entries in `src/data/gaming/<platform>.json` using `type: "card"` or `type: "group"` (`games` array)
+2. Keep `gaming/<platform>/index.mdx` focused on page structure and rendering sections with `GamingEntriesRenderer`
+3. Add game image to `static/img/gaming/<platform>/<title-slug>.jpg` and reference it via `imageUrl`
+4. Update translations in both `i18n/es/.../gaming/` and `i18n/pt/.../gaming/` when user-facing page text changes
+5. Use established status values: `completed`, `playing`, `backlog`, `dropped`
 
 ### New Movie/TV Entry
 1. Add entry to `src/data/movies.json` or `src/data/series.json`

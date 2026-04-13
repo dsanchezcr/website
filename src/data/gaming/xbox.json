@@ -1,0 +1,503 @@
+{
+  "anticipated": [
+    {
+      "type": "card",
+      "title": "Grand Theft Auto VI",
+      "platform": "xbox",
+      "status": "backlog",
+      "imageUrl": "/img/gaming/xbox/gta-vi.jpg",
+      "recommendation": "The most anticipated game of the decade. Coming November 19, 2026.",
+      "url": "https://www.xbox.com/games/store/grand-theft-auto-vi/9nl3wwnzlzzn"
+    }
+  ],
+  "topGames": [
+    {
+      "type": "card",
+      "title": "Darwin's Paradox!",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/darwins-paradox.jpg",
+      "recommendation": "A platformer where you play as an octopus named Darwin. The animation feels like an animated movie and there are plenty of puzzles to solve along the way.",
+      "url": "https://www.xbox.com/games/store/darwins-paradox/9P06H5NM3TZV"
+    },
+    {
+      "type": "card",
+      "title": "Super Meat Boy 3D",
+      "platform": "xbox",
+      "status": "playing",
+      "imageUrl": "/img/gaming/xbox/super-meat-boy-3d.jpg",
+      "recommendation": "Hilariously brutal 3D platformer where you control a literal cube of meat bouncing through absurdly creative death traps to rescue his bandage-wrapped girlfriend.",
+      "url": "https://www.xbox.com/games/store/super-meat-boy-3d/9nj67tqq51z0"
+    },
+    {
+      "type": "group",
+      "title": "Little Nightmares Series",
+      "platform": "xbox",
+      "status": "completed",
+      "recommendation": "A hauntingly beautiful horror adventure trilogy.",
+      "games": [
+        {
+          "title": "Little Nightmares",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/little-nightmares.jpg",
+          "url": "https://www.xbox.com/games/store/little-nightmares-enhanced-edition/9N8Q6DRTG22H/0010"
+        },
+        {
+          "title": "Little Nightmares II",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/little-nightmares-2.jpg",
+          "url": "https://www.xbox.com/games/store/little-nightmares-ii-enhanced-edition/C1H74N0TR8KT/0001"
+        },
+        {
+          "title": "Little Nightmares III",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/little-nightmares-3.jpg",
+          "url": "https://www.xbox.com/games/store/little-nightmares-iii/9PMWB693ZK7X/0010"
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "title": "A Plague Tale Bundle",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/a-plague-tale.jpeg",
+      "recommendation": "Great story and amazing graphics.",
+      "url": "https://www.xbox.com/en-US/games/store/a-plague-tale-bundle/9NHV310S6K1J/0010/B106X88WFSZ7"
+    },
+    {
+      "type": "group",
+      "title": "Planet of Lana Series",
+      "platform": "xbox",
+      "status": "completed",
+      "recommendation": "Great story, graphics, and gameplay. Runs perfectly on the Xbox ROG Ally.",
+      "games": [
+        {
+          "title": "Planet of Lana",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/planet-of-lana.jpg",
+          "url": "https://www.xbox.com/games/store/planet-of-lana/9mxk2rsqjqnd"
+        },
+        {
+          "title": "Planet of Lana 2",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/planet-of-lana-ii.jpg",
+          "url": "https://www.xbox.com/games/store/planet-of-lana-ii/9PL89B9HCZ9W/0010"
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "title": "Reanimal",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/reanimal.jpg",
+      "recommendation": "A charming puzzle adventure.",
+      "url": "https://www.xbox.com/games/store/reanimal-digital-deluxe-edition/9NB3XVDJHSM8/0010",
+      "coOp": true
+    },
+    {
+      "type": "card",
+      "title": "Crisol: Theater of Idols",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/crisol.jpg",
+      "recommendation": "A first-person survival horror game set in a dark reimagining of Spain, where you play as a soldier who uses his own blood as ammunition to battle cult-driven horrors on a cursed island.",
+      "url": "https://www.xbox.com/games/store/crisol-theater-of-idols/9N6QTNWJM2NW/0010"
+    },
+    {
+      "type": "group",
+      "title": "Indiana Jones and the Great Circle",
+      "platform": "xbox",
+      "recommendation": "Classic adventure with Indiana Jones - base game and DLC.",
+      "games": [
+        {
+          "title": "Indiana Jones and the Great Circle",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/indiana-jones.jpg",
+          "url": "https://www.xbox.com/games/store/indiana-jones-and-the-great-circle/9N8FQ28Z6QX3/0010"
+        },
+        {
+          "title": "Indiana Jones and the Great Circle: The Order of Giants",
+          "platform": "xbox",
+          "status": "playing",
+          "imageUrl": "/img/gaming/xbox/indiana-jones-dlc.jpg",
+          "url": "https://www.xbox.com/games/store/indiana-jones-and-the-great-circle-the-order-of-giants/9P1W94SB1ZVN/0010"
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "title": "Dark Pictures Anthology: Season One",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/dark-pictures.jpg",
+      "recommendation": "A fantastic cinematic horror anthology series with unique stories and memorable characters. Highly recommend playing with friends. Amazing to play it once but even better with multiple playthroughs to experience all the different choices and outcomes.",
+      "url": "https://www.xbox.com/games/store/the-dark-pictures-anthology-season-one/9N4VN4TTZW9L/0010/9PVWX9ZG0VNP",
+      "coOp": true
+    },
+    {
+      "type": "card",
+      "title": "Keeper",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/keeper.jpg",
+      "recommendation": "A charming puzzle adventure.",
+      "url": "https://www.xbox.com/games/store/keeper/9NCJWHHMVHR0/0010"
+    },
+    {
+      "type": "card",
+      "title": "Split Fiction",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/split-fiction.jpg",
+      "recommendation": "My 2025 GOTY, an amazing unique narrative-driven puzzle game where you solve puzzles and uncover a mysterious great story.",
+      "url": "https://www.xbox.com/games/store/split-fiction/9N1WXXD1RL8D",
+      "coOp": true
+    },
+    {
+      "type": "card",
+      "title": "It takes two",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/it-takes-two.jpg",
+      "recommendation": "A cooperative adventure that requires teamwork and creativity.",
+      "url": "https://www.xbox.com/games/store/It-Takes-Two/9NKJ0VZQ4N0L",
+      "coOp": true
+    },
+    {
+      "type": "card",
+      "title": "Assassin's Creed Ezio Collection",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/assassins-creed.jpg",
+      "recommendation": "Epic historical action-adventure series.",
+      "url": "https://www.xbox.com/games/store/assassins-creed-the-ezio-collection/BQ9S8ZKCT3Q7/0001"
+    },
+    {
+      "type": "card",
+      "title": "Tomb Raider: Definitive Survivor Trilogy",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/tomb-raider.jpg",
+      "recommendation": "Lara Croft's legendary adventures.",
+      "url": "https://www.xbox.com/games/store/tomb-raider-definitive-survivor-trilogy/9PG7MTR0MVP9/0010"
+    },
+    {
+      "type": "card",
+      "title": "Tomb Raider I-VI Remastered",
+      "platform": "xbox",
+      "status": "playing",
+      "imageUrl": "/img/gaming/xbox/tomb-raider-remastered.jpg",
+      "recommendation": "The original Tomb Raider games remastered with modern graphics. Perfect throwback for fans.",
+      "url": "https://www.xbox.com/games/store/tomb-raider-i-vi-remastered/9NWT8ZHZ3T0M/0010/9Q0KP9NJG6N1"
+    },
+    {
+      "type": "card",
+      "title": "Five Nights at Freddy's: Original Series",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/fnaf.jpg",
+      "recommendation": "A classic horror game that started it all.",
+      "url": "https://www.xbox.com/games/store/five-nights-at-freddys-original-series/9PJ2DSSXZR0P/0010"
+    },
+    {
+      "type": "group",
+      "title": "RoboCop: Rogue City Series",
+      "platform": "xbox",
+      "status": "completed",
+      "recommendation": "A surprisingly great FPS that nails the RoboCop feel.",
+      "games": [
+        {
+          "title": "RoboCop: Rogue City",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/robocop.jpg",
+          "url": "https://www.xbox.com/games/store/robocop-rogue-city/9PKF2LDFPXTN/0010"
+        },
+        {
+          "title": "RoboCop: Rogue City - Unfinished Business",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/robocop-unfinished.jpg",
+          "url": "https://www.xbox.com/games/store/robocop-rogue-city-unfinished-business/9NNNFB5F54C9/0010"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Hellblade Series",
+      "platform": "xbox",
+      "status": "completed",
+      "recommendation": "An unforgettable audio-visual experience across both games. This masterpiece nailed the portrayal of mental health struggles in a way I've never seen before in gaming. The first game is a haunting and emotional journey, while the second game is an epic saga with stunning graphics and gameplay.",
+      "games": [
+        {
+          "title": "Hellblade: Senua's Sacrifice",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/hellblade.jpg",
+          "url": "https://www.xbox.com/games/store/hellblade-senuas-sacrifice/C4Z7QM8FSXM2/0001"
+        },
+        {
+          "title": "Senua's Saga: Hellblade II",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/hellblade-2.jpg",
+          "url": "https://www.xbox.com/games/store/senuas-saga-hellblade-ii/9PMBB7NGHV95/0010"
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "title": "The Medium",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/the-medium.jpg",
+      "recommendation": "A unique dual-reality horror game with stunning (dual) atmosphere.",
+      "url": "https://www.xbox.com/games/store/the-medium/9NFSR96G6K4N/0010"
+    },
+    {
+      "type": "card",
+      "title": "Ryse: Son of Rome",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/ryse.jpg",
+      "recommendation": "Visually stunning Roman action with satisfying combat. My favorite Xbox One launch title.",
+      "url": "https://www.xbox.com/games/store/ryse-son-of-rome/C10QTNC7JWNJ/0001"
+    },
+    {
+      "type": "card",
+      "title": "Ori: The Collection",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/ori.jpg",
+      "recommendation": "A masterpiece of platforming. Emotional, beautiful, and challenging.",
+      "url": "https://www.xbox.com/games/store/ori-the-collection/9P5MBBFF3RNT/0010"
+    },
+    {
+      "type": "card",
+      "title": "Firewatch",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/firewatch.jpg",
+      "recommendation": "A beautiful narrative walking sim set in Wyoming. Unforgettable story.",
+      "url": "https://www.xbox.com/games/store/firewatch/BQQKG9H2STC0/0001"
+    },
+    {
+      "type": "card",
+      "title": "Batman: Arkham Collection",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/batman-arkham.jpg",
+      "recommendation": "An epic conclusion to the Arkham trilogy. Be the Batman.",
+      "url": "https://www.xbox.com/games/store/batman-arkham-collection/C4H36B87SVL1/0001"
+    },
+    {
+      "type": "card",
+      "title": "Cuphead",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/cuphead.jpg",
+      "recommendation": "A challenging run-and-gun with a stunning 1930s cartoon art style. If you are tolerant to frustration, I highly recommend it.",
+      "url": "https://www.xbox.com/games/store/cuphead/9NJRX71M5X9P/0010",
+      "coOp": true
+    },
+    {
+      "type": "group",
+      "title": "Grand Theft Auto Series",
+      "platform": "xbox",
+      "status": "completed",
+      "recommendation": "The iconic open-world crime series.",
+      "games": [
+        {
+          "title": "Grand Theft Auto IV",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/gta-iv.jpg",
+          "recommendation": "A gritty and immersive crime story.",
+          "url": "https://www.xbox.com/games/store/grand-theft-auto-iv/9NBLGGH4R315/0010"
+        },
+        {
+          "title": "Grand Theft Auto V",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/gta-v.jpg",
+          "recommendation": "A masterpiece of open-world design and storytelling.",
+          "url": "https://www.xbox.com/games/store/grand-theft-auto-v/9NBLGGH4R315/0010"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Red Dead Redemption Series",
+      "platform": "xbox",
+      "status": "playing",
+      "recommendation": "Rockstar's epic Western saga.",
+      "games": [
+        {
+          "title": "Red Dead Redemption",
+          "platform": "xbox",
+          "status": "playing",
+          "imageUrl": "/img/gaming/xbox/rdr1.jpg",
+          "recommendation": "The original Western classic that started it all.",
+          "url": "https://www.xbox.com/games/store/red-dead-redemption/9P5B3ZVDK19D/0010"
+        },
+        {
+          "title": "Red Dead Redemption 2",
+          "platform": "xbox",
+          "status": "playing",
+          "imageUrl": "/img/gaming/xbox/rdr2.jpg",
+          "recommendation": "An unforgettable open-world Western with a gripping story.",
+          "url": "https://www.xbox.com/games/store/red-dead-redemption-2/BPSWGQBW7R3G/0001"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Tony Hawk's Pro Skater Series",
+      "platform": "xbox",
+      "recommendation": "The iconic skateboarding series.",
+      "games": [
+        {
+          "title": "Tony Hawk's Pro Skater 1 + 2",
+          "platform": "xbox",
+          "status": "completed",
+          "imageUrl": "/img/gaming/xbox/thps1-2.jpg",
+          "url": "https://www.xbox.com/games/store/tony-hawks-pro-skater-1-2/9N8XHNXGNZB5/0010"
+        },
+        {
+          "title": "Tony Hawk's Pro Skater 3 + 4",
+          "platform": "xbox",
+          "status": "playing",
+          "imageUrl": "/img/gaming/xbox/thps3-4.jpg",
+          "url": "https://www.xbox.com/games/store/tony-hawks-pro-skater-3-4/9N1WK33QNSRJ/0010"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Fallout Series",
+      "platform": "xbox",
+      "status": "playing",
+      "recommendation": "Bethesda's post-apocalyptic RPG series. War. War never changes.",
+      "games": [
+        {
+          "title": "Fallout 3",
+          "platform": "xbox",
+          "status": "playing",
+          "imageUrl": "/img/gaming/xbox/fallout-3.jpg",
+          "url": "https://www.xbox.com/games/store/fallout-3/C29HQ887KH4B/0001"
+        },
+        {
+          "title": "Fallout: New Vegas",
+          "platform": "xbox",
+          "status": "playing",
+          "imageUrl": "/img/gaming/xbox/fallout-new-vegas.jpg",
+          "url": "https://www.xbox.com/games/store/fallout-new-vegas/BX3JNK07Z6QK/0001"
+        },
+        {
+          "title": "Fallout 4 - Anniversary Edition",
+          "platform": "xbox",
+          "status": "playing",
+          "imageUrl": "/img/gaming/xbox/fallout-4.jpg",
+          "url": "https://www.xbox.com/games/store/fallout-4-anniversary-edition/9PFRG44XZCFJ/0010"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Forza Horizon Series",
+      "platform": "xbox",
+      "status": "playing",
+      "recommendation": "Open-world racing series.",
+      "games": [
+        {
+          "title": "Forza Horizon 4",
+          "platform": "xbox",
+          "imageUrl": "/img/gaming/xbox/forza-horizon-4.jpg",
+          "url": "https://www.xbox.com/games/store/forza-horizon-4/9PNQKHFLD2WQ/0010"
+        },
+        {
+          "title": "Forza Horizon 5",
+          "platform": "xbox",
+          "imageUrl": "/img/gaming/xbox/forza-horizon-5.jpg",
+          "url": "https://www.xbox.com/games/store/forza-horizon-5/9NNX1VVR3KNQ/0010"
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "title": "Rocket League",
+      "platform": "xbox",
+      "status": "completed",
+      "imageUrl": "/img/gaming/xbox/rocket-league.jpg",
+      "recommendation": "I played this game for days but eventually took a break to try other games.",
+      "url": "https://www.xbox.com/games/store/rocket-league/c125w9bg2k0v",
+      "coOp": true,
+      "online": true
+    },
+    {
+      "type": "group",
+      "title": "Flight Simulator Series",
+      "platform": "pc",
+      "recommendation": "The ultimate flight simulation experience.",
+      "games": [
+        {
+          "title": "Microsoft Flight Simulator 2020",
+          "platform": "pc",
+          "imageUrl": "/img/gaming/xbox/flight-simulator-2020.jpg",
+          "url": "https://www.xbox.com/games/store/microsoft-flight-simulator-2020/9NRRJLLXM68V/0010"
+        },
+        {
+          "title": "Microsoft Flight Simulator 2024",
+          "platform": "pc",
+          "imageUrl": "/img/gaming/xbox/flight-simulator-2024.jpg",
+          "url": "https://www.xbox.com/games/store/microsoft-flight-simulator-2024/9P38D19T7LRV/0010"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Age of Empires Series",
+      "platform": "pc",
+      "status": "playing",
+      "recommendation": "The legendary real-time strategy series.",
+      "games": [
+        {
+          "title": "Age of Empires Definitive Edition",
+          "platform": "pc",
+          "imageUrl": "/img/gaming/xbox/aoe.jpg",
+          "url": "https://www.xbox.com/games/store/age-of-empires-definitive-edition/9NJWTJSVGVLJ/0010",
+          "online": true
+        },
+        {
+          "title": "Age of Empires II: Definitive Edition",
+          "platform": "pc",
+          "imageUrl": "/img/gaming/xbox/aoe2.jpg",
+          "url": "https://www.xbox.com/games/store/age-of-empires-ii-definitive-edition/9N42SSSX2MTG/0010",
+          "online": true
+        },
+        {
+          "title": "Age of Empires III: Definitive Edition",
+          "platform": "pc",
+          "imageUrl": "/img/gaming/xbox/aoe3.jpg",
+          "url": "https://www.xbox.com/en-US/games/store/age-of-empires-iii-definitive-edition/9N1HF804QXN4/0010",
+          "online": true
+        },
+        {
+          "title": "Age of Empires IV: Anniversary Edition",
+          "platform": "pc",
+          "imageUrl": "/img/gaming/xbox/aoe4.jpg",
+          "url": "https://www.xbox.com/games/store/age-of-empires-iv-anniversary-edition/9PHH1ZWRSZ41/0010",
+          "online": true
+        }
+      ]
+    }
+  ]
+}
