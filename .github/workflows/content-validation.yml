@@ -11,6 +11,8 @@ on:
       - 'universal/**'
       - 'src/data/movies.json'
       - 'src/data/series.json'
+      - 'src/data/disney-parks.json'
+      - 'src/data/universal-parks.json'
       - 'i18n/**'
 
 permissions:
@@ -203,6 +205,153 @@ jobs:
             process.exit(1);
           }
           console.log('Media data schema validation passed');
+          "
+
+      - name: Validate Theme Parks Data Schema
+        run: |
+          echo "Checking disney-parks.json and universal-parks.json schema..."
+          node -e "
+          const fs = require('fs');
+          let errors = 0;
+
+          const localizedKeys = ['en', 'es', 'pt'];
+          const validCategories = new Set(['attraction', 'dining', 'shopping', 'entertainment', 'show', 'character-meet']);
+
+          const validateLocalized = (value, file, label) => {
+            if (!value || typeof value !== 'object' || Array.isArray(value)) {
+              console.log('::error file=' + file + '::' + label + ' must be an object with en/es/pt keys');
+              errors++;
+              return;
+            }
+
+            localizedKeys.forEach((lang) => {
+              if (!(lang in value)) {
+                console.log('::error file=' + file + '::' + label + ' is missing key: ' + lang);
+                errors++;
+              }
+            });
+          };
+
+          const validateCoordinates = (value, file, label) => {
+            if (!Array.isArray(value) || value.length !== 2 || value.some((coord) => typeof coord !== 'number')) {
+              console.log('::error file=' + file + '::' + label + ' must be a [latitude, longitude] numeric array');
+              errors++;
+            }
+          };
+
+          const validateParksFile = (file) => {
+            if (!fs.existsSync(file)) {
+              return;
+            }
+
+            const parks = JSON.parse(fs.readFileSync(file, 'utf-8'));
+            if (!Array.isArray(parks)) {
+              console.log('::error file=' + file + '::Root value must be an array');
+              errors++;
+              return;
+            }
+
+            const parkIds = new Set();
+            parks.forEach((park, parkIndex) => {
+              const parkLabel = 'Park entry ' + parkIndex;
+
+              if (!park || typeof park !== 'object' || Array.isArray(park)) {
+                console.log('::error file=' + file + '::' + parkLabel + ' must be an object');
+                errors++;
+                return;
+              }
+
+              if (!park.parkId || typeof park.parkId !== 'string') {
+                console.log('::error file=' + file + '::' + parkLabel + ' is missing a valid parkId');
+                errors++;
+              } else if (parkIds.has(park.parkId)) {
+                console.log('::error file=' + file + '::Duplicate parkId: ' + park.parkId);
+                errors++;
+              } else {
+                parkIds.add(park.parkId);
+              }
+
+              validateLocalized(park.name, file, park.parkId + '.name');
+              validateLocalized(park.description, file, park.parkId + '.description');
+
+              validateCoordinates(park.mapCenter, file, park.parkId + '.mapCenter');
+
+              if (park.mapZoom != null && typeof park.mapZoom !== 'number') {
+                console.log('::error file=' + file + '::' + park.parkId + '.mapZoom must be numeric');
+                errors++;
+              }
+
+              if (!Array.isArray(park.items)) {
+                console.log('::error file=' + file + '::' + park.parkId + '.items must be an array');
+                errors++;
+                return;
+              }
+
+              const itemIds = new Set();
+              park.items.forEach((item, itemIndex) => {
+                const itemLabel = park.parkId + '.items[' + itemIndex + ']';
+
+                if (!item || typeof item !== 'object' || Array.isArray(item)) {
+                  console.log('::error file=' + file + '::' + itemLabel + ' must be an object');
+                  errors++;
+                  return;
+                }
+
+                if (!item.id || typeof item.id !== 'string') {
+                  console.log('::error file=' + file + '::' + itemLabel + ' is missing a valid id');
+                  errors++;
+                } else if (itemIds.has(item.id)) {
+                  console.log('::error file=' + file + '::Duplicate item id in ' + park.parkId + ': ' + item.id);
+                  errors++;
+                } else {
+                  itemIds.add(item.id);
+                }
+
+                if (!validCategories.has(item.category)) {
+                  console.log('::error file=' + file + '::' + itemLabel + ' has invalid category: ' + item.category);
+                  errors++;
+                }
+
+                validateLocalized(item.name, file, itemLabel + '.name');
+                validateLocalized(item.review, file, itemLabel + '.review');
+                validateLocalized(item.tips, file, itemLabel + '.tips');
+
+                if (item.coordinates != null) {
+                  validateCoordinates(item.coordinates, file, itemLabel + '.coordinates');
+                }
+
+                if (item.rating != null && (!Number.isInteger(item.rating) || item.rating < 1 || item.rating > 5)) {
+                  console.log('::error file=' + file + '::' + itemLabel + '.rating must be null or an integer between 1 and 5');
+                  errors++;
+                }
+
+                if (item.mustDo != null && typeof item.mustDo !== 'boolean') {
+                  console.log('::error file=' + file + '::' + itemLabel + '.mustDo must be boolean');
+                  errors++;
+                }
+
+                if (item.order != null && typeof item.order !== 'number') {
+                  console.log('::error file=' + file + '::' + itemLabel + '.order must be numeric when provided');
+                  errors++;
+                }
+
+                if (item.url != null && typeof item.url !== 'string') {
+                  console.log('::error file=' + file + '::' + itemLabel + '.url must be a string when provided');
+                  errors++;
+                }
+              });
+            });
+          };
+
+          validateParksFile('src/data/disney-parks.json');
+          validateParksFile('src/data/universal-parks.json');
+
+          if (errors > 0) {
+            console.log('::error::Found ' + errors + ' theme parks data schema validation errors');
+            process.exit(1);
+          }
+
+          console.log('Theme parks data schema validation passed');
           "
 
       - name: Validate Image References
