@@ -208,10 +208,14 @@ jobs:
           "
 
       - name: Validate Theme Parks Data Schema
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.sha }}
         run: |
           echo "Checking disney-parks.json and universal-parks.json schema..."
           node -e "
           const fs = require('fs');
+          const { execSync } = require('child_process');
           let errors = 0;
 
           const localizedKeys = ['en', 'es', 'pt'];
@@ -343,8 +347,25 @@ jobs:
             });
           };
 
-          validateParksFile('src/data/disney-parks.json');
-          validateParksFile('src/data/universal-parks.json');
+          const changedFiles = new Set(
+            execSync(
+              'git diff --name-only --diff-filter=ACM ' + process.env.BASE_SHA + '...' + process.env.HEAD_SHA,
+              { encoding: 'utf-8' }
+            )
+              .split(/\r?\n/)
+              .map((line) => line.trim())
+              .filter(Boolean)
+          );
+
+          const candidateFiles = ['src/data/disney-parks.json', 'src/data/universal-parks.json'];
+          const filesToValidate = candidateFiles.filter((file) => changedFiles.has(file));
+
+          if (filesToValidate.length === 0) {
+            console.log('No theme parks data files changed, skipping schema validation');
+            process.exit(0);
+          }
+
+          filesToValidate.forEach(validateParksFile);
 
           if (errors > 0) {
             console.log('::error::Found ' + errors + ' theme parks data schema validation errors');
