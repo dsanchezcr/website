@@ -248,7 +248,7 @@ const config = {
         maxHeadingLevel: 4,
       },
       // Image zoom on click
-      image: 'img/logo.svg',
+      image: 'img/logo.png',
       codeblock: {
         showGithubLink: true,
         githubLinkLabel: 'View on GitHub',
@@ -269,7 +269,7 @@ const config = {
         hideOnScroll: true,
         logo: {
           alt: 'David Sanchez - Website',
-          src: 'img/logo.svg',
+          src: 'img/logo.png',
         },
         items: [
           {to: '/blog', label: 'Blog', position: 'left'},
