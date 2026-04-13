@@ -56,7 +56,7 @@
       { "id": "eu-mario-kart", "name": { "en": "Mario Kart: Bowser's Challenge", "es": "Mario Kart: Bowser's Challenge", "pt": "Mario Kart: Bowser's Challenge" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4735, -81.4350], "tips": { "en": "", "es": "", "pt": "" }, "order": 1 },
       { "id": "eu-yoshi-adventure", "name": { "en": "Yoshi's Adventure", "es": "Yoshi's Adventure", "pt": "Yoshi's Adventure" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4733, -81.4348], "tips": { "en": "", "es": "", "pt": "" }, "order": 2 },
       { "id": "eu-donkey-kong", "name": { "en": "Mine-Cart Madness", "es": "Mine-Cart Madness", "pt": "Mine-Cart Madness" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4737, -81.4355], "tips": { "en": "", "es": "", "pt": "" }, "order": 7 },
-      { "id": "eu-toadstool-cafe", "name": { "en": "Toadstool Cafe", "es": "Toadstool Cafe", "pt": "Toadstool Cafe" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4734, -81.4347], "tips": { "en": "", "es": "", "pt": "" }, "order": 8 },
+      { "id": "eu-toadstool-cafe", "name": { "en": "Toadstool Cafe", "es": "Toadstool Cafe", "pt": "Toadstool Cafe" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.4734, -81.4347], "tips": { "en": "", "es": "", "pt": "" }, "order": 8 }
     ]
   },
   {

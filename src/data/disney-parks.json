@@ -77,7 +77,7 @@
       { "id": "ak-flight-passage", "name": { "en": "Avatar Flight of Passage", "es": "Avatar Flight of Passage", "pt": "Avatar Flight of Passage" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3559, -81.5925], "tips": { "en": "", "es": "", "pt": "" }, "order": 1 },
       { "id": "ak-navi-river", "name": { "en": "Na'vi River Journey", "es": "Na'vi River Journey", "pt": "Na'vi River Journey" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3555, -81.5921], "tips": { "en": "", "es": "", "pt": "" }, "order": 2 },
       { "id": "ak-expedition-everest", "name": { "en": "Expedition Everest", "es": "Expedition Everest", "pt": "Expedition Everest" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3560, -81.5878], "tips": { "en": "", "es": "", "pt": "" }, "order": 3 },
-      { "id": "ak-kilimanjaro-safari", "name": { "en": "Kilimanjaro Safaris", "es": "Kilimanjaro Safaris", "pt": "Kilimanjaro Safaris" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3579, -81.5913], "tips": { "en": "", "es": "", "pt": "" }, "order": 4 },
+      { "id": "ak-kilimanjaro-safari", "name": { "en": "Kilimanjaro Safaris", "es": "Kilimanjaro Safaris", "pt": "Kilimanjaro Safaris" }, "category": "attraction", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3579, -81.5913], "tips": { "en": "", "es": "", "pt": "" }, "order": 4 }
     ]
   },
   {
@@ -111,7 +111,7 @@
     "items": [
       { "id": "bw-trattoria", "name": { "en": "Trattoria al Forno", "es": "Trattoria al Forno", "pt": "Trattoria al Forno" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3670, -81.5547], "tips": { "en": "", "es": "", "pt": "" }, "order": 1 },
       { "id": "bw-big-river", "name": { "en": "Big River Grille & Brewing Works", "es": "Big River Grille & Brewing Works", "pt": "Big River Grille & Brewing Works" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3672, -81.5551], "tips": { "en": "", "es": "", "pt": "" }, "order": 2 },
-      { "id": "bw-pizza-window", "name": { "en": "BoardWalk Pizza Window", "es": "BoardWalk Pizza Window", "pt": "BoardWalk Pizza Window" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3674, -81.5545], "tips": { "en": "", "es": "", "pt": "" }, "order": 3 },
+      { "id": "bw-pizza-window", "name": { "en": "BoardWalk Pizza Window", "es": "BoardWalk Pizza Window", "pt": "BoardWalk Pizza Window" }, "category": "dining", "review": { "en": "", "es": "", "pt": "" }, "rating": null, "mustDo": false, "coordinates": [28.3674, -81.5545], "tips": { "en": "", "es": "", "pt": "" }, "order": 3 }
     ]
   }
 ]
