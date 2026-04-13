@@ -36,7 +36,12 @@
 - Game status values: `completed`, `playing`, `backlog`, `dropped` (these are localized in component code)
 - Platform constants defined in `src/components/Gaming/gameCardConstants.js`
 - Game images: `static/img/gaming/<platform>/<title-slug>.jpg`
-- Use `GameCard` and `GameCardGroup` components in MDX
+- Gaming data is stored per platform in `src/data/gaming/<platform>.json`
+- Required pattern: use `GamingEntriesRenderer` in MDX pages to render JSON sections
+- JSON entries must use `type: "card"` or `type: "group"` (`games` array for groups)
+- Apply the same JSON-driven rendering structure in all locales: `gaming/`, `i18n/es/.../gaming/`, and `i18n/pt/.../gaming/`
+- User-facing gaming text fields in data (`recommendation`, `description`) must be localized as objects (example: `recommendation: { en: "...", es: "...", pt: "..." }`)
+- Status token values are canonical and must not be translated in data files: `completed`, `playing`, `backlog`, `dropped`
 
 ### Movies & TV Content
 - Data-driven via `src/data/movies.json` and `src/data/series.json`

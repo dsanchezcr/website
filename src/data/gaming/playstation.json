@@ -1,0 +1,301 @@
+{
+  "anticipated": [
+    {
+      "type": "card",
+      "title": "Marvel's Wolverine",
+      "platform": "playstation",
+      "status": "backlog",
+      "imageUrl": "/img/gaming/playstation/wolverine.jpg",
+      "recommendation": {
+        "en": "The most anticipated PlayStation exclusive. Coming September 15, 2026.",
+        "es": "El exclusivo de PlayStation más esperado. Llegando el 15 de septiembre de 2026.",
+        "pt": "O exclusivo de PlayStation mais esperado. Chegando em 15 de setembro de 2026."
+      },
+      "url": "https://www.playstation.com/games/marvels-wolverine"
+    }
+  ],
+  "topGames": [
+    {
+      "type": "card",
+      "title": "ASTRO BOT",
+      "platform": "playstation",
+      "status": "completed",
+      "imageUrl": "/img/gaming/playstation/astrobot.jpg",
+      "recommendation": {
+        "en": "A joyful, creative platformer. Pure fun.",
+        "es": "Un plataformero alegre y creativo. Pura diversión.",
+        "pt": "Um jogo de plataforma alegre e criativo. Pura diversão."
+      },
+      "url": "https://store.playstation.com/product/UP9000-PPSA21564_00-0000000000000000"
+    },
+    {
+      "type": "card",
+      "title": "Sackboy: A Big Adventure",
+      "platform": "playstation",
+      "status": "completed",
+      "imageUrl": "/img/gaming/playstation/sackboy.jpg",
+      "recommendation": {
+        "en": "Play as the hero Sackboy. Jump, dash, and puzzle your way through colorful worlds filled with creative challenges, quirky enemies, and delightful surprises.",
+        "es": "Juega como el héroe Sackboy. Salta, corre y resuelve acertijos a través de mundos coloridos llenos de desafíos creativos, enemigos peculiares y sorpresas encantadoras.",
+        "pt": "Jogue como o herói Sackboy. Pule, corra e resolva quebra-cabeças através de mundos coloridos cheios de desafios criativos, inimigos peculiares e surpresas encantadoras."
+      },
+      "url": "https://store.playstation.com/product/UP9000-PPSA01289_00-SACKBOYADVENTURE"
+    },
+    {
+      "type": "group",
+      "title": {
+        "en": "Marvel's Spider-Man Series",
+        "es": "Serie Marvel's Spider-Man",
+        "pt": "Série Marvel's Spider-Man"
+      },
+      "platform": "playstation",
+      "status": "completed",
+      "recommendation": {
+        "en": "The best superhero games ever made.",
+        "es": "Los mejores juegos de superhéroes jamás hechos.",
+        "pt": "Os melhores jogos de super-heróis já feitos."
+      },
+      "games": [
+        {
+          "title": "Marvel's Spider-Man",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/spiderman.jpg",
+          "url": "https://store.playstation.com/product/UP9000-CUSA02299_00-MARVELSSMGOTY000"
+        },
+        {
+          "title": "Marvel's Spider-Man: Miles Morales",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/spiderman-miles.jpg",
+          "url": "https://store.playstation.com/product/UP9000-PPSA01411_00-MARVELSSMMORALES"
+        },
+        {
+          "title": "Marvel's Spider-Man 2",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/spiderman-2.jpg",
+          "url": "https://store.playstation.com/product/UP9000-PPSA03016_00-MARVELSPIDERMAN2"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": {
+        "en": "God of War Series",
+        "es": "Serie God of War",
+        "pt": "Série God of War"
+      },
+      "platform": "playstation",
+      "status": "completed",
+      "recommendation": {
+        "en": "Masterpieces of storytelling and combat.",
+        "es": "Obras maestras de narrativa y combate.",
+        "pt": "Obras-primas de narrativa e combate."
+      },
+      "games": [
+        {
+          "title": "God of War",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/gow.jpg",
+          "url": "https://store.playstation.com/product/UP9000-CUSA07408_00-00000000GODOFWAR"
+        },
+        {
+          "title": "God of War Ragnarök",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/gow-ragnarok.jpg",
+          "url": "https://store.playstation.com/product/UP9000-PPSA08329_00-GOWRAGNAROK00000"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": {
+        "en": "Horizon Series",
+        "es": "Serie Horizon",
+        "pt": "Série Horizon"
+      },
+      "platform": "playstation",
+      "status": "playing",
+      "recommendation": {
+        "en": "Stunning open-world action RPGs with compelling stories.",
+        "es": "Impresionantes RPGs de acción de mundo abierto con historias convincentes.",
+        "pt": "Impressionantes RPGs de ação de mundo aberto com histórias convincentes."
+      },
+      "games": [
+        {
+          "title": "Horizon Zero Dawn",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/horizon-zero.jpg",
+          "url": "https://store.playstation.com/product/UP9000-PPSA13428_00-HORIZONREMASTER1"
+        },
+        {
+          "title": "Horizon Forbidden West",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/horizon-forbidden-west.jpg",
+          "url": "https://store.playstation.com/product/UP9000-PPSA04072_00-FORBIDDENWESTPS5"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": {
+        "en": "The Last of Us Series",
+        "es": "Serie The Last of Us",
+        "pt": "Série The Last of Us"
+      },
+      "platform": "playstation",
+      "status": "playing",
+      "recommendation": {
+        "en": "Emotionally powerful narratives with intense gameplay.",
+        "es": "Narrativas emocionalmente poderosas con jugabilidad intensa.",
+        "pt": "Narrativas emocionalmente poderosas com jogabilidade intensa."
+      },
+      "games": [
+        {
+          "title": "The Last of Us Part I",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/tlou-1.jpg",
+          "url": "https://store.playstation.com/en-us/product/UP9000-PPSA03396_00-THELASTOFUSPART1"
+        },
+        {
+          "title": "The Last of Us Part II",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/tlou-2.jpg",
+          "url": "https://store.playstation.com/product/UP9000-PPSA10662_00-THELASTOFUSPART2"
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "title": "Hirogami",
+      "platform": "playstation",
+      "status": "playing",
+      "imageUrl": "/img/gaming/playstation/hirogami.jpg",
+      "recommendation": {
+        "en": "A charming 3D action platformer where you explore a stunning origami-crafted world, transforming into animal forms to solve puzzles.",
+        "es": "Un encantador juego de plataformas 3D de acción donde exploras un impresionante mundo hecho de origami, transformándote en formas animales para resolver acertijos.",
+        "pt": "Um encantador jogo de plataformas 3D de ação onde você explora um impressionante mundo feito de origami, transformando-se em formas animais para resolver quebra-cabeças."
+      },
+      "url": "https://store.playstation.com/product/HP3620-PPSA29173_00-0647071670056701"
+    },
+    {
+      "type": "card",
+      "title": "Bloodborne",
+      "platform": "playstation",
+      "status": "playing",
+      "imageUrl": "/img/gaming/playstation/bloodborne.jpg",
+      "recommendation": {
+        "en": "A dark, atmospheric action RPG with challenging combat.",
+        "es": "Un RPG de acción oscuro y atmosférico con combate desafiante.",
+        "pt": "Um RPG de ação sombrio e atmosférico com combate desafiador."
+      },
+      "url": "https://store.playstation.com/product/UP9000-CUSA00900_00-BLOODBORNE000000"
+    },
+    {
+      "type": "card",
+      "title": {
+        "en": "Uncharted Collection",
+        "es": "Colección Uncharted",
+        "pt": "Coleção Uncharted"
+      },
+      "platform": "playstation",
+      "status": "playing",
+      "imageUrl": "/img/gaming/playstation/uncharted.jpg",
+      "recommendation": {
+        "en": "The complete Uncharted trilogy. A thrilling adventure series.",
+        "es": "La trilogía completa de Uncharted. Una emocionante serie de aventuras.",
+        "pt": "A trilogia completa de Uncharted. Uma série de aventuras emocionante."
+      },
+      "url": "https://store.playstation.com/product/UP9000-PPSA05389_00-UNCHARTED4R00000"
+    },
+    {
+      "type": "card",
+      "title": "Until Dawn",
+      "platform": "playstation",
+      "status": "playing",
+      "imageUrl": "/img/gaming/playstation/until-dawn.jpg",
+      "recommendation": {
+        "en": "A horror adventure where your choices matter.",
+        "es": "Una aventura de terror donde tus elecciones importan.",
+        "pt": "Uma aventura de terror onde suas escolhas importam."
+      },
+      "url": "https://store.playstation.com/product/EP9000-PPSA15421_00-FULLGAME00000001"
+    },
+    {
+      "type": "card",
+      "title": "Gran Turismo 7",
+      "platform": "playstation",
+      "status": "playing",
+      "imageUrl": "/img/gaming/playstation/gt7.jpg",
+      "recommendation": {
+        "en": "The ultimate racing simulation experience.",
+        "es": "La experiencia definitiva de simulación de carreras.",
+        "pt": "A experiência definitiva de simulação de corrida."
+      },
+      "url": "https://store.playstation.com/product/UP9000-PPSA01317_00-GT7STD0000000PS5",
+      "online": true
+    },
+    {
+      "type": "group",
+      "title": {
+        "en": "Ratchet & Clank Series",
+        "es": "Serie Ratchet & Clank",
+        "pt": "Série Ratchet & Clank"
+      },
+      "platform": "playstation",
+      "status": "playing",
+      "recommendation": {
+        "en": "Fun and action-packed platformers with a charming duo.",
+        "es": "Plataformeros de acción divertidos con un dúo encantador.",
+        "pt": "Jogos de plataforma e ação divertidos com uma dupla encantadora."
+      },
+      "games": [
+        {
+          "title": "Ratchet & Clank",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/ratchet-clank.jpg",
+          "url": "https://store.playstation.com/product/UP9000-CUSA01047_00-RATCHETPS4000000"
+        },
+        {
+          "title": "Ratchet & Clank: Rift Apart",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/ratchet-clank-rift-apart.jpg",
+          "url": "https://store.playstation.com/en-us/product/UP9000-PPSA01473_00-RATCHETCLANKRIFT"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": {
+        "en": "Sly Cooper Series",
+        "es": "Serie Sly Cooper",
+        "pt": "Série Sly Cooper"
+      },
+      "platform": "playstation",
+      "status": "playing",
+      "recommendation": {
+        "en": "A charming stealth platformer series with a lovable cast.",
+        "es": "Una encantadora serie de plataformas y sigilo con un elenco adorable.",
+        "pt": "Uma charmosa série de plataforma e furtividade com um elenco adorável."
+      },
+      "games": [
+        {
+          "title": "Sly Cooper and the Thievius Raccoonus",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/sly-cooper-1.jpg",
+          "url": "https://store.playstation.com/product/UP9000-PPSA21300_00-SCUS971980000000"
+        },
+        {
+          "title": "Sly 2: Band of Thieves",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/sly-cooper-2.jpg",
+          "url": "https://store.playstation.com/product/UP9000-PPSA22287_00-SCUS973160000000"
+        },
+        {
+          "title": "Sly 3: Honor Among Thieves",
+          "platform": "playstation",
+          "imageUrl": "/img/gaming/playstation/sly-cooper-3.jpg",
+          "url": "https://store.playstation.com/en-us/product/UP9000-PPSA22288_00-SCUS974640000000"
+        }
+      ]
+    }
+  ]
+}

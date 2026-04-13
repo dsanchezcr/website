@@ -7,7 +7,8 @@ description: Jogos casuais que eu jogo no meu telefone e tablet Samsung.
 keywords: [jogos móveis, Android, Samsung, jogos de telefone, jogos de tablet, jogos casuais]
 ---
 
-import GameCard from '@site/src/components/Gaming/GameCard';
+import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
+import phoneMobileGamingData from '@site/src/data/gaming/phone-mobile.json';
 
 # 📱 Telefone e Mobile
 
@@ -15,66 +16,4 @@ Embora eu não jogue muito no celular, aqui estão alguns jogos que eu curto no 
 
 ## Meus Jogos Mobile
 
-<GameCard 
-  title="Fallout Shelter" 
-  platform="phone-mobile" 
-  imageUrl="/img/gaming/phone-mobile/fallout-shelter.jpg"
-  recommendation="Construa e gerencie seu próprio Abrigo subterrâneo como Supervisor. Gerencie moradores, atribua trabalhos e proteja-os dos perigos do Wasteland. Um simulador de gestão surpreendentemente profundo da Bethesda."
-  url="https://play.google.com/store/apps/details?id=com.bethsoft.falloutshelter" 
-/>
-
-<GameCard 
-  title="Angry Birds 2" 
-  platform="phone-mobile" 
-  imageUrl="/img/gaming/phone-mobile/angry-birds.jpg"
-  recommendation="O icônico jogo de quebra-cabeça baseado em física onde você lança pássaros em estruturas de porcos. Conceito simples, jogabilidade incrivelmente satisfatória. A sequência adiciona mais pássaros, feitiços e desafios."
-  url="https://play.google.com/store/apps/details?id=com.rovio.angrybirds2.revo" 
-/>
-
-<GameCard 
-  title="Plants vs. Zombies 2" 
-  platform="phone-mobile" 
-  imageUrl="/img/gaming/phone-mobile/plants-vs-zombies.jpg"
-  recommendation="Defenda sua casa de ondas de zumbis usando um exército de plantas com habilidades únicas. Um clássico jogo de defesa de torre com visuais charmosos e profundidade estratégica através de diferentes períodos de tempo."
-  url="https://play.google.com/store/apps/details?id=com.ea.game.pvz2_row" 
-/>
-
-<GameCard 
-  title="SimCity BuildIt" 
-  platform="phone-mobile" 
-  imageUrl="/img/gaming/phone-mobile/simcity.jpg"
-  recommendation="Construa e gerencie sua própria cidade, de zonas residenciais a distritos comerciais. Equilibre seu orçamento, mantenha os cidadãos felizes e veja sua metrópole crescer. A versão mobile da lendária franquia de construção de cidades."
-  url="https://play.google.com/store/apps/details?id=com.ea.game.simcitymobile_row" 
-/>
-
-<GameCard 
-  title="Age of Empires Mobile" 
-  platform="phone-mobile" 
-  imageUrl="/img/gaming/phone-mobile/age-of-empires.jpg"
-  recommendation="Construa seu império do zero neste jogo de estratégia em tempo real para mobile. Colete recursos, treine exércitos e conquiste inimigos. Traz a experiência clássica de AoE para mobile com controles otimizados para toque."
-  url="https://play.google.com/store/apps/details?id=com.level.aoemobile" 
-/>
-
-<GameCard 
-  title="Catan Universe" 
-  platform="phone-mobile" 
-  imageUrl="/img/gaming/phone-mobile/catan-universe.jpg"
-  recommendation="O querido jogo de tabuleiro trazido para a vida digital. Troque recursos, construa assentamentos e torne-se a força dominante na ilha de Catan. Jogue sozinho contra a IA ou online com amigos."
-  url="https://play.google.com/store/apps/details?id=com.usm.catanuniverse" 
-/>
-
-<GameCard 
-  title="Ticket to Ride" 
-  platform="phone-mobile" 
-  imageUrl="/img/gaming/phone-mobile/ticket-to-ride.jpg"
-  recommendation="Reivindique rotas ferroviárias pela América do Norte nesta adaptação do premiado jogo de tabuleiro. Regras simples mas estratégia profunda enquanto você compete para conectar cidades e completar bilhetes de destino."
-  url="https://play.google.com/store/apps/details?id=com.daysofwonder.tt.android" 
-/>
-
-<GameCard 
-  title="Exploding Kittens" 
-  platform="phone-mobile" 
-  imageUrl="/img/gaming/phone-mobile/exploding-kittens.jpg"
-  recommendation="Um jogo de cartas hilário e estratégico onde você tenta não puxar um Gatinho Explosivo. Use cartas para pular turnos, espiar o baralho ou forçar outros jogadores a situações explosivas. Perfeito para diversão rápida e caótica."
-  url="https://play.google.com/store/apps/details?id=com.explodingkittens.projectbombsquad" 
-/>
+<GamingEntriesRenderer items={phoneMobileGamingData.games} />

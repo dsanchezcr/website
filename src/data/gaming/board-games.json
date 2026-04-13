@@ -1,0 +1,274 @@
+{
+  "strategyGames": [
+    {
+      "type": "group",
+      "title": "Catan",
+      "platform": "board-games",
+      "description": {
+        "en": "The classic resource trading and settlement building game. Collect and trade resources like wood, brick, wheat, ore, and sheep to build roads, settlements, and cities on the island of Catan. A must-have for any board game collection.",
+        "es": "El clásico juego de comercio de recursos y construcción de asentamientos. Recolecta e intercambia recursos como madera, ladrillo, trigo, mineral y oveja para construir caminos, asentamientos y ciudades en la isla de Catan. Un imprescindible para cualquier colección de juegos de mesa.",
+        "pt": "O clássico jogo de troca de recursos e construção de assentamentos. Colete e troque recursos como madeira, tijolo, trigo, minério e ovelha para construir estradas, assentamentos e cidades na ilha de Catan. Indispensável para qualquer coleção de jogos de tabuleiro."
+      },
+      "games": [
+        {
+          "title": "Catan",
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/catan.jpg",
+          "description": {
+            "en": "The classic resource trading and settlement building game. Collect and trade resources like wood, brick, wheat, ore, and sheep to build roads, settlements, and cities on the island of Catan. A must-have for any board game collection.",
+            "es": "El clásico juego de comercio de recursos y construcción de asentamientos. Recolecta e intercambia recursos como madera, ladrillo, trigo, mineral y oveja para construir caminos, asentamientos y ciudades en la isla de Catan. Un imprescindible para cualquier colección de juegos de mesa.",
+            "pt": "O clássico jogo de troca de recursos e construção de assentamentos. Colete e troque recursos como madeira, tijolo, trigo, minério e ovelha para construir estradas, assentamentos e cidades na ilha de Catan. Indispensável para qualquer coleção de jogos de tabuleiro."
+          },
+          "url": "https://www.catan.com/catan"
+        },
+        {
+          "title": {
+            "en": "Catan: Traders & Barbarians",
+            "es": "Catan: Mercaderes y Bárbaros",
+            "pt": "Catan: Mercadores e Bárbaros"
+          },
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/catan-traders-barbarians.jpg",
+          "description": {
+            "en": "An expansion pack for Catan that adds new scenarios and mechanics, including trading with caravans, defending against barbarians, and fishing. It offers fresh challenges and variety to the base game.",
+            "es": "Un paquete de expansión para Catan que agrega nuevos escenarios y mecánicas, incluyendo comercio con caravanas, defensa contra bárbaros y pesca. Ofrece desafíos frescos y variedad al juego base.",
+            "pt": "Um pacote de expansão para Catan que adiciona novos cenários e mecânicas, incluindo comércio com caravanas, defesa contra bárbaros e pesca. Oferece desafios frescos e variedade ao jogo base."
+          },
+          "url": "https://www.catan.com/traders-barbarians"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Ticket to Ride",
+      "platform": "board-games",
+      "description": {
+        "en": "A cross-country train adventure where players collect cards to claim railway routes connecting cities. Simple to learn, strategically deep, and endlessly replayable.",
+        "es": "Una aventura ferroviaria donde los jugadores recolectan cartas para reclamar rutas de tren conectando ciudades. Fácil de aprender, estratégicamente profundo e infinitamente rejugable.",
+        "pt": "Uma aventura ferroviária onde os jogadores coletam cartas para reivindicar rotas de trem conectando cidades. Fácil de aprender, estrategicamente profundo e infinitamente rejogável."
+      },
+      "games": [
+        {
+          "title": {
+            "en": "Ticket to Ride",
+            "es": "Ticket to Ride: Europe",
+            "pt": "Ticket to Ride: Europe"
+          },
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/ticket-to-ride.jpg",
+          "description": {
+            "en": "The original North America edition. Connect cities across the United States and Canada.",
+            "es": "Explora ciudades europeas con nuevas mecánicas como túneles, ferris y estaciones de tren.",
+            "pt": "Explore cidades europeias com novas mecânicas como túneis, balsas e estações de trem."
+          },
+          "url": "https://tickettorideboardgame.com/#editions"
+        },
+        {
+          "title": "Ticket to Ride: Europe",
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/ticket-to-ride-europe.jpg",
+          "description": {
+            "en": "Explore European cities with new mechanics like tunnels, ferries, and train stations.",
+            "es": "Explora ciudades europeas con nuevas mecánicas como túneles, ferris y estaciones de tren.",
+            "pt": "Explore cidades europeias com novas mecânicas como túneis, balsas e estações de trem."
+          },
+          "url": "https://tickettorideboardgame.com/#editions"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": "Splendor",
+      "platform": "board-games",
+      "description": {
+        "en": "A gem-collecting and card development game where players take on the role of Renaissance merchants, acquiring mines, transportation, and artisans to earn prestige points.",
+        "es": "Un juego de recolección de gemas y desarrollo de cartas donde los jugadores asumen el rol de comerciantes del Renacimiento, adquiriendo minas, transporte y artesanos para ganar puntos de prestigio.",
+        "pt": "Um jogo de coleta de gemas e desenvolvimento de cartas onde os jogadores assumem o papel de comerciantes renascentistas, adquirindo minas, transporte e artesãos para ganhar pontos de prestígio."
+      },
+      "games": [
+        {
+          "title": "Splendor",
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/splendor.jpg",
+          "description": {
+            "en": "The original engine-building game of gem trading and prestige.",
+            "es": "El juego original de comercio de gemas y prestigio.",
+            "pt": "O jogo original de troca de gemas e prestígio."
+          },
+          "url": "https://www.spacecowboys-games.com/game/splendor"
+        },
+        {
+          "title": "Splendor Marvel",
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/splendor-marvel.jpg",
+          "description": {
+            "en": "The Marvel-themed edition with Infinity Stones and iconic characters replacing gems and nobles.",
+            "es": "La edición temática de Marvel con Gemas del Infinito y personajes icónicos reemplazando gemas y nobles.",
+            "pt": "A edição temática Marvel com Joias do Infinito e personagens icônicos substituindo gemas e nobres."
+          },
+          "url": "https://www.spacecowboys-games.com/game/splendor-marvel/"
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "title": "Carcassonne",
+      "platform": "board-games",
+      "imageUrl": "/img/gaming/board-games/carcassonne.jpg",
+      "description": {
+        "en": "A tile-placement game where players draw and place tiles to build the medieval landscape of the fortified city. Deploy your followers as knights, thieves, monks, or farmers to score points. Simple rules with deep strategic possibilities.",
+        "es": "Un juego de colocación de fichas donde los jugadores dibujan y colocan fichas para construir el paisaje medieval de la ciudad fortificada. Despliega tus seguidores como caballeros, ladrones, monjes o granjeros para ganar puntos. Reglas simples con profundas posibilidades estratégicas.",
+        "pt": "Um jogo de colocação de peças onde os jogadores desenham e posicionam peças para construir a paisagem medieval da cidade fortificada. Posicione seus seguidores como cavaleiros, ladrões, monges ou fazendeiros para marcar pontos. Regras simples com profundas possibilidades estratégicas."
+      },
+      "url": "https://carcassonnegame.com/"
+    },
+    {
+      "type": "card",
+      "title": "Pandemic",
+      "platform": "board-games",
+      "imageUrl": "/img/gaming/board-games/pandemic.jpg",
+      "description": {
+        "en": "A cooperative board game where players work together as a team of disease-fighting specialists to treat infections and find cures for four deadly diseases before they spread across the globe. Teamwork and strategy are essential to save humanity.",
+        "es": "Un juego cooperativo donde los jugadores trabajan juntos como un equipo de especialistas para tratar infecciones y encontrar curas para cuatro enfermedades mortales antes de que se propaguen por el mundo. El trabajo en equipo y la estrategia son esenciales para salvar a la humanidad.",
+        "pt": "Um jogo cooperativo onde os jogadores trabalham juntos como uma equipe de especialistas para tratar infecções e encontrar curas para quatro doenças mortais antes que se espalhem pelo mundo. Trabalho em equipe e estratégia são essenciais para salvar a humanidade."
+      },
+      "url": "https://www.zmangames.com/game/pandemic"
+    },
+    {
+      "type": "card",
+      "title": "King of Tokyo",
+      "platform": "board-games",
+      "imageUrl": "/img/gaming/board-games/king-of-tokyo.jpg",
+      "description": {
+        "en": "A dice-rolling monster battle game where giant creatures compete to become the King of Tokyo. Roll dice to attack, heal, gain energy, or score victory points. Last monster standing or first to 20 points wins. Fast-paced and full of surprises.",
+        "es": "Un juego de batalla de monstruos con dados donde criaturas gigantes compiten por convertirse en el Rey de Tokio. Lanza dados para atacar, sanar, ganar energía o conseguir puntos de victoria. El último monstruo en pie o el primero en llegar a 20 puntos gana. Rápido y lleno de sorpresas.",
+        "pt": "Um jogo de batalha de monstros com dados onde criaturas gigantes competem para se tornar o Rei de Tóquio. Role dados para atacar, curar, ganhar energia ou marcar pontos de vitória. O último monstro de pé ou o primeiro a chegar a 20 pontos vence. Rápido e cheio de surpresas."
+      },
+      "url": "https://iellogames.com/games/king-of-tokyo/"
+    }
+  ],
+  "partyAndCardGames": [
+    {
+      "type": "card",
+      "title": "Dixit",
+      "platform": "board-games",
+      "imageUrl": "/img/gaming/board-games/dixit.jpg",
+      "description": {
+        "en": "A creative storytelling card game with beautifully illustrated cards. One player gives a clue about their card, and others choose cards that match the clue. The goal is to be creative enough that some, but not all, players guess your card. Sparks imagination and laughter.",
+        "es": "Un juego de cartas creativo con hermosas ilustraciones. Un jugador da una pista sobre su carta y los demás eligen cartas que coincidan con la pista. El objetivo es ser lo suficientemente creativo para que algunos, pero no todos, los jugadores adivinen tu carta. Despierta la imaginación y las risas.",
+        "pt": "Um jogo de cartas criativo com belas ilustrações. Um jogador dá uma dica sobre sua carta e os outros escolhem cartas que combinem com a dica. O objetivo é ser criativo o suficiente para que alguns, mas não todos, os jogadores adivinhem sua carta. Desperta a imaginação e as risadas."
+      },
+      "url": "https://www.libellud.com/en/our-games/dixit/"
+    },
+    {
+      "type": "group",
+      "title": "Exploding Kittens",
+      "platform": "board-games",
+      "description": {
+        "en": "A hilarious and strategic card game of cat-powered Russian Roulette. Draw cards until someone draws an Exploding Kitten and is out of the game — unless they have a Defuse card.",
+        "es": "Un juego de cartas hilarante y estratégico de ruleta rusa con gatos. Roba cartas hasta que alguien saque un Gatito Explosivo y quede fuera del juego — a menos que tenga una carta de Desactivar.",
+        "pt": "Um jogo de cartas hilário e estratégico de roleta russa com gatos. Compre cartas até alguém pegar um Gatinho Explosivo e ser eliminado — a menos que tenha uma carta de Desarmar."
+      },
+      "games": [
+        {
+          "title": "Exploding Kittens",
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/exploding-kittens.jpg",
+          "description": {
+            "en": "The original party game. Simple rules, unpredictable outcomes, and lots of laughs.",
+            "es": "El juego de fiesta original. Reglas simples, resultados impredecibles y muchas risas.",
+            "pt": "O jogo de festa original. Regras simples, resultados imprevisíveis e muitas risadas."
+          },
+          "url": "https://www.explodingkittens.com/products/exploding-kittens-original-edition"
+        },
+        {
+          "title": {
+            "en": "Imploding Kittens: Expansion",
+            "es": "Imploding Kittens: Expansión",
+            "pt": "Imploding Kittens: Expansão"
+          },
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/imploding-kittens.jpg",
+          "description": {
+            "en": "The expansion adding new cards and shared mechanics to the base game.",
+            "es": "La expansión que agrega nuevas cartas y mecánicas compartidas al juego base.",
+            "pt": "A expansão que adiciona novas cartas e mecânicas compartilhadas ao jogo base."
+          },
+          "url": "https://www.explodingkittens.com/products/imploding-kittens-expansion-of-exploding-kittens"
+        }
+      ]
+    },
+    {
+      "type": "group",
+      "title": {
+        "en": "UNO Family",
+        "es": "Familia UNO",
+        "pt": "Família UNO"
+      },
+      "platform": "board-games",
+      "description": {
+        "en": "The world's most popular card game family. Match colors and numbers, play action cards, and be the first to empty your hand. Don't forget to shout UNO!",
+        "es": "La familia de juegos de cartas más popular del mundo. Combina colores y números, juega cartas de acción y sé el primero en vaciar tu mano. ¡No olvides gritar UNO!",
+        "pt": "A família de jogos de cartas mais popular do mundo. Combine cores e números, jogue cartas de ação e seja o primeiro a esvaziar sua mão. Não esqueça de gritar UNO!"
+      },
+      "games": [
+        {
+          "title": "UNO",
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/uno.jpg",
+          "description": {
+            "en": "The classic card game of matching colors and numbers with action cards like Skip, Reverse, and Draw Two.",
+            "es": "El clásico juego de cartas de combinar colores y números con cartas de acción como Saltar, Reversa y Roba Dos.",
+            "pt": "O clássico jogo de cartas de combinar cores e números com cartas de ação como Pular, Reverter e Comprar Duas."
+          },
+          "url": "https://shop.mattel.com/products/uno-gdj85"
+        },
+        {
+          "title": "UNO Flip!",
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/uno-flip.jpg",
+          "description": {
+            "en": "A double-sided deck adds a new twist. Flip the deck to reveal a whole new set of tougher action cards.",
+            "es": "Un mazo de doble cara agrega un nuevo giro. Voltea el mazo para revelar un nuevo conjunto de cartas de acción más difíciles.",
+            "pt": "Um baralho de dois lados adiciona uma nova reviravolta. Vire o baralho para revelar um novo conjunto de cartas de ação mais difíceis."
+          },
+          "url": "https://shop.mattel.com/products/uno-flip-gdr44"
+        },
+        {
+          "title": "UNO No Mercy",
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/uno-no-mercy.jpg",
+          "description": {
+            "en": "The most ruthless version yet with brutal new rules like Draw 6, Draw 10, and Skip Everyone cards.",
+            "es": "La versión más despiadada con nuevas reglas brutales como Roba 6, Roba 10 y cartas de Saltar a Todos.",
+            "pt": "A versão mais implacável com novas regras brutais como Comprar 6, Comprar 10 e cartas de Pular Todos."
+          },
+          "url": "https://shop.mattel.com/products/uno-show-em-no-mercy-hwv18"
+        },
+        {
+          "title": "DOS",
+          "platform": "board-games",
+          "imageUrl": "/img/gaming/board-games/dos.jpg",
+          "description": {
+            "en": "The sequel to UNO where matching two cards in the center row is the key to winning. A fresh twist on the classic formula.",
+            "es": "La secuela de UNO donde combinar dos cartas en la fila central es la clave para ganar. Un giro fresco a la fórmula clásica.",
+            "pt": "A sequência do UNO onde combinar duas cartas na fileira central é a chave para vencer. Uma nova reviravolta na fórmula clássica."
+          },
+          "url": "https://corporate.mattel.com/brand-portfolio/dos"
+        }
+      ]
+    },
+    {
+      "type": "card",
+      "title": "Rummikub",
+      "platform": "board-games",
+      "imageUrl": "/img/gaming/board-games/rummikub.jpg",
+      "description": {
+        "en": "A timeless tile-based game where players arrange numbered tiles into groups (same number, different colors) and runs (consecutive numbers, same color). Strategic planning, pattern recognition, and a bit of luck make every round engaging.",
+        "es": "Un juego atemporal basado en fichas donde los jugadores organizan fichas numeradas en grupos (mismo número, diferentes colores) y escaleras (números consecutivos, mismo color). Planificación estratégica, reconocimiento de patrones y un poco de suerte hacen cada ronda emocionante.",
+        "pt": "Um jogo atemporal baseado em peças onde os jogadores organizam peças numeradas em grupos (mesmo número, cores diferentes) e sequências (números consecutivos, mesma cor). Planejamento estratégico, reconhecimento de padrões e um pouco de sorte tornam cada rodada envolvente."
+      },
+      "url": "https://rummikub.com/"
+    }
+  ]
+}

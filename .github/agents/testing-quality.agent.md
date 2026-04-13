@@ -28,7 +28,8 @@ Read `.github/repo-docs/coding-standards.md` and `.specify/memory/constitution.m
 - **Patterns**:
   - Test component rendering and behavior, not implementation details
   - Mock external APIs (weather, gaming profiles, IMDb)
-  - Validate JSON data schemas (movies.json, series.json) for required fields
+  - Validate JSON data schemas (`movies.json`, `series.json`, `src/data/gaming/*.json`) for required fields
+  - Validate gaming image references in `src/data/gaming/*.json` map to real files under `static/img/`
   - Test i18n — verify all translation keys exist for en/es/pt
 
 ## Backend Testing (xUnit)

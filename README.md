@@ -7,7 +7,7 @@ This repository contains the source code for my personal website and blog, [dsan
 
 ## ✨ About This Repository
 
-This website serves as a platform to share my thoughts on technology, software development, and other interests through blog posts. It also includes information about my projects, professional background, volunteering experience, and a video games section showcasing my gaming profiles across Xbox, PlayStation, Nintendo Switch, and Meta Quest.
+This website serves as a platform to share my thoughts on technology, software development, and other interests through blog posts. It also includes information about my projects, professional background, volunteering experience, and a gaming section showcasing my gaming profiles and curated game lists across Xbox, PlayStation, Nintendo Switch, Meta Quest, Phone/Mobile, and Board Games.
 
 ## 🏗️ Architecture
 
@@ -25,9 +25,8 @@ The site uses **Azure Static Web Apps** with a **managed API** architecture:
 │  │  • Static pages     │    │  • /api/verify              │ │
 │  │  • i18n (en/es/pt)  │    │  • /api/weather             │ │
 │  │  • Volunteering     │    │  • /api/online-users        │ │
-│  │  • Video Games      │    │  • /api/nlweb/ask           │ │
-│  │    (Xbox/PSN/NSW/   │    │                             │ │
-│  │     Meta Quest)     │    │                             │ │
+│  │  • Gaming           │    │  • /api/nlweb/ask           │ │
+│  │    (multi-platform) │    │                             │ │
 │  │                     │    │  • /api/health              │ │
 │  │                     │    │  • /api/reindex             │ │
 │  │                     │    │  • /api/gaming/xbox         │ │
@@ -180,14 +179,19 @@ See [infra/README.md](infra/README.md) for complete deployment instructions.
 │   ├── RefreshGamingProfiles.cs # Admin refresh endpoint
 │   └── Services/           # TokenStorage, Search, GamingCache
 ├── blog/                   # Blog posts (MDX)
-├── videogames/             # Video Games docs section
+├── gaming/                 # Gaming docs section
 │   ├── xbox/               # Xbox & PC games
 │   ├── playstation/        # PlayStation games
 │   ├── nintendo-switch/    # Nintendo Switch games
-│   └── meta-quest/         # Meta Quest games
+│   ├── meta-quest/         # Meta Quest games
+│   ├── phone-mobile/       # Phone & mobile games
+│   ├── board-games/        # Board games
+│   └── chess/              # Chess profile
 ├── src/
 │   ├── components/         # React components
-│   │   └── VideoGames/     # Gaming widgets (XboxProfile, PSNProfile, GameCard)
+│   │   └── Gaming/         # Gaming widgets and renderers
+│   ├── data/
+│   │   └── gaming/         # Per-platform gaming JSON data files
 │   ├── pages/              # Static pages
 │   └── config/             # Environment configuration
 ├── i18n/                   # Translations (es/, pt/)
@@ -196,23 +200,28 @@ See [infra/README.md](infra/README.md) for complete deployment instructions.
 └── .github/workflows/      # CI/CD pipelines
 ```
 
-## 🎮 Video Games Section
+## 🎮 Gaming Section
 
-The website includes a video games section at `/videogames` showcasing gaming profiles across three platforms:
+The website includes a gaming section at `/gaming` with live profile integrations and data-driven catalogs.
 
 | Platform | Features | Data Source |
 |----------|----------|-------------|
 | **Xbox & PC** | Live profile (gamertag, gamerscore), recently played games | [OpenXBL API](https://xbl.io/) |
 | **PlayStation** | Trophy summary, recently played games, PSN profile | [PSN Internal API](https://ca.account.sony.com/) |
-| **Nintendo Switch** | Manual game cards with status updates | User-curated content |
-| **Meta Quest** | Manual VR/MR game lists | User-curated content |
+| **Nintendo Switch** | Curated entries rendered from platform JSON | User-curated content |
+| **Meta Quest** | Curated VR/MR entries rendered from platform JSON | User-curated content |
+| **Phone/Mobile** | Curated mobile entries rendered from platform JSON | User-curated content |
+| **Board Games** | Curated tabletop entries rendered from platform JSON | User-curated content |
+| **Chess** | Live profile widget | Chess.com profile data |
 
 **Key features:**
 - Live profile data fetched from gaming APIs
 - Dual-layer caching (in-memory + Azure Table Storage) for resilience
 - Automatic fallback to cached data when APIs are unavailable
 - Clickable game cards linking to Xbox/PlayStation store pages
-- Custom `GameCard` component for manual game entries with status updates
+- Per-platform JSON data files in `src/data/gaming/*.json`
+- `GamingEntriesRenderer` + `GameCard`/`GameCardGroup` components for consistent rendering
+- Gaming docs in English, Spanish, and Portuguese all use the same JSON-driven platform data model
 - Full i18n support (English, Spanish, Portuguese)
 
 **Required environment variables for gaming APIs:**
