@@ -221,6 +221,7 @@ The website includes a gaming section at `/gaming` with live profile integration
 - Clickable game cards linking to Xbox/PlayStation store pages
 - Per-platform JSON data files in `src/data/gaming/*.json`
 - `GamingEntriesRenderer` + `GameCard`/`GameCardGroup` components for consistent rendering
+- Gaming docs in English, Spanish, and Portuguese all use the same JSON-driven platform data model
 - Full i18n support (English, Spanish, Portuguese)
 
 **Required environment variables for gaming APIs:**

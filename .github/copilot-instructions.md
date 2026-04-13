@@ -339,6 +339,8 @@ All user-facing content **must** support English (default), Spanish, and Portugu
 - `i18n/es/docusaurus-plugin-content-docs-gaming/current/<platform>/index.mdx`
 - `i18n/pt/docusaurus-plugin-content-docs-gaming/current/<platform>/index.mdx`
 
+**Gaming data strategy**: Gaming platform docs in all locales are JSON-driven via `src/data/gaming/*.json` and rendered with `GamingEntriesRenderer`.
+
 **Movies & TV docs**: Changes in `movies-tv/` must be reflected in:
 - `i18n/es/docusaurus-plugin-content-docs-movies-tv/current/`
 - `i18n/pt/docusaurus-plugin-content-docs-movies-tv/current/`
@@ -377,7 +379,7 @@ All user-facing content **must** support English (default), Spanish, and Portugu
 1. Add or update entries in `src/data/gaming/<platform>.json` using `type: "card"` or `type: "group"` (`games` array)
 2. Keep `gaming/<platform>/index.mdx` focused on page structure and rendering sections with `GamingEntriesRenderer`
 3. Add game image to `static/img/gaming/<platform>/<title-slug>.jpg` and reference it via `imageUrl`
-4. Update translations in both `i18n/es/.../gaming/` and `i18n/pt/.../gaming/` when user-facing page text changes
+4. Keep `i18n/es/.../gaming/` and `i18n/pt/.../gaming/` in structural parity with English docs (same JSON imports and renderer sections)
 5. Use established status values: `completed`, `playing`, `backlog`, `dropped`
 
 ### New Movie/TV Entry

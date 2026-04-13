@@ -28,9 +28,9 @@
 ### JSON Entry Shape
 
 - `card` entry:
-	- `{"type":"card","title":"...","platform":"...","status":"...","imageUrl":"/img/...","recommendation":"...","url":"...","coOp":true,"online":false}`
+	- `{"type":"card","title":"...","platform":"...","status":"...","imageUrl":"/img/...","recommendation":{"en":"...","es":"...","pt":"..."},"url":"...","coOp":true,"online":false}`
 - `group` entry:
-	- `{"type":"group","title":"...","platform":"...","status":"...","recommendation":"...","games":[{...cardProps}]}`
+	- `{"type":"group","title":{"en":"...","es":"...","pt":"..."},"platform":"...","status":"...","recommendation":{"en":"...","es":"...","pt":"..."},"games":[{...cardProps}]}`
 
 ### New Platform (if adding a platform)
 
@@ -54,7 +54,7 @@
 ## i18n Checklist
 
 - [ ] If user-facing page copy changes, translations are updated in all 3 languages
-- [ ] `gaming/<platform>/index.mdx` and locale docs remain aligned when structure/headings/widgets change
+- [ ] `gaming/<platform>/index.mdx`, `i18n/es/.../gaming/...`, and `i18n/pt/.../gaming/...` use the same JSON-driven renderer structure
 - [ ] JSON data entries use canonical status values and do not localize status tokens
 - [ ] Status value uses one of: `completed`, `playing`, `backlog`, `dropped`
 

@@ -5,7 +5,11 @@
       "title": "Fallout Shelter",
       "platform": "phone-mobile",
       "imageUrl": "/img/gaming/phone-mobile/fallout-shelter.jpg",
-      "recommendation": "Build and manage your own underground Vault as an Overseer. Manage dwellers, assign them jobs, and protect them from the dangers of the Wasteland. A surprisingly deep management simulator from Bethesda.",
+      "recommendation": {
+        "en": "Build and manage your own underground Vault as an Overseer. Manage dwellers, assign them jobs, and protect them from the dangers of the Wasteland. A surprisingly deep management simulator from Bethesda.",
+        "es": "Construye y administra tu propio Refugio subterráneo como Supervisor. Administra habitantes, asígnales trabajos y protégelos de los peligros del Yermo. Un simulador de gestión sorprendentemente profundo de Bethesda.",
+        "pt": "Construa e gerencie seu próprio Abrigo subterrâneo como Supervisor. Gerencie moradores, atribua trabalhos e proteja-os dos perigos do Wasteland. Um simulador de gestão surpreendentemente profundo da Bethesda."
+      },
       "url": "https://play.google.com/store/apps/details?id=com.bethsoft.falloutshelter"
     },
     {
@@ -13,7 +17,11 @@
       "title": "Angry Birds 2",
       "platform": "phone-mobile",
       "imageUrl": "/img/gaming/phone-mobile/angry-birds.jpg",
-      "recommendation": "The iconic physics-based puzzle game where you launch birds at pig structures. Simple concept, incredibly satisfying gameplay. The sequel adds more birds, spells, and challenges.",
+      "recommendation": {
+        "en": "The iconic physics-based puzzle game where you launch birds at pig structures. Simple concept, incredibly satisfying gameplay. The sequel adds more birds, spells, and challenges.",
+        "es": "El icónico juego de rompecabezas basado en física donde lanzas pájaros contra estructuras de cerdos. Concepto simple, jugabilidad increíblemente satisfactoria. La secuela añade más pájaros, hechizos y desafíos.",
+        "pt": "O icônico jogo de quebra-cabeça baseado em física onde você lança pássaros contra estruturas de porcos. Conceito simples, jogabilidade incrivelmente satisfatória. A sequência adiciona mais pássaros, feitiços e desafios."
+      },
       "url": "https://play.google.com/store/apps/details?id=com.rovio.baba"
     },
     {
@@ -21,7 +29,11 @@
       "title": "Plants vs. Zombies 2",
       "platform": "phone-mobile",
       "imageUrl": "/img/gaming/phone-mobile/plants-vs-zombies.jpg",
-      "recommendation": "Defend your home from waves of zombies using an army of plants with unique abilities. A classic tower defense game with charming visuals and strategic depth across different time periods.",
+      "recommendation": {
+        "en": "Defend your home from waves of zombies using an army of plants with unique abilities. A classic tower defense game with charming visuals and strategic depth across different time periods.",
+        "es": "Defiende tu hogar de oleadas de zombis usando un ejército de plantas con habilidades únicas. Un clásico juego de defensa de torres con visuales encantadores y profundidad estratégica a través de diferentes períodos de tiempo.",
+        "pt": "Defenda sua casa de ondas de zumbis usando um exército de plantas com habilidades únicas. Um clássico jogo de defesa de torre com visuais charmosos e profundidade estratégica através de diferentes períodos de tempo."
+      },
       "url": "https://play.google.com/store/apps/details?id=com.ea.game.pvz2_row"
     },
     {
@@ -29,7 +41,11 @@
       "title": "SimCity BuildIt",
       "platform": "phone-mobile",
       "imageUrl": "/img/gaming/phone-mobile/simcity.jpg",
-      "recommendation": "Build and manage your own city, from residential zones to commercial districts. Balance your budget, keep citizens happy, and watch your metropolis grow. The mobile take on the legendary city-builder franchise.",
+      "recommendation": {
+        "en": "Build and manage your own city, from residential zones to commercial districts. Balance your budget, keep citizens happy, and watch your metropolis grow. The mobile take on the legendary city-builder franchise.",
+        "es": "Construye y administra tu propia ciudad, desde zonas residenciales hasta distritos comerciales. Equilibra tu presupuesto, mantén felices a los ciudadanos y observa cómo crece tu metrópolis. La versión móvil de la legendaria franquicia de construcción de ciudades.",
+        "pt": "Construa e gerencie sua própria cidade, de zonas residenciais a distritos comerciais. Equilibre seu orçamento, mantenha os cidadãos felizes e veja sua metrópole crescer. A versão mobile da lendária franquia de construção de cidades."
+      },
       "url": "https://play.google.com/store/apps/details?id=com.ea.game.simcitymobile_row"
     },
     {
@@ -37,7 +53,11 @@
       "title": "Age of Empires Mobile",
       "platform": "phone-mobile",
       "imageUrl": "/img/gaming/phone-mobile/age-of-empires.jpg",
-      "recommendation": "Build your empire from the ground up in this mobile real-time strategy game. Gather resources, train armies, and conquer enemies. Brings the classic AoE experience to mobile with touch-optimized controls.",
+      "recommendation": {
+        "en": "Build your empire from the ground up in this mobile real-time strategy game. Gather resources, train armies, and conquer enemies. Brings the classic AoE experience to mobile with touch-optimized controls.",
+        "es": "Construye tu imperio desde cero en este juego móvil de estrategia en tiempo real. Recolecta recursos, entrena ejércitos y conquista enemigos. Lleva la experiencia clásica de AoE al móvil con controles optimizados para táctil.",
+        "pt": "Construa seu império do zero neste jogo mobile de estratégia em tempo real. Reúna recursos, treine exércitos e conquiste inimigos. Traz a experiência clássica de AoE para o celular com controles otimizados para toque."
+      },
       "url": "https://play.google.com/store/apps/details?id=com.proximabeta.aoemobile"
     },
     {
@@ -45,7 +65,11 @@
       "title": "Catan Universe",
       "platform": "phone-mobile",
       "imageUrl": "/img/gaming/phone-mobile/catan-universe.jpg",
-      "recommendation": "The beloved board game brought to digital life. Trade resources, build settlements, and become the dominant force on the island of Catan. Play solo against AI or online with friends.",
+      "recommendation": {
+        "en": "The beloved board game brought to digital life. Trade resources, build settlements, and become the dominant force on the island of Catan. Play solo against AI or online with friends.",
+        "es": "El querido juego de mesa llevado a la vida digital. Intercambia recursos, construye asentamientos y conviértete en la fuerza dominante en la isla de Catán. Juega solo contra la IA o en línea con amigos.",
+        "pt": "O querido jogo de tabuleiro trazido para a vida digital. Troque recursos, construa assentamentos e torne-se a força dominante na ilha de Catan. Jogue sozinho contra a IA ou online com amigos."
+      },
       "url": "https://play.google.com/store/apps/details?id=com.usm.catanuniverse",
       "online": true
     },
@@ -54,7 +78,11 @@
       "title": "Ticket to Ride",
       "platform": "phone-mobile",
       "imageUrl": "/img/gaming/phone-mobile/ticket-to-ride.jpg",
-      "recommendation": "Claim railway routes across North America in this award-winning board game adaptation. Simple rules but deep strategy as you compete to connect cities and complete destination tickets.",
+      "recommendation": {
+        "en": "Claim railway routes across North America in this award-winning board game adaptation. Simple rules but deep strategy as you compete to connect cities and complete destination tickets.",
+        "es": "Reclama rutas ferroviarias por Norteamérica en esta premiada adaptación de juego de mesa. Reglas simples, pero estrategia profunda mientras compites por conectar ciudades y completar boletos de destino.",
+        "pt": "Reivindique rotas ferroviárias pela América do Norte nesta premiada adaptação de jogo de tabuleiro. Regras simples, mas estratégia profunda enquanto você compete para conectar cidades e completar bilhetes de destino."
+      },
       "url": "https://play.google.com/store/apps/details?id=com.marmalade.tickettoride"
     },
     {
@@ -62,7 +90,11 @@
       "title": "Exploding Kittens",
       "platform": "phone-mobile",
       "imageUrl": "/img/gaming/phone-mobile/exploding-kittens.jpg",
-      "recommendation": "A hilarious and strategic card game where you try not to draw an Exploding Kitten. Use cards to skip turns, peek at the deck, or force other players into explosive situations. Perfect for quick, chaotic fun.",
+      "recommendation": {
+        "en": "A hilarious and strategic card game where you try not to draw an Exploding Kitten. Use cards to skip turns, peek at the deck, or force other players into explosive situations. Perfect for quick, chaotic fun.",
+        "es": "Un juego de cartas hilarante y estratégico donde intentas no sacar un Gatito Explosivo. Usa cartas para saltar turnos, espiar el mazo o forzar a otros jugadores a situaciones explosivas. Perfecto para diversión rápida y caótica.",
+        "pt": "Um jogo de cartas hilário e estratégico onde você tenta não puxar um Gatinho Explosivo. Use cartas para pular turnos, espiar o baralho ou forçar outros jogadores a situações explosivas. Perfeito para diversão rápida e caótica."
+      },
       "url": "https://play.google.com/store/apps/details?id=com.explodingkittens.projectbombsquad"
     }
   ]

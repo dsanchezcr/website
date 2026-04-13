@@ -12,6 +12,7 @@ on:
       - 'src/data/movies.json'
       - 'src/data/series.json'
       - 'src/data/gaming/**'
+      - 'static/img/gaming/**'
       - 'src/data/disney-parks.json'
       - 'src/data/universal-parks.json'
       - 'i18n/**'
@@ -119,6 +120,189 @@ jobs:
             exit 1
           fi
           echo "Gaming i18n check completed"
+
+      - name: Validate Gaming JSON Renderer Structure
+        run: |
+          echo "Checking JSON-driven renderer structure for gaming platform docs..."
+          node -e "
+          const fs = require('fs');
+          let errors = 0;
+
+          const platformDocs = [
+            'gaming/xbox/index.mdx',
+            'gaming/playstation/index.mdx',
+            'gaming/nintendo-switch/index.mdx',
+            'gaming/meta-quest/index.mdx',
+            'gaming/phone-mobile/index.mdx',
+            'gaming/board-games/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/xbox/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/playstation/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/nintendo-switch/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/meta-quest/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/phone-mobile/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/board-games/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/xbox/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/playstation/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/nintendo-switch/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/meta-quest/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/phone-mobile/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/board-games/index.mdx'
+          ];
+
+          platformDocs.forEach((file) => {
+            if (!fs.existsSync(file)) {
+              console.log('::error file=' + file + '::Missing required gaming platform doc');
+              errors++;
+              return;
+            }
+
+            const content = fs.readFileSync(file, 'utf-8');
+
+            if (!content.includes('GamingEntriesRenderer')) {
+              console.log('::error file=' + file + '::Must use GamingEntriesRenderer for platform entries');
+              errors++;
+            }
+
+            if (!content.includes("@site/src/data/gaming/")) {
+              console.log('::error file=' + file + '::Must import platform JSON from src/data/gaming');
+              errors++;
+            }
+
+            if (content.includes("import GameCard from") || content.includes("import GameCardGroup from")) {
+              console.log('::error file=' + file + '::Do not use inline GameCard/GameCardGroup imports in platform docs');
+              errors++;
+            }
+          });
+
+          if (errors > 0) {
+            console.log('::error::Found ' + errors + ' gaming renderer structure issues');
+            process.exit(1);
+          }
+
+          console.log('Gaming JSON renderer structure validation passed');
+          "
+
+      - name: Validate Docs Locale Parity
+        run: |
+          echo "Checking docs locale parity across en/es/pt..."
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+
+          let errors = 0;
+          const exts = new Set(['.md', '.mdx']);
+          const sections = [
+            { en: 'disney', es: 'i18n/es/docusaurus-plugin-content-docs-disney/current', pt: 'i18n/pt/docusaurus-plugin-content-docs-disney/current' },
+            { en: 'gaming', es: 'i18n/es/docusaurus-plugin-content-docs-gaming/current', pt: 'i18n/pt/docusaurus-plugin-content-docs-gaming/current' },
+            { en: 'movies-tv', es: 'i18n/es/docusaurus-plugin-content-docs-movies-tv/current', pt: 'i18n/pt/docusaurus-plugin-content-docs-movies-tv/current' },
+            { en: 'projects', es: 'i18n/es/docusaurus-plugin-content-docs-projects/current', pt: 'i18n/pt/docusaurus-plugin-content-docs-projects/current' },
+            { en: 'universal', es: 'i18n/es/docusaurus-plugin-content-docs-universal/current', pt: 'i18n/pt/docusaurus-plugin-content-docs-universal/current' }
+          ];
+
+          const listFiles = (root) => {
+            const result = [];
+            if (!fs.existsSync(root)) return result;
+
+            const walk = (dir) => {
+              fs.readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
+                const fullPath = path.join(dir, entry.name);
+                if (entry.isDirectory()) {
+                  walk(fullPath);
+                  return;
+                }
+
+                if (exts.has(path.extname(entry.name))) {
+                  result.push(path.relative(root, fullPath).replace(/\\\\/g, '/'));
+                }
+              });
+            };
+
+            walk(root);
+            return result;
+          };
+
+          sections.forEach((section) => {
+            const enFiles = new Set(listFiles(section.en));
+            const esFiles = new Set(listFiles(section.es));
+            const ptFiles = new Set(listFiles(section.pt));
+
+            enFiles.forEach((file) => {
+              if (!esFiles.has(file)) {
+                console.log('::error file=' + section.en + '/' + file + '::Missing Spanish counterpart in ' + section.es + '/' + file);
+                errors++;
+              }
+              if (!ptFiles.has(file)) {
+                console.log('::error file=' + section.en + '/' + file + '::Missing Portuguese counterpart in ' + section.pt + '/' + file);
+                errors++;
+              }
+            });
+
+            esFiles.forEach((file) => {
+              if (!enFiles.has(file)) {
+                console.log('::error file=' + section.es + '/' + file + '::No matching English source file at ' + section.en + '/' + file);
+                errors++;
+              }
+            });
+
+            ptFiles.forEach((file) => {
+              if (!enFiles.has(file)) {
+                console.log('::error file=' + section.pt + '/' + file + '::No matching English source file at ' + section.en + '/' + file);
+                errors++;
+              }
+            });
+          });
+
+          if (errors > 0) {
+            console.log('::error::Found ' + errors + ' docs locale parity issues');
+            process.exit(1);
+          }
+
+          console.log('Docs locale parity validation passed');
+          "
+
+      - name: Validate Required Pages Locale Parity
+        run: |
+          echo "Checking required page locale parity for en/es/pt..."
+          node -e "
+          const fs = require('fs');
+
+          let errors = 0;
+          const requiredPageFiles = [
+            'about.mdx',
+            'contact.js',
+            'exchangerates.js',
+            'index.js',
+            'weather.js'
+          ];
+
+          requiredPageFiles.forEach((file) => {
+            const enPath = 'src/pages/' + file;
+            const esPath = 'i18n/es/docusaurus-plugin-content-pages/' + file;
+            const ptPath = 'i18n/pt/docusaurus-plugin-content-pages/' + file;
+
+            if (!fs.existsSync(enPath)) {
+              console.log('::error file=' + enPath + '::Missing required English page source');
+              errors++;
+            }
+
+            if (!fs.existsSync(esPath)) {
+              console.log('::error file=' + enPath + '::Missing Spanish page translation: ' + esPath);
+              errors++;
+            }
+
+            if (!fs.existsSync(ptPath)) {
+              console.log('::error file=' + enPath + '::Missing Portuguese page translation: ' + ptPath);
+              errors++;
+            }
+          });
+
+          if (errors > 0) {
+            console.log('::error::Found ' + errors + ' required page locale parity issues');
+            process.exit(1);
+          }
+
+          console.log('Required page locale parity validation passed');
+          "
 
       - name: Validate Media Data Schema
         run: |
@@ -377,20 +561,62 @@ jobs:
           "
 
       - name: Validate Gaming Data Schema
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.sha }}
         run: |
           echo "Checking src/data/gaming/*.json schema..."
           node -e "
           const fs = require('fs');
           const path = require('path');
-          const { execSync } = require('child_process');
 
           let errors = 0;
           const validStatuses = new Set(['completed', 'playing', 'backlog', 'dropped']);
 
           const isObject = (value) => value && typeof value === 'object' && !Array.isArray(value);
+
+          const isLocalizedTextObject = (value) => {
+            if (!isObject(value)) return false;
+            const allowedKeys = ['en', 'es', 'pt'];
+            const keys = Object.keys(value);
+            if (keys.length === 0) return false;
+            if (!keys.every((key) => allowedKeys.includes(key))) return false;
+            return keys.every((key) => typeof value[key] === 'string');
+          };
+
+          const validateTextField = (entry, fieldName, file, label, required = false, requireLocalizedObject = false) => {
+            const value = entry[fieldName];
+
+            if (value == null) {
+              if (required) {
+                console.log('::error file=' + file + '::' + label + '.' + fieldName + ' is required');
+                errors++;
+              }
+              return;
+            }
+
+            if (typeof value === 'string') {
+              if (requireLocalizedObject) {
+                console.log('::error file=' + file + '::' + label + '.' + fieldName + ' must be localized with en/es/pt object');
+                errors++;
+                return;
+              }
+
+              if (required && value.trim().length === 0) {
+                console.log('::error file=' + file + '::' + label + '.' + fieldName + ' must be a non-empty string');
+                errors++;
+              }
+              return;
+            }
+
+            if (!isLocalizedTextObject(value)) {
+              console.log('::error file=' + file + '::' + label + '.' + fieldName + ' must be a string or localized object with en/es/pt string keys');
+              errors++;
+              return;
+            }
+
+            if (required && (!value.en || value.en.trim().length === 0)) {
+              console.log('::error file=' + file + '::' + label + '.' + fieldName + '.en must be a non-empty string when localized object is used');
+              errors++;
+            }
+          };
 
           const validateCardLike = (entry, file, label) => {
             if (!isObject(entry)) {
@@ -399,10 +625,7 @@ jobs:
               return;
             }
 
-            if (!entry.title || typeof entry.title !== 'string') {
-              console.log('::error file=' + file + '::' + label + '.title must be a non-empty string');
-              errors++;
-            }
+            validateTextField(entry, 'title', file, label, true);
 
             if (!entry.platform || typeof entry.platform !== 'string') {
               console.log('::error file=' + file + '::' + label + '.platform must be a non-empty string');
@@ -424,15 +647,8 @@ jobs:
               errors++;
             }
 
-            if (entry.recommendation != null && typeof entry.recommendation !== 'string') {
-              console.log('::error file=' + file + '::' + label + '.recommendation must be a string when provided');
-              errors++;
-            }
-
-            if (entry.description != null && typeof entry.description !== 'string') {
-              console.log('::error file=' + file + '::' + label + '.description must be a string when provided');
-              errors++;
-            }
+            validateTextField(entry, 'recommendation', file, label, false, true);
+            validateTextField(entry, 'description', file, label, false, true);
 
             if (entry.coOp != null && typeof entry.coOp !== 'boolean') {
               console.log('::error file=' + file + '::' + label + '.coOp must be boolean when provided');
@@ -458,10 +674,7 @@ jobs:
             }
 
             if (entry.type === 'group') {
-              if (!entry.title || typeof entry.title !== 'string') {
-                console.log('::error file=' + file + '::' + label + '.title must be a non-empty string');
-                errors++;
-              }
+              validateTextField(entry, 'title', file, label, true);
 
               if (!entry.platform || typeof entry.platform !== 'string') {
                 console.log('::error file=' + file + '::' + label + '.platform must be a non-empty string');
@@ -470,6 +683,29 @@ jobs:
 
               if (entry.status != null && !validStatuses.has(entry.status)) {
                 console.log('::error file=' + file + '::' + label + '.status must be one of: completed, playing, backlog, dropped');
+                errors++;
+              }
+
+              validateTextField(entry, 'recommendation', file, label, false, true);
+              validateTextField(entry, 'description', file, label, false, true);
+
+              if (entry.url != null && typeof entry.url !== 'string') {
+                console.log('::error file=' + file + '::' + label + '.url must be a string when provided');
+                errors++;
+              }
+
+              if (entry.imageUrl != null && (typeof entry.imageUrl !== 'string' || !entry.imageUrl.startsWith('/img/'))) {
+                console.log('::error file=' + file + '::' + label + '.imageUrl must be a string starting with /img/ when provided');
+                errors++;
+              }
+
+              if (entry.coOp != null && typeof entry.coOp !== 'boolean') {
+                console.log('::error file=' + file + '::' + label + '.coOp must be boolean when provided');
+                errors++;
+              }
+
+              if (entry.online != null && typeof entry.online !== 'boolean') {
+                console.log('::error file=' + file + '::' + label + '.online must be boolean when provided');
                 errors++;
               }
 
@@ -489,30 +725,19 @@ jobs:
             errors++;
           };
 
-          const changedFiles = new Set(
-            execSync(
-              'git diff --name-only --diff-filter=ACM ' + process.env.BASE_SHA + '...' + process.env.HEAD_SHA,
-              { encoding: 'utf-8' }
-            )
-              .split(/\r?\n/)
-              .map((line) => line.trim())
-              .filter(Boolean)
-          );
-
           const gamingDir = 'src/data/gaming';
           if (!fs.existsSync(gamingDir)) {
             console.log('No src/data/gaming directory found, skipping');
             process.exit(0);
           }
 
-          const candidateFiles = fs
+          const filesToValidate = fs
             .readdirSync(gamingDir)
             .filter((file) => file.endsWith('.json'))
             .map((file) => path.posix.join(gamingDir, file));
 
-          const filesToValidate = candidateFiles.filter((file) => changedFiles.has(file));
           if (filesToValidate.length === 0) {
-            console.log('No gaming data files changed, skipping schema validation');
+            console.log('No gaming data files found, skipping schema validation');
             process.exit(0);
           }
 
@@ -554,26 +779,13 @@ jobs:
           "
 
       - name: Validate Gaming Data Image References
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          HEAD_SHA: ${{ github.sha }}
         run: |
           echo "Checking gaming data image references..."
           node -e "
           const fs = require('fs');
           const path = require('path');
-          const { execSync } = require('child_process');
 
           let errors = 0;
-          const changedFiles = new Set(
-            execSync(
-              'git diff --name-only --diff-filter=ACM ' + process.env.BASE_SHA + '...' + process.env.HEAD_SHA,
-              { encoding: 'utf-8' }
-            )
-              .split(/\r?\n/)
-              .map((line) => line.trim())
-              .filter(Boolean)
-          );
 
           const gamingDir = 'src/data/gaming';
           if (!fs.existsSync(gamingDir)) {
@@ -581,14 +793,13 @@ jobs:
             process.exit(0);
           }
 
-          const candidateFiles = fs
+          const filesToValidate = fs
             .readdirSync(gamingDir)
             .filter((file) => file.endsWith('.json'))
             .map((file) => path.posix.join(gamingDir, file));
 
-          const filesToValidate = candidateFiles.filter((file) => changedFiles.has(file));
           if (filesToValidate.length === 0) {
-            console.log('No gaming data files changed, skipping image validation');
+            console.log('No gaming data files found, skipping image validation');
             process.exit(0);
           }
 

@@ -35,8 +35,8 @@ Gaming pages keep the same visual layout and components while sourcing game entr
 | `src/components/Gaming/GamingEntriesRenderer.js` | Create | Reusable renderer for mixed card/group entries |
 | `src/data/gaming/*.json` | Create | One JSON file per gaming platform |
 | `gaming/*/index.mdx` | Modify | Replace hardcoded entries with renderer + JSON imports |
-| `i18n/es/docusaurus-plugin-content-docs-gaming/current/*/index.mdx` | Modify | Keep locale pages aligned with shared data strategy |
-| `i18n/pt/docusaurus-plugin-content-docs-gaming/current/*/index.mdx` | Modify | Keep locale pages aligned with shared data strategy |
+| `i18n/es/docusaurus-plugin-content-docs-gaming/current/*/index.mdx` | Modify | Migrate locale pages to renderer + shared platform JSON |
+| `i18n/pt/docusaurus-plugin-content-docs-gaming/current/*/index.mdx` | Modify | Migrate locale pages to renderer + shared platform JSON |
 
 ### Component Design
 
@@ -61,12 +61,6 @@ Per-platform JSON object shape:
   "games": [
     { "type": "card", "title": "..." }
   ],
-  "switch2": [
-    { "type": "card", "title": "..." }
-  ],
-  "switch": [
-    { "type": "card", "title": "..." }
-  ],
   "strategy": [],
   "party": []
 }
@@ -83,8 +77,8 @@ Only keys needed by each platform are included.
 ## i18n Requirements
 
 - [x] New user-facing text has translations in all 3 locales (no new visible text introduced)
-- [x] Translated content files remain aligned in `i18n/es/` and `i18n/pt/`
-- [x] Existing locale behavior preserved
+- [x] Locale gaming docs use the same JSON-driven structure as English docs
+- [x] Shared game data is sourced from `src/data/gaming/*.json` across all locales
 
 ## Acceptance Criteria
 
