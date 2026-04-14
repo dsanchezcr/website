@@ -103,9 +103,9 @@ var host = new HostBuilder()
                 var logger = sp.GetRequiredService<ILogger<CosmosContentService>>();
                 var clientOptions = new CosmosClientOptions
                 {
-                    SerializerOptions = new CosmosSerializationOptions
+                    UseSystemTextJsonSerializerWithOptions = new System.Text.Json.JsonSerializerOptions
                     {
-                        PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
+                        PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
                     },
                     ConnectionMode = ConnectionMode.Gateway
                 };

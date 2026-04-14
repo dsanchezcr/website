@@ -223,3 +223,46 @@ public class ParkItem
     [JsonPropertyName("order")]
     public int? Order { get; set; }
 }
+
+/// <summary>
+/// A monthly gaming update entry stored in the content-monthly-updates container.
+/// Partition key: /month (e.g. "2026-04", "2026-05")
+/// </summary>
+public class MonthlyUpdateDocument : ContentDocument
+{
+    [JsonPropertyName("month")]
+    public string Month { get; set; } = string.Empty;
+
+    [JsonPropertyName("title")]
+    public object? Title { get; set; }
+
+    [JsonPropertyName("releaseDate")]
+    public string? ReleaseDate { get; set; }
+
+    [JsonPropertyName("description")]
+    public object? Description { get; set; }
+
+    [JsonPropertyName("platforms")]
+    public string? Platforms { get; set; }
+
+    [JsonPropertyName("youtubeVideoId")]
+    public string? YoutubeVideoId { get; set; }
+
+    [JsonPropertyName("youtubeTitle")]
+    public object? YoutubeTitle { get; set; }
+
+    [JsonPropertyName("imageUrl")]
+    public string? ImageUrl { get; set; }
+
+    [JsonPropertyName("category")]
+    public string Category { get; set; } = "upcoming";
+
+    [JsonPropertyName("order")]
+    public int Order { get; set; }
+
+    [JsonPropertyName("heroImageUrl")]
+    public string? HeroImageUrl { get; set; }
+
+    [JsonPropertyName("introText")]
+    public object? IntroText { get; set; }
+}

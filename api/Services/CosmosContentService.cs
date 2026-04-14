@@ -13,6 +13,8 @@ public interface ICosmosContentService
     Task<IReadOnlyList<SeriesDocument>> GetSeriesAsync(string? category = null);
     Task<IReadOnlyList<GamingDocument>> GetGamingAsync(string platform, string? section = null);
     Task<IReadOnlyList<ParkDocument>> GetParksAsync(string provider, string? parkId = null);
+    Task<IReadOnlyList<MonthlyUpdateDocument>> GetMonthlyUpdatesAsync(string month);
+    Task<IReadOnlyList<string>> GetMonthlyUpdateMonthsAsync();
     Task<bool> IsConfiguredAsync();
 }
 
@@ -30,6 +32,7 @@ public class CosmosContentService : ICosmosContentService
     private const string SeriesContainer = "content-series";
     private const string GamingContainer = "content-gaming";
     private const string ParksContainer = "content-parks";
+    private const string MonthlyUpdatesContainer = "content-monthly-updates";
 
     public CosmosContentService(CosmosClient client, string databaseName, ILogger<CosmosContentService> logger)
     {
@@ -108,6 +111,22 @@ public class CosmosContentService : ICosmosContentService
         return await ExecuteQueryAsync<ParkDocument>(container, query, new PartitionKey(provider));
     }
 
+    public async Task<IReadOnlyList<MonthlyUpdateDocument>> GetMonthlyUpdatesAsync(string month)
+    {
+        var container = _client.GetContainer(_databaseName, MonthlyUpdatesContainer);
+        var query = new QueryDefinition("SELECT * FROM c WHERE c.month = @month ORDER BY c[\"order\"]")
+            .WithParameter("@month", month);
+        return await ExecuteQueryAsync<MonthlyUpdateDocument>(container, query, new PartitionKey(month));
+    }
+
+    public async Task<IReadOnlyList<string>> GetMonthlyUpdateMonthsAsync()
+    {
+        var container = _client.GetContainer(_databaseName, MonthlyUpdatesContainer);
+        var query = new QueryDefinition("SELECT DISTINCT VALUE c.month FROM c");
+        var months = await ExecuteQueryAsync<string>(container, query);
+        return months.OrderByDescending(m => m).ToList();
+    }
+
     private async Task<IReadOnlyList<T>> ExecuteQueryAsync<T>(Container container, QueryDefinition query, PartitionKey? partitionKey = null)
     {
         var results = new List<T>();
@@ -158,4 +177,6 @@ public class NullCosmosContentService : ICosmosContentService
     public Task<IReadOnlyList<SeriesDocument>> GetSeriesAsync(string? category = null) => Task.FromResult<IReadOnlyList<SeriesDocument>>(Array.Empty<SeriesDocument>());
     public Task<IReadOnlyList<GamingDocument>> GetGamingAsync(string platform, string? section = null) => Task.FromResult<IReadOnlyList<GamingDocument>>(Array.Empty<GamingDocument>());
     public Task<IReadOnlyList<ParkDocument>> GetParksAsync(string provider, string? parkId = null) => Task.FromResult<IReadOnlyList<ParkDocument>>(Array.Empty<ParkDocument>());
+    public Task<IReadOnlyList<MonthlyUpdateDocument>> GetMonthlyUpdatesAsync(string month) => Task.FromResult<IReadOnlyList<MonthlyUpdateDocument>>(Array.Empty<MonthlyUpdateDocument>());
+    public Task<IReadOnlyList<string>> GetMonthlyUpdateMonthsAsync() => Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 }
