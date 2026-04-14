@@ -17,7 +17,7 @@ export default function BlogPostItemWrapper(props: Props): JSX.Element {
   // Blog list page: show thumbnail alongside the post excerpt
   if (!isBlogPostPage && image) {
     const localImage = image.includes("/static/img/")
-      ? image.replace(/.*\/static\/img\//, "/img/")
+      ? image.replace(/.*\/static\/img\//, "https://dsanchezcrwebsite.blob.core.windows.net/images/")
       : image;
 
     return (

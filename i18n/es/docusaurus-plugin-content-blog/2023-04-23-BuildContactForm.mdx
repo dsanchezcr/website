@@ -6,7 +6,7 @@ authors: [dsanchezcr]
 tags: [Azure Functions, GitHub Actions, Azure Communication Services, Azure Static Web Apps]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2023-04-23-BuildContactForm/ContactForm.jpg
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/ContactForm.jpg
 date: 2023-04-23T18:00
 ---
 # Creación de un formulario de contacto sencillo con Azure
@@ -40,21 +40,21 @@ El primer paso fue crear los recursos de Azure. Estos son los recursos que utili
 *   [Azure Function](https://learn.microsoft.com/azure/azure-functions/functions-create-first-function-vs-code&pivots=programming-language-csharp) - para procesar el desencadenador HTTP enviado por el HTML y enviar los correos electrónicos mediante Azure Communication Service.
 *   [Aplicación web estática de Azure](https://learn.microsoft.com/azure/static-web-apps/getting-started) - para alojar el sitio web (Índice.html en este caso).
 
-![](pathname:///img/blog/2023-04-23-BuildContactForm/AzureResourceVisualizer.jpg)
+![](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/AzureResourceVisualizer.jpg)
 
 #### 2. Configuración de Azure Communication Services - Servicio de correo electrónico
 
 El siguiente paso fue configurar Azure Communication Services - Email Service. Esto incluye configurar una dirección de correo electrónico para enviar correos electrónicos. Al crear este servicio, puede elegir si desea usar un subdominio de Azure o si desea configurar su propio dominio.
 
-![](pathname:///img/blog/2023-04-23-BuildContactForm/AzureEmailCommunicationService.jpg)
+![](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/AzureEmailCommunicationService.jpg)
 
 En este caso, usé la dirección de correo electrónico aprovisionada por un subdominio de Azure.
 
-![](pathname:///img/blog/2023-04-23-BuildContactForm/DomainProvision.jpg)
+![](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/DomainProvision.jpg)
 
 La dirección de correo electrónico se creó y configuró automáticamente:
 
-![](pathname:///img/blog/2023-04-23-BuildContactForm/EmailCommunicationService.jpg)
+![](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/EmailCommunicationService.jpg)
 
 #### 3. Desarrollo de la función Azure
 
@@ -106,7 +106,7 @@ https://github.com/dsanchezcr/ContactFormWithAzure/blob/9f619eb2c8d41e45574557db
 
 Probé la solución enviando un mensaje desde el formulario de contacto. La siguiente imagen muestra el correo electrónico que se envió al propietario del sitio web y el correo electrónico que se envió al usuario que publicó el mensaje.
 
-![](pathname:///img/blog/2023-04-23-BuildContactForm/ContactFormResult.jpg)
+![](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/ContactFormResult.jpg)
 
 Puedes probar la solución [aquí](https://purple-sky-05cd51e0f.3.azurestaticapps.net/Index.html).
 

@@ -44,6 +44,9 @@ export const config = {
     'www.dsanchezcr.com'
   ],
 
+  // Azure Blob Storage base URL for images (public container)
+  imageBaseUrl: 'https://dsanchezcrwebsite.blob.core.windows.net/images',
+
   // reCAPTCHA v3 site key
   recaptchaSiteKey: '6LcGaAIsAAAAALzUAxzGFx5R1uJ2Wgxn4RmNsy2I',
 

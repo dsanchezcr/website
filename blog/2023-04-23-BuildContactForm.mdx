@@ -6,7 +6,7 @@ authors: [dsanchezcr]
 tags: [Azure Functions, GitHub Actions, Azure Communication Services, Azure Static Web Apps]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2023-04-23-BuildContactForm/ContactForm.jpg
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/ContactForm.jpg
 date: 2023-04-23T18:00
 ---
 
@@ -41,21 +41,21 @@ The first step was to create the Azure resources. These are the resouces that I 
 - [Azure Function](https://learn.microsoft.com/azure/azure-functions/functions-create-first-function-vs-code?pivots=programming-language-csharp) - to process the HTTP trigger sent by the HTML and send the emails using Azure Communication Service.
 - [Azure Static Web App](https://learn.microsoft.com/azure/static-web-apps/getting-started) - to host the website (Index.html in this case).
 
-![](../static/img/blog/2023-04-23-BuildContactForm/AzureResourceVisualizer.jpg)
+![](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/AzureResourceVisualizer.jpg)
 
 #### 2. Configure the Azure Communication Services - Email Service
 
 The next step was to configure the Azure Communication Services - Email Service. This includes setting up an email address to send emails. When you create this service you can choose if you want to use an Azure subdomain or if you want to setup your own domain.
 
-![](../static/img/blog/2023-04-23-BuildContactForm/AzureEmailCommunicationService.jpg)
+![](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/AzureEmailCommunicationService.jpg)
 
 In this case, I used the email address provisioned by an Azure subdomain. 
 
-![](../static/img/blog/2023-04-23-BuildContactForm/DomainProvision.jpg)
+![](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/DomainProvision.jpg)
 
 The email address was created and configured automatically:
 
-![](../static/img/blog/2023-04-23-BuildContactForm/EmailCommunicationService.jpg)
+![](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/EmailCommunicationService.jpg)
 
 
 #### 3. Develop the Azure Function
@@ -106,7 +106,7 @@ https://github.com/dsanchezcr/ContactFormWithAzure/blob/9f619eb2c8d41e45574557db
 
 I tested the solution by sending a message from the contact form. The following image shows the email that was sent to the website owner and the email that was sent to the user who posted the message.
 
-![](../static/img/blog/2023-04-23-BuildContactForm/ContactFormResult.jpg)
+![](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2023-04-23-BuildContactForm/ContactFormResult.jpg)
 
 You can try the solution [here](https://purple-sky-05cd51e0f.3.azurestaticapps.net/Index.html).
 

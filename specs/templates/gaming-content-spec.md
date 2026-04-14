@@ -28,7 +28,7 @@
 ### JSON Entry Shape
 
 - `card` entry:
-	- `{"type":"card","title":"...","platform":"...","status":"...","imageUrl":"/img/...","recommendation":{"en":"...","es":"...","pt":"..."},"url":"...","coOp":true,"online":false}`
+	- `{"type":"card","title":"...","platform":"...","status":"...","imageUrl":"https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/...","recommendation":{"en":"...","es":"...","pt":"..."},"url":"...","coOp":true,"online":false}`
 - `group` entry:
 	- `{"type":"group","title":{"en":"...","es":"...","pt":"..."},"platform":"...","status":"...","recommendation":{"en":"...","es":"...","pt":"..."},"games":[{...cardProps}]}`
 
