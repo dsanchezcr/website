@@ -44,8 +44,10 @@ export const config = {
     'www.dsanchezcr.com'
   ],
 
-  // Azure Blob Storage base URL for images (public container)
-  imageBaseUrl: 'https://dsanchezcrwebsite.blob.core.windows.net/images',
+  // Azure Blob Storage base URL for images (public container).
+  // Can be overridden at build time via the DOCUSAURUS_IMAGE_BASE_URL environment variable
+  // (e.g. to point at a staging storage account or CDN without changing source code).
+  imageBaseUrl: process.env.DOCUSAURUS_IMAGE_BASE_URL || 'https://dsanchezcrwebsite.blob.core.windows.net/images',
 
   // reCAPTCHA v3 site key
   recaptchaSiteKey: '6LcGaAIsAAAAALzUAxzGFx5R1uJ2Wgxn4RmNsy2I',
