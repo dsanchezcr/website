@@ -7,11 +7,11 @@ You are the **Blog Image** agent for dsanchezcr.com. Your job is to create, gene
 
 ## Context
 
-Read `.github/copilot-instructions.md` for image organization patterns. Images are stored in `static/img/` organized by section. This repo uses Google Gemini (`gemini-2.5-flash-image`) for image generation via a simple script — no Azure Function or server needed.
+Read `.github/copilot-instructions.md` for image organization patterns. Images are hosted in **Azure Blob Storage** at `https://dsanchezcrwebsite.blob.core.windows.net/images`. The image generation script automatically uploads to Azure Blob Storage when `AZURE_STORAGE_CONNECTION_STRING` is configured in `.env.local` or `api/local.settings.json`.
 
 ## Environment Setup
 
-The script reads `GOOGLE_AI_KEY` from the shell. Before running, load `.env.local`:
+The script reads `GOOGLE_AI_KEY` and `AZURE_STORAGE_CONNECTION_STRING` from the shell. Before running, load `.env.local`:
 ```bash
 # PowerShell
 Get-Content .env.local | ForEach-Object { if ($_ -match '^([^#]\w+)=(.*)') { [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2]) } }
@@ -29,7 +29,8 @@ export $(grep -v '^#' .env.local | xargs)
    node scripts/generate-blog-image.mjs --slug "<post-slug>" --prompt "<detailed prompt>"
    ```
    Requires `GOOGLE_AI_KEY` in `.env.local` (free key from https://ai.google.dev).
-   The image is saved directly to `static/img/blog/<date-slug>/` with the extension derived from the actual API response mimeType (e.g., `.png`, `.jpg`, `.webp`). The file extension must match the actual image format returned by the API — do NOT assume JPEG.
+   When `AZURE_STORAGE_CONNECTION_STRING` is also set, the image is automatically uploaded to Azure Blob Storage.
+   The image is saved locally to `static/img/blog/<date-slug>/` as a backup, and the script outputs the Azure Blob URL for the frontmatter `image` field.
 4. **Create Mermaid diagrams**: For architecture or flow diagrams, create Mermaid syntax that renders within MDX.
 5. **Verify placement**: Confirm the image exists at the correct path and matches the frontmatter `image` field.
 
@@ -52,8 +53,8 @@ When generating hero images for blog posts, craft prompts that:
 | Max size | 500KB |
 | Naming | lowercase, hyphens, descriptive slug |
 | Alt text | Required for accessibility |
-| Location | `static/img/blog/<date-slug>/` for blog posts |
-| Frontmatter | `image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/<date-slug>/<filename>.<ext>` (use the actual extension from the generated file) |
+| Location | Azure Blob Storage: `blog/<date-slug>/` (auto-uploaded by script) |
+| Frontmatter | `image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/<date-slug>/<filename>.<ext>` (use the actual extension from the generated file) |
 
 ## Constraints
 
