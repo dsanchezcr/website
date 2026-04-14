@@ -9,7 +9,8 @@ internal static class QueryHelpers
     /// <summary>
     /// Extracts the first value for <paramref name="key"/> from a raw query string
     /// (e.g. "?category=action&amp;page=1" or "category=action&amp;page=1").
-    /// Returns <see langword="null"/> when the key is absent or has no value.
+    /// Returns <see langword="null"/> when the key is absent or its decoded value is
+    /// empty or whitespace (e.g. <c>?category=</c> or <c>?category=%20</c>).
     /// </summary>
     public static string? GetQueryParam(string query, string key)
     {
@@ -18,7 +19,10 @@ internal static class QueryHelpers
         {
             var kv = part.Split('=', 2);
             if (kv.Length == 2 && Decode(kv[0]) == key)
-                return Decode(kv[1]);
+            {
+                var value = Decode(kv[1]);
+                return string.IsNullOrWhiteSpace(value) ? null : value;
+            }
         }
         return null;
     }
