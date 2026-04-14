@@ -28,7 +28,11 @@ const ApiGamingSectionInner = ({ platform, section, filter }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const apiEndpoint = config.getApiEndpoint();
         let url = `${apiEndpoint}${config.routes.contentGaming}?platform=${encodeURIComponent(platform)}`;
@@ -36,7 +40,7 @@ const ApiGamingSectionInner = ({ platform, section, filter }) => {
           url += `&section=${encodeURIComponent(section)}`;
         }
 
-        const response = await fetch(url, { headers: { Accept: 'application/json' } });
+        const response = await fetch(url, { headers: { Accept: 'application/json' }, signal: controller.signal });
 
         if (!response.ok) {
           throw new Error(`Failed to load gaming content (${response.status})`);
@@ -45,13 +49,18 @@ const ApiGamingSectionInner = ({ platform, section, filter }) => {
         const data = await response.json();
         setItems(data);
       } catch (err) {
-        setError(err.message);
+        if (err.name !== 'AbortError') {
+          setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchData();
+    return () => controller.abort();
   }, [platform, section]);
 
   const filteredItems = useMemo(

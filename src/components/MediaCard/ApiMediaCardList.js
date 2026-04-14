@@ -3,12 +3,17 @@ import BrowserOnly from '@docusaurus/BrowserOnly';
 import { config } from '@site/src/config/environment';
 import MediaCardList from './MediaCardList';
 
+const VALID_CONTENT_TYPES = ['movies', 'series'];
+
 /**
  * API-driven wrapper for MediaCardList.
  * Fetches movie/series data from Cosmos DB via the content API at runtime,
  * replacing the previous pattern of importing static JSON at build time.
  */
 const ApiMediaCardList = ({ contentType, category }) => {
+  if (!VALID_CONTENT_TYPES.includes(contentType)) {
+    return <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--ifm-color-danger)' }}>Error: Invalid content type &quot;{contentType}&quot;. Expected &quot;movies&quot; or &quot;series&quot;.</div>;
+  }
   return (
     <BrowserOnly fallback={<div style={{ textAlign: 'center', padding: '2rem', color: 'var(--ifm-font-color-secondary)' }}>Loading content...</div>}>
       {() => <ApiMediaCardListInner contentType={contentType} category={category} />}

@@ -17,9 +17,9 @@ import { resolve, join, basename } from 'path';
 // Azure Blob Storage upload support (optional)
 let blobUploadAvailable = false;
 let BlobServiceClient;
-const BLOB_CONTAINER = 'images';
-const BLOB_BASE_URL = 'https://dsanchezcrwebsite.blob.core.windows.net/images';
-const storageConnectionString = process.env.AZURE_STORAGE_CONNECTION_STRING || process.env.AzureWebJobsStorage;
+const BLOB_CONTAINER = process.env.BLOB_CONTAINER || 'images';
+const BLOB_BASE_URL = process.env.BLOB_BASE_URL || `https://dsanchezcrwebsite.blob.core.windows.net/${BLOB_CONTAINER}`;
+const storageConnectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
 
 try {
   ({ BlobServiceClient } = await import('@azure/storage-blob'));
