@@ -690,11 +690,23 @@ public class HealthCheck
         if (string.IsNullOrWhiteSpace(endpoint) || string.IsNullOrWhiteSpace(key))
         {
             health.Status = HealthStatus.Degraded;
-            health.Message = "Cosmos DB not configured — content APIs unavailable";
+            health.Message = "Cosmos DB not configured — content APIs unavailable. Set AZURE_COSMOS_ENDPOINT and AZURE_COSMOS_KEY in the Azure Static Web App Configuration (not GitHub Secrets).";
             if (string.IsNullOrWhiteSpace(endpoint))
                 health.MissingConfigurations.Add("AZURE_COSMOS_ENDPOINT");
             if (string.IsNullOrWhiteSpace(key))
                 health.MissingConfigurations.Add("AZURE_COSMOS_KEY");
+            return health;
+        }
+
+        // Env vars are present — check if the service was successfully initialized at startup.
+        // If initialization failed (e.g. invalid endpoint URL, SDK error), _cosmosContentService
+        // will be a NullCosmosContentService carrying the original error message.
+        if (_cosmosContentService is NullCosmosContentService nullService)
+        {
+            health.Status = HealthStatus.Unhealthy;
+            health.Message = nullService.InitializationError is not null
+                ? $"Cosmos DB initialization failed (env vars are set): {nullService.InitializationError}"
+                : "Cosmos DB is not configured (env vars were empty at startup)";
             return health;
         }
 

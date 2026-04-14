@@ -137,11 +137,22 @@ public class CosmosContentService : ICosmosContentService
 }
 
 /// <summary>
-/// No-op implementation used when Cosmos DB is not configured.
-/// Returns empty results and reports not configured.
+/// No-op implementation used when Cosmos DB is not configured or failed to initialize.
+/// Returns empty results and reports not configured, optionally surfacing the initialization error.
 /// </summary>
 public class NullCosmosContentService : ICosmosContentService
 {
+    /// <summary>
+    /// When non-null, the Cosmos SDK threw this error during initialization (env vars were present
+    /// but the client could not be constructed). When null, the env vars were simply not set.
+    /// </summary>
+    public string? InitializationError { get; }
+
+    public NullCosmosContentService(string? initializationError = null)
+    {
+        InitializationError = initializationError;
+    }
+
     public Task<bool> IsConfiguredAsync() => Task.FromResult(false);
     public Task<IReadOnlyList<MovieDocument>> GetMoviesAsync(string? category = null) => Task.FromResult<IReadOnlyList<MovieDocument>>(Array.Empty<MovieDocument>());
     public Task<IReadOnlyList<SeriesDocument>> GetSeriesAsync(string? category = null) => Task.FromResult<IReadOnlyList<SeriesDocument>>(Array.Empty<SeriesDocument>());
