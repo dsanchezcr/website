@@ -7,8 +7,7 @@ description: Minha coleção de jogos de tabuleiro incluindo jogos de estratégi
 keywords: [jogos de tabuleiro, estratégia, jogos de festa, jogos familiares, gaming]
 ---
 
-import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
-import boardGamesData from '@site/src/data/gaming/board-games.json';
+import ApiGamingSection from '@site/src/components/Gaming/ApiGamingSection';
 
 # 🎲 Jogos de Tabuleiro
 
@@ -16,8 +15,8 @@ Jogos de tabuleiro são uma ótima maneira de passar tempo com família e amigos
 
 ## Jogos de Estratégia
 
-<GamingEntriesRenderer items={boardGamesData.strategyGames} />
+<ApiGamingSection platform="board-games" section="strategyGames" />
 
 ## Jogos de Festa e Cartas
 
-<GamingEntriesRenderer items={boardGamesData.partyAndCardGames} />
+<ApiGamingSection platform="board-games" section="partyAndCardGames" />

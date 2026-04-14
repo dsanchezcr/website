@@ -2,6 +2,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Azure.Cosmos;
 using api.Services;
 
 var aiConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING");
@@ -78,6 +79,39 @@ var host = new HostBuilder()
             
             var inMemoryLogger = sp.GetRequiredService<ILogger<InMemoryGamingCacheService>>();
             return new InMemoryGamingCacheService(memoryCache, inMemoryLogger);
+        });
+        
+        // Register Cosmos Content Service (read-only content from Cosmos DB)
+        services.AddSingleton<ICosmosContentService>(sp =>
+        {
+            var endpoint = Environment.GetEnvironmentVariable("AZURE_COSMOS_ENDPOINT");
+            var key = Environment.GetEnvironmentVariable("AZURE_COSMOS_KEY");
+            var databaseName = Environment.GetEnvironmentVariable("AZURE_COSMOS_DATABASE_NAME") ?? "website-content";
+            
+            if (!string.IsNullOrEmpty(endpoint) && !string.IsNullOrEmpty(key))
+            {
+                try
+                {
+                    var logger = sp.GetRequiredService<ILogger<CosmosContentService>>();
+                    var clientOptions = new CosmosClientOptions
+                    {
+                        UseSystemTextJsonSerializerWithOptions = new System.Text.Json.JsonSerializerOptions
+                        {
+                            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+                        },
+                        ConnectionMode = ConnectionMode.Gateway
+                    };
+                    var client = new CosmosClient(endpoint, key, clientOptions);
+                    return new CosmosContentService(client, databaseName, logger);
+                }
+                catch (Exception ex)
+                {
+                    var fallbackLogger = sp.GetRequiredService<ILogger<CosmosContentService>>();
+                    fallbackLogger.LogWarning(ex, "Failed to initialize Cosmos content service");
+                }
+            }
+            
+            return new NullCosmosContentService();
         });
     })
     .ConfigureLogging(logging =>

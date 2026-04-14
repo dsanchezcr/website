@@ -10,8 +10,7 @@ keywords: [PlayStation, PSN, trophies, PS5, PS4, gaming]
 import PlayStationProfileWidget from '@site/src/components/Gaming/PlayStationProfileWidget';
 import Countdown from '@site/src/components/Gaming/Countdown';
 import YouTubeEmbed from '@site/src/components/YouTubeEmbed';
-import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
-import playstationGamingData from '@site/src/data/gaming/playstation.json';
+import ApiGamingSection from '@site/src/components/Gaming/ApiGamingSection';
 
 # 🔵 PlayStation
 
@@ -24,9 +23,9 @@ PlayStation has amazing exclusives and a great trophy system. Below you can see 
 ## 🔥 Most Anticipated Game
 
 <Countdown targetDate="2026-09-15T04:00:00Z" label="Marvel's Wolverine Launch Countdown" />
-<GamingEntriesRenderer items={playstationGamingData.anticipated} />
+<ApiGamingSection platform="playstation" section="anticipated" />
 <YouTubeEmbed videoId="s3pDMUWlA6I" title="Marvel's Wolverine" />
 
 ## My Top Games
 
-<GamingEntriesRenderer items={playstationGamingData.topGames} />
+<ApiGamingSection platform="playstation" section="topGames" />

@@ -52,6 +52,7 @@ public class HealthCheck
     private readonly ITokenStorageService _tokenStorage;
     private readonly ISearchService _searchService;
     private readonly IGamingCacheService _gamingCacheService;
+    private readonly ICosmosContentService _cosmosContentService;
 
     // Orlando, FL coordinates used for weather API health check (matches primary location in GetWeather.cs)
     private const double OrlandoLatitude = 28.5383;
@@ -60,7 +61,7 @@ public class HealthCheck
     // Rate limiting configuration
     private const int MaxHealthCheckRequestsPerMinute = 10;
 
-    public HealthCheck(ILogger<HealthCheck> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache, ITokenStorageService tokenStorage, ISearchService searchService, IGamingCacheService gamingCacheService)
+    public HealthCheck(ILogger<HealthCheck> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache, ITokenStorageService tokenStorage, ISearchService searchService, IGamingCacheService gamingCacheService, ICosmosContentService cosmosContentService)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
@@ -68,6 +69,7 @@ public class HealthCheck
         _tokenStorage = tokenStorage;
         _searchService = searchService;
         _gamingCacheService = gamingCacheService;
+        _cosmosContentService = cosmosContentService;
     }
 
     private sealed class RateLimitState
@@ -152,7 +154,12 @@ public class HealthCheck
         { "XBOX_API_KEY", ("OpenXBL API key for Xbox profile data (https://xbl.io)", false) },
         { "XBOX_GAMERTAG_XUID", ("Xbox User ID (XUID) for profile lookup", false) },
         { "PSN_NPSSO_TOKEN", ("PSN NPSSO token for PlayStation profile data (expires ~60 days)", false) },
-        { "GAMING_REFRESH_KEY", ("Secret key for authenticating gaming profile refresh requests", false) }
+        { "GAMING_REFRESH_KEY", ("Secret key for authenticating gaming profile refresh requests", false) },
+        
+        // Cosmos DB Content
+        { "AZURE_COSMOS_ENDPOINT", ("Azure Cosmos DB account endpoint URL", false) },
+        { "AZURE_COSMOS_KEY", ("Azure Cosmos DB account key", false) },
+        { "AZURE_COSMOS_DATABASE_NAME", ("Azure Cosmos DB database name (default: website-content)", false) }
     };
 
     [Function("HealthCheck")]
@@ -218,7 +225,8 @@ public class HealthCheck
             CheckMemoryCacheAsync(),
             CheckTokenStorageAsync(),
             CheckSearchServiceAsync(),
-            CheckGamingCacheAsync()
+            CheckGamingCacheAsync(),
+            CheckCosmosContentAsync()
         };
 
         healthResponse.Services = (await Task.WhenAll(services)).ToList();
@@ -664,6 +672,47 @@ public class HealthCheck
             health.Status = HealthStatus.Degraded;
             health.Message = $"Gaming cache check failed: {ex.Message}";
             _logger.LogWarning(ex, "Gaming cache health check failed");
+        }
+
+        return health;
+    }
+
+    private async Task<ServiceHealth> CheckCosmosContentAsync()
+    {
+        var health = new ServiceHealth
+        {
+            Name = "Azure Cosmos DB (Content)"
+        };
+
+        var endpoint = Environment.GetEnvironmentVariable("AZURE_COSMOS_ENDPOINT");
+        var key = Environment.GetEnvironmentVariable("AZURE_COSMOS_KEY");
+
+        if (string.IsNullOrWhiteSpace(endpoint) || string.IsNullOrWhiteSpace(key))
+        {
+            health.Status = HealthStatus.Degraded;
+            health.Message = "Cosmos DB not configured — content APIs unavailable";
+            if (string.IsNullOrWhiteSpace(endpoint))
+                health.MissingConfigurations.Add("AZURE_COSMOS_ENDPOINT");
+            if (string.IsNullOrWhiteSpace(key))
+                health.MissingConfigurations.Add("AZURE_COSMOS_KEY");
+            return health;
+        }
+
+        try
+        {
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+            var isConfigured = await _cosmosContentService.IsConfiguredAsync();
+            sw.Stop();
+
+            health.Status = isConfigured ? HealthStatus.Healthy : HealthStatus.Degraded;
+            health.Message = isConfigured ? "Connected and operational" : "Service registered but not connected";
+            health.ResponseTimeMs = sw.ElapsedMilliseconds;
+        }
+        catch (Exception ex)
+        {
+            health.Status = HealthStatus.Unhealthy;
+            health.Message = $"Cosmos DB connectivity check failed: {ex.Message}";
+            _logger.LogError(ex, "Cosmos DB content health check failed");
         }
 
         return health;

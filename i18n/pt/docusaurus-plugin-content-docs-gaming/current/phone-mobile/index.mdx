@@ -7,8 +7,7 @@ description: Jogos casuais que eu jogo no meu telefone e tablet Samsung.
 keywords: [jogos móveis, Android, Samsung, jogos de telefone, jogos de tablet, jogos casuais]
 ---
 
-import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
-import phoneMobileGamingData from '@site/src/data/gaming/phone-mobile.json';
+import ApiGamingSection from '@site/src/components/Gaming/ApiGamingSection';
 
 # 📱 Telefone e Mobile
 
@@ -16,4 +15,4 @@ Embora eu não jogue muito no celular, aqui estão alguns jogos que eu curto no 
 
 ## Meus Jogos Mobile
 
-<GamingEntriesRenderer items={phoneMobileGamingData.games} />
+<ApiGamingSection platform="phone-mobile" section="games" />

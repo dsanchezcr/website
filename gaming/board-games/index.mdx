@@ -7,8 +7,7 @@ description: My board game collection including strategy, party, and family game
 keywords: [board games, tabletop, strategy games, party games, family games, gaming]
 ---
 
-import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
-import boardGamesData from '@site/src/data/gaming/board-games.json';
+import ApiGamingSection from '@site/src/components/Gaming/ApiGamingSection';
 
 
 # 🎲 Board Games
@@ -17,8 +16,8 @@ Board games are a great way to spend time with family and friends. Here's my col
 
 ## Strategy Games
 
-<GamingEntriesRenderer items={boardGamesData.strategyGames} />
+<ApiGamingSection platform="board-games" section="strategyGames" />
 
 ## Party & Card Games
 
-<GamingEntriesRenderer items={boardGamesData.partyAndCardGames} />
+<ApiGamingSection platform="board-games" section="partyAndCardGames" />

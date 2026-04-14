@@ -4,11 +4,10 @@ sidebar_position: 2
 description: Meus filmes favoritos de todos os tempos.
 ---
 
-import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
-import moviesData from '@site/src/data/movies.json';
+import ApiMediaCardList from '@site/src/components/MediaCard/ApiMediaCardList';
 
 # Melhores Filmes
 
 Meus filmes favoritos de todos os tempos com avaliações pessoais.
 
-<MediaCardList items={moviesData} category="top-movies" />
+<ApiMediaCardList contentType="movies" category="top-movies" />

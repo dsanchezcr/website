@@ -47,7 +47,7 @@ const GamingEntriesRenderer = ({ items }) => {
 
         const item = localizeEntry(rawItem, localeKey);
 
-        const key = `${item.type || 'card'}-${item.title || index}`;
+        const key = `${item.type || 'card'}-${item.title || ''}-${index}`;
 
         if (item.type === 'group') {
           const { games, ...groupProps } = item;

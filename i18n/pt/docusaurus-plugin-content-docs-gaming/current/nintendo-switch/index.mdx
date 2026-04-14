@@ -7,8 +7,7 @@ description: Minha coleção de jogos do Nintendo Switch, classificações e rec
 keywords: [Nintendo Switch, Nintendo, gaming, Mario, Zelda]
 ---
 
-import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
-import nintendoSwitchGamingData from '@site/src/data/gaming/nintendo-switch.json';
+import ApiGamingSection from '@site/src/components/Gaming/ApiGamingSection';
 
 # 🔴 Nintendo Switch
 
@@ -26,8 +25,8 @@ Embora não haja uma API pública para extrair dados, aqui estão meus jogos fav
 
 ### Nintendo Switch 2
 
-<GamingEntriesRenderer items={nintendoSwitchGamingData.games.filter((item) => item.platform === 'nintendo-switch-2')} />
+<ApiGamingSection platform="nintendo-switch" section="games" filter={(item) => item.platform === 'nintendo-switch-2'} />
 
 ### Nintendo Switch
 
-<GamingEntriesRenderer items={nintendoSwitchGamingData.games.filter((item) => item.platform === 'nintendo-switch')} />
+<ApiGamingSection platform="nintendo-switch" section="games" filter={(item) => item.platform === 'nintendo-switch'} />

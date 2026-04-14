@@ -9,6 +9,306 @@ on:
       - 'movies-tv/**'
       - 'disney/**'
       - 'universal/**'
+      - 'static/img/gaming/**'
+      - 'i18n/**'
+      - 'src/components/**'
+      - 'src/pages/**'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate:
+    name: Validate Content
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Blog Post Frontmatter
+        run: |
+          echo "Checking blog post frontmatter..."
+          errors=0
+
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'blog/**/*.mdx' 2>/dev/null || true); do
+            if [ ! -f "$file" ]; then continue; fi
+            echo "  Checking $file"
+
+            for field in title description tags authors; do
+              if ! head -50 "$file" | grep -qi "^${field}:"; then
+                echo "::error file=$file::Missing required frontmatter field: $field"
+                errors=$((errors + 1))
+              fi
+            done
+          done
+
+          if [ $errors -gt 0 ]; then
+            echo "::error::Found $errors frontmatter issues"
+            exit 1
+          fi
+          echo "Blog frontmatter validation passed"
+
+      - name: Validate Blog i18n Coverage
+        run: |
+          echo "Checking blog post translations..."
+          errors=0
+
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'blog/**/*.mdx' 2>/dev/null || true); do
+            if [ ! -f "$file" ]; then continue; fi
+            basename=$(basename "$file")
+            echo "  Checking translations for $basename"
+
+            es_path="i18n/es/docusaurus-plugin-content-blog/$basename"
+            pt_path="i18n/pt/docusaurus-plugin-content-blog/$basename"
+
+            if [ ! -f "$es_path" ]; then
+              echo "::error file=$file::Missing Spanish translation: $es_path"
+              errors=$((errors + 1))
+            fi
+
+            if [ ! -f "$pt_path" ]; then
+              echo "::error file=$file::Missing Portuguese translation: $pt_path"
+              errors=$((errors + 1))
+            fi
+          done
+
+          if [ $errors -gt 0 ]; then
+            echo "::error::Found $errors missing blog translations"
+            exit 1
+          fi
+          echo "Blog i18n check completed"
+
+      - name: Validate Gaming i18n Coverage
+        run: |
+          echo "Checking gaming doc translations..."
+          errors=0
+
+          for file in $(git diff --name-only --diff-filter=ACM ${{ github.event.pull_request.base.sha }}...${{ github.sha }} -- 'gaming/**/*.mdx' 2>/dev/null || true); do
+            if [ ! -f "$file" ]; then continue; fi
+            relative="${file#gaming/}"
+            echo "  Checking translations for $file"
+
+            es_path="i18n/es/docusaurus-plugin-content-docs-gaming/current/$relative"
+            pt_path="i18n/pt/docusaurus-plugin-content-docs-gaming/current/$relative"
+
+            if [ ! -f "$es_path" ]; then
+              echo "::warning file=$file::Missing Spanish gaming translation: $es_path"
+              errors=$((errors + 1))
+            fi
+
+            if [ ! -f "$pt_path" ]; then
+              echo "::warning file=$file::Missing Portuguese gaming translation: $pt_path"
+              errors=$((errors + 1))
+            fi
+          done
+
+          if [ $errors -gt 0 ]; then
+            echo "::error::Found $errors missing gaming translations"
+            exit 1
+          fi
+          echo "Gaming i18n check completed"
+
+      - name: Validate Gaming API-Driven Structure
+        run: |
+          echo "Checking API-driven structure for gaming platform docs..."
+          node -e "
+          const fs = require('fs');
+          let errors = 0;
+
+          const platformDocs = [
+            'gaming/xbox/index.mdx',
+            'gaming/playstation/index.mdx',
+            'gaming/nintendo-switch/index.mdx',
+            'gaming/meta-quest/index.mdx',
+            'gaming/phone-mobile/index.mdx',
+            'gaming/board-games/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/xbox/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/playstation/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/nintendo-switch/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/meta-quest/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/phone-mobile/index.mdx',
+            'i18n/es/docusaurus-plugin-content-docs-gaming/current/board-games/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/xbox/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/playstation/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/nintendo-switch/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/meta-quest/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/phone-mobile/index.mdx',
+            'i18n/pt/docusaurus-plugin-content-docs-gaming/current/board-games/index.mdx'
+          ];
+
+          platformDocs.forEach((file) => {
+            if (!fs.existsSync(file)) {
+              console.log('::error file=' + file + '::Missing required gaming platform doc');
+              errors++;
+              return;
+            }
+
+            const content = fs.readFileSync(file, 'utf-8');
+
+            if (!content.includes('ApiGamingSection')) {
+              console.log('::error file=' + file + '::Must use ApiGamingSection for platform entries');
+              errors++;
+            }
+
+            if (content.includes('@site/src/data/gaming/')) {
+              console.log('::error file=' + file + '::Must not import static JSON from src/data/gaming (use Cosmos API)');
+              errors++;
+            }
+
+            if (content.includes('import GameCard from') || content.includes('import GameCardGroup from')) {
+              console.log('::error file=' + file + '::Do not use inline GameCard/GameCardGroup imports in platform docs');
+              errors++;
+            }
+          });
+
+          if (errors > 0) {
+            console.log('::error::Found ' + errors + ' gaming API structure issues');
+            process.exit(1);
+          }
+
+          console.log('Gaming API-driven structure validation passed');
+          "
+
+      - name: Validate Docs Locale Parity
+        run: |
+          echo "Checking docs locale parity across en/es/pt..."
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+
+          let errors = 0;
+          const exts = new Set(['.md', '.mdx']);
+          const sections = [
+            { en: 'disney', es: 'i18n/es/docusaurus-plugin-content-docs-disney/current', pt: 'i18n/pt/docusaurus-plugin-content-docs-disney/current' },
+            { en: 'gaming', es: 'i18n/es/docusaurus-plugin-content-docs-gaming/current', pt: 'i18n/pt/docusaurus-plugin-content-docs-gaming/current' },
+            { en: 'movies-tv', es: 'i18n/es/docusaurus-plugin-content-docs-movies-tv/current', pt: 'i18n/pt/docusaurus-plugin-content-docs-movies-tv/current' },
+            { en: 'projects', es: 'i18n/es/docusaurus-plugin-content-docs-projects/current', pt: 'i18n/pt/docusaurus-plugin-content-docs-projects/current' },
+            { en: 'universal', es: 'i18n/es/docusaurus-plugin-content-docs-universal/current', pt: 'i18n/pt/docusaurus-plugin-content-docs-universal/current' }
+          ];
+
+          const listFiles = (root) => {
+            const result = [];
+            if (!fs.existsSync(root)) return result;
+
+            const walk = (dir) => {
+              fs.readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
+                const fullPath = path.join(dir, entry.name);
+                if (entry.isDirectory()) {
+                  walk(fullPath);
+                  return;
+                }
+
+                if (exts.has(path.extname(entry.name))) {
+                  result.push(path.relative(root, fullPath).replace(/\\\\/g, '/'));
+                }
+              });
+            };
+
+            walk(root);
+            return result;
+          };
+
+          sections.forEach((section) => {
+            const enFiles = new Set(listFiles(section.en));
+            const esFiles = new Set(listFiles(section.es));
+            const ptFiles = new Set(listFiles(section.pt));
+
+            enFiles.forEach((file) => {
+              if (!esFiles.has(file)) {
+                console.log('::error file=' + section.en + '/' + file + '::Missing Spanish counterpart in ' + section.es + '/' + file);
+                errors++;
+              }
+              if (!ptFiles.has(file)) {
+                console.log('::error file=' + section.en + '/' + file + '::Missing Portuguese counterpart in ' + section.pt + '/' + file);
+                errors++;
+              }
+            });
+
+            esFiles.forEach((file) => {
+              if (!enFiles.has(file)) {
+                console.log('::error file=' + section.es + '/' + file + '::No matching English source file at ' + section.en + '/' + file);
+                errors++;
+              }
+            });
+
+            ptFiles.forEach((file) => {
+              if (!enFiles.has(file)) {
+                console.log('::error file=' + section.pt + '/' + file + '::No matching English source file at ' + section.en + '/' + file);
+                errors++;
+              }
+            });
+          });
+
+          if (errors > 0) {
+            console.log('::error::Found ' + errors + ' docs locale parity issues');
+            process.exit(1);
+          }
+
+          console.log('Docs locale parity validation passed');
+          "
+
+      - name: Validate Required Pages Locale Parity
+        run: |
+          echo "Checking required page locale parity for en/es/pt..."
+          node -e "
+          const fs = require('fs');
+
+          let errors = 0;
+          const requiredPageFiles = [
+            'about.mdx',
+            'contact.js',
+            'exchangerates.js',
+            'index.js',
+            'weather.js'
+          ];
+
+          requiredPageFiles.forEach((file) => {
+            const enPath = 'src/pages/' + file;
+            const esPath = 'i18n/es/docusaurus-plugin-content-pages/' + file;
+            const ptPath = 'i18n/pt/docusaurus-plugin-content-pages/' + file;
+
+            if (!fs.existsSync(enPath)) {
+              console.log('::error file=' + enPath + '::Missing required English page source');
+              errors++;
+            }
+
+            if (!fs.existsSync(esPath)) {
+              console.log('::error file=' + enPath + '::Missing Spanish page translation: ' + esPath);
+              errors++;
+            }
+
+            if (!fs.existsSync(ptPath)) {
+              console.log('::error file=' + enPath + '::Missing Portuguese page translation: ' + ptPath);
+              errors++;
+            }
+          });
+
+          if (errors > 0) {
+            console.log('::error::Found ' + errors + ' required page locale parity issues');
+            process.exit(1);
+          }
+
+          console.log('Required page locale parity validation passed');
+          "
+name: Content Validation
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'blog/**'
+      - 'gaming/**'
+      - 'movies-tv/**'
+      - 'disney/**'
+      - 'universal/**'
       - 'src/data/movies.json'
       - 'src/data/series.json'
       - 'src/data/gaming/**'

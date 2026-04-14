@@ -4,11 +4,10 @@ sidebar_position: 1
 description: Películas que vi recientemente con mis calificaciones y reseñas.
 ---
 
-import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
-import moviesData from '@site/src/data/movies.json';
+import ApiMediaCardList from '@site/src/components/MediaCard/ApiMediaCardList';
 
 # Vistas Recientemente
 
 Películas que vi recientemente en el cine.
 
-<MediaCardList items={moviesData} category="recently-watched" />
+<ApiMediaCardList contentType="movies" category="recently-watched" />

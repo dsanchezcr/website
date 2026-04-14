@@ -10,8 +10,7 @@ keywords: [Xbox, Xbox Live, PC, gamerscore, achievements, Game Pass, gaming]
 import XboxProfileWidget from '@site/src/components/Gaming/XboxProfileWidget';
 import Countdown from '@site/src/components/Gaming/Countdown';
 import YouTubeEmbed from '@site/src/components/YouTubeEmbed';
-import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
-import xboxGamingData from '@site/src/data/gaming/xbox.json';
+import ApiGamingSection from '@site/src/components/Gaming/ApiGamingSection';
 
 # 🟢 Xbox & PC
 
@@ -49,9 +48,9 @@ Progress, achievements, and saves sync seamlessly across all devices. Start a ga
 ## 🔥 Most Anticipated Game
 
 <Countdown targetDate="2026-11-19T05:00:00Z" label="GTA 6 Launch Countdown" />
-<GamingEntriesRenderer items={xboxGamingData.anticipated} />
+<ApiGamingSection platform="xbox" section="anticipated" />
 <YouTubeEmbed videoId="VQRLujxTm3c" title="Grand Theft Auto VI" />
 
 ## My Top Games
 
-<GamingEntriesRenderer items={xboxGamingData.topGames} />
+<ApiGamingSection platform="xbox" section="topGames" />

@@ -32,6 +32,10 @@ export const config = {
     xboxProfile: '/api/gaming/xbox',
     playstationProfile: '/api/gaming/playstation',
     gamingRefresh: '/api/gaming/refresh',
+    contentMovies: '/api/content/movies',
+    contentSeries: '/api/content/series',
+    contentGaming: '/api/content/gaming',
+    contentParks: '/api/content/parks',
   },
   
   // Production domains

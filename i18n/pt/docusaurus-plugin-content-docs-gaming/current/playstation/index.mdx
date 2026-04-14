@@ -10,8 +10,7 @@ keywords: [PlayStation, PSN, troféus, PS5, PS4, gaming]
 import PlayStationProfileWidget from '@site/src/components/Gaming/PlayStationProfileWidget';
 import Countdown from '@site/src/components/Gaming/Countdown';
 import YouTubeEmbed from '@site/src/components/YouTubeEmbed';
-import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
-import playstationGamingData from '@site/src/data/gaming/playstation.json';
+import ApiGamingSection from '@site/src/components/Gaming/ApiGamingSection';
 
 # 🔵 PlayStation
 
@@ -24,9 +23,9 @@ O PlayStation tem exclusivos incríveis e um ótimo sistema de troféus. Abaixo 
 ## 🔥 Mais Esperado
 
 <Countdown targetDate="2026-09-15T04:00:00Z" label="Contagem regressiva para Marvel's Wolverine" />
-<GamingEntriesRenderer items={playstationGamingData.anticipated} />
+<ApiGamingSection platform="playstation" section="anticipated" />
 <YouTubeEmbed videoId="s3pDMUWlA6I" title="Marvel's Wolverine" />
 
 ## Meus Melhores Jogos
 
-<GamingEntriesRenderer items={playstationGamingData.topGames} />
+<ApiGamingSection platform="playstation" section="topGames" />

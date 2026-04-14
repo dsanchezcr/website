@@ -4,11 +4,10 @@ sidebar_position: 3
 description: Series de TV en mi lista de seguimiento que planeo ver.
 ---
 
-import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
-import seriesData from '@site/src/data/series.json';
+import ApiMediaCardList from '@site/src/components/MediaCard/ApiMediaCardList';
 
 # Lista de Seguimiento
 
 Series de TV que planeo ver próximamente.
 
-<MediaCardList items={seriesData} category="watchlist" />
+<ApiMediaCardList contentType="series" category="watchlist" />

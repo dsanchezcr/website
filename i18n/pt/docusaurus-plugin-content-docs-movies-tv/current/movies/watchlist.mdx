@@ -4,11 +4,10 @@ sidebar_position: 3
 description: Filmes na minha lista de interesse do IMDB que pretendo assistir.
 ---
 
-import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
-import moviesData from '@site/src/data/movies.json';
+import ApiMediaCardList from '@site/src/components/MediaCard/ApiMediaCardList';
 
 # Lista de Interesse
 
 Filmes que pretendo assistir em breve. Sincronizada da minha [Lista do IMDB](https://www.imdb.com/user/ur214132979/watchlist).
 
-<MediaCardList items={moviesData} category="watchlist" />
+<ApiMediaCardList contentType="movies" category="watchlist" />
