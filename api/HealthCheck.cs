@@ -690,8 +690,7 @@ public class HealthCheck
         if (string.IsNullOrWhiteSpace(endpoint) || string.IsNullOrWhiteSpace(key))
         {
             health.Status = HealthStatus.Degraded;
-            health.Message = "Cosmos DB not configured — content APIs unavailable. " +
-                "Set AZURE_COSMOS_ENDPOINT and AZURE_COSMOS_KEY in the Azure Static Web App Configuration (not GitHub Secrets).";
+            health.Message = "Cosmos DB not configured — content APIs unavailable. Set AZURE_COSMOS_ENDPOINT and AZURE_COSMOS_KEY in the Azure Static Web App Configuration (not GitHub Secrets).";
             if (string.IsNullOrWhiteSpace(endpoint))
                 health.MissingConfigurations.Add("AZURE_COSMOS_ENDPOINT");
             if (string.IsNullOrWhiteSpace(key))

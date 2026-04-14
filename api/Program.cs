@@ -90,8 +90,8 @@ var host = new HostBuilder()
             
             if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key))
             {
-                var nullLogger = sp.GetRequiredService<ILogger<CosmosContentService>>();
-                nullLogger.LogInformation(
+                var logger = sp.GetRequiredService<ILogger<CosmosContentService>>();
+                logger.LogInformation(
                     "Cosmos DB content service not configured: AZURE_COSMOS_ENDPOINT={EndpointSet}, AZURE_COSMOS_KEY={KeySet}. Content APIs will return 503.",
                     !string.IsNullOrEmpty(endpoint),
                     !string.IsNullOrEmpty(key));
