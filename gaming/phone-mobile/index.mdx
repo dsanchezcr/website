@@ -7,8 +7,7 @@ description: Casual mobile games I play on my Samsung phone and tablet.
 keywords: [mobile gaming, Android, Samsung, phone games, tablet games, casual games]
 ---
 
-import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
-import phoneMobileGamingData from '@site/src/data/gaming/phone-mobile.json';
+import ApiGamingSection from '@site/src/components/Gaming/ApiGamingSection';
 
 
 # 📱 Phone & Mobile
@@ -17,4 +16,4 @@ Although I don't play that much on mobile, here are some games that I enjoy on m
 
 ## My Mobile Games
 
-<GamingEntriesRenderer items={phoneMobileGamingData.games} />
+<ApiGamingSection platform="phone-mobile" section="games" />

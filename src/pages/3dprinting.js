@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import Layout from '@theme/Layout';
 import { useLocale } from '@site/src/hooks';
+import { config } from '@site/src/config/environment';
+
+const BLOB_BASE = config.imageBaseUrl;
 
 const translations = {
   en: {
@@ -44,7 +47,7 @@ const translations = {
     prints: [
       {
         title: 'DK Bananza',
-        image: '/img/3dprinting/dk-bananza.jpg',
+        image: `${BLOB_BASE}/3dprinting/dk-bananza.jpg`,
         printer: 'Bambu Lab P1S',
         filament: 'PLA',
         description: 'A fun multi-color Donkey Kong Bananza figure, a great showcase for the AMS Pro 2 multi-filament capability.',
@@ -53,7 +56,7 @@ const translations = {
       },
       {
         title: 'Fallout Vault Boy Controller Holder',
-        image: '/img/3dprinting/fallout-controller-holder.jpg',
+        image: `${BLOB_BASE}/3dprinting/fallout-controller-holder.jpg`,
         printer: 'Bambu Lab P1S',
         filament: 'PLA',
         description: 'A Vault Boy controller holder, functional desk art for any Fallout fan with a controller to park.',
@@ -62,7 +65,7 @@ const translations = {
       },
       {
         title: 'Chico a Bordo (Custom Sign)',
-        image: '/img/3dprinting/chico-a-bordo.jpg',
+        image: `${BLOB_BASE}/3dprinting/chico-a-bordo.jpg`,
         printer: 'Bambu Lab P1S',
         filament: 'PLA',
         description: 'A custom "Chico a Bordo" (Baby on Board) sign designed in Tinkercad, a personalized print for the car.',
@@ -114,7 +117,7 @@ const translations = {
     prints: [
       {
         title: 'DK Bananza',
-        image: '/img/3dprinting/dk-bananza.jpg',
+        image: `${BLOB_BASE}/3dprinting/dk-bananza.jpg`,
         printer: 'Bambu Lab P1S',
         filament: 'PLA',
         description: 'Una divertida figura multicolor de Donkey Kong Bananza, un excelente showcase de la capacidad multimaterial del AMS Pro 2.',
@@ -123,7 +126,7 @@ const translations = {
       },
       {
         title: 'Soporte de Control Vault Boy (Fallout)',
-        image: '/img/3dprinting/fallout-controller-holder.jpg',
+        image: `${BLOB_BASE}/3dprinting/fallout-controller-holder.jpg`,
         printer: 'Bambu Lab P1S',
         filament: 'PLA',
         description: 'Un soporte de control con el Vault Boy, arte funcional de escritorio para cualquier fan de Fallout.',
@@ -132,7 +135,7 @@ const translations = {
       },
       {
         title: 'Chico a Bordo (Señal Personalizada)',
-        image: '/img/3dprinting/chico-a-bordo.jpg',
+        image: `${BLOB_BASE}/3dprinting/chico-a-bordo.jpg`,
         printer: 'Bambu Lab P1S',
         filament: 'PLA',
         description: 'Una señal personalizada "Chico a Bordo" diseñada en Tinkercad, un print a medida para el auto.',
@@ -184,7 +187,7 @@ const translations = {
     prints: [
       {
         title: 'DK Bananza',
-        image: '/img/3dprinting/dk-bananza.jpg',
+        image: `${BLOB_BASE}/3dprinting/dk-bananza.jpg`,
         printer: 'Bambu Lab P1S',
         filament: 'PLA',
         description: 'Uma divertida figura multicolorida do Donkey Kong Bananza, um ótimo showcase da capacidade multimaterial do AMS Pro 2.',
@@ -193,7 +196,7 @@ const translations = {
       },
       {
         title: 'Suporte de Controle Vault Boy (Fallout)',
-        image: '/img/3dprinting/fallout-controller-holder.jpg',
+        image: `${BLOB_BASE}/3dprinting/fallout-controller-holder.jpg`,
         printer: 'Bambu Lab P1S',
         filament: 'PLA',
         description: 'Um suporte de controle com o Vault Boy, arte funcional de mesa para qualquer fã de Fallout.',
@@ -202,7 +205,7 @@ const translations = {
       },
       {
         title: 'Chico a Bordo (Placa Personalizada)',
-        image: '/img/3dprinting/chico-a-bordo.jpg',
+        image: `${BLOB_BASE}/3dprinting/chico-a-bordo.jpg`,
         printer: 'Bambu Lab P1S',
         filament: 'PLA',
         description: 'Uma placa personalizada "Chico a Bordo" projetada no Tinkercad, um print personalizado para o carro.',

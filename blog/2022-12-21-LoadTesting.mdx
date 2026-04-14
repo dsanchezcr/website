@@ -6,7 +6,7 @@ authors: [dsanchezcr]
 tags: [Azure Load Testing, GitHub Actions]
 enableComments: true
 hide_table_of_contents: true
-image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2022-12-21-LoadTesting/LoadTestingWebApp.jpg
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2022-12-21-LoadTesting/LoadTestingWebApp.jpg
 date: 2022-12-21T18:00
 ---
 # Adding Load Testing to your CI/CD workflows
@@ -21,7 +21,7 @@ In addition to an Azure Subscription, and a GitHub account, we will need an [Apa
 
 [Here you can find the script I created as part of this demo](https://raw.githubusercontent.com/dsanchezcr/LoadTestingDemo/main/LoadTestingScript.jmx)
 
-[![Here you can find the script I created as part of this demo](../static/img/blog/2022-12-21-LoadTesting/JMeterScript.jpg)](https://raw.githubusercontent.com/dsanchezcr/LoadTestingDemo/main/LoadTestingScript.jmx)
+[![Here you can find the script I created as part of this demo](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2022-12-21-LoadTesting/JMeterScript.jpg)](https://raw.githubusercontent.com/dsanchezcr/LoadTestingDemo/main/LoadTestingScript.jmx)
 
 ## Getting Started
 In the following example, we are going to use Azure Load Testing in our workflow from GitHub Actions to detect when our web app has reached a performance issue. We are going to define a load test scenario with a specific number and type of virtual users that will be simulated, as well as the test duration and the type of workload to be simulated, which in this case is just an HTTP Request. In addition, you can also use either Visual Studio or the Azure Portal to create and configure your load test scenario.
@@ -31,12 +31,12 @@ Once the load test scenario is defined, we can review the results and monitoring
 ### The scenario
 I developed a simple [Web App](https://loadtestingweb.azurewebsites.net) built with ASP.NET Core using .NET 7 that connects to an Azure Cosmos DB and adds a record of each visit to the page and retrieves the data from all the visits.
 
-[![Load Testing Sample Web App](../static/img/blog/2022-12-21-LoadTesting/LoadTestingWebApp.jpg)](https://loadtestingweb.azurewebsites.net)
+[![Load Testing Sample Web App](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2022-12-21-LoadTesting/LoadTestingWebApp.jpg)](https://loadtestingweb.azurewebsites.net)
 
 ### The environment
 This web app is running on an App Service <strong>Basic</strong> plan, and it has Applications Insights to monitor the performance of the application. The Cosmos DB is set with the <strong>free tier </strong>(1000 RU/s and 25 GB). I want to find out if the application running on this environment can support up to 100 concurrent users.
 
-![Azure Portal for Load Testing](../static/img/blog/2022-12-21-LoadTesting/AzurePortal.jpg)
+![Azure Portal for Load Testing](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2022-12-21-LoadTesting/AzurePortal.jpg)
 
 ### The repository
 You can check out the **GitHub repository** [here](https://github.com/dsanchezcr/LoadTestingDemo). There you can fork the repository, use the [ARM template](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdsanchezcr%2FLoadTestingDemo%2Fmain%2FARM%2Ftemplate.json).
@@ -46,7 +46,7 @@ You can check out the **GitHub repository** [here](https://github.com/dsanchezcr
 
 This repository has a [GitHub Action](https://github.com/dsanchezcr/LoadTestingDemo/actions/runs/3745714572) that Build & Deploy the application and run the Load Test in Azure Load Testing.
 
-[![GitHub Action Run for Load Testing](../static/img/blog/2022-12-21-LoadTesting/GitHubActionRun.jpg)](https://github.com/dsanchezcr/LoadTestingDemo/actions/runs/3745714572)
+[![GitHub Action Run for Load Testing](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2022-12-21-LoadTesting/GitHubActionRun.jpg)](https://github.com/dsanchezcr/LoadTestingDemo/actions/runs/3745714572)
 
 ### The GitHub Action
 The [workflow](https://raw.githubusercontent.com/dsanchezcr/LoadTestingDemo/main/.github/workflows/workflow.yml) consists of three steps (Build, Deploy and Load Testing) and runs on every push. The Load Testing job uses the following files in the root folder:
@@ -59,18 +59,18 @@ The Azure login is required to communicate with the Azure Load Testing service t
 ### The Results
 As you can see in the image above, the Load Test <strong>failed</strong> because the average response time was higher than the threshold (5 seconds), we can get more details about the test run in the Azure Portal. [You can download the results here](https://raw.githubusercontent.com/dsanchezcr/LoadTestingDemo/main/engine1_results.csv).
 
-![Test Results from Azure Load Testing](../static/img/blog/2022-12-21-LoadTesting/TestResult.jpg)
+![Test Results from Azure Load Testing](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2022-12-21-LoadTesting/TestResult.jpg)
 
 In the Azure App Service, we can see the metrics with the response times (higher than 5 seconds) and the number of requests with the Data in and Data out. 
-![Azure App Service Metrics](../static/img/blog/2022-12-21-LoadTesting/AppServiceMetrics.jpg)
+![Azure App Service Metrics](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2022-12-21-LoadTesting/AppServiceMetrics.jpg)
 
 In addition, I added Application Insights to monitor the web app, in the Azure Portal we can see the performance issues and failures.
 
-![Application Insights](../static/img/blog/2022-12-21-LoadTesting/AppInsightsPerformance.jpg)
+![Application Insights](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2022-12-21-LoadTesting/AppInsightsPerformance.jpg)
 
 From the image above you can see where the requests came from, in this case I am running Azure Load Testing in the East US region (Virginia).
 
-![App Insights Failures](../static/img/blog/2022-12-21-LoadTesting/AppInsightsFailures.jpg)
+![App Insights Failures](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2022-12-21-LoadTesting/AppInsightsFailures.jpg)
 
 ## Conclusions
 The Load Testing <strong>should not be</strong> running on a production environment, try it on a QA or Pre-Production. Even if you are running on deployments slots, remember that the app will still run on the same App Service Plan, and this could affect your production environment or cause a [Denial-of-Service Attack](https://en.wikipedia.org/wiki/Denial-of-service_attack).

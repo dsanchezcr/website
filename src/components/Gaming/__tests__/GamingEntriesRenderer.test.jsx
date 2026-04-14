@@ -21,7 +21,7 @@ describe('GamingEntriesRenderer', () => {
             title: 'Halo Infinite',
             platform: 'xbox',
             status: 'completed',
-            imageUrl: '/img/gaming/xbox/halo-infinite.jpg',
+            imageUrl: 'https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/xbox/halo-infinite.jpg',
           },
         ]}
       />
@@ -45,13 +45,13 @@ describe('GamingEntriesRenderer', () => {
                 title: 'Little Nightmares',
                 platform: 'xbox',
                 status: 'completed',
-                imageUrl: '/img/gaming/xbox/little-nightmares.jpg',
+                imageUrl: 'https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/xbox/little-nightmares.jpg',
               },
               {
                 title: 'Little Nightmares II',
                 platform: 'xbox',
                 status: 'completed',
-                imageUrl: '/img/gaming/xbox/little-nightmares-2.jpg',
+                imageUrl: 'https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/xbox/little-nightmares-2.jpg',
               },
             ],
           },
@@ -75,7 +75,7 @@ describe('GamingEntriesRenderer', () => {
             title: 'Cuphead',
             platform: 'xbox',
             status: 'completed',
-            imageUrl: '/img/gaming/xbox/cuphead.jpg',
+            imageUrl: 'https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/xbox/cuphead.jpg',
           },
         ]}
       />
@@ -105,7 +105,7 @@ describe('GamingEntriesRenderer', () => {
               {
                 title: { en: 'Little Nightmares', es: 'Little Nightmares' },
                 platform: 'xbox',
-                imageUrl: '/img/gaming/xbox/little-nightmares.jpg',
+                imageUrl: 'https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/xbox/little-nightmares.jpg',
                 recommendation: { en: 'English game note', es: 'Nota en espanol' },
               },
             ],

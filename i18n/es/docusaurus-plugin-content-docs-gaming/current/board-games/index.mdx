@@ -7,8 +7,7 @@ description: Mi colección de juegos de mesa incluyendo juegos de estrategia, fi
 keywords: [juegos de mesa, tablero, juegos de estrategia, juegos de fiesta, juegos familiares, gaming]
 ---
 
-import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
-import boardGamesData from '@site/src/data/gaming/board-games.json';
+import ApiGamingSection from '@site/src/components/Gaming/ApiGamingSection';
 
 # 🎲 Juegos de Mesa
 
@@ -16,8 +15,8 @@ Los juegos de mesa son una excelente manera de pasar tiempo con familia y amigos
 
 ## Juegos de Estrategia
 
-<GamingEntriesRenderer items={boardGamesData.strategyGames} />
+<ApiGamingSection platform="board-games" section="strategyGames" />
 
 ## Juegos de Fiesta y Cartas
 
-<GamingEntriesRenderer items={boardGamesData.partyAndCardGames} />
+<ApiGamingSection platform="board-games" section="partyAndCardGames" />

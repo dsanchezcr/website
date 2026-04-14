@@ -4,11 +4,10 @@ sidebar_position: 3
 description: Séries de TV na minha lista de interesse que pretendo assistir.
 ---
 
-import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
-import seriesData from '@site/src/data/series.json';
+import ApiMediaCardList from '@site/src/components/MediaCard/ApiMediaCardList';
 
 # Lista de Interesse
 
 Séries de TV que pretendo assistir em breve.
 
-<MediaCardList items={seriesData} category="watchlist" />
+<ApiMediaCardList contentType="series" category="watchlist" />

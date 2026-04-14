@@ -42,7 +42,7 @@ _Images, diagrams, code samples needed:_
 
 | Asset | Type | Location | Description |
 |-------|------|----------|-------------|
-| Hero image | Image | `static/img/blog/` | _Description_ |
+| Hero image | Image | Azure Blob Storage: `blog/` | _Description_ |
 | Architecture diagram | Mermaid/Image | Inline | _Description_ |
 
 ## Files to Create
@@ -52,7 +52,7 @@ _Images, diagrams, code samples needed:_
 | `blog/YYYY-MM-DD-Title.mdx` | English blog post |
 | `i18n/es/docusaurus-plugin-content-blog/YYYY-MM-DD-Title.mdx` | Spanish translation |
 | `i18n/pt/docusaurus-plugin-content-blog/YYYY-MM-DD-Title.mdx` | Portuguese translation |
-| `static/img/blog/<image-name>` | Supporting images (if any) |
+| `static/img/blog/<image-name>` | Supporting images (uploaded to Azure Blob Storage by generate-blog-image.mjs) |
 
 ## Frontmatter Template
 
@@ -63,7 +63,7 @@ description: "Description for SEO and social sharing"
 slug: title-slug
 authors: [dsanchezcr]
 tags: [tag1, tag2]
-image: /img/blog/image-name.png
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/image-name.png
 ---
 ```
 

@@ -338,17 +338,17 @@ button:active {
 
 [lang='en-US'] .navbar__items--right .dropdown--right .navbar__link::before,
 .dropdown__link[lang='en-US']::before {
-  background-image: url('/img/flags/us.svg');
+  background-image: url('https://dsanchezcrwebsite.blob.core.windows.net/images/flags/us.svg');
 }
 
 [lang='es-ES'] .navbar__items--right .dropdown--right .navbar__link::before,
 .dropdown__link[lang='es-ES']::before {
-  background-image: url('/img/flags/cr.svg');
+  background-image: url('https://dsanchezcrwebsite.blob.core.windows.net/images/flags/cr.svg');
 }
 
 [lang='pt-BR'] .navbar__items--right .dropdown--right .navbar__link::before,
 .dropdown__link[lang='pt-BR']::before {
-  background-image: url('/img/flags/br.svg');
+  background-image: url('https://dsanchezcrwebsite.blob.core.windows.net/images/flags/br.svg');
 }
 
 /* Color mode toggle button - show sun/moon emoji icons */

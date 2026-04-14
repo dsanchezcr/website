@@ -4,11 +4,10 @@ sidebar_position: 2
 description: TV shows I've finished watching.
 ---
 
-import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
-import seriesData from '@site/src/data/series.json';
+import ApiMediaCardList from '@site/src/components/MediaCard/ApiMediaCardList';
 
 # Completed
 
 TV shows I've finished and my thoughts on them.
 
-<MediaCardList items={seriesData} category="completed" />
+<ApiMediaCardList contentType="series" category="completed" />

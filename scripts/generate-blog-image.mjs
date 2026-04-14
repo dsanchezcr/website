@@ -14,6 +14,22 @@
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve, join, basename } from 'path';
 
+// Azure Blob Storage upload support (optional)
+let blobUploadAvailable = false;
+let BlobServiceClient;
+const BLOB_CONTAINER = process.env.BLOB_CONTAINER || 'images';
+const BLOB_BASE_URL = process.env.BLOB_BASE_URL || `https://dsanchezcrwebsite.blob.core.windows.net/${BLOB_CONTAINER}`;
+const storageConnectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+
+try {
+  ({ BlobServiceClient } = await import('@azure/storage-blob'));
+  if (storageConnectionString) {
+    blobUploadAvailable = true;
+  }
+} catch {
+  // @azure/storage-blob not installed — skip blob upload
+}
+
 // Parse CLI arguments
 const args = process.argv.slice(2);
 function getArg(name) {
@@ -126,11 +142,41 @@ async function generateImage() {
 
   const buffer = Buffer.from(imagePart.inlineData.data, 'base64');
   writeFileSync(outputPath, buffer);
-  console.log(`Image saved to: ${outputPath} (${(buffer.length / 1024).toFixed(0)}KB, ${mimeType})`);
+  console.log(`Image saved locally: ${outputPath} (${(buffer.length / 1024).toFixed(0)}KB, ${mimeType})`);
 
-  // Output the frontmatter image URL for easy copy
-  const frontmatterUrl = `https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/${slug}/${imgName}`;
-  console.log(`\nFrontmatter image URL:\n  image: ${frontmatterUrl}`);
+  // Upload to Azure Blob Storage if configured
+  const blobPath = `blog/${slug}/${imgName}`;
+  let uploadSucceeded = false;
+  if (blobUploadAvailable) {
+    try {
+      const blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
+      const containerClient = blobServiceClient.getContainerClient(BLOB_CONTAINER);
+      const blockBlobClient = containerClient.getBlockBlobClient(blobPath);
+      await blockBlobClient.upload(buffer, buffer.length, {
+        blobHTTPHeaders: {
+          blobContentType: mimeType,
+          blobCacheControl: 'public, max-age=31536000, immutable',
+        },
+      });
+      console.log(`Uploaded to Azure Blob Storage: ${BLOB_BASE_URL}/${blobPath}`);
+      uploadSucceeded = true;
+    } catch (err) {
+      console.warn(`Warning: Azure Blob upload failed: ${err.message}`);
+      console.warn('Image saved locally only. Upload manually or re-run with valid storage credentials.');
+    }
+  } else {
+    console.log('Azure Blob Storage not configured — image saved locally only.');
+    console.log('Set AZURE_STORAGE_CONNECTION_STRING in .env.local to enable automatic upload.');
+  }
+
+  // Output the frontmatter image URL
+  if (uploadSucceeded) {
+    const frontmatterUrl = `${BLOB_BASE_URL}/${blobPath}`;
+    console.log(`\nFrontmatter image URL:\n  image: ${frontmatterUrl}`);
+  } else {
+    console.log(`\nFrontmatter image URL (local path — upload to Azure Blob to get a public URL):\n  image: pathname:///img/blog/${slug}/${imgName}`);
+    console.log(`To upload manually: az storage blob upload --account-name dsanchezcrwebsite --container-name ${BLOB_CONTAINER} --file ${outputPath} --name ${blobPath}`);
+  }
 }
 
 generateImage().catch((err) => {

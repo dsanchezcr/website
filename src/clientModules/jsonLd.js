@@ -69,7 +69,7 @@ function getJsonLdForPage() {
           ...person,
           '@context': 'https://schema.org',
           description,
-          image: ogImage || 'https://dsanchezcr.com/img/about/devops-conf.jpg',
+          image: ogImage || 'https://dsanchezcrwebsite.blob.core.windows.net/images/about/devops-conf.jpg',
           knowsLanguage: ['English', 'Spanish', 'Portuguese'],
           alumniOf: { '@type': 'Organization', name: 'Microsoft' },
         },

@@ -106,6 +106,16 @@ param searchIndexName string = 'website-content'
 @secure()
 param reindexSecretKey string = ''
 
+@description('Azure Cosmos DB account endpoint URL for content data.')
+param azureCosmosEndpoint string = ''
+
+@description('Azure Cosmos DB account key for content data.')
+@secure()
+param azureCosmosKey string = ''
+
+@description('Azure Cosmos DB database name for content data.')
+param azureCosmosDatabaseName string = 'website-content'
+
 // ============================================================================
 // Resources
 // ============================================================================
@@ -245,6 +255,11 @@ resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2024-04-01' = {
     // Application Insights
     APPLICATIONINSIGHTS_CONNECTION_STRING: appInsights.properties.ConnectionString
     APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.properties.InstrumentationKey
+    
+    // Azure Cosmos DB (Content)
+    AZURE_COSMOS_ENDPOINT: azureCosmosEndpoint
+    AZURE_COSMOS_KEY: azureCosmosKey
+    AZURE_COSMOS_DATABASE_NAME: azureCosmosDatabaseName
   }
 }
 
@@ -295,6 +310,10 @@ output apiEndpoints object = {
   chat: 'https://${staticWebApp.properties.defaultHostname}/api/nlweb/ask'
   health: 'https://${staticWebApp.properties.defaultHostname}/api/health'
   reindex: 'https://${staticWebApp.properties.defaultHostname}/api/reindex'
+  contentMovies: 'https://${staticWebApp.properties.defaultHostname}/api/content/movies'
+  contentSeries: 'https://${staticWebApp.properties.defaultHostname}/api/content/series'
+  contentGaming: 'https://${staticWebApp.properties.defaultHostname}/api/content/gaming'
+  contentParks: 'https://${staticWebApp.properties.defaultHostname}/api/content/parks'
 }
 
 @description('The Azure AI Search endpoint.')

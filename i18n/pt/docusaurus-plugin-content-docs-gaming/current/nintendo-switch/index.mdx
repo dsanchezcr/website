@@ -7,8 +7,7 @@ description: Minha coleção de jogos do Nintendo Switch, classificações e rec
 keywords: [Nintendo Switch, Nintendo, gaming, Mario, Zelda]
 ---
 
-import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
-import nintendoSwitchGamingData from '@site/src/data/gaming/nintendo-switch.json';
+import ApiGamingSection from '@site/src/components/Gaming/ApiGamingSection';
 
 # 🔴 Nintendo Switch
 
@@ -17,7 +16,7 @@ Embora não haja uma API pública para extrair dados, aqui estão meus jogos fav
 :::info[Me adicione como amigo!]
 **Código de Amigo:** [SW-8584-9538-7390](https://lounge.nintendo.com/friendcode/8584-9538-7390/C2rqGddmVp)
 
-<img src="/img/gaming/nintendo/nintendo_switch_friend_code.jpg" alt="Código de Amigo QR" style={{maxWidth: '120px', width: '100%', height: 'auto', borderRadius: '8px', marginTop: '0.5rem', display: 'block'}} />
+<img src="https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/nintendo/nintendo_switch_friend_code.jpg" alt="Código de Amigo QR" style={{maxWidth: '120px', width: '100%', height: 'auto', borderRadius: '8px', marginTop: '0.5rem', display: 'block'}} />
 :::
 
 🎮🛍️ **[Ver minha Lista de Desejos da Nintendo](https://www.nintendo.com/us/wish-list/share/#skus=7100119859,7100099951,7100103775,7100104849,7500056960,7100012332,7100049931)**
@@ -26,8 +25,8 @@ Embora não haja uma API pública para extrair dados, aqui estão meus jogos fav
 
 ### Nintendo Switch 2
 
-<GamingEntriesRenderer items={nintendoSwitchGamingData.games.filter((item) => item.platform === 'nintendo-switch-2')} />
+<ApiGamingSection platform="nintendo-switch" section="games" filter={(item) => item.platform === 'nintendo-switch-2'} />
 
 ### Nintendo Switch
 
-<GamingEntriesRenderer items={nintendoSwitchGamingData.games.filter((item) => item.platform === 'nintendo-switch')} />
+<ApiGamingSection platform="nintendo-switch" section="games" filter={(item) => item.platform === 'nintendo-switch'} />

@@ -7,8 +7,7 @@ description: Mi colección de juegos de Meta Quest VR/MR, calificaciones y recom
 keywords: [Meta Quest, Meta Quest 3S, VR, Realidad Mixta, gaming, Oculus]
 ---
 
-import GamingEntriesRenderer from '@site/src/components/Gaming/GamingEntriesRenderer';
-import metaQuestGamingData from '@site/src/data/gaming/meta-quest.json';
+import ApiGamingSection from '@site/src/components/Gaming/ApiGamingSection';
 
 # 🥽 Meta Quest
 
@@ -16,4 +15,4 @@ Meta Quest 3S es mi puerta de entrada a los juegos de realidad virtual y mixta. 
 
 ## Mis Juegos
 
-<GamingEntriesRenderer items={metaQuestGamingData.games} />
+<ApiGamingSection platform="meta-quest" section="games" />

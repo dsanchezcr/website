@@ -36,17 +36,17 @@
 - Game status values: `completed`, `playing`, `backlog`, `dropped` (these are localized in component code)
 - Platform constants defined in `src/components/Gaming/gameCardConstants.js`
 - Game images: `static/img/gaming/<platform>/<title-slug>.jpg`
-- Gaming data is stored per platform in `src/data/gaming/<platform>.json`
-- Required pattern: use `GamingEntriesRenderer` in MDX pages to render JSON sections
-- JSON entries must use `type: "card"` or `type: "group"` (`games` array for groups)
-- Apply the same JSON-driven rendering structure in all locales: `gaming/`, `i18n/es/.../gaming/`, and `i18n/pt/.../gaming/`
-- User-facing gaming text fields in data (`recommendation`, `description`) must be localized as objects (example: `recommendation: { en: "...", es: "...", pt: "..." }`)
-- Status token values are canonical and must not be translated in data files: `completed`, `playing`, `backlog`, `dropped`
+- Gaming data is stored in Azure Cosmos DB (`content-gaming` container, partition key: `/platform`)
+- Required pattern: use `ApiGamingSection` in MDX pages to fetch and render sections from the content API
+- Data entries use `type: "card"` or `type: "group"` (`games` array for groups)
+- Apply the same API-driven rendering structure in all locales: `gaming/`, `i18n/es/.../gaming/`, and `i18n/pt/.../gaming/`
+- User-facing text fields (`recommendation`, `description`) are localized objects: `{ en: "...", es: "...", pt: "..." }`
+- Status token values are canonical and must not be translated: `completed`, `playing`, `backlog`, `dropped`
 
 ### Movies & TV Content
-- Data-driven via `src/data/movies.json` and `src/data/series.json`
+- Data stored in Azure Cosmos DB (`content-movies` and `content-series` containers)
 - Each entry requires: `titleId` (IMDb), `myRating` (1-10), `review` object (`en`, `es`, `pt`), `category`
-- Use `MediaCard` component for rendering
+- Use `ApiMediaCardList` component in MDX pages to fetch and render from the content API
 - Movie categories: `recently-watched`, `top-movies`, `watchlist`
 - TV categories: `currently-watching`, `completed`, `watchlist`
 

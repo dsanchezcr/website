@@ -8,7 +8,7 @@ describe('GameCard', () => {
     title: 'Halo Infinite',
     platform: 'xbox',
     status: 'completed',
-    imageUrl: '/img/gaming/xbox/halo-infinite.jpg',
+    imageUrl: 'https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/xbox/halo-infinite.jpg',
   };
 
   it('renders the game title', () => {
@@ -31,7 +31,7 @@ describe('GameCard', () => {
     render(<GameCard {...defaultProps} />);
     const img = screen.getByAltText('Halo Infinite');
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute('src', '/img/gaming/xbox/halo-infinite.jpg');
+    expect(img).toHaveAttribute('src', 'https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/xbox/halo-infinite.jpg');
   });
 
   it('renders recommendation text when provided', () => {

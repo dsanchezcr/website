@@ -17,7 +17,7 @@ Both frontend and backend are hosted together on **Azure Static Web Apps**. The 
 - **Custom Components**: Reusable widgets in `src/components/` (CareerTimeline, Comments, ErrorBoundary, ExchangeRatesWidget, Gaming, GitHubStats, Homepage, ImageCompareSlider, MediaCard, Movies, NLWebChat, OnlineStatusWidget, WeatherWidget, YouTubeEmbed)
 - **Shared Homepage**: The `Homepage` component (`src/components/Homepage/`) is shared across all three locale index pages — editing one component updates all locales. Locale-specific text is passed as props.
 - **i18n**: Translations in `i18n/es/` and `i18n/pt/` directories following Docusaurus i18n structure
-- **Gaming**: Docs in `gaming/` are data-driven via per-platform files in `src/data/gaming/*.json`, rendered with `GamingEntriesRenderer` + `GameCard`/`GameCardGroup`; images are in `static/img/gaming/<platform>/`; keep status values like `completed`, `playing`, `backlog`, `dropped`
+- **Gaming**: Docs in `gaming/` fetch content from Cosmos DB at runtime via `ApiGamingSection`; images are in `static/img/gaming/<platform>/`; keep status values like `completed`, `playing`, `backlog`, `dropped`
 - **Custom Docs**: Five doc sections configured via plugins: `disney/`, `gaming/`, `movies-tv/`, `projects/`, and `universal/`
 
 ### Backend (Azure Functions - .NET 9 Isolated Worker)
@@ -32,11 +32,17 @@ Located in `api/` directory:
 - **GetXboxProfile.cs**: Xbox profile endpoint (`/api/gaming/xbox`) using OpenXBL API with Table Storage caching
 - **GetPlayStationProfile.cs**: PlayStation profile endpoint (`/api/gaming/playstation`) using PSN internal API with JWT auth and Table Storage caching
 - **RefreshGamingProfiles.cs**: Admin endpoint (`/api/gaming/refresh`) to trigger gaming data refresh, protected with secret key
-- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, SearchService, and GamingCacheService
+- **GetMoviesContent.cs**: Content endpoint (`/api/content/movies`) for movies from Cosmos DB
+- **GetSeriesContent.cs**: Content endpoint (`/api/content/series`) for TV series from Cosmos DB
+- **GetGamingContent.cs**: Content endpoint (`/api/content/gaming`) for gaming entries from Cosmos DB
+- **GetParksContent.cs**: Content endpoint (`/api/content/parks`) for theme parks from Cosmos DB
+- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, SearchService, GamingCacheService, and CosmosContentService
 - **LocalizationHelper.cs**: Centralized localization for email templates
+- **Models/Content/ContentModels.cs**: Data models for Cosmos DB content (movies, series, gaming, parks)
 - **Services/TokenStorageService.cs**: Azure Table Storage integration for persistent email verification tokens
 - **Services/SearchService.cs**: Azure AI Search integration for querying and indexing documents (RAG pattern)
 - **Services/GamingCacheService.cs**: Dual-layer cache (memory + Table Storage) for gaming profiles with automatic fallback
+- **Services/CosmosContentService.cs**: Read-only Cosmos DB service for content queries across all domains
 
 ### Infrastructure (Bicep)
 Located in `infra/` directory:
@@ -171,6 +177,10 @@ healthConfig: '/api/health/config'
 xboxProfile: '/api/gaming/xbox'
 playstationProfile: '/api/gaming/playstation'
 gamingRefresh: '/api/gaming/refresh'  // POST, requires X-Gaming-Refresh-Key header
+contentMovies: '/api/content/movies'
+contentSeries: '/api/content/series'
+contentGaming: '/api/content/gaming'
+contentParks: '/api/content/parks'
 ```
 
 Additional API endpoints (not used by the public UI — backend/CI/admin only):
@@ -188,6 +198,7 @@ Single GitHub Actions workflow deploys both frontend and managed API together:
 - **Azure Communication Services**: Email sending (connection string in environment)
 - **Microsoft Foundry**: Chat functionality with RAG (endpoint + key + deployment required)
 - **Azure AI Search**: Content search for RAG pattern in chatbot (endpoint + API key + index name)
+- **Azure Cosmos DB**: Read-only content store for movies, series, gaming, and parks data
 - **Azure Table Storage**: Persistent storage for email verification tokens (connection string)
 - **Google reCAPTCHA v3**: Site key `6LcGaAIsAAAAALzUAxzGFx5R1uJ2Wgxn4RmNsy2I` (client-side) + secret key (server-side)
 - **Google Analytics**: Via `@docusaurus/plugin-google-gtag` (tracking ID: `G-18J431S7WG`) and Data API for visitor count
@@ -227,6 +238,11 @@ XBOX_API_KEY
 XBOX_GAMERTAG_XUID
 PSN_NPSSO_TOKEN
 GAMING_REFRESH_KEY
+
+# Azure Cosmos DB (Content)
+AZURE_COSMOS_ENDPOINT
+AZURE_COSMOS_KEY
+AZURE_COSMOS_DATABASE_NAME
 
 # Telemetry
 APPLICATIONINSIGHTS_CONNECTION_STRING
@@ -268,6 +284,8 @@ Repository-level documentation (architecture, domain, coding standards, ADRs) li
 ├── coding-standards.md    # Conventions and patterns
 └── adr/                   # Architecture Decision Records
     ├── 001-docusaurus-ssg.md
+    ├── ...
+    ├── 005-cosmos-content-readonly-source-of-truth.md
     ├── 002-azure-swa-managed-functions.md
     ├── 003-rag-chatbot.md
     └── 004-agentic-modernization.md
@@ -339,7 +357,7 @@ All user-facing content **must** support English (default), Spanish, and Portugu
 - `i18n/es/docusaurus-plugin-content-docs-gaming/current/<platform>/index.mdx`
 - `i18n/pt/docusaurus-plugin-content-docs-gaming/current/<platform>/index.mdx`
 
-**Gaming data strategy**: Gaming platform docs in all locales are JSON-driven via `src/data/gaming/*.json` and rendered with `GamingEntriesRenderer`.
+**Gaming data strategy**: Gaming platform docs in all locales fetch data from Cosmos DB at runtime via `ApiGamingSection` component.
 
 **Movies & TV docs**: Changes in `movies-tv/` must be reflected in:
 - `i18n/es/docusaurus-plugin-content-docs-movies-tv/current/`
@@ -357,7 +375,7 @@ All user-facing content **must** support English (default), Spanish, and Portugu
 - `i18n/es/docusaurus-plugin-content-docs-projects/current/`
 - `i18n/pt/docusaurus-plugin-content-docs-projects/current/`
 
-**Movie/TV data**: Reviews in `src/data/movies.json` and `src/data/series.json` must include `review` objects with `en`, `es`, and `pt` keys.
+**Movie/TV data**: Movies and series data is stored in Cosmos DB containers (`content-movies`, `content-series`) and fetched at runtime via `ApiMediaCardList`.
 
 ### i18n Patterns
 - **MDX content**: Place translated files in the appropriate `i18n/<locale>/docusaurus-plugin-content-*` directory
@@ -376,14 +394,14 @@ All user-facing content **must** support English (default), Spanish, and Portugu
 5. Add images to `static/img/blog/` if needed
 
 ### New Gaming Content
-1. Add or update entries in `src/data/gaming/<platform>.json` using `type: "card"` or `type: "group"` (`games` array)
-2. Keep `gaming/<platform>/index.mdx` focused on page structure and rendering sections with `GamingEntriesRenderer`
-3. Add game image to `static/img/gaming/<platform>/<title-slug>.jpg` and reference it via `imageUrl`
-4. Keep `i18n/es/.../gaming/` and `i18n/pt/.../gaming/` in structural parity with English docs (same JSON imports and renderer sections)
+1. Add or update entries directly in Azure Cosmos DB (`content-gaming` container) via Data Explorer
+2. Keep `gaming/<platform>/index.mdx` focused on page structure using `ApiGamingSection` component
+3. Add game image to `static/img/gaming/<platform>/<title-slug>.jpg` and reference it via `imageUrl` in the Cosmos document
+4. Keep `i18n/es/.../gaming/` and `i18n/pt/.../gaming/` in structural parity with English docs (same `ApiGamingSection` usage)
 5. Use established status values: `completed`, `playing`, `backlog`, `dropped`
 
 ### New Movie/TV Entry
-1. Add entry to `src/data/movies.json` or `src/data/series.json`
+1. Add entry directly in Azure Cosmos DB (`content-movies` or `content-series` container) via Data Explorer
 2. Include `titleId` (IMDb), `myRating` (1-10), `review` with `en`/`es`/`pt` keys, and `category`
 
 ### New Azure Function

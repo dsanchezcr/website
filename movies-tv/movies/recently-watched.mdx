@@ -4,11 +4,10 @@ sidebar_position: 1
 description: Movies I recently watched with my ratings and reviews.
 ---
 
-import MediaCardList from '@site/src/components/MediaCard/MediaCardList';
-import moviesData from '@site/src/data/movies.json';
+import ApiMediaCardList from '@site/src/components/MediaCard/ApiMediaCardList';
 
 # Recently Watched
 
 Movies I've recently watched at the theater.
 
-<MediaCardList items={moviesData} category="recently-watched" />
+<ApiMediaCardList contentType="movies" category="recently-watched" />

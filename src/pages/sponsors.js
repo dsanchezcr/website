@@ -1,9 +1,13 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 import { useLocale } from '@site/src/hooks';
-import GitHubSvg from '@site/static/img/Sponsors/github.svg';
-import BMCSvg from '@site/static/img/Sponsors/bmc.svg';
-import VenmoSvg from '@site/static/img/Sponsors/venmo.svg';
+import { config } from '@site/src/config/environment';
+
+const BLOB_BASE = config.imageBaseUrl;
+
+const SponsorIcon = ({ src, alt }) => (
+  <img src={src} width="60" height="60" alt={alt} loading="lazy" style={{ filter: 'brightness(0) invert(1)' }} />
+);
 
 // Translations for all supported languages
 const translations = {
@@ -88,21 +92,21 @@ const sponsorMethods = [
   {
     key: 'github',
     url: 'https://github.com/sponsors/dsanchezcr',
-    Icon: GitHubSvg,
+    Icon: () => <SponsorIcon src={`${BLOB_BASE}/Sponsors/github.svg`} alt="GitHub" />,
     gradient: 'linear-gradient(135deg, #24292e 0%, #40494f 100%)',
     hoverGradient: 'linear-gradient(135deg, #2d333b 0%, #4a545e 100%)'
   },
   {
     key: 'bmc',
     url: 'https://buymeacoffee.com/dsanchezcr',
-    Icon: BMCSvg,
+    Icon: () => <SponsorIcon src={`${BLOB_BASE}/Sponsors/bmc.svg`} alt="Buy Me a Coffee" />,
     gradient: 'linear-gradient(135deg, #ff813f 0%, #ffdd00 100%)',
     hoverGradient: 'linear-gradient(135deg, #ff9959 0%, #ffeb4d 100%)'
   },
   {
     key: 'venmo',
     url: 'https://venmo.com/dsanchezcr',
-    Icon: VenmoSvg,
+    Icon: () => <SponsorIcon src={`${BLOB_BASE}/Sponsors/venmo.svg`} alt="Venmo" />,
     gradient: 'linear-gradient(135deg, #3d95ce 0%, #008cff 100%)',
     hoverGradient: 'linear-gradient(135deg, #4aa8e8 0%, #1a9fff 100%)'
   }
@@ -176,7 +180,7 @@ function SponsorCard({ method, translations }) {
         transition: 'transform 0.3s ease',
         transform: isHovered ? 'scale(1.1)' : 'scale(1)'
       }}>
-        <Icon width="60" height="60" />
+        <Icon />
       </div>
       
       {/* Content */}

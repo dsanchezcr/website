@@ -1,15 +1,8 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocale } from '@site/src/hooks';
+import { config } from '@site/src/config/environment';
 import ParkList from './ParkList';
 import styles from './styles.module.css';
-
-import disneyParks from '@site/src/data/disney-parks.json';
-import universalParks from '@site/src/data/universal-parks.json';
-
-const DATA_SOURCES = {
-  disney: disneyParks,
-  universal: universalParks,
-};
 
 const MapIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -34,10 +27,46 @@ const ThemeParkExplorer = ({ dataSource, parkId }) => {
   const locale = useLocale();
   const [viewMode, setViewMode] = useState('map');
   const [MapComponent, setMapComponent] = useState(null);
+  const [park, setPark] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const park = useMemo(() => {
-    const parks = DATA_SOURCES[dataSource] || [];
-    return parks.find(p => p.parkId === parkId);
+  // Fetch park data from API
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchPark = async () => {
+      setLoading(true);
+      setError(null);
+      setPark(null);
+      try {
+        const apiEndpoint = config.getApiEndpoint();
+        let url = `${apiEndpoint}${config.routes.contentParks}?provider=${encodeURIComponent(dataSource)}`;
+        if (parkId) {
+          url += `&parkId=${encodeURIComponent(parkId)}`;
+        }
+
+        const response = await fetch(url, { headers: { Accept: 'application/json' }, signal: controller.signal });
+        if (!response.ok) {
+          throw new Error(`Failed to load park data (${response.status})`);
+        }
+
+        const parks = await response.json();
+        const found = parkId ? parks.find(p => p.parkId === parkId) : parks[0];
+        setPark(found || null);
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          setError(err.message);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchPark();
+    return () => controller.abort();
   }, [dataSource, parkId]);
 
   // Eagerly load the map component
@@ -49,6 +78,8 @@ const ThemeParkExplorer = ({ dataSource, parkId }) => {
     }
   }, [MapComponent]);
 
+  if (loading) return <p style={{ textAlign: 'center', color: 'var(--ifm-font-color-secondary)' }}>Loading park data...</p>;
+  if (error) return <p style={{ textAlign: 'center', color: 'var(--ifm-color-danger)' }}>Error: {error}</p>;
   if (!park) return <p>Park not found.</p>;
 
   const translations = {
