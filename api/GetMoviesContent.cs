@@ -28,7 +28,7 @@ public class GetMoviesContent
             return unavailable;
         }
 
-        var category = GetQueryParam(req.Url.Query, "category");
+        var category = QueryHelpers.GetQueryParam(req.Url.Query, "category");
 
         try
         {
@@ -45,17 +45,5 @@ public class GetMoviesContent
             await error.WriteAsJsonAsync(new { error = "Failed to retrieve content." });
             return error;
         }
-    }
-
-    private static string? GetQueryParam(string query, string key)
-    {
-        var q = query.TrimStart('?');
-        foreach (var part in q.Split('&', StringSplitOptions.RemoveEmptyEntries))
-        {
-            var kv = part.Split('=', 2);
-            if (kv.Length == 2 && Uri.UnescapeDataString(kv[0]) == key)
-                return Uri.UnescapeDataString(kv[1]);
-        }
-        return null;
     }
 }

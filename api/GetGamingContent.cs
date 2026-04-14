@@ -28,7 +28,7 @@ public class GetGamingContent
             return unavailable;
         }
 
-        var platform = GetQueryParam(req.Url.Query, "platform");
+        var platform = QueryHelpers.GetQueryParam(req.Url.Query, "platform");
 
         if (string.IsNullOrWhiteSpace(platform))
         {
@@ -37,7 +37,7 @@ public class GetGamingContent
             return badReq;
         }
 
-        var section = GetQueryParam(req.Url.Query, "section");
+        var section = QueryHelpers.GetQueryParam(req.Url.Query, "section");
 
         try
         {
@@ -54,17 +54,5 @@ public class GetGamingContent
             await error.WriteAsJsonAsync(new { error = "Failed to retrieve content." });
             return error;
         }
-    }
-
-    private static string? GetQueryParam(string query, string key)
-    {
-        var q = query.TrimStart('?');
-        foreach (var part in q.Split('&', StringSplitOptions.RemoveEmptyEntries))
-        {
-            var kv = part.Split('=', 2);
-            if (kv.Length == 2 && Uri.UnescapeDataString(kv[0]) == key)
-                return Uri.UnescapeDataString(kv[1]);
-        }
-        return null;
     }
 }

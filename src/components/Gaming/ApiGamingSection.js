@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { config } from '@site/src/config/environment';
 import GamingEntriesRenderer from './GamingEntriesRenderer';
 

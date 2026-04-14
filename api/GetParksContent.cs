@@ -28,7 +28,7 @@ public class GetParksContent
             return unavailable;
         }
 
-        var provider = GetQueryParam(req.Url.Query, "provider");
+        var provider = QueryHelpers.GetQueryParam(req.Url.Query, "provider");
 
         if (string.IsNullOrWhiteSpace(provider))
         {
@@ -37,7 +37,7 @@ public class GetParksContent
             return badReq;
         }
 
-        var parkId = GetQueryParam(req.Url.Query, "parkId");
+        var parkId = QueryHelpers.GetQueryParam(req.Url.Query, "parkId");
 
         try
         {
@@ -54,17 +54,5 @@ public class GetParksContent
             await error.WriteAsJsonAsync(new { error = "Failed to retrieve content." });
             return error;
         }
-    }
-
-    private static string? GetQueryParam(string query, string key)
-    {
-        var q = query.TrimStart('?');
-        foreach (var part in q.Split('&', StringSplitOptions.RemoveEmptyEntries))
-        {
-            var kv = part.Split('=', 2);
-            if (kv.Length == 2 && Uri.UnescapeDataString(kv[0]) == key)
-                return Uri.UnescapeDataString(kv[1]);
-        }
-        return null;
     }
 }
