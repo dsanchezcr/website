@@ -18,7 +18,10 @@ internal static class QueryHelpers
         {
             var kv = part.Split('=', 2);
             if (kv.Length == 2 && Decode(kv[0]) == key)
-                return Decode(kv[1]);
+            {
+                var decoded = Decode(kv[1]);
+                return string.IsNullOrWhiteSpace(decoded) ? null : decoded;
+            }
         }
         return null;
     }
