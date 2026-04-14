@@ -175,7 +175,7 @@ async function generateImage() {
     console.log(`\nFrontmatter image URL:\n  image: ${frontmatterUrl}`);
   } else {
     console.log(`\nFrontmatter image URL (local path — upload to Azure Blob to get a public URL):\n  image: pathname:///img/blog/${slug}/${imgName}`);
-    console.log('To upload manually: az storage blob upload --account-name dsanchezcrwebsite --container-name images --file ' + outputPath + ' --name ' + blobPath);
+    console.log(`To upload manually: az storage blob upload --account-name dsanchezcrwebsite --container-name ${BLOB_CONTAINER} --file ${outputPath} --name ${blobPath}`);
   }
 }
 

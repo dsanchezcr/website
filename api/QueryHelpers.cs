@@ -25,5 +25,5 @@ internal static class QueryHelpers
 
     // Handles both percent-encoding (%20) and form-urlencoded '+' as space.
     private static string Decode(string value) =>
-        Uri.UnescapeDataString(value.Replace('+', ' '));
+        System.Net.WebUtility.UrlDecode(value);
 }
