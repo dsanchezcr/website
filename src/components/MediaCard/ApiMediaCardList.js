@@ -22,7 +22,11 @@ const ApiMediaCardListInner = ({ contentType, category }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const apiEndpoint = config.getApiEndpoint();
         const route = contentType === 'series' ? config.routes.contentSeries : config.routes.contentMovies;
@@ -30,7 +34,7 @@ const ApiMediaCardListInner = ({ contentType, category }) => {
           ? `${apiEndpoint}${route}?category=${encodeURIComponent(category)}`
           : `${apiEndpoint}${route}`;
 
-        const response = await fetch(url, { headers: { Accept: 'application/json' } });
+        const response = await fetch(url, { headers: { Accept: 'application/json' }, signal: controller.signal });
 
         if (!response.ok) {
           throw new Error(`Failed to load content (${response.status})`);
@@ -39,13 +43,18 @@ const ApiMediaCardListInner = ({ contentType, category }) => {
         const data = await response.json();
         setItems(data);
       } catch (err) {
-        setError(err.message);
+        if (err.name !== 'AbortError') {
+          setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchData();
+    return () => controller.abort();
   }, [contentType, category]);
 
   if (loading) {

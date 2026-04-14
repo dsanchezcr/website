@@ -44,6 +44,7 @@ public class GetGamingContent
         {
             var gaming = await _contentService.GetGamingAsync(platform, section);
             var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Cache-Control", "public, max-age=300");
             await response.WriteAsJsonAsync(gaming);
             return response;
         }

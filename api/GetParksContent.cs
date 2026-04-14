@@ -44,6 +44,7 @@ public class GetParksContent
         {
             var parks = await _contentService.GetParksAsync(provider, parkId);
             var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Cache-Control", "public, max-age=300");
             await response.WriteAsJsonAsync(parks);
             return response;
         }

@@ -146,6 +146,7 @@ async function generateImage() {
 
   // Upload to Azure Blob Storage if configured
   const blobPath = `blog/${slug}/${imgName}`;
+  let uploadSucceeded = false;
   if (blobUploadAvailable) {
     try {
       const blobServiceClient = BlobServiceClient.fromConnectionString(storageConnectionString);
@@ -158,6 +159,7 @@ async function generateImage() {
         },
       });
       console.log(`Uploaded to Azure Blob Storage: ${BLOB_BASE_URL}/${blobPath}`);
+      uploadSucceeded = true;
     } catch (err) {
       console.warn(`Warning: Azure Blob upload failed: ${err.message}`);
       console.warn('Image saved locally only. Upload manually or re-run with valid storage credentials.');
@@ -167,9 +169,14 @@ async function generateImage() {
     console.log('Set AZURE_STORAGE_CONNECTION_STRING in .env.local to enable automatic upload.');
   }
 
-  // Output the frontmatter image URL (always Azure Blob)
-  const frontmatterUrl = `${BLOB_BASE_URL}/${blobPath}`;
-  console.log(`\nFrontmatter image URL:\n  image: ${frontmatterUrl}`);
+  // Output the frontmatter image URL
+  if (uploadSucceeded) {
+    const frontmatterUrl = `${BLOB_BASE_URL}/${blobPath}`;
+    console.log(`\nFrontmatter image URL:\n  image: ${frontmatterUrl}`);
+  } else {
+    console.log(`\nFrontmatter image URL (local path — upload to Azure Blob to get a public URL):\n  image: pathname:///img/blog/${slug}/${imgName}`);
+    console.log('To upload manually: az storage blob upload --account-name dsanchezcrwebsite --container-name images --file ' + outputPath + ' --name ' + blobPath);
+  }
 }
 
 generateImage().catch((err) => {

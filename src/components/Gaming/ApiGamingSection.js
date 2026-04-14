@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import { config } from '@site/src/config/environment';
@@ -42,12 +42,7 @@ const ApiGamingSectionInner = ({ platform, section, filter }) => {
           throw new Error(`Failed to load gaming content (${response.status})`);
         }
 
-        let data = await response.json();
-
-        if (typeof filter === 'function') {
-          data = data.filter(filter);
-        }
-
+        const data = await response.json();
         setItems(data);
       } catch (err) {
         setError(err.message);
@@ -57,7 +52,12 @@ const ApiGamingSectionInner = ({ platform, section, filter }) => {
     };
 
     fetchData();
-  }, [platform, section, filter]);
+  }, [platform, section]);
+
+  const filteredItems = useMemo(
+    () => (typeof filter === 'function' ? items.filter(filter) : items),
+    [items, filter]
+  );
 
   if (loading) {
     return <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--ifm-font-color-secondary)' }}>Loading games...</div>;
@@ -67,7 +67,7 @@ const ApiGamingSectionInner = ({ platform, section, filter }) => {
     return <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--ifm-color-danger)' }}>Error: {error}</div>;
   }
 
-  return <GamingEntriesRenderer items={items} />;
+  return <GamingEntriesRenderer items={filteredItems} />;
 };
 
 export default ApiGamingSection;

@@ -35,6 +35,7 @@ public class GetMoviesContent
         {
             var movies = await _contentService.GetMoviesAsync(category);
             var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Cache-Control", "public, max-age=300");
             await response.WriteAsJsonAsync(movies);
             return response;
         }

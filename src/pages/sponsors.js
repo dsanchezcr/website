@@ -1,8 +1,9 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 import { useLocale } from '@site/src/hooks';
+import { config } from '@site/src/config/environment';
 
-const BLOB_BASE = 'https://dsanchezcrwebsite.blob.core.windows.net/images';
+const BLOB_BASE = config.imageBaseUrl;
 
 // Translations for all supported languages
 const translations = {

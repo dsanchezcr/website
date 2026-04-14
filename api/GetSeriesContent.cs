@@ -35,6 +35,7 @@ public class GetSeriesContent
         {
             var series = await _contentService.GetSeriesAsync(category);
             var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Cache-Control", "public, max-age=300");
             await response.WriteAsJsonAsync(series);
             return response;
         }

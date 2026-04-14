@@ -33,7 +33,12 @@ const ThemeParkExplorer = ({ dataSource, parkId }) => {
 
   // Fetch park data from API
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchPark = async () => {
+      setLoading(true);
+      setError(null);
+      setPark(null);
       try {
         const apiEndpoint = config.getApiEndpoint();
         let url = `${apiEndpoint}${config.routes.contentParks}?provider=${encodeURIComponent(dataSource)}`;
@@ -41,7 +46,7 @@ const ThemeParkExplorer = ({ dataSource, parkId }) => {
           url += `&parkId=${encodeURIComponent(parkId)}`;
         }
 
-        const response = await fetch(url, { headers: { Accept: 'application/json' } });
+        const response = await fetch(url, { headers: { Accept: 'application/json' }, signal: controller.signal });
         if (!response.ok) {
           throw new Error(`Failed to load park data (${response.status})`);
         }
@@ -50,13 +55,18 @@ const ThemeParkExplorer = ({ dataSource, parkId }) => {
         const found = parkId ? parks.find(p => p.parkId === parkId) : parks[0];
         setPark(found || null);
       } catch (err) {
-        setError(err.message);
+        if (err.name !== 'AbortError') {
+          setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
     fetchPark();
+    return () => controller.abort();
   }, [dataSource, parkId]);
 
   // Eagerly load the map component
