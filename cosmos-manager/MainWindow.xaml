@@ -1,0 +1,272 @@
+﻿<Window x:Class="CosmosManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:conv="clr-namespace:CosmosManager.Converters"
+        mc:Ignorable="d"
+        Title="Cosmos DB Content Manager — dsanchezcr.com" Height="800" Width="1200"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <conv:BoolToVisibilityConverter x:Key="BoolToVis"/>
+        <conv:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis"/>
+        <conv:NullToVisibilityConverter x:Key="NullToVis"/>
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="4,0"/>
+            <Setter Property="MinWidth" Value="80"/>
+        </Style>
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Connection Bar -->
+        <Border Grid.Row="0" Background="#F0F0F0" Padding="10" BorderBrush="#CCC" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Endpoint:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox Grid.Column="1" Text="{Binding Endpoint, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0" VerticalContentAlignment="Center"/>
+                <TextBlock Grid.Column="2" Text="Key:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <PasswordBox Grid.Column="3" x:Name="KeyBox" Margin="0,0,10,0" VerticalContentAlignment="Center" PasswordChanged="KeyBox_PasswordChanged"/>
+                <TextBlock Grid.Column="4" Text="DB:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox Grid.Column="5" Text="{Binding DatabaseName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0" VerticalContentAlignment="Center"/>
+                <StackPanel Grid.Column="6" Orientation="Horizontal">
+                    <Button Content="Connect" Command="{Binding ConnectCommand}" Style="{StaticResource ActionButton}"
+                            Visibility="{Binding IsConnected, Converter={StaticResource InverseBoolToVis}}"/>
+                    <Button Content="Disconnect" Command="{Binding DisconnectCommand}" Style="{StaticResource ActionButton}"
+                            Visibility="{Binding IsConnected, Converter={StaticResource BoolToVis}}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+            <!-- Tabs when connected -->
+            <TabControl Visibility="{Binding IsConnected, Converter={StaticResource BoolToVis}}" Margin="6">
+
+                <!-- Movies Tab -->
+                <TabItem Header="🎬 Movies">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Category:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <ComboBox ItemsSource="{Binding MovieCategories}" SelectedItem="{Binding SelectedMovieCategory}" Width="160" Margin="0,0,8,0" IsEditable="True"/>
+                            <Button Content="Load" Command="{Binding LoadMoviesCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="+ New" Command="{Binding NewMovieCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="Edit" Command="{Binding EditMovieCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="Delete" Command="{Binding DeleteMovieCommand}" Style="{StaticResource ActionButton}" Foreground="Red"/>
+                        </StackPanel>
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Movies}" SelectedItem="{Binding SelectedMovie}"
+                                  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                                  GridLinesVisibility="Horizontal" AlternatingRowBackground="#F9F9F9"
+                                  CanUserSortColumns="True" CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="220"/>
+                                <DataGridTextColumn Header="Title ID (IMDb)" Binding="{Binding TitleId}" Width="120"/>
+                                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="120"/>
+                                <DataGridTextColumn Header="Rating" Binding="{Binding MyRating}" Width="70"/>
+                                <DataGridTextColumn Header="Order" Binding="{Binding Order}" Width="60"/>
+                                <DataGridTextColumn Header="Review (EN)" Binding="{Binding Review.En}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+                <!-- Series Tab -->
+                <TabItem Header="📺 Series">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Category:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <ComboBox ItemsSource="{Binding SeriesCategories}" SelectedItem="{Binding SelectedSeriesCategory}" Width="160" Margin="0,0,8,0" IsEditable="True"/>
+                            <Button Content="Load" Command="{Binding LoadSeriesCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="+ New" Command="{Binding NewSeriesCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="Edit" Command="{Binding EditSeriesCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="Delete" Command="{Binding DeleteSeriesCommand}" Style="{StaticResource ActionButton}" Foreground="Red"/>
+                        </StackPanel>
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Series}" SelectedItem="{Binding SelectedSeries}"
+                                  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                                  GridLinesVisibility="Horizontal" AlternatingRowBackground="#F9F9F9"
+                                  CanUserSortColumns="True" CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="220"/>
+                                <DataGridTextColumn Header="Title ID (IMDb)" Binding="{Binding TitleId}" Width="120"/>
+                                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="120"/>
+                                <DataGridTextColumn Header="Rating" Binding="{Binding MyRating}" Width="70"/>
+                                <DataGridTextColumn Header="Order" Binding="{Binding Order}" Width="60"/>
+                                <DataGridTextColumn Header="Review (EN)" Binding="{Binding Review.En}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+                <!-- Gaming Tab -->
+                <TabItem Header="🎮 Gaming">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Platform:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <ComboBox ItemsSource="{Binding GamingPlatforms}" SelectedItem="{Binding SelectedGamingPlatform}" Width="160" Margin="0,0,8,0"/>
+                            <Button Content="Load" Command="{Binding LoadGamingCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="+ New" Command="{Binding NewGamingCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="Edit" Command="{Binding EditGamingCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="Delete" Command="{Binding DeleteGamingCommand}" Style="{StaticResource ActionButton}" Foreground="Red"/>
+                        </StackPanel>
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding GamingItems}" SelectedItem="{Binding SelectedGaming}"
+                                  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                                  GridLinesVisibility="Horizontal" AlternatingRowBackground="#F9F9F9"
+                                  CanUserSortColumns="True" CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="180"/>
+                                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="200"/>
+                                <DataGridTextColumn Header="Platform" Binding="{Binding Platform}" Width="100"/>
+                                <DataGridTextColumn Header="Section" Binding="{Binding Section}" Width="100"/>
+                                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="70"/>
+                                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="90"/>
+                                <DataGridTextColumn Header="Order" Binding="{Binding Order}" Width="60"/>
+                                <DataGridCheckBoxColumn Header="Co-Op" Binding="{Binding CoOp}" Width="55"/>
+                                <DataGridCheckBoxColumn Header="Online" Binding="{Binding Online}" Width="55"/>
+                                <DataGridTextColumn Header="Image URL" Binding="{Binding ImageUrl}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+                <!-- Parks Tab -->
+                <TabItem Header="🏰 Parks">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Provider:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <ComboBox ItemsSource="{Binding ParkProviders}" SelectedItem="{Binding SelectedParkProvider}" Width="160" Margin="0,0,8,0"/>
+                            <Button Content="Load" Command="{Binding LoadParksCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="+ New" Command="{Binding NewParkCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="Edit" Command="{Binding EditParkCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="Delete" Command="{Binding DeleteParkCommand}" Style="{StaticResource ActionButton}" Foreground="Red"/>
+                        </StackPanel>
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding Parks}" SelectedItem="{Binding SelectedPark}"
+                                  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                                  GridLinesVisibility="Horizontal" AlternatingRowBackground="#F9F9F9"
+                                  CanUserSortColumns="True" CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="220"/>
+                                <DataGridTextColumn Header="Provider" Binding="{Binding Provider}" Width="100"/>
+                                <DataGridTextColumn Header="Park ID" Binding="{Binding ParkId}" Width="150"/>
+                                <DataGridTextColumn Header="Name (EN)" Binding="{Binding Name.En}" Width="200"/>
+                                <DataGridTextColumn Header="Description (EN)" Binding="{Binding Description.En}" Width="*"/>
+                                <DataGridTextColumn Header="Items Count" Binding="{Binding Items.Count}" Width="90"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+                <!-- Monthly Updates Tab -->
+                <TabItem Header="📅 Monthly Updates">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <TextBlock Text="Month:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <ComboBox ItemsSource="{Binding MonthlyUpdateMonths}" SelectedItem="{Binding SelectedMonth}" Width="160" Margin="0,0,8,0" IsEditable="True"/>
+                            <Button Content="Load" Command="{Binding LoadMonthlyUpdatesCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="+ New" Command="{Binding NewMonthlyUpdateCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="Edit" Command="{Binding EditMonthlyUpdateCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="Delete" Command="{Binding DeleteMonthlyUpdateCommand}" Style="{StaticResource ActionButton}" Foreground="Red"/>
+                        </StackPanel>
+                        <DataGrid Grid.Row="1" ItemsSource="{Binding MonthlyUpdates}" SelectedItem="{Binding SelectedMonthlyUpdate}"
+                                  AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single"
+                                  GridLinesVisibility="Horizontal" AlternatingRowBackground="#F9F9F9"
+                                  CanUserSortColumns="True" CanUserResizeColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="180"/>
+                                <DataGridTextColumn Header="Month" Binding="{Binding Month}" Width="90"/>
+                                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="200"/>
+                                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="100"/>
+                                <DataGridTextColumn Header="Release Date" Binding="{Binding ReleaseDate}" Width="100"/>
+                                <DataGridTextColumn Header="Platforms" Binding="{Binding Platforms}" Width="120"/>
+                                <DataGridTextColumn Header="Order" Binding="{Binding Order}" Width="60"/>
+                                <DataGridTextColumn Header="YouTube" Binding="{Binding YoutubeVideoId}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </TabItem>
+
+            </TabControl>
+
+            <!-- Not connected message -->
+            <StackPanel Visibility="{Binding IsConnected, Converter={StaticResource InverseBoolToVis}}"
+                        VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="Cosmos DB Content Manager" FontSize="24" FontWeight="Light" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                <TextBlock Text="Enter your Cosmos DB endpoint and key above to connect." FontSize="14" Foreground="Gray" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- JSON Editor Overlay -->
+            <Border Visibility="{Binding IsJsonEditorOpen, Converter={StaticResource BoolToVis}}"
+                    Background="#E0000000">
+                <Border Background="White" CornerRadius="8" Margin="40" Padding="20"
+                        VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                        Effect="{x:Null}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="{Binding JsonEditorTitle}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                        <TextBox Grid.Row="1" Text="{Binding JsonEditorContent, UpdateSourceTrigger=PropertyChanged}"
+                                 AcceptsReturn="True" AcceptsTab="True" VerticalScrollBarVisibility="Auto"
+                                 HorizontalScrollBarVisibility="Auto" FontFamily="Consolas" FontSize="13"
+                                 TextWrapping="NoWrap"/>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                            <Button Content="Cancel" Command="{Binding CancelJsonEditorCommand}" Style="{StaticResource ActionButton}"/>
+                            <Button Content="Save" Command="{Binding SaveJsonCommand}" Style="{StaticResource ActionButton}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Border>
+
+            <!-- Busy Overlay -->
+            <Border Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}"
+                    Background="#40000000">
+                <TextBlock Text="Loading..." FontSize="18" Foreground="White"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="2" Background="#F0F0F0" Padding="10,6" BorderBrush="#CCC" BorderThickness="0,1,0,0">
+            <TextBlock Text="{Binding StatusMessage}" FontSize="12"/>
+        </Border>
+    </Grid>
+</Window>
