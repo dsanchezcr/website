@@ -13,10 +13,11 @@ on:
 
 permissions:
   contents: read
+  actions: write
 
 jobs:
   build:
-    name: Build & Test
+    name: Build
     runs-on: windows-latest
     steps:
       - name: Check Out Repo
