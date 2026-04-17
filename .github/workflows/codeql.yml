@@ -2,8 +2,12 @@ name: "CodeQL"
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'cosmos-manager/**'
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - 'cosmos-manager/**'
   workflow_dispatch:
 jobs:
   analyze:
@@ -26,12 +30,15 @@ jobs:
       with:
         languages: ${{ matrix.language }}
     - name: Setup .NET
+      if: matrix.language == 'csharp'
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '9.0.x'
-    - name: Restore .NET
-      run: dotnet restore
+    - name: Build .NET API
+      if: matrix.language == 'csharp'
+      run: dotnet build api/api.csproj --configuration Release
     - name: Autobuild
+      if: matrix.language != 'csharp'
       uses: github/codeql-action/autobuild@v3
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3

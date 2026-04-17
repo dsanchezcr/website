@@ -93,6 +93,8 @@ public class CosmosManagerService : IDisposable
     {
         var container = GetContainer(containerName);
         var response = await container.ReadItemStreamAsync(id, new PartitionKey(partitionKeyValue));
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException($"Failed to read item '{id}' from '{containerName}': {response.StatusCode}");
         using var reader = new StreamReader(response.Content);
         var raw = await reader.ReadToEndAsync();
         // Re-format with indentation

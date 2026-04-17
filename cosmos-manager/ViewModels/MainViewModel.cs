@@ -428,6 +428,16 @@ public partial class MainViewModel : ObservableObject
 
     // ── JSON Editor ──
 
+    private static string? GetPartitionKeyField(string? containerName) => containerName switch
+    {
+        CosmosManagerService.MoviesContainer => "category",
+        CosmosManagerService.SeriesContainer => "category",
+        CosmosManagerService.GamingContainer => "platform",
+        CosmosManagerService.ParksContainer => "provider",
+        CosmosManagerService.MonthlyUpdatesContainer => "month",
+        _ => null
+    };
+
     private void OpenJsonEditor(string title, string container, string partitionKey, string json, bool isNew)
     {
         JsonEditorTitle = title;
@@ -445,8 +455,13 @@ public partial class MainViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            // Validate JSON
-            JsonDocument.Parse(JsonEditorContent);
+            // Validate JSON and extract partition key from edited content
+            using var validationDoc = JsonDocument.Parse(JsonEditorContent);
+            var pkField = GetPartitionKeyField(_jsonEditorContainer);
+            if (pkField != null && validationDoc.RootElement.TryGetProperty(pkField, out var pkElement))
+            {
+                _jsonEditorPartitionKey = pkElement.GetString() ?? _jsonEditorPartitionKey;
+            }
 
             if (_jsonEditorIsNew)
                 await _service.CreateItemFromJsonAsync(_jsonEditorContainer, JsonEditorContent, _jsonEditorPartitionKey);

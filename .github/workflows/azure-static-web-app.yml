@@ -9,6 +9,7 @@ on:
       - '.github/workflows/dependency-review.yml'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/PULL_REQUEST_TEMPLATE/**'
+      - 'cosmos-manager/**'
       - 'LICENSE'
   pull_request:
     types: [opened, synchronize, reopened, closed]
@@ -19,6 +20,7 @@ on:
       - '.github/workflows/dependency-review.yml'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/PULL_REQUEST_TEMPLATE/**'
+      - 'cosmos-manager/**'
       - 'LICENSE'
   workflow_dispatch:
 
