@@ -1,0 +1,47 @@
+name: Build Cosmos Manager (WPF)
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'cosmos-manager/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'cosmos-manager/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: windows-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore Dependencies
+        run: dotnet restore
+        working-directory: cosmos-manager
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        working-directory: cosmos-manager
+
+      - name: Publish
+        run: dotnet publish --configuration Release --no-build --output ./publish
+        working-directory: cosmos-manager
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cosmos-manager
+          path: cosmos-manager/publish/
+          retention-days: 14
