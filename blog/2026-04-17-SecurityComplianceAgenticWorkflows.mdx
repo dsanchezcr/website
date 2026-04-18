@@ -1,0 +1,137 @@
+---
+title: "Security and compliance in agentic workflows: the governance layer teams are missing"
+description: "As AI agents write code, open pull requests, and trigger deployments, the security model built for human accountability breaks down. Teams need to answer three governance questions before they can safely scale agentic workflows: audit, accountability, and control."
+slug: security-compliance-agentic-workflows
+authors: [dsanchezcr]
+tags: [Security, DevSecOps, Agentic AI, GitHub Advanced Security, GitHub Copilot, Microsoft Defender for Cloud, Governance]
+enableComments: true
+hide_table_of_contents: true
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-04-17-security-compliance-agentic/security-compliance-agentic.jpg
+date: 2026-04-17T10:00
+---
+
+# Security and compliance in agentic workflows: the governance layer teams are missing
+
+Picture this. A [GitHub Copilot coding agent](https://github.com/features/copilot/agents) picks up an issue, creates a branch, writes the implementation across four files, adds tests, and opens a pull request. CI passes. Code scanning reports no alerts. A developer reviews the diff, approves, and merges. The change ships to production through an automated deployment pipeline.
+
+Three weeks later, a penetration test discovers that the agent-generated code introduced a server-side request forgery vulnerability. The code was syntactically clean, the tests covered the happy path, and the reviewer did not catch the flaw because the logic looked reasonable in isolation. Now the team needs to answer a question that their security model was never designed for: who is accountable for code that no human wrote?
+
+{/* truncate */}
+
+![Security and compliance in agentic workflows](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-04-17-security-compliance-agentic/security-compliance-agentic.jpg)
+
+That question is not hypothetical. It is the governance gap that most engineering organizations have not addressed, even as they adopt agentic tools at an accelerating pace. In my earlier posts on [rolling out GitHub Advanced Security at scale](/blog/ghas-rollout) and [building CI/CD pipelines for the agentic era](/blog/cicd-pipelines-agentic-era), I focused on detection and verification. This post goes deeper into the governance layer that sits underneath both: how do you audit what agents did, who owns the output, and how do you enforce boundaries on agent behavior before something goes wrong?
+
+---
+
+## The security model was built for humans
+
+Every security control in a modern software delivery pipeline assumes a human is behind the keyboard. Branch protection rules exist because humans might push directly to main. Required reviewers exist because humans make mistakes that other humans can catch. Code scanning flags vulnerabilities because humans might introduce them without realizing it. Secret scanning catches credentials because humans might copy a connection string into source code.
+
+These controls work because they are calibrated to human behavior. Humans write code with intent. They understand the business context of what they are building. When a reviewer approves a pull request, the implicit contract is that another thinking person has evaluated the change and accepted responsibility for it.
+
+Agents break that contract in subtle but important ways. An agent does not have intent in the way a human does. It generates code that satisfies a prompt, not code that reflects an understanding of the system's threat model. When an agent introduces a dependency, it does not evaluate the maintainer's reputation or the package's security history. When it writes an API endpoint, it does not consider whether the endpoint could be abused in combination with other endpoints in the system.
+
+The existing tools still catch many of the resulting problems. [GitHub Advanced Security](https://github.com/enterprise/advanced-security) will flag a known vulnerability in an agent-added dependency. [Code scanning with CodeQL](https://docs.github.com/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning-with-codeql) will detect common vulnerability patterns in agent-generated code. But detection is only one layer of security. Governance requires answering harder questions about accountability, traceability, and control, questions that the human-centric model never needed to ask because the answers were implicit.
+
+---
+
+## Three governance questions every team needs to answer
+
+When agents become active contributors to a codebase, three questions move from theoretical to urgent. Teams that do not answer them explicitly will answer them by default, usually after an incident, and usually with an answer they do not like.
+
+### 1. Audit: what did the agent do and why?
+
+Traceability is the foundation of governance. If you cannot reconstruct what an agent did, which files it modified, which prompts it received, which decisions it made, you cannot investigate incidents, satisfy compliance requirements, or improve your controls.
+
+The good news is that much of this infrastructure already exists. Git preserves a complete history of every change. GitHub Actions produces audit logs for every workflow run. [GitHub's audit log API](https://docs.github.com/enterprise-cloud@latest/admin/monitoring-activity-in-your-enterprise/reviewing-audit-logs-for-your-enterprise/about-the-audit-log-for-your-enterprise) captures who triggered what, when, and from where. OIDC tokens in GitHub Actions tie workflow runs to verifiable identities, making it possible to distinguish between a deployment triggered by a human and one triggered by an automated process.
+
+The challenge is that these signals are scattered. A single agent-authored PR might span a Git commit history, a GitHub Actions workflow log, a code scanning result, a dependency review output, and an approval event. Reconstructing the full picture requires correlating across these sources. Teams that are serious about governance should establish retention policies for audit logs, build dashboards that surface agent activity as a distinct category, and ensure that every agent-authored commit carries metadata that links it back to the task assignment and the human who authorized it.
+
+This is not a new problem, but agentic workflows make it more urgent. When a human writes code, you can ask them what they were thinking. When an agent writes code, the audit trail is the only witness.
+
+### 2. Accountability: who owns agent-generated code?
+
+Accountability in software has always been distributed. The developer who writes the code, the reviewer who approves it, the team lead who prioritizes the work, and the organization that ships the product all share responsibility. Agent-generated code does not eliminate any of these roles. It adds a new participant whose responsibilities are undefined.
+
+The practical answer, for now, is that the human who delegates work to an agent owns the output. If you assign a GitHub issue to Copilot coding agent and it opens a pull request, you are the accountable party. You chose to delegate, and you are responsible for verifying the result. The reviewer who approves the PR shares that responsibility, just as they would with any other contributor's code.
+
+But this model strains under scale. If a single engineer delegates twenty tasks to agents in a day and reviews twenty resulting pull requests, the depth of each review inevitably decreases. The accountability surface expands while the attention budget stays fixed. Engineering leaders need to recognize this tension and set realistic expectations for how many agent-authored PRs a single developer should be expected to review in a given period.
+
+Organizations should also make accountability explicit in their development policies. If your team does not have a written statement about who owns agent-generated code, write one. If your review policy does not distinguish between agent-authored and human-authored pull requests, update it. Ambiguity in accountability is a liability that grows with every agent-authored commit that reaches production.
+
+### 3. Control: how do you govern agent permissions and scope?
+
+The most actionable governance question is also the most overlooked: what is the agent allowed to do?
+
+GitHub Copilot coding agent operates within the permissions granted to it. It can only access repositories it has been given access to, and it can only perform actions that its integration allows. But "can access the repository" is a broad permission. An agent assigned to fix a CSS bug does not need the ability to modify GitHub Actions workflows, infrastructure templates, or API endpoint code. Without scoping, the agent operates with the full set of permissions it was granted, not the minimum set required for the task.
+
+[GitHub Rulesets](https://docs.github.com/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) provide one mechanism for control. You can define rules that restrict which branches can receive commits, require specific status checks to pass before merging, and enforce review requirements. These rules apply equally to human and agent contributors, which means they provide a baseline of control that does not depend on the agent's own behavior.
+
+Beyond rulesets, teams should implement policy-as-code patterns that validate agent output against organizational standards. This can be as straightforward as a GitHub Actions workflow step that checks whether an agent-authored PR modifies files outside a predefined scope, introduces new dependencies without approval, or touches security-sensitive paths like workflow files or infrastructure definitions. My [CI/CD pipelines for the agentic era](/blog/cicd-pipelines-agentic-era) post covers specific implementation patterns for these checks.
+
+The principle is least privilege, applied not just to infrastructure access but to repository scope. Agents should have the narrowest permissions that allow them to complete their assigned tasks, and those permissions should be enforced by the platform, not by the agent's own restraint.
+
+---
+
+## Practical tooling: detection, traceability, and posture
+
+Governance is not a single tool. It is a stack. Each layer addresses a different aspect of the problem, and the layers reinforce each other.
+
+### Detection: GitHub Advanced Security
+
+[GitHub Advanced Security](https://github.com/enterprise/advanced-security) remains the primary detection layer for vulnerabilities in agent-generated code. The same capabilities I described in my [GHAS rollout post](/blog/ghas-rollout) apply here, with one important extension: when agents are generating code, the volume of changes that need scanning increases, and the types of vulnerabilities shift.
+
+[Secret scanning](https://docs.github.com/code-security/secret-scanning/introduction/about-secret-scanning) catches credentials that agents might embed in code. This matters more in agentic workflows because agents do not have the same instinct a human developer has to avoid committing secrets. If an agent is working from a prompt that includes a connection string as context, it may reproduce that string in the generated code.
+
+[Code scanning with CodeQL](https://docs.github.com/code-security/code-scanning/introduction-to-code-scanning/about-code-scanning-with-codeql) identifies vulnerability patterns in the generated code itself: SQL injection, cross-site scripting, path traversal, and other categories from the OWASP Top 10. CodeQL's strength is that it analyzes data flow, not just syntax, which means it can catch vulnerabilities that look correct on the surface but create exploitable paths through the application.
+
+[Dependency review](https://docs.github.com/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review) evaluates new dependencies that agents introduce. Agents frequently add packages to solve problems, sometimes packages that are unmaintained, have known vulnerabilities, or duplicate functionality that already exists in the project. Dependency review surfaces these risks before the PR merges, giving reviewers a concrete signal to act on.
+
+These tools do not require any special configuration for agent-generated code. They apply the same analysis regardless of who authored the change. That uniformity is a strength: agents are held to the same security standard as humans, automatically.
+
+### Traceability: audit logs and OIDC
+
+GitHub's [audit log](https://docs.github.com/enterprise-cloud@latest/admin/monitoring-activity-in-your-enterprise/reviewing-audit-logs-for-your-enterprise/about-the-audit-log-for-your-enterprise) records organizational activity at a granular level: repository access, permission changes, workflow triggers, and more. For agentic governance, the audit log provides the raw material for answering "what happened" after an incident.
+
+[OIDC tokens in GitHub Actions](https://docs.github.com/actions/security-for-github-actions/security-hardening-your-deployments/about-security-hardening-with-openid-connect) add a second dimension of traceability. When a workflow requests a token from a cloud provider, the token includes claims that identify the repository, branch, workflow, and triggering actor. This means that a deployment triggered by an agent-authored merge can be traced from the cloud resource back to the specific workflow run, the specific PR, and the specific commit, creating an end-to-end chain of custody.
+
+Teams should ensure that their OIDC subject claims are granular enough to distinguish between human-triggered and agent-triggered deployments. A subject claim that includes the actor identity (for example, `repo:org/repo:ref:refs/heads/main:actor:copilot-agent`) makes it possible to filter and audit agent-initiated deployments separately from human-initiated ones.
+
+### Runtime posture: Microsoft Defender for Cloud
+
+Detection and traceability address the pipeline. [Microsoft Defender for Cloud](https://azure.microsoft.com/products/defender-for-cloud) extends governance into the runtime environment, where agent-generated code actually executes.
+
+Defender for Cloud's DevOps security connector imports findings from GitHub Advanced Security into a centralized dashboard, providing a single view of security posture across repositories and cloud resources. This is particularly valuable when agents are generating code across multiple repositories, because it consolidates the risk picture that would otherwise be fragmented across individual repository security tabs.
+
+The runtime protection layer monitors deployed workloads for anomalous behavior: unexpected network connections, privilege escalation attempts, and container image vulnerabilities. If agent-generated code introduces a subtle vulnerability that passes code scanning but manifests as anomalous behavior in production, Defender for Cloud provides the signal that closes the gap.
+
+As I discussed in the [GHAS rollout post](/blog/ghas-rollout), integrating Defender for Cloud with GitHub Advanced Security creates a feedback loop: vulnerabilities detected in production can be traced back to the code change that introduced them, and that trace can inform better prompts, tighter agent scoping, or additional CodeQL queries.
+
+---
+
+## What engineering leaders should put in place now
+
+Governance frameworks take time to mature. But there are concrete steps that engineering leaders can implement today, before agentic workflows reach a scale where governance gaps become incidents.
+
+**Agent-scoped permissions.** Apply the principle of least privilege to every agent integration. If an agent only needs to modify application code, do not give it access to infrastructure templates or workflow files. Review the permissions granted to Copilot coding agent and other integrations, and narrow them to match actual use cases.
+
+**Required human review gates.** Every agent-authored pull request should require human approval before merging. This is not a new concept. It is the same branch protection rule that already exists. But it should be an explicit policy, not an assumption. Consider requiring a higher number of reviewers for agent-authored PRs, or requiring reviewers with specific domain expertise.
+
+**Audit log retention.** GitHub audit logs have configurable retention periods. Set them to match your organization's compliance requirements, and ensure that agent activity is captured with enough detail to support incident investigations. If your retention period is 90 days and your security review cycle is quarterly, you may be deleting evidence before it is reviewed.
+
+**Policy-as-code with GitHub Rulesets.** Define and enforce repository rules that apply to all contributors, including agents. Use [rulesets](https://docs.github.com/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) to require status checks, restrict file path modifications, and enforce branch naming conventions. These rules are version-controlled and auditable, which means they satisfy compliance requirements that manual configuration does not.
+
+**Agent activity dashboards.** Build visibility into how agents are being used across your organization. Track metrics like the number of agent-authored PRs per week, the percentage that require revision after human review, and the types of security findings in agent-generated code. These metrics inform policy decisions and help calibrate expectations for review workload.
+
+---
+
+## Governance is not a brake, it is a foundation
+
+There is a temptation to treat governance as the thing that slows you down. Every required review, every audit log query, every permission restriction feels like friction against the speed that agents promise.
+
+That framing is backward. The teams that will scale agentic workflows successfully are the ones that build the governance layer first, not the ones that move fast and retrofit controls after an incident. Speed without traceability is recklessness. Autonomy without accountability is risk. Delegation without control is abdication.
+
+AI agents do not reduce the need for security discipline. They raise the standard. When a significant portion of your codebase is written by non-human contributors, the rigor of your security controls, the completeness of your audit trails, and the clarity of your accountability model become the differentiators between organizations that ship with confidence and organizations that ship with anxiety.
+
+The security model built for human developers was a good foundation. It is not sufficient for what comes next. The governance layer that sits on top of it, covering audit, accountability, and control, is what teams need to build now, before the gap becomes a headline.
