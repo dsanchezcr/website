@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { useLocation } from '@docusaurus/router';
 import easterEggConfig from './easterEggConfig';
 import KonamiSpaceShooter from './KonamiSpaceShooter';
 import SecretTerminal from './SecretTerminal';
@@ -28,8 +29,10 @@ export default function EasterEggManager() {
       const tag = e.target.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable) return;
 
-      // Backtick opens terminal
-      if (e.key === '`' && easterEggConfig.secretTerminal && !activeEgg) {
+      // Backtick opens terminal (skip on /terminal page to avoid duplicates)
+      const path = window.location.pathname;
+      const isTerminalPage = /^(\/(?:es|pt))?\/terminal\/?$/.test(path);
+      if (e.key === '`' && easterEggConfig.secretTerminal && !activeEgg && !isTerminalPage) {
         e.preventDefault();
         setActiveEgg('terminal');
         return;

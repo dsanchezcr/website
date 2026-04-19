@@ -58,13 +58,9 @@ export default function DogOnCursor({ onClose }) {
     // Skip listeners/RAF entirely on touch-only devices
     if (window.matchMedia('(hover: none)').matches) return;
 
-    const handleMouse = (e) => {
-      targetRef.current = { x: e.clientX, y: e.clientY };
-    };
-    document.addEventListener('mousemove', handleMouse);
-
-    let animId;
+    let animId = null;
     let frameCount = 0;
+
     function animate() {
       const cur = posRef.current;
       const tgt = targetRef.current;
@@ -85,15 +81,28 @@ export default function DogOnCursor({ onClose }) {
           frameRef.current = (frameRef.current + 1) % DOG_FRAMES.length;
           dogRef.current.textContent = DOG_FRAMES[frameRef.current];
         }
+        animId = requestAnimationFrame(animate);
+      } else {
+        // Pause RAF when idle (dog is close to cursor)
+        animId = null;
       }
-
-      animId = requestAnimationFrame(animate);
     }
+
+    const handleMouse = (e) => {
+      targetRef.current = { x: e.clientX, y: e.clientY };
+      // Restart animation loop if it was paused
+      if (animId === null) {
+        animId = requestAnimationFrame(animate);
+      }
+    };
+    document.addEventListener('mousemove', handleMouse);
+
+    // Start initial loop
     animId = requestAnimationFrame(animate);
 
     return () => {
       document.removeEventListener('mousemove', handleMouse);
-      cancelAnimationFrame(animId);
+      if (animId !== null) cancelAnimationFrame(animId);
     };
   }, []);
 
