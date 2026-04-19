@@ -61,13 +61,14 @@ export default function SnakeGame({ onClose }) {
     }
 
     const handleKey = (e) => {
+      const normalizedKey = e.key.length === 1 ? e.key.toLowerCase() : e.key;
       const map = {
         ArrowUp: { x: 0, y: -1 }, ArrowDown: { x: 0, y: 1 },
         ArrowLeft: { x: -1, y: 0 }, ArrowRight: { x: 1, y: 0 },
         w: { x: 0, y: -1 }, s: { x: 0, y: 1 },
         a: { x: -1, y: 0 }, d: { x: 1, y: 0 },
       };
-      const newDir = map[e.key];
+      const newDir = map[normalizedKey];
       if (newDir) {
         e.preventDefault();
         if (!(newDir.x === -dir.x && newDir.y === -dir.y)) {

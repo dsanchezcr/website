@@ -48,14 +48,17 @@ export default function KonamiSpaceShooter({ onClose }) {
     };
     stateRef.current = state;
 
+    const normalizeKey = (key) => (key.length === 1 ? key.toLowerCase() : key);
     const consumedKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'w', 'a', 's', 'd']);
     const onKeyDown = (e) => {
-      if (consumedKeys.has(e.key)) e.preventDefault();
-      state.keys[e.key] = true;
+      const key = normalizeKey(e.key);
+      if (consumedKeys.has(key)) e.preventDefault();
+      state.keys[key] = true;
     };
     const onKeyUp = (e) => {
-      if (consumedKeys.has(e.key)) e.preventDefault();
-      state.keys[e.key] = false;
+      const key = normalizeKey(e.key);
+      if (consumedKeys.has(key)) e.preventDefault();
+      state.keys[key] = false;
     };
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('keyup', onKeyUp);

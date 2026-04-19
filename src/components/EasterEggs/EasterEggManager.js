@@ -14,7 +14,10 @@ export default function EasterEggManager() {
   const [activeEgg, setActiveEgg] = useState(null);
   const typedKeysRef = useRef('');
 
-  const closeEgg = useCallback(() => setActiveEgg(null), []);
+  const closeEgg = useCallback(() => {
+    typedKeysRef.current = '';
+    setActiveEgg(null);
+  }, []);
 
   // Konami code sequence
   const KONAMI = 'ArrowUpArrowUpArrowDownArrowDownArrowLeftArrowRightArrowLeftArrowRightba';

@@ -84,6 +84,16 @@ describe('EasterEggManager', () => {
     expect(queryByTestId('terminal')).not.toBeNull();
   });
 
+  it('Konami code activates KonamiSpaceShooter', () => {
+    const { queryByTestId } = render(<EasterEggManager />);
+    typeKeys([
+      'ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown',
+      'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight',
+      'b', 'a',
+    ]);
+    expect(queryByTestId('konami')).not.toBeNull();
+  });
+
   it('ignores key events on input elements', () => {
     const { queryByTestId } = render(
       <div>
