@@ -55,6 +55,9 @@ export default function DogOnCursor({ onClose }) {
   const frameRef = useRef(0);
 
   useEffect(() => {
+    // Skip listeners/RAF entirely on touch-only devices
+    if (window.matchMedia('(hover: none)').matches) return;
+
     const handleMouse = (e) => {
       targetRef.current = { x: e.clientX, y: e.clientY };
     };

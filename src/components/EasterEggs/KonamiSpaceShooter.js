@@ -27,7 +27,6 @@ const STYLES = {
 export default function KonamiSpaceShooter({ onClose }) {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
-  const stateRef = useRef(null);
   const scoreRef = useRef(null);
   const lang = useLocale();
   const strings = gameStrings[lang] || gameStrings.en;
@@ -46,7 +45,6 @@ export default function KonamiSpaceShooter({ onClose }) {
       spawnTimer: 0,
       gameOver: false,
     };
-    stateRef.current = state;
 
     const normalizeKey = (key) => (key.length === 1 ? key.toLowerCase() : key);
     const consumedKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'w', 'a', 's', 'd']);
