@@ -93,7 +93,18 @@ const translations = {
 
 export default function SecretTerminal({ onClose }) {
   const lang = useLocale();
-  const t = translations[lang] || translations.en;
+  const prefix = lang === 'en' ? '' : `/${lang}`;
+  const baseT = translations[lang] || translations.en;
+  // Inject locale prefix into command outputs
+  const t = {
+    ...baseT,
+    commands: {
+      ...baseT.commands,
+      projects: () => baseT.commands.projects().replace(/\/projects/g, `${prefix}/projects`),
+      blog: () => baseT.commands.blog().replace(/\/blog/g, `${prefix}/blog`),
+      contact: () => baseT.commands.contact().replace(/\/contact/g, `${prefix}/contact`),
+    },
+  };
   const [lines, setLines] = useState([t.welcome]);
   const [input, setInput] = useState('');
   const outputRef = useRef(null);

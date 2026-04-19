@@ -101,7 +101,7 @@ export default function ClippyAssistant({ onClose }) {
       clearTimeout(timer);
       document.head.removeChild(style);
     };
-  }, [onClose]);
+  }, [onClose, t]);
 
   const nextLine = () => {
     setLine(t.lines[Math.floor(Math.random() * t.lines.length)]);

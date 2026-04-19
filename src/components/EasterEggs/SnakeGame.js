@@ -176,7 +176,7 @@ export default function SnakeGame({ onClose }) {
       document.removeEventListener('keydown', handleKey);
       if (animRef.current) cancelAnimationFrame(animRef.current);
     };
-  }, []);
+  }, [strings]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

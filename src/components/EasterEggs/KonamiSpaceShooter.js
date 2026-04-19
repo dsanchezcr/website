@@ -184,7 +184,7 @@ export default function KonamiSpaceShooter({ onClose }) {
       document.removeEventListener('keyup', onKeyUp);
       if (animRef.current) cancelAnimationFrame(animRef.current);
     };
-  }, []);
+  }, [strings]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

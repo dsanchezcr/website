@@ -209,7 +209,7 @@ export default function FlappyBird({ onClose }) {
       canvas.removeEventListener('click', handleClick);
       if (animRef.current) cancelAnimationFrame(animRef.current);
     };
-  }, []);
+  }, [strings]);
 
   return (
     <div style={STYLES.overlay}>
