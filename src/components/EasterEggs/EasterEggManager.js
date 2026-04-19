@@ -42,7 +42,9 @@ export default function EasterEggManager() {
       if (activeEgg || e.defaultPrevented) return;
 
       // Build typed key buffer for pattern detection (useRef to avoid re-renders)
-      const next = (typedKeysRef.current + e.key).slice(-80);
+      // Normalize letter keys to lowercase so Konami BA works with CapsLock/Shift
+      const keyValue = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+      const next = (typedKeysRef.current + keyValue).slice(-80);
 
       // Konami code
       if (easterEggConfig.konamiSpaceShooter && next.endsWith(KONAMI)) {

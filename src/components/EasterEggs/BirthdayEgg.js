@@ -58,8 +58,20 @@ export default function BirthdayEgg() {
     // January 10th
     if (today.getMonth() === 0 && today.getDate() === 10) {
       const key = `birthday-shown-${today.getFullYear()}`;
-      if (!sessionStorage.getItem(key)) {
-        sessionStorage.setItem(key, '1');
+      let shouldShow = false;
+
+      try {
+        shouldShow = !sessionStorage.getItem(key);
+        if (shouldShow) {
+          sessionStorage.setItem(key, '1');
+        }
+      } catch {
+        // sessionStorage can be unavailable in some browser/privacy modes.
+        // Fall back to showing the egg without persistence.
+        shouldShow = true;
+      }
+
+      if (shouldShow) {
         setShow(true);
 
         // Generate floating emojis
@@ -94,7 +106,7 @@ export default function BirthdayEgg() {
         };
       }
     }
-  }, []);
+  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!show) return null;
 

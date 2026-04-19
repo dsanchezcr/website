@@ -12,6 +12,7 @@ const easterEggConfig = {
   flappyBird: true,
   snakeGame: true,
   dogOnCursor: true,
+  consoleMessage: true,
 };
 
 export default easterEggConfig;
