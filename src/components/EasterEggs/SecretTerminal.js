@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useLocale } from '@site/src/hooks';
 
 const STYLES = {
   overlay: {
@@ -33,51 +34,61 @@ const STYLES = {
   },
 };
 
-const COMMANDS = {
-  help: () =>
-    `Available commands:
-  help       — Show this help message
-  whoami     — About David Sanchez
-  projects   — View projects
-  blog       — Visit the blog
-  contact    — Contact information
-  clear      — Clear terminal
-  exit       — Close terminal`,
-  whoami: () =>
-    `David Sanchez — Software Engineer
-Costa Rica 🇨🇷
-Building innovative solutions with technology.
-GitHub: https://github.com/dsanchezcr`,
-  projects: () =>
-    `Featured Projects:
-→ dsanchezcr.com — This website (Docusaurus + Azure)
-→ colonesexchangerate — Costa Rican currency exchange NPM package
-→ CosmicWorks — Azure Cosmos DB sample app
-
-Type "exit" and visit /projects for the full list.`,
-  blog: () =>
-    `Latest blog topics:
-→ Agentic DevOps
-→ Building Your AI Agent Team
-→ CI/CD in the Agentic Era
-→ GitHub Copilot at Scale
-
-Type "exit" and visit /blog to read them.`,
-  contact: () =>
-    `You can reach David at:
-→ Website: https://dsanchezcr.com/contact
-→ GitHub: https://github.com/dsanchezcr
-→ LinkedIn: https://linkedin.com/in/yourprofile
-
-Or just type "exit" and go to /contact.`,
+const translations = {
+  en: {
+    welcome: `Welcome to dsanchezcr terminal v1.0.0\nType "help" for available commands.\n`,
+    notFound: (cmd) => `Command not found: ${cmd}. Type "help" for available commands.`,
+    commands: {
+      help: () =>
+        `Available commands:\n  help       — Show this help message\n  whoami     — About David Sanchez\n  projects   — View projects\n  blog       — Visit the blog\n  contact    — Contact information\n  clear      — Clear terminal\n  exit       — Close terminal`,
+      whoami: () =>
+        `David Sanchez — Software Engineer\nCosta Rica 🇨🇷\nBuilding innovative solutions with technology.\nGitHub: https://github.com/dsanchezcr`,
+      projects: () =>
+        `Featured Projects:\n→ dsanchezcr.com — This website (Docusaurus + Azure)\n→ colonesexchangerate — Costa Rican currency exchange NPM package\n→ CosmicWorks — Azure Cosmos DB sample app\n\nType "exit" and visit /projects for the full list.`,
+      blog: () =>
+        `Latest blog topics:\n→ Agentic DevOps\n→ Building Your AI Agent Team\n→ CI/CD in the Agentic Era\n→ GitHub Copilot at Scale\n\nType "exit" and visit /blog to read them.`,
+      contact: () =>
+        `You can reach David at:\n→ Website: https://dsanchezcr.com/contact\n→ GitHub: https://github.com/dsanchezcr\n→ LinkedIn: https://linkedin.com/in/dsanchezcr\n\nOr just type "exit" and go to /contact.`,
+    },
+  },
+  es: {
+    welcome: `Bienvenido a dsanchezcr terminal v1.0.0\nEscribe "help" para ver los comandos disponibles.\n`,
+    notFound: (cmd) => `Comando no encontrado: ${cmd}. Escribe "help" para ver los comandos disponibles.`,
+    commands: {
+      help: () =>
+        `Comandos disponibles:\n  help       — Mostrar este mensaje de ayuda\n  whoami     — Sobre David Sanchez\n  projects   — Ver proyectos\n  blog       — Visitar el blog\n  contact    — Información de contacto\n  clear      — Limpiar terminal\n  exit       — Cerrar terminal`,
+      whoami: () =>
+        `David Sanchez — Ingeniero de Software\nCosta Rica 🇨🇷\nConstruyendo soluciones innovadoras con tecnología.\nGitHub: https://github.com/dsanchezcr`,
+      projects: () =>
+        `Proyectos Destacados:\n→ dsanchezcr.com — Este sitio web (Docusaurus + Azure)\n→ colonesexchangerate — Paquete NPM de tipo de cambio costarricense\n→ CosmicWorks — App de ejemplo de Azure Cosmos DB\n\nEscribe "exit" y visita /projects para la lista completa.`,
+      blog: () =>
+        `Últimos temas del blog:\n→ DevOps Agéntico\n→ Construyendo tu Equipo de Agentes IA\n→ CI/CD en la Era Agéntica\n→ GitHub Copilot a Escala\n\nEscribe "exit" y visita /blog para leerlos.`,
+      contact: () =>
+        `Puedes contactar a David en:\n→ Sitio web: https://dsanchezcr.com/contact\n→ GitHub: https://github.com/dsanchezcr\n→ LinkedIn: https://linkedin.com/in/dsanchezcr\n\nO escribe "exit" y ve a /contact.`,
+    },
+  },
+  pt: {
+    welcome: `Bem-vindo ao dsanchezcr terminal v1.0.0\nDigite "help" para ver os comandos disponíveis.\n`,
+    notFound: (cmd) => `Comando não encontrado: ${cmd}. Digite "help" para ver os comandos disponíveis.`,
+    commands: {
+      help: () =>
+        `Comandos disponíveis:\n  help       — Mostrar esta mensagem de ajuda\n  whoami     — Sobre David Sanchez\n  projects   — Ver projetos\n  blog       — Visitar o blog\n  contact    — Informações de contato\n  clear      — Limpar terminal\n  exit       — Fechar terminal`,
+      whoami: () =>
+        `David Sanchez — Engenheiro de Software\nCosta Rica 🇨🇷\nConstruindo soluções inovadoras com tecnologia.\nGitHub: https://github.com/dsanchezcr`,
+      projects: () =>
+        `Projetos em Destaque:\n→ dsanchezcr.com — Este site (Docusaurus + Azure)\n→ colonesexchangerate — Pacote NPM de câmbio costarriquenho\n→ CosmicWorks — App de exemplo do Azure Cosmos DB\n\nDigite "exit" e visite /projects para a lista completa.`,
+      blog: () =>
+        `Últimos tópicos do blog:\n→ DevOps Agêntico\n→ Construindo sua Equipe de Agentes IA\n→ CI/CD na Era Agêntica\n→ GitHub Copilot em Escala\n\nDigite "exit" e visite /blog para ler.`,
+      contact: () =>
+        `Você pode contatar David em:\n→ Site: https://dsanchezcr.com/contact\n→ GitHub: https://github.com/dsanchezcr\n→ LinkedIn: https://linkedin.com/in/dsanchezcr\n\nOu digite "exit" e vá para /contact.`,
+    },
+  },
 };
 
-const WELCOME = `Welcome to dsanchezcr terminal v1.0.0
-Type "help" for available commands.
-`;
-
 export default function SecretTerminal({ onClose }) {
-  const [lines, setLines] = useState([WELCOME]);
+  const lang = useLocale();
+  const t = translations[lang] || translations.en;
+  const [lines, setLines] = useState([t.welcome]);
   const [input, setInput] = useState('');
   const outputRef = useRef(null);
   const inputRef = useRef(null);
@@ -101,11 +112,11 @@ export default function SecretTerminal({ onClose }) {
       setLines([]);
     } else if (cmd === 'exit') {
       onClose();
-    } else if (COMMANDS[cmd]) {
-      newLines.push(COMMANDS[cmd]());
+    } else if (t.commands[cmd]) {
+      newLines.push(t.commands[cmd]());
       setLines(newLines);
     } else if (cmd) {
-      newLines.push(`Command not found: ${cmd}. Type "help" for available commands.`);
+      newLines.push(t.notFound(cmd));
       setLines(newLines);
     } else {
       setLines(newLines);

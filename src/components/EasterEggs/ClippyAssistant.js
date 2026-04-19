@@ -78,9 +78,15 @@ export default function ClippyAssistant({ onClose }) {
         {line}
         <div style={STYLES.bubbleArrow} />
       </div>
-      <div style={STYLES.clippy} onClick={nextLine} title="Click for another tip" role="button" tabIndex={0}>
+      <button
+        style={{ ...STYLES.clippy, background: 'none', border: 'none', padding: 0 }}
+        onClick={nextLine}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nextLine(); } }}
+        title="Click for another tip"
+        aria-label="Clippy - click for another tip"
+      >
         📎
-      </div>
+      </button>
     </div>
   );
 }

@@ -16,7 +16,7 @@ Hey curious dev! 👋 Welcome to the source!
 Want to work together? Let's connect:
 
 🔗 GitHub:   https://github.com/dsanchezcr
-🔗 LinkedIn: https://linkedin.com/in/yourprofile
+🔗 LinkedIn: https://linkedin.com/in/dsanchezcr
 🔗 Website:  https://dsanchezcr.com/contact
 
 Built with Docusaurus + Azure Static Web Apps 🚀

@@ -103,7 +103,7 @@ All easter eggs can be toggled individually via the config file:
 | Property | Value |
 |----------|-------|
 | **Trigger** | Type the word "microsoft" anywhere on the page |
-| **Behavior** | A Clippy-style 📎 assistant pops up in the bottom-right with a funny message |
+| **Behavior** | A Clippy-style 📎 assistant pops up in the bottom-left with a funny message |
 | **Exit** | Click ✕, auto-closes after 10 seconds, or press Escape |
 | **File** | `src/components/EasterEggs/ClippyAssistant.js` |
 

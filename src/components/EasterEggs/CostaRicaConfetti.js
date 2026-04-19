@@ -4,6 +4,7 @@ import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 export default function CostaRicaConfetti() {
   const clickCount = useRef(0);
   const clickTimer = useRef(null);
+  const rafRef = useRef(null);
 
   useEffect(() => {
     if (!ExecutionEnvironment.canUseDOM) return;
@@ -41,7 +42,9 @@ export default function CostaRicaConfetti() {
             origin: { x: 1, y: 0.6 },
             colors,
           });
-          if (Date.now() < end) requestAnimationFrame(frame);
+          if (Date.now() < end) {
+            rafRef.current = requestAnimationFrame(frame);
+          }
         })();
       }
     };
@@ -50,6 +53,7 @@ export default function CostaRicaConfetti() {
     return () => {
       document.removeEventListener('click', handleClick);
       if (clickTimer.current) clearTimeout(clickTimer.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
 

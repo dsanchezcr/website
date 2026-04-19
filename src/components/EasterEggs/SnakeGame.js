@@ -1,4 +1,11 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useLocale } from '@site/src/hooks';
+
+const gameStrings = {
+  en: { gameOver: 'GAME OVER', score: 'Score', retry: 'Press Space to retry' },
+  es: { gameOver: 'FIN DEL JUEGO', score: 'Puntos', retry: 'Presiona Espacio para reintentar' },
+  pt: { gameOver: 'FIM DE JOGO', score: 'Pontos', retry: 'Pressione Espaço para reiniciar' },
+};
 
 const STYLES = {
   overlay: {
@@ -28,6 +35,8 @@ export default function SnakeGame({ onClose }) {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
   const [score, setScore] = useState(0);
+  const lang = useLocale();
+  const strings = gameStrings[lang] || gameStrings.en;
 
   const initGame = useCallback((canvas) => {
     const ctx = canvas.getContext('2d');
@@ -141,11 +150,11 @@ export default function SnakeGame({ onClose }) {
         ctx.fillStyle = '#f44';
         ctx.font = 'bold 32px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('GAME OVER', W / 2, H / 2 - 10);
+        ctx.fillText(strings.gameOver, W / 2, H / 2 - 10);
         ctx.fillStyle = '#fff';
         ctx.font = '16px monospace';
-        ctx.fillText(`Score: ${gameScore}`, W / 2, H / 2 + 25);
-        ctx.fillText('Press Space to retry', W / 2, H / 2 + 55);
+        ctx.fillText(`${strings.score}: ${gameScore}`, W / 2, H / 2 + 25);
+        ctx.fillText(strings.retry, W / 2, H / 2 + 55);
       }
     }
 

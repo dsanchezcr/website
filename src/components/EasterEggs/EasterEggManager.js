@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import easterEggConfig from './easterEggConfig';
 import KonamiSpaceShooter from './KonamiSpaceShooter';
 import SecretTerminal from './SecretTerminal';
@@ -12,7 +12,7 @@ import CostaRicaConfetti from './CostaRicaConfetti';
 
 export default function EasterEggManager() {
   const [activeEgg, setActiveEgg] = useState(null);
-  const [typedKeys, setTypedKeys] = useState('');
+  const typedKeysRef = useRef('');
 
   const closeEgg = useCallback(() => setActiveEgg(null), []);
 
@@ -38,48 +38,52 @@ export default function EasterEggManager() {
         return;
       }
 
-      // Build typed key buffer for pattern detection
-      setTypedKeys((prev) => {
-        const next = (prev + e.key).slice(-80);
+      // Build typed key buffer for pattern detection (useRef to avoid re-renders)
+      const next = (typedKeysRef.current + e.key).slice(-80);
 
-        // Konami code
-        if (easterEggConfig.konamiSpaceShooter && next.endsWith(KONAMI)) {
-          setTimeout(() => setActiveEgg('konami'), 0);
-          return '';
-        }
+      // Konami code
+      if (easterEggConfig.konamiSpaceShooter && next.endsWith(KONAMI)) {
+        typedKeysRef.current = '';
+        setActiveEgg('konami');
+        return;
+      }
 
-        // Matrix
-        if (easterEggConfig.matrixRain && next.toLowerCase().endsWith('matrix')) {
-          setTimeout(() => setActiveEgg('matrix'), 0);
-          return '';
-        }
+      // Matrix
+      if (easterEggConfig.matrixRain && next.toLowerCase().endsWith('matrix')) {
+        typedKeysRef.current = '';
+        setActiveEgg('matrix');
+        return;
+      }
 
-        // Clippy
-        if (easterEggConfig.clippy && next.toLowerCase().endsWith('microsoft')) {
-          setTimeout(() => setActiveEgg('clippy'), 0);
-          return '';
-        }
+      // Clippy
+      if (easterEggConfig.clippy && next.toLowerCase().endsWith('microsoft')) {
+        typedKeysRef.current = '';
+        setActiveEgg('clippy');
+        return;
+      }
 
-        // Flappy Bird
-        if (easterEggConfig.flappyBird && next.toLowerCase().endsWith('flappy')) {
-          setTimeout(() => setActiveEgg('flappy'), 0);
-          return '';
-        }
+      // Flappy Bird
+      if (easterEggConfig.flappyBird && next.toLowerCase().endsWith('flappy')) {
+        typedKeysRef.current = '';
+        setActiveEgg('flappy');
+        return;
+      }
 
-        // Snake
-        if (easterEggConfig.snakeGame && next.toLowerCase().endsWith('snake')) {
-          setTimeout(() => setActiveEgg('snake'), 0);
-          return '';
-        }
+      // Snake
+      if (easterEggConfig.snakeGame && next.toLowerCase().endsWith('snake')) {
+        typedKeysRef.current = '';
+        setActiveEgg('snake');
+        return;
+      }
 
-        // Dog
-        if (easterEggConfig.dogOnCursor && next.toLowerCase().endsWith('dogs')) {
-          setTimeout(() => setActiveEgg('dog'), 0);
-          return '';
-        }
+      // Dog
+      if (easterEggConfig.dogOnCursor && next.toLowerCase().endsWith('dogs')) {
+        typedKeysRef.current = '';
+        setActiveEgg('dog');
+        return;
+      }
 
-        return next;
-      });
+      typedKeysRef.current = next;
     };
 
     document.addEventListener('keydown', handleKeyDown);

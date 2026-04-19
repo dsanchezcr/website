@@ -1,4 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useLocale } from '@site/src/hooks';
+
+const gameStrings = {
+  en: { gameOver: 'GAME OVER', score: 'Score', retry: 'Click or Space to retry', start1: 'Press Space or Click', start2: 'to start' },
+  es: { gameOver: 'FIN DEL JUEGO', score: 'Puntos', retry: 'Clic o Espacio para reintentar', start1: 'Presiona Espacio o Clic', start2: 'para iniciar' },
+  pt: { gameOver: 'FIM DE JOGO', score: 'Pontos', retry: 'Clique ou Espaço para reiniciar', start1: 'Pressione Espaço ou Clique', start2: 'para iniciar' },
+};
 
 const STYLES = {
   overlay: {
@@ -37,6 +44,8 @@ export default function FlappyBird({ onClose }) {
   const [score, setScore] = useState(0);
   const stateRef = useRef(null);
   const logoRef = useRef(null);
+  const lang = useLocale();
+  const strings = gameStrings[lang] || gameStrings.en;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -171,8 +180,8 @@ export default function FlappyBird({ onClose }) {
       if (!state.started) {
         ctx.fillStyle = '#fff';
         ctx.font = '18px monospace';
-        ctx.fillText('Press Space or Click', W / 2, H / 2 + 40);
-        ctx.fillText('to start', W / 2, H / 2 + 65);
+        ctx.fillText(strings.start1, W / 2, H / 2 + 40);
+        ctx.fillText(strings.start2, W / 2, H / 2 + 65);
       }
 
       if (state.gameOver) {
@@ -180,11 +189,11 @@ export default function FlappyBird({ onClose }) {
         ctx.fillRect(0, 0, W, H);
         ctx.fillStyle = '#f44';
         ctx.font = 'bold 36px monospace';
-        ctx.fillText('GAME OVER', W / 2, H / 2 - 10);
+        ctx.fillText(strings.gameOver, W / 2, H / 2 - 10);
         ctx.fillStyle = '#fff';
         ctx.font = '18px monospace';
-        ctx.fillText(`Score: ${state.score}`, W / 2, H / 2 + 30);
-        ctx.fillText('Click or Space to retry', W / 2, H / 2 + 60);
+        ctx.fillText(`${strings.score}: ${state.score}`, W / 2, H / 2 + 30);
+        ctx.fillText(strings.retry, W / 2, H / 2 + 60);
       }
     }
 

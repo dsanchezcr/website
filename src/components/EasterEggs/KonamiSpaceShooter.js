@@ -1,4 +1,11 @@
 import React, { useEffect, useRef, useCallback } from 'react';
+import { useLocale } from '@site/src/hooks';
+
+const gameStrings = {
+  en: { gameOver: 'GAME OVER', score: 'Score', exit: 'Press Escape to exit' },
+  es: { gameOver: 'FIN DEL JUEGO', score: 'Puntos', exit: 'Presiona Escape para salir' },
+  pt: { gameOver: 'FIM DE JOGO', score: 'Pontos', exit: 'Pressione Escape para sair' },
+};
 
 const STYLES = {
   overlay: {
@@ -21,6 +28,8 @@ export default function KonamiSpaceShooter({ onClose }) {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
   const stateRef = useRef(null);
+  const lang = useLocale();
+  const strings = gameStrings[lang] || gameStrings.en;
 
   const initGame = useCallback((canvas) => {
     const ctx = canvas.getContext('2d');
@@ -143,11 +152,11 @@ export default function KonamiSpaceShooter({ onClose }) {
         ctx.fillStyle = '#f00';
         ctx.font = 'bold 48px monospace';
         ctx.textAlign = 'center';
-        ctx.fillText('GAME OVER', W / 2, H / 2 - 20);
+        ctx.fillText(strings.gameOver, W / 2, H / 2 - 20);
         ctx.fillStyle = '#fff';
         ctx.font = '24px monospace';
-        ctx.fillText(`Score: ${state.score}`, W / 2, H / 2 + 30);
-        ctx.fillText('Press Escape to exit', W / 2, H / 2 + 70);
+        ctx.fillText(`${strings.score}: ${state.score}`, W / 2, H / 2 + 30);
+        ctx.fillText(strings.exit, W / 2, H / 2 + 70);
       }
     }
 

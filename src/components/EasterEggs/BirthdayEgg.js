@@ -1,4 +1,23 @@
 import React, { useEffect, useState } from 'react';
+import { useLocale } from '@site/src/hooks';
+
+const translations = {
+  en: {
+    title: '🎂 Happy Birthday David! 🎂',
+    subtitle: 'January 10th — Time to celebrate! 🥳🎉',
+    dismiss: 'Thanks! 🎈',
+  },
+  es: {
+    title: '🎂 ¡Feliz Cumpleaños David! 🎂',
+    subtitle: '10 de enero — ¡Hora de celebrar! 🥳🎉',
+    dismiss: '¡Gracias! 🎈',
+  },
+  pt: {
+    title: '🎂 Feliz Aniversário David! 🎂',
+    subtitle: '10 de janeiro — Hora de celebrar! 🥳🎉',
+    dismiss: 'Obrigado! 🎈',
+  },
+};
 
 const STYLES = {
   overlay: {
@@ -29,6 +48,8 @@ const STYLES = {
 const EMOJIS = ['🎂', '🎈', '🎉', '🎊', '🥳', '🎁', '🎶', '✨', '🍰', '🎵'];
 
 export default function BirthdayEgg() {
+  const lang = useLocale();
+  const t = translations[lang] || translations.en;
   const [show, setShow] = useState(false);
   const [particles, setParticles] = useState([]);
 
@@ -95,9 +116,9 @@ export default function BirthdayEgg() {
         ))}
       </div>
       <div style={STYLES.banner}>
-        <h2 style={STYLES.title}>🎂 Happy Birthday David! 🎂</h2>
-        <p style={STYLES.subtitle}>January 10th — Time to celebrate! 🥳🎉</p>
-        <button style={STYLES.closeBtn} onClick={() => setShow(false)}>Thanks! 🎈</button>
+        <h2 style={STYLES.title}>{t.title}</h2>
+        <p style={STYLES.subtitle}>{t.subtitle}</p>
+        <button style={STYLES.closeBtn} onClick={() => setShow(false)}>{t.dismiss}</button>
       </div>
     </>
   );
