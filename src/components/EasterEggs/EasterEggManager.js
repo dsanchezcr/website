@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useLocation } from '@docusaurus/router';
 import easterEggConfig from './easterEggConfig';
 import KonamiSpaceShooter from './KonamiSpaceShooter';
 import SecretTerminal from './SecretTerminal';

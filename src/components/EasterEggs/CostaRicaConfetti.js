@@ -11,10 +11,12 @@ export default function CostaRicaConfetti() {
     if (!ExecutionEnvironment.canUseDOM) return;
 
     const handleClick = async (e) => {
-      if (!(e.target instanceof Element)) return;
+      // Resolve to the nearest Element (click target can be a text node)
+      const target = e.target instanceof Element ? e.target : e.target.parentElement;
+      if (!target) return;
 
       // Check if click target is within footer copyright area
-      const footer = e.target.closest('.footer__copyright') || e.target.closest('.footer__bottom');
+      const footer = target.closest('.footer__copyright') || target.closest('.footer__bottom');
       if (!footer) return;
 
       clickCount.current++;
