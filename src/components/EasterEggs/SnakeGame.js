@@ -99,15 +99,20 @@ export default function SnakeGame({ onClose }) {
         gameOver = true;
         return;
       }
-      // Self collision
-      if (snake.some((s) => s.x === head.x && s.y === head.y)) {
+
+      // Determine if eating food (snake grows)
+      const eating = head.x === food.x && head.y === food.y;
+
+      // Self collision — exclude tail when not growing (tail will be removed)
+      const body = eating ? snake : snake.slice(0, -1);
+      if (body.some((s) => s.x === head.x && s.y === head.y)) {
         gameOver = true;
         return;
       }
 
       snake.unshift(head);
 
-      if (head.x === food.x && head.y === food.y) {
+      if (eating) {
         gameScore += 10;
         setScore(gameScore);
         food = spawnFood(snake);

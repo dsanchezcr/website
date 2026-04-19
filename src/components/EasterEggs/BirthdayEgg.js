@@ -86,7 +86,6 @@ export default function BirthdayEgg() {
 
         // Add animation keyframes
         const style = document.createElement('style');
-        style.id = 'birthday-keyframes';
         style.textContent = `
           @keyframes birthday-float {
             0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
@@ -101,12 +100,11 @@ export default function BirthdayEgg() {
         document.head.appendChild(style);
 
         return () => {
-          const el = document.getElementById('birthday-keyframes');
-          if (el) el.remove();
+          style.remove();
         };
       }
     }
-  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!show) return null;
 
