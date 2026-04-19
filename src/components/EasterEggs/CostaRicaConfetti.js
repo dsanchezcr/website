@@ -5,6 +5,7 @@ export default function CostaRicaConfetti() {
   const clickCount = useRef(0);
   const clickTimer = useRef(null);
   const rafRef = useRef(null);
+  const inProgressRef = useRef(false);
 
   useEffect(() => {
     if (!ExecutionEnvironment.canUseDOM) return;
@@ -21,6 +22,8 @@ export default function CostaRicaConfetti() {
 
       if (clickCount.current >= 5) {
         clickCount.current = 0;
+        if (inProgressRef.current) return; // Prevent overlapping loops
+        inProgressRef.current = true;
         const confetti = (await import('canvas-confetti')).default;
 
         const duration = 3000;
@@ -44,6 +47,8 @@ export default function CostaRicaConfetti() {
           });
           if (Date.now() < end) {
             rafRef.current = requestAnimationFrame(frame);
+          } else {
+            inProgressRef.current = false;
           }
         })();
       }

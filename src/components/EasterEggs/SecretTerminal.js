@@ -101,7 +101,14 @@ export default function SecretTerminal({ onClose }) {
 
   useEffect(() => {
     inputRef.current?.focus();
-  }, []);
+
+    // Handle Escape key to close terminal (works on /terminal page too)
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [onClose]);
 
   useEffect(() => {
     if (outputRef.current) {

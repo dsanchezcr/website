@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useLocale } from '@site/src/hooks';
 
 const uiStrings = {
@@ -36,7 +36,6 @@ const STYLES = {
     lineHeight: 1.1,
     whiteSpace: 'pre',
     color: '#8B4513',
-    transition: 'left 0.15s, top 0.15s',
     textShadow: '0 0 2px rgba(0,0,0,0.3)',
   },
   closeBtn: {
@@ -50,11 +49,10 @@ const STYLES = {
 export default function DogOnCursor({ onClose }) {
   const lang = useLocale();
   const t = uiStrings[lang] || uiStrings.en;
-  const [pos, setPos] = useState({ x: 100, y: 100 });
-  const [frame, setFrame] = useState(0);
-  const [flipped, setFlipped] = useState(false);
+  const dogRef = useRef(null);
   const targetRef = useRef({ x: 100, y: 100 });
   const posRef = useRef({ x: 100, y: 100 });
+  const frameRef = useRef(0);
 
   useEffect(() => {
     const handleMouse = (e) => {
@@ -62,7 +60,6 @@ export default function DogOnCursor({ onClose }) {
     };
     document.addEventListener('mousemove', handleMouse);
 
-    // Animation loop: dog follows cursor with a lag
     let animId;
     let frameCount = 0;
     function animate() {
@@ -72,16 +69,18 @@ export default function DogOnCursor({ onClose }) {
       const dy = tgt.y - cur.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (dist > 40) {
+      if (dist > 40 && dogRef.current) {
         cur.x += dx * 0.06;
         cur.y += dy * 0.06;
-        setPos({ x: cur.x, y: cur.y });
-        setFlipped(dx < 0);
+        // Direct DOM style updates to avoid React re-renders
+        dogRef.current.style.left = `${cur.x + 20}px`;
+        dogRef.current.style.top = `${cur.y - 10}px`;
+        dogRef.current.style.transform = dx < 0 ? 'scaleX(-1)' : 'none';
 
-        // Alternate frames when moving
         frameCount++;
         if (frameCount % 10 === 0) {
-          setFrame((f) => (f + 1) % DOG_FRAMES.length);
+          frameRef.current = (frameRef.current + 1) % DOG_FRAMES.length;
+          dogRef.current.textContent = DOG_FRAMES[frameRef.current];
         }
       }
 
@@ -103,14 +102,14 @@ export default function DogOnCursor({ onClose }) {
   return (
     <>
       <pre
+        ref={dogRef}
         style={{
           ...STYLES.dog,
-          left: pos.x + 20,
-          top: pos.y - 10,
-          transform: flipped ? 'scaleX(-1)' : 'none',
+          left: 120,
+          top: 90,
         }}
       >
-        {DOG_FRAMES[frame]}
+        {DOG_FRAMES[0]}
       </pre>
       <button style={STYLES.closeBtn} onClick={onClose} aria-label={t.closeLabel}>
         {t.dismiss}

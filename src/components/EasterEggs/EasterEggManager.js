@@ -38,6 +38,9 @@ export default function EasterEggManager() {
         return;
       }
 
+      // Skip pattern detection while an egg is active or if event was already handled
+      if (activeEgg || e.defaultPrevented) return;
+
       // Build typed key buffer for pattern detection (useRef to avoid re-renders)
       const next = (typedKeysRef.current + e.key).slice(-80);
 

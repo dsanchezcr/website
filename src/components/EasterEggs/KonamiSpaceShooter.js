@@ -28,6 +28,7 @@ export default function KonamiSpaceShooter({ onClose }) {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
   const stateRef = useRef(null);
+  const scoreRef = useRef(null);
   const lang = useLocale();
   const strings = gameStrings[lang] || gameStrings.en;
 
@@ -47,8 +48,15 @@ export default function KonamiSpaceShooter({ onClose }) {
     };
     stateRef.current = state;
 
-    const onKeyDown = (e) => { state.keys[e.key] = true; };
-    const onKeyUp = (e) => { state.keys[e.key] = false; };
+    const consumedKeys = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'w', 'a', 's', 'd']);
+    const onKeyDown = (e) => {
+      if (consumedKeys.has(e.key)) e.preventDefault();
+      state.keys[e.key] = true;
+    };
+    const onKeyUp = (e) => {
+      if (consumedKeys.has(e.key)) e.preventDefault();
+      state.keys[e.key] = false;
+    };
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('keyup', onKeyUp);
 
@@ -163,9 +171,8 @@ export default function KonamiSpaceShooter({ onClose }) {
     function loop() {
       update();
       draw();
-      // Update score display
-      const el = document.getElementById('space-shooter-score');
-      if (el) el.textContent = `${strings.score}: ${state.score}`;
+      // Update score display via ref (avoids DOM query per frame)
+      if (scoreRef.current) scoreRef.current.textContent = `${strings.score}: ${state.score}`;
       animRef.current = requestAnimationFrame(loop);
     }
 
@@ -187,7 +194,7 @@ export default function KonamiSpaceShooter({ onClose }) {
 
   return (
     <div style={STYLES.overlay}>
-      <span id="space-shooter-score" style={STYLES.score}>{strings.score}: 0</span>
+      <span ref={scoreRef} style={STYLES.score}>{strings.score}: 0</span>
       <button style={STYLES.closeBtn} onClick={onClose} aria-label={strings.closeLabel}>✕</button>
       <canvas ref={canvasRef} style={STYLES.canvas} />
     </div>
