@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocale } from '@site/src/hooks';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 
 const gameStrings = {
   en: { gameOver: 'GAME OVER', score: 'Score', retry: 'Click or Space to retry', start1: 'Press Space or Click', start2: 'to start', closeLabel: 'Close game' },
@@ -42,10 +43,10 @@ export default function FlappyBird({ onClose }) {
   const canvasRef = useRef(null);
   const animRef = useRef(null);
   const [score, setScore] = useState(0);
-  const stateRef = useRef(null);
   const logoRef = useRef(null);
   const lang = useLocale();
   const strings = gameStrings[lang] || gameStrings.en;
+  const logoUrl = useBaseUrl('/img/logo.png');
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -56,7 +57,7 @@ export default function FlappyBird({ onClose }) {
 
     // Load logo image
     const logo = new Image();
-    logo.src = '/img/logo.png';
+    logo.src = logoUrl;
     logo.onload = () => { logoRef.current = logo; };
 
     const state = {
@@ -67,7 +68,6 @@ export default function FlappyBird({ onClose }) {
       started: false,
       spawnTimer: 0,
     };
-    stateRef.current = state;
 
     function jump() {
       if (state.gameOver) {
