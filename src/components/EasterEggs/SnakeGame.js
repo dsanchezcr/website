@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useLocale } from '@site/src/hooks';
 
 const gameStrings = {
-  en: { gameOver: 'GAME OVER', score: 'Score', retry: 'Press Space to retry' },
-  es: { gameOver: 'FIN DEL JUEGO', score: 'Puntos', retry: 'Presiona Espacio para reintentar' },
-  pt: { gameOver: 'FIM DE JOGO', score: 'Pontos', retry: 'Pressione Espaço para reiniciar' },
+  en: { gameOver: 'GAME OVER', score: 'Score', retry: 'Press Space to retry', closeLabel: 'Close game' },
+  es: { gameOver: 'FIN DEL JUEGO', score: 'Puntos', retry: 'Presiona Espacio para reintentar', closeLabel: 'Cerrar juego' },
+  pt: { gameOver: 'FIM DE JOGO', score: 'Pontos', retry: 'Pressione Espaço para reiniciar', closeLabel: 'Fechar jogo' },
 };
 
 const STYLES = {
@@ -182,8 +182,8 @@ export default function SnakeGame({ onClose }) {
 
   return (
     <div style={STYLES.overlay}>
-      <div style={STYLES.score}>Score: {score}</div>
-      <button style={STYLES.closeBtn} onClick={onClose} aria-label="Close game">✕</button>
+      <div style={STYLES.score}>{strings.score}: {score}</div>
+      <button style={STYLES.closeBtn} onClick={onClose} aria-label={strings.closeLabel}>✕</button>
       <canvas ref={canvasRef} style={STYLES.canvas} />
     </div>
   );

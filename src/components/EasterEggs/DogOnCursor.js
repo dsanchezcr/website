@@ -1,4 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useLocale } from '@site/src/hooks';
+
+const uiStrings = {
+  en: { dismiss: '🐕 Dismiss dog', closeLabel: 'Close dog' },
+  es: { dismiss: '🐕 Ocultar perrito', closeLabel: 'Cerrar perrito' },
+  pt: { dismiss: '🐕 Dispensar cachorro', closeLabel: 'Fechar cachorro' },
+};
 
 const DOG_FRAMES = [
   // Frame 1: standing
@@ -41,6 +48,8 @@ const STYLES = {
 };
 
 export default function DogOnCursor({ onClose }) {
+  const lang = useLocale();
+  const t = uiStrings[lang] || uiStrings.en;
   const [pos, setPos] = useState({ x: 100, y: 100 });
   const [frame, setFrame] = useState(0);
   const [flipped, setFlipped] = useState(false);
@@ -103,8 +112,8 @@ export default function DogOnCursor({ onClose }) {
       >
         {DOG_FRAMES[frame]}
       </pre>
-      <button style={STYLES.closeBtn} onClick={onClose} aria-label="Close dog">
-        🐕 Dismiss dog
+      <button style={STYLES.closeBtn} onClick={onClose} aria-label={t.closeLabel}>
+        {t.dismiss}
       </button>
     </>
   );

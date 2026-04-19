@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import { useLocale } from '@site/src/hooks';
 
 const gameStrings = {
-  en: { gameOver: 'GAME OVER', score: 'Score', exit: 'Press Escape to exit' },
-  es: { gameOver: 'FIN DEL JUEGO', score: 'Puntos', exit: 'Presiona Escape para salir' },
-  pt: { gameOver: 'FIM DE JOGO', score: 'Pontos', exit: 'Pressione Escape para sair' },
+  en: { gameOver: 'GAME OVER', score: 'Score', exit: 'Press Escape to exit', closeLabel: 'Close game' },
+  es: { gameOver: 'FIN DEL JUEGO', score: 'Puntos', exit: 'Presiona Escape para salir', closeLabel: 'Cerrar juego' },
+  pt: { gameOver: 'FIM DE JOGO', score: 'Pontos', exit: 'Pressione Escape para sair', closeLabel: 'Fechar jogo' },
 };
 
 const STYLES = {
@@ -165,7 +165,7 @@ export default function KonamiSpaceShooter({ onClose }) {
       draw();
       // Update score display
       const el = document.getElementById('space-shooter-score');
-      if (el) el.textContent = `Score: ${state.score}`;
+      if (el) el.textContent = `${strings.score}: ${state.score}`;
       animRef.current = requestAnimationFrame(loop);
     }
 
@@ -187,8 +187,8 @@ export default function KonamiSpaceShooter({ onClose }) {
 
   return (
     <div style={STYLES.overlay}>
-      <span id="space-shooter-score" style={STYLES.score}>Score: 0</span>
-      <button style={STYLES.closeBtn} onClick={onClose} aria-label="Close game">✕</button>
+      <span id="space-shooter-score" style={STYLES.score}>{strings.score}: 0</span>
+      <button style={STYLES.closeBtn} onClick={onClose} aria-label={strings.closeLabel}>✕</button>
       <canvas ref={canvasRef} style={STYLES.canvas} />
     </div>
   );

@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocale } from '@site/src/hooks';
 
 const gameStrings = {
-  en: { gameOver: 'GAME OVER', score: 'Score', retry: 'Click or Space to retry', start1: 'Press Space or Click', start2: 'to start' },
-  es: { gameOver: 'FIN DEL JUEGO', score: 'Puntos', retry: 'Clic o Espacio para reintentar', start1: 'Presiona Espacio o Clic', start2: 'para iniciar' },
-  pt: { gameOver: 'FIM DE JOGO', score: 'Pontos', retry: 'Clique ou Espaço para reiniciar', start1: 'Pressione Espaço ou Clique', start2: 'para iniciar' },
+  en: { gameOver: 'GAME OVER', score: 'Score', retry: 'Click or Space to retry', start1: 'Press Space or Click', start2: 'to start', closeLabel: 'Close game' },
+  es: { gameOver: 'FIN DEL JUEGO', score: 'Puntos', retry: 'Clic o Espacio para reintentar', start1: 'Presiona Espacio o Clic', start2: 'para iniciar', closeLabel: 'Cerrar juego' },
+  pt: { gameOver: 'FIM DE JOGO', score: 'Pontos', retry: 'Clique ou Espaço para reiniciar', start1: 'Pressione Espaço ou Clique', start2: 'para iniciar', closeLabel: 'Fechar jogo' },
 };
 
 const STYLES = {
@@ -213,8 +213,8 @@ export default function FlappyBird({ onClose }) {
 
   return (
     <div style={STYLES.overlay}>
-      <div style={STYLES.score}>Score: {score}</div>
-      <button style={STYLES.closeBtn} onClick={onClose} aria-label="Close game">✕</button>
+      <div style={STYLES.score}>{strings.score}: {score}</div>
+      <button style={STYLES.closeBtn} onClick={onClose} aria-label={strings.closeLabel}>✕</button>
       <canvas ref={canvasRef} style={STYLES.canvas} />
     </div>
   );

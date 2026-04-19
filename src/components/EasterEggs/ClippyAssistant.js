@@ -1,13 +1,47 @@
 import React, { useState, useEffect } from 'react';
+import { useLocale } from '@site/src/hooks';
 
-const CLIPPY_LINES = [
-  "It looks like you're browsing a website. Would you like help with that? 📎",
-  "Hey! I noticed you typed 'Microsoft'. I used to work there, you know! 📎",
-  "Did you know David builds cool stuff with Azure? I'm so proud! 📎",
-  "I see you're looking at code. Want me to paperclip it together? 📎",
-  "Fun fact: I was retired in Office 2007, but I never truly left! 📎",
-  "I'm basically the OG AI assistant. ChatGPT who? 📎",
-];
+const translations = {
+  en: {
+    lines: [
+      "It looks like you're browsing a website. Would you like help with that? 📎",
+      "Hey! I noticed you typed 'Microsoft'. I used to work there, you know! 📎",
+      "Did you know David builds cool stuff with Azure? I'm so proud! 📎",
+      "I see you're looking at code. Want me to paperclip it together? 📎",
+      "Fun fact: I was retired in Office 2007, but I never truly left! 📎",
+      "I'm basically the OG AI assistant. ChatGPT who? 📎",
+    ],
+    closeLabel: 'Close Clippy',
+    tipTitle: 'Click for another tip',
+    tipLabel: 'Clippy - click for another tip',
+  },
+  es: {
+    lines: [
+      "Parece que estás navegando un sitio web. ¿Te gustaría ayuda? 📎",
+      "¡Oye! Noté que escribiste 'Microsoft'. ¡Yo solía trabajar ahí! 📎",
+      "¿Sabías que David construye cosas geniales con Azure? ¡Estoy orgulloso! 📎",
+      "Veo que estás mirando código. ¿Quieres que lo sujete con un clip? 📎",
+      "Dato curioso: me jubilaron en Office 2007, ¡pero nunca me fui del todo! 📎",
+      "Soy básicamente el asistente de IA original. ¿ChatGPT quién? 📎",
+    ],
+    closeLabel: 'Cerrar Clippy',
+    tipTitle: 'Clic para otro consejo',
+    tipLabel: 'Clippy - clic para otro consejo',
+  },
+  pt: {
+    lines: [
+      "Parece que você está navegando um site. Gostaria de ajuda? 📎",
+      "Ei! Notei que você digitou 'Microsoft'. Eu costumava trabalhar lá! 📎",
+      "Sabia que o David constrói coisas legais com Azure? Estou orgulhoso! 📎",
+      "Vejo que você está olhando código. Quer que eu prenda com um clipe? 📎",
+      "Curiosidade: fui aposentado no Office 2007, mas nunca realmente saí! 📎",
+      "Sou basicamente o assistente de IA original. ChatGPT quem? 📎",
+    ],
+    closeLabel: 'Fechar Clippy',
+    tipTitle: 'Clique para outra dica',
+    tipLabel: 'Clippy - clique para outra dica',
+  },
+};
 
 const STYLES = {
   container: {
@@ -44,10 +78,12 @@ const STYLES = {
 };
 
 export default function ClippyAssistant({ onClose }) {
+  const lang = useLocale();
+  const t = translations[lang] || translations.en;
   const [line, setLine] = useState('');
 
   useEffect(() => {
-    setLine(CLIPPY_LINES[Math.floor(Math.random() * CLIPPY_LINES.length)]);
+    setLine(t.lines[Math.floor(Math.random() * t.lines.length)]);
 
     // Add animation keyframes
     const style = document.createElement('style');
@@ -68,13 +104,13 @@ export default function ClippyAssistant({ onClose }) {
   }, [onClose]);
 
   const nextLine = () => {
-    setLine(CLIPPY_LINES[Math.floor(Math.random() * CLIPPY_LINES.length)]);
+    setLine(t.lines[Math.floor(Math.random() * t.lines.length)]);
   };
 
   return (
     <div style={STYLES.container}>
       <div style={STYLES.bubble}>
-        <button style={STYLES.closeBtn} onClick={onClose} aria-label="Close Clippy">✕</button>
+        <button style={STYLES.closeBtn} onClick={onClose} aria-label={t.closeLabel}>✕</button>
         {line}
         <div style={STYLES.bubbleArrow} />
       </div>
@@ -82,8 +118,8 @@ export default function ClippyAssistant({ onClose }) {
         style={{ ...STYLES.clippy, background: 'none', border: 'none', padding: 0 }}
         onClick={nextLine}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nextLine(); } }}
-        title="Click for another tip"
-        aria-label="Clippy - click for another tip"
+        title={t.tipTitle}
+        aria-label={t.tipLabel}
       >
         📎
       </button>

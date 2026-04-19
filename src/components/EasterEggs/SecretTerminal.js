@@ -38,6 +38,8 @@ const translations = {
   en: {
     welcome: `Welcome to dsanchezcr terminal v1.0.0\nType "help" for available commands.\n`,
     notFound: (cmd) => `Command not found: ${cmd}. Type "help" for available commands.`,
+    closeLabel: 'Close terminal',
+    inputLabel: 'Terminal input',
     commands: {
       help: () =>
         `Available commands:\n  help       — Show this help message\n  whoami     — About David Sanchez\n  projects   — View projects\n  blog       — Visit the blog\n  contact    — Contact information\n  clear      — Clear terminal\n  exit       — Close terminal`,
@@ -54,6 +56,8 @@ const translations = {
   es: {
     welcome: `Bienvenido a dsanchezcr terminal v1.0.0\nEscribe "help" para ver los comandos disponibles.\n`,
     notFound: (cmd) => `Comando no encontrado: ${cmd}. Escribe "help" para ver los comandos disponibles.`,
+    closeLabel: 'Cerrar terminal',
+    inputLabel: 'Entrada de terminal',
     commands: {
       help: () =>
         `Comandos disponibles:\n  help       — Mostrar este mensaje de ayuda\n  whoami     — Sobre David Sanchez\n  projects   — Ver proyectos\n  blog       — Visitar el blog\n  contact    — Información de contacto\n  clear      — Limpiar terminal\n  exit       — Cerrar terminal`,
@@ -70,6 +74,8 @@ const translations = {
   pt: {
     welcome: `Bem-vindo ao dsanchezcr terminal v1.0.0\nDigite "help" para ver os comandos disponíveis.\n`,
     notFound: (cmd) => `Comando não encontrado: ${cmd}. Digite "help" para ver os comandos disponíveis.`,
+    closeLabel: 'Fechar terminal',
+    inputLabel: 'Entrada do terminal',
     commands: {
       help: () =>
         `Comandos disponíveis:\n  help       — Mostrar esta mensagem de ajuda\n  whoami     — Sobre David Sanchez\n  projects   — Ver projetos\n  blog       — Visitar o blog\n  contact    — Informações de contato\n  clear      — Limpar terminal\n  exit       — Fechar terminal`,
@@ -129,7 +135,7 @@ export default function SecretTerminal({ onClose }) {
       <div style={STYLES.terminal}>
         <div style={STYLES.header}>
           <h4 style={STYLES.title}>dsanchezcr@terminal:~$</h4>
-          <button style={STYLES.closeBtn} onClick={onClose} aria-label="Close terminal">✕</button>
+          <button style={STYLES.closeBtn} onClick={onClose} aria-label={t.closeLabel}>✕</button>
         </div>
         <div ref={outputRef} style={STYLES.output}>
           {lines.map((line, i) => <div key={i}>{line}</div>)}
@@ -142,7 +148,7 @@ export default function SecretTerminal({ onClose }) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             autoFocus
-            aria-label="Terminal input"
+            aria-label={t.inputLabel}
           />
         </form>
       </div>
