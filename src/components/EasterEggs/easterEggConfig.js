@@ -6,7 +6,6 @@ const easterEggConfig = {
   konamiSpaceShooter: true,
   secretTerminal: true,
   matrixRain: true,
-  consoleMessage: true,
   costaRicaConfetti: true,
   clippy: true,
   birthday: true,

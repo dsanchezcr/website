@@ -11,6 +11,8 @@ export default function CostaRicaConfetti() {
     if (!ExecutionEnvironment.canUseDOM) return;
 
     const handleClick = async (e) => {
+      if (!(e.target instanceof Element)) return;
+
       // Check if click target is within footer copyright area
       const footer = e.target.closest('.footer__copyright') || e.target.closest('.footer__bottom');
       if (!footer) return;

@@ -1,6 +1,7 @@
 import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
+import easterEggConfig from '@site/src/components/EasterEggs/easterEggConfig';
 
-if (ExecutionEnvironment.canUseDOM) {
+if (ExecutionEnvironment.canUseDOM && easterEggConfig.consoleMessage !== false) {
   const asciiArt = `
 %c
      _                      _                       

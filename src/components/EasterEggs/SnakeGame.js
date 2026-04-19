@@ -68,9 +68,11 @@ export default function SnakeGame({ onClose }) {
         a: { x: -1, y: 0 }, d: { x: 1, y: 0 },
       };
       const newDir = map[e.key];
-      if (newDir && !(newDir.x === -dir.x && newDir.y === -dir.y)) {
+      if (newDir) {
         e.preventDefault();
-        nextDir = newDir;
+        if (!(newDir.x === -dir.x && newDir.y === -dir.y)) {
+          nextDir = newDir;
+        }
       }
       if (e.key === ' ' && gameOver) {
         // Restart

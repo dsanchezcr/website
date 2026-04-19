@@ -504,12 +504,14 @@ export default function SecretsPage() {
           </div>
         </div>
 
-        {/* Cards Grid */}
+        {/* Cards Grid — 5 per row on desktop, responsive on smaller screens */}
         <div className="container" style={{ padding: '3rem 1rem 4rem' }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
             gap: '1.5rem',
+            maxWidth: 1400,
+            margin: '0 auto',
           }}>
             {t.eggs.map((egg, i) => (
               <EasterEggCard key={egg.id} egg={egg} t={t} index={i} />
