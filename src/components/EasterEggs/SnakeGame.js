@@ -75,6 +75,7 @@ export default function SnakeGame({ onClose }) {
         }
       }
       if (e.key === ' ' && gameOver) {
+        e.preventDefault();
         // Restart
         snake = [{ x: 10, y: 10 }];
         dir = { x: 1, y: 0 };

@@ -29,6 +29,8 @@ export default function MatrixRain({ onClose }) {
     const DURATION = 6000;
     const FADE_START = 4500;
 
+    let rafId;
+
     function draw() {
       const elapsed = Date.now() - startTime;
 
@@ -56,11 +58,11 @@ export default function MatrixRain({ onClose }) {
         onClose();
         return;
       }
-      requestAnimationFrame(draw);
+      rafId = requestAnimationFrame(draw);
     }
 
-    const animId = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(animId);
+    rafId = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(rafId);
   }, [onClose]);
 
   return (
