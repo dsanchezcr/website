@@ -12,6 +12,7 @@ const config = {
   clientModules: [
     require.resolve('./src/clientModules/aosInit.js'),
     require.resolve('./src/clientModules/jsonLd.js'),
+    require.resolve('./src/clientModules/consoleEasterEgg.js'),
   ],
 
   // Enables future flags for performance and compatibility
