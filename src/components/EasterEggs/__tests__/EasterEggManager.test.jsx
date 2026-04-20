@@ -13,7 +13,7 @@ vi.mock('../BirthdayEgg', () => ({ default: () => <div data-testid="birthday" />
 vi.mock('../FlappyBird', () => ({ default: ({ onClose }) => <div data-testid="flappy" onClick={onClose} /> }));
 vi.mock('../SnakeGame', () => ({ default: ({ onClose }) => <div data-testid="snake" onClick={onClose} /> }));
 vi.mock('../DogOnCursor', () => ({ default: ({ onClose }) => <div data-testid="dog" onClick={onClose} /> }));
-vi.mock('../CostaRicaConfetti', () => ({ default: () => null }));
+vi.mock('../CostaRicaConfetti', () => ({ default: ({ onClose }) => <div data-testid="confetti" onClick={onClose} /> }));
 
 // Save original config
 const originalConfig = { ...easterEggConfig };
@@ -116,6 +116,12 @@ describe('EasterEggManager', () => {
     const { queryByTestId } = render(<EasterEggManager />);
     typeWord('snake');
     expect(queryByTestId('snake')).toBeNull();
+  });
+
+  it('typing "costarica" activates CostaRicaConfetti', () => {
+    const { queryByTestId } = render(<EasterEggManager />);
+    typeWord('costarica');
+    expect(queryByTestId('confetti')).not.toBeNull();
   });
 
   it('skips pattern detection while an egg is active', () => {

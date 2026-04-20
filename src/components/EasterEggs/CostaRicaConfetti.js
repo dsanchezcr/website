@@ -1,75 +1,51 @@
 import { useEffect, useRef } from 'react';
-import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
 
-export default function CostaRicaConfetti() {
-  const clickCount = useRef(0);
-  const clickTimer = useRef(null);
+export default function CostaRicaConfetti({ onClose }) {
   const rafRef = useRef(null);
-  const inProgressRef = useRef(false);
 
   useEffect(() => {
-    if (!ExecutionEnvironment.canUseDOM) return;
+    let cancelled = false;
 
-    const handleClick = async (e) => {
-      // Resolve to the nearest Element (click target can be a text node)
-      const target = e.target instanceof Element ? e.target : e.target.parentElement;
-      if (!target) return;
+    (async () => {
+      try {
+        const confetti = (await import('canvas-confetti')).default;
 
-      // Check if click target is within footer copyright area
-      const footer = target.closest('.footer__copyright') || target.closest('.footer__bottom');
-      if (!footer) return;
+        const duration = 3000;
+        const end = Date.now() + duration;
+        const colors = ['#002b7f', '#ffffff', '#ce1126']; // Costa Rica flag colors
 
-      clickCount.current++;
-
-      if (clickTimer.current) clearTimeout(clickTimer.current);
-      clickTimer.current = setTimeout(() => { clickCount.current = 0; }, 1500);
-
-      if (clickCount.current >= 5) {
-        clickCount.current = 0;
-        if (inProgressRef.current) return; // Prevent overlapping loops
-        inProgressRef.current = true;
-
-        try {
-          const confetti = (await import('canvas-confetti')).default;
-
-          const duration = 3000;
-          const end = Date.now() + duration;
-          const colors = ['#002b7f', '#ffffff', '#ce1126']; // Costa Rica flag colors
-
-          (function frame() {
-            confetti({
-              particleCount: 3,
-              angle: 60,
-              spread: 55,
-              origin: { x: 0, y: 0.6 },
-              colors,
-            });
-            confetti({
-              particleCount: 3,
-              angle: 120,
-              spread: 55,
-              origin: { x: 1, y: 0.6 },
-              colors,
-            });
-            if (Date.now() < end) {
-              rafRef.current = requestAnimationFrame(frame);
-            } else {
-              inProgressRef.current = false;
-            }
-          })();
-        } catch {
-          inProgressRef.current = false;
-        }
+        (function frame() {
+          if (cancelled) return;
+          confetti({
+            particleCount: 3,
+            angle: 60,
+            spread: 55,
+            origin: { x: 0, y: 0.6 },
+            colors,
+          });
+          confetti({
+            particleCount: 3,
+            angle: 120,
+            spread: 55,
+            origin: { x: 1, y: 0.6 },
+            colors,
+          });
+          if (Date.now() < end) {
+            rafRef.current = requestAnimationFrame(frame);
+          } else {
+            onClose();
+          }
+        })();
+      } catch {
+        onClose();
       }
-    };
+    })();
 
-    document.addEventListener('click', handleClick);
     return () => {
-      document.removeEventListener('click', handleClick);
-      if (clickTimer.current) clearTimeout(clickTimer.current);
+      cancelled = true;
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [onClose]);
 
   return null;
 }

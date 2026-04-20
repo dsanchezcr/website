@@ -84,17 +84,16 @@ All easter eggs can be toggled individually via the config file:
 
 | Property | Value |
 |----------|-------|
-| **Trigger** | Click the footer copyright text 5 times quickly (within 1.5s) |
+| **Trigger** | Type the word "costarica" anywhere on the page |
 | **Behavior** | Confetti burst in Costa Rica flag colors (blue, white, red) for 3 seconds |
 | **Exit** | Auto-stops after 3 seconds |
 | **File** | `src/components/EasterEggs/CostaRicaConfetti.js` |
 | **Dependency** | `canvas-confetti` npm package |
 
 **Test checklist:**
-- [ ] Rapidly click the footer copyright text 5+ times
+- [ ] Type "costarica" on any page — confetti burst appears
 - [ ] Blue, white, and red confetti rains from both sides
 - [ ] Confetti stops after ~3 seconds
-- [ ] No confetti if clicks are too slow
 
 ---
 

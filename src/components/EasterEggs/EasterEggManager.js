@@ -93,6 +93,13 @@ export default function EasterEggManager() {
         return;
       }
 
+      // Costa Rica Confetti
+      if (easterEggConfig.costaRicaConfetti && next.toLowerCase().endsWith('costarica')) {
+        typedKeysRef.current = '';
+        setActiveEgg('confetti');
+        return;
+      }
+
       typedKeysRef.current = next;
     };
 
@@ -109,8 +116,8 @@ export default function EasterEggManager() {
       {activeEgg === 'flappy' && <FlappyBird onClose={closeEgg} />}
       {activeEgg === 'snake' && <SnakeGame onClose={closeEgg} />}
       {activeEgg === 'dog' && <DogOnCursor onClose={closeEgg} />}
+      {activeEgg === 'confetti' && <CostaRicaConfetti onClose={closeEgg} />}
       {easterEggConfig.birthday && <BirthdayEgg />}
-      {easterEggConfig.costaRicaConfetti && <CostaRicaConfetti />}
     </>
   );
 }
