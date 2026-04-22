@@ -6,27 +6,138 @@ description: My Xbox and PC accessories setup for flight and racing games.
 keywords: [Xbox accessories, flight sim, HOTAS, yoke, racing wheel, Logitech G920]
 ---
 
+import GameCard from '@site/src/components/Gaming/GameCard';
+
+export const cardGridStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+  gap: '1rem',
+  marginBottom: '1.25rem',
+};
+
+export const accessoryCardStyle = {
+  border: '1px solid var(--ifm-color-emphasis-200)',
+  borderRadius: '12px',
+  overflow: 'hidden',
+  background: 'var(--ifm-card-background-color, var(--content-background))',
+  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
+};
+
+export const accessoryBodyStyle = {
+  padding: '1rem',
+};
+
+export const accessories = {
+  flight: [
+    {
+      title: 'Thrustmaster T-Flight Hotas One',
+      imageUrl: '/img/gaming/xbox/accessories/tflight-hotas-one.svg',
+      description: 'Classic joystick + throttle setup for combat and civilian flight sims.',
+    },
+    {
+      title: 'Logitech G PRO Flight Yoke System + Rudder Pedals',
+      imageUrl: '/img/gaming/xbox/accessories/logitech-flight-yoke.svg',
+      description: 'My realistic setup for civil aviation routes and instrument flying.',
+    },
+  ],
+  racing: [
+    {
+      title: 'Logitech G920 (Wheel + Pedals)',
+      imageUrl: '/img/gaming/xbox/accessories/logitech-g920.svg',
+      description: 'My primary force-feedback wheel for racing and off-road driving games.',
+    },
+    {
+      title: 'Logitech Driving Force Shifter',
+      imageUrl: '/img/gaming/xbox/accessories/logitech-shifter.svg',
+      description: 'Adds manual H-pattern shifting for more immersion in supported titles.',
+    },
+    {
+      title: 'GT Omega Apex Racing Wheel Stand',
+      imageUrl: '/img/gaming/xbox/accessories/gt-omega-apex-stand.svg',
+      description: 'Keeps the full racing setup stable and comfortable for long sessions.',
+    },
+  ],
+};
+
+export const games = {
+  flight: [
+    {
+      title: 'Microsoft Flight Simulator',
+      platform: 'xbox',
+      status: 'playing',
+      description: 'My go-to sim for realistic routes and sightseeing flights.',
+    },
+    {
+      title: 'Ace Combat 7: Skies Unknown',
+      platform: 'xbox',
+      status: 'completed',
+      description: 'Fast-paced arcade combat that feels great with HOTAS controls.',
+    },
+    {
+      title: 'Chorus',
+      platform: 'xbox',
+      status: 'completed',
+      description: 'A space-flight shooter with smooth controls and aggressive maneuvering.',
+    },
+  ],
+  racing: [
+    {
+      title: 'Forza Horizon 5',
+      platform: 'xbox',
+      status: 'playing',
+      description: 'My favorite open-world racing game for wheel sessions.',
+    },
+    {
+      title: 'SnowRunner',
+      platform: 'xbox',
+      status: 'playing',
+      description: 'A slower off-road challenge where wheel precision really matters.',
+    },
+  ],
+};
+
 # 🎛️ Xbox Accessories Setup
 
 I like building immersive setups for flight and racing games on Xbox and PC. This page covers the accessories I currently use and the games I play with them.
 
 ## ✈️ Flight Setup
 
-- **Thrustmaster T-Flight Hotas One** for a classic joystick + throttle setup
-- **Logitech G PRO Flight Yoke System with Rudder Pedals** for a more realistic civil aviation experience
+<div style={cardGridStyle}>
+  {accessories.flight.map((item) => (
+    <div key={item.title} style={accessoryCardStyle}>
+      <img src={item.imageUrl} alt={item.title} loading="lazy" style={{ width: '100%', aspectRatio: '16 / 9', objectFit: 'cover' }} />
+      <div style={accessoryBodyStyle}>
+        <h3>{item.title}</h3>
+        <p>{item.description}</p>
+      </div>
+    </div>
+  ))}
+</div>
 
 ## 🏎️ Racing Setup
 
-- **Logitech G920** wheel + pedals
-- **Logitech Driving Force Shifter**
-- Mounted on a **GT Omega Apex Racing Wheel Stand** for stability and comfort
+<div style={cardGridStyle}>
+  {accessories.racing.map((item) => (
+    <div key={item.title} style={accessoryCardStyle}>
+      <img src={item.imageUrl} alt={item.title} loading="lazy" style={{ width: '100%', aspectRatio: '16 / 9', objectFit: 'cover' }} />
+      <div style={accessoryBodyStyle}>
+        <h3>{item.title}</h3>
+        <p>{item.description}</p>
+      </div>
+    </div>
+  ))}
+</div>
 
 ## 🎮 Games I Play with These Accessories
 
-- **Microsoft Flight Simulator**
-- **Ace Combat**
-- **Chorus**
-- **Forza Horizon**
-- **SnowRunner**
+### ✈️ Flight
 
-I am also exploring more games that support these accessories, especially through Game Pass and new releases.
+{games.flight.map((game) => (
+  <GameCard key={game.title} {...game} />
+))}
+
+### 🏎️ Racing
+
+{games.racing.map((game) => (
+  <GameCard key={game.title} {...game} />
+))}

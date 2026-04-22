@@ -1,0 +1,9 @@
+{
+  "label": "🟢 Xbox e PC",
+  "position": 2,
+  "collapsed": false,
+  "link": {
+    "type": "doc",
+    "id": "xbox/index"
+  }
+}

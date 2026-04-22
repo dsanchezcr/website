@@ -6,27 +6,138 @@ description: Minha configuração de acessórios para Xbox e PC em jogos de voo 
 keywords: [acessórios Xbox, simulador de voo, HOTAS, yoke, volante de corrida, Logitech G920]
 ---
 
+import GameCard from '@site/src/components/Gaming/GameCard';
+
+export const cardGridStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+  gap: '1rem',
+  marginBottom: '1.25rem',
+};
+
+export const accessoryCardStyle = {
+  border: '1px solid var(--ifm-color-emphasis-200)',
+  borderRadius: '12px',
+  overflow: 'hidden',
+  background: 'var(--ifm-card-background-color, var(--content-background))',
+  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
+};
+
+export const accessoryBodyStyle = {
+  padding: '1rem',
+};
+
+export const accessories = {
+  flight: [
+    {
+      title: 'Thrustmaster T-Flight Hotas One',
+      imageUrl: '/img/gaming/xbox/accessories/tflight-hotas-one.svg',
+      description: 'Configuração clássica de joystick + manete para simuladores de voo.',
+    },
+    {
+      title: 'Logitech G PRO Flight Yoke System + Rudder Pedals',
+      imageUrl: '/img/gaming/xbox/accessories/logitech-flight-yoke.svg',
+      description: 'Minha configuração mais realista para rotas de aviação civil e voo por instrumentos.',
+    },
+  ],
+  racing: [
+    {
+      title: 'Logitech G920 (Volante + Pedais)',
+      imageUrl: '/img/gaming/xbox/accessories/logitech-g920.svg',
+      description: 'Meu volante principal com force feedback para corridas e trilhas off-road.',
+    },
+    {
+      title: 'Logitech Driving Force Shifter',
+      imageUrl: '/img/gaming/xbox/accessories/logitech-shifter.svg',
+      description: 'Adiciona trocas manuais em H para mais imersão nos jogos compatíveis.',
+    },
+    {
+      title: 'GT Omega Apex Racing Wheel Stand',
+      imageUrl: '/img/gaming/xbox/accessories/gt-omega-apex-stand.svg',
+      description: 'Mantém toda a configuração estável e confortável em sessões longas.',
+    },
+  ],
+};
+
+export const games = {
+  flight: [
+    {
+      title: 'Microsoft Flight Simulator',
+      platform: 'xbox',
+      status: 'playing',
+      description: 'Meu simulador principal para rotas realistas e voos panorâmicos.',
+    },
+    {
+      title: 'Ace Combat 7: Skies Unknown',
+      platform: 'xbox',
+      status: 'completed',
+      description: 'Combate aéreo arcade intenso que funciona muito bem com HOTAS.',
+    },
+    {
+      title: 'Chorus',
+      platform: 'xbox',
+      status: 'completed',
+      description: 'Shooter espacial com manobras rápidas e controle muito fluido.',
+    },
+  ],
+  racing: [
+    {
+      title: 'Forza Horizon 5',
+      platform: 'xbox',
+      status: 'playing',
+      description: 'Meu jogo favorito de corrida em mundo aberto para sessões de volante.',
+    },
+    {
+      title: 'SnowRunner',
+      platform: 'xbox',
+      status: 'playing',
+      description: 'Desafio off-road mais cadenciado onde a precisão do volante faz diferença.',
+    },
+  ],
+};
+
 # 🎛️ Configuração de Acessórios para Xbox
 
 Eu gosto de montar configurações imersivas para jogos de voo e corrida no Xbox e PC. Nesta página compartilho os acessórios que uso atualmente e os jogos que jogo com eles.
 
 ## ✈️ Configuração de Voo
 
-- **Thrustmaster T-Flight Hotas One** para uma configuração clássica de joystick + manete de potência
-- **Logitech G PRO Flight Yoke System com Rudder Pedals** para uma experiência de aviação civil mais realista
+<div style={cardGridStyle}>
+  {accessories.flight.map((item) => (
+    <div key={item.title} style={accessoryCardStyle}>
+      <img src={item.imageUrl} alt={item.title} loading="lazy" style={{ width: '100%', aspectRatio: '16 / 9', objectFit: 'cover' }} />
+      <div style={accessoryBodyStyle}>
+        <h3>{item.title}</h3>
+        <p>{item.description}</p>
+      </div>
+    </div>
+  ))}
+</div>
 
 ## 🏎️ Configuração de Corrida
 
-- **Logitech G920** com volante + pedais
-- **Logitech Driving Force Shifter**
-- Montado em um **GT Omega Apex Racing Wheel Stand** para mais estabilidade e conforto
+<div style={cardGridStyle}>
+  {accessories.racing.map((item) => (
+    <div key={item.title} style={accessoryCardStyle}>
+      <img src={item.imageUrl} alt={item.title} loading="lazy" style={{ width: '100%', aspectRatio: '16 / 9', objectFit: 'cover' }} />
+      <div style={accessoryBodyStyle}>
+        <h3>{item.title}</h3>
+        <p>{item.description}</p>
+      </div>
+    </div>
+  ))}
+</div>
 
 ## 🎮 Jogos que Jogo com Esses Acessórios
 
-- **Microsoft Flight Simulator**
-- **Ace Combat**
-- **Chorus**
-- **Forza Horizon**
-- **SnowRunner**
+### ✈️ Voo
 
-Também estou explorando mais jogos compatíveis com esses acessórios, especialmente via Game Pass e novos lançamentos.
+{games.flight.map((game) => (
+  <GameCard key={game.title} {...game} />
+))}
+
+### 🏎️ Corrida
+
+{games.racing.map((game) => (
+  <GameCard key={game.title} {...game} />
+))}

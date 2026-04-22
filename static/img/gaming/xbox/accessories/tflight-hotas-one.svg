@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Thrustmaster T-Flight Hotas One</title>
+  <desc id="desc">Illustration card for the Thrustmaster T-Flight Hotas One accessory.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <rect x="70" y="90" width="1060" height="495" rx="28" fill="#111827" stroke="#334155" stroke-width="4"/>
+  <rect x="220" y="360" width="180" height="140" rx="16" fill="#475569"/>
+  <rect x="290" y="245" width="40" height="130" rx="16" fill="#94a3b8"/>
+  <rect x="760" y="330" width="220" height="170" rx="20" fill="#334155"/>
+  <text x="600" y="160" fill="#f8fafc" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="700">Thrustmaster T-Flight Hotas One</text>
+  <text x="600" y="555" fill="#cbd5e1" text-anchor="middle" font-family="Arial, sans-serif" font-size="34">Joystick + Throttle</text>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Logitech Driving Force Shifter</title>
+  <desc id="desc">Illustration card for the Logitech Driving Force Shifter accessory.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7f1d1d"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <rect x="70" y="90" width="1060" height="495" rx="28" fill="#111827" stroke="#b91c1c" stroke-width="4"/>
+  <rect x="500" y="380" width="200" height="130" rx="18" fill="#374151"/>
+  <rect x="580" y="220" width="40" height="180" rx="16" fill="#9ca3af"/>
+  <circle cx="600" cy="210" r="36" fill="#f3f4f6"/>
+  <text x="600" y="160" fill="#fee2e2" text-anchor="middle" font-family="Arial, sans-serif" font-size="52" font-weight="700">Driving Force Shifter</text>
+  <text x="600" y="555" fill="#fecaca" text-anchor="middle" font-family="Arial, sans-serif" font-size="34">H-Pattern Gear Shifts</text>
+</svg>
