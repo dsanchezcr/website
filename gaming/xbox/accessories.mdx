@@ -1,0 +1,129 @@
+---
+title: Accessories Setup
+sidebar_label: Accessories Setup
+sidebar_position: 3
+hide_table_of_contents: true
+description: My Xbox and PC accessories setup for flight and racing games.
+keywords: [Xbox accessories, flight sim, HOTAS, yoke, racing wheel, Logitech G920]
+---
+
+import GameCard from '@site/src/components/Gaming/GameCard';
+
+export const cardGridStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+  gap: '1rem',
+  marginBottom: '1.25rem',
+};
+
+export const accessoryCardStyle = {
+  border: '1px solid var(--ifm-color-emphasis-200)',
+  borderRadius: '12px',
+  overflow: 'hidden',
+  background: 'var(--ifm-card-background-color, var(--content-background))',
+  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
+};
+
+export const accessoryBodyStyle = {
+  padding: '1rem',
+};
+
+export const accessories = {
+  flight: [
+    {
+      title: 'Thrustmaster T-Flight Hotas One',
+      imageUrl: 'https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/xbox/accesories/hotas.jpg',
+      description: 'Classic joystick + throttle setup for combat and civilian flight sims.',
+    },
+    {
+      title: 'Logitech G PRO Flight Yoke System + Rudder Pedals',
+      imageUrl: 'https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/xbox/accesories/yoke.jpg',
+      description: 'My realistic setup for civil aviation routes and instrument flying.',
+    },
+  ],
+  racing: [
+    {
+      title: 'Logitech G920 (Wheel + Pedals + Shifter)',
+      imageUrl: 'https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/xbox/accesories/wheel.jpg',
+      description: 'My primary force-feedback wheel for racing and off-road driving games.',
+    },
+    
+  ],
+};
+
+export const games = {
+  flight: [
+    {
+      title: 'Microsoft Flight Simulator',
+      platform: 'PC',
+      status: 'playing',
+      description: 'My go-to sim for realistic routes and sightseeing flights.',
+    },
+    {
+      title: 'Chorus',
+      platform: 'PC',
+      status: 'completed',
+      description: 'A space-flight shooter with smooth controls and aggressive maneuvering.',
+    },
+  ],
+  racing: [
+    {
+      title: 'Forza Horizon 5',
+      platform: 'xbox',
+      status: 'playing',
+      description: 'My favorite open-world racing game for wheel sessions.',
+    },
+    {
+      title: 'SnowRunner',
+      platform: 'xbox',
+      status: 'playing',
+      description: 'A slower off-road challenge where wheel precision really matters.',
+    },
+  ],
+};
+
+# 🎛️ Xbox Accessories Setup
+
+I like building immersive setups for flight and racing games on Xbox and PC. This page covers the accessories I currently use and the games I play with them.
+
+## ✈️ Flight Setup
+
+<div style={cardGridStyle}>
+  {accessories.flight.map((item) => (
+    <div key={item.title} style={accessoryCardStyle}>
+      <img src={item.imageUrl} alt={item.title} loading="lazy" style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }} />
+      <div style={accessoryBodyStyle}>
+        <h3>{item.title}</h3>
+        <p>{item.description}</p>
+      </div>
+    </div>
+  ))}
+</div>
+
+## 🏎️ Racing Setup
+
+<div style={cardGridStyle}>
+  {accessories.racing.map((item) => (
+    <div key={item.title} style={accessoryCardStyle}>
+      <img src={item.imageUrl} alt={item.title} loading="lazy" style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }} />
+      <div style={accessoryBodyStyle}>
+        <h3>{item.title}</h3>
+        <p>{item.description}</p>
+      </div>
+    </div>
+  ))}
+</div>
+
+## 🎮 Games I Play with These Accessories
+
+### ✈️ Flight
+
+{games.flight.map((game) => (
+  <GameCard key={game.title} {...game} />
+))}
+
+### 🏎️ Racing
+
+{games.racing.map((game) => (
+  <GameCard key={game.title} {...game} />
+))}
