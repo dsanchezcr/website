@@ -1,0 +1,131 @@
+name: Newsletter Dispatch
+
+on:
+  schedule:
+    # Weekly: Every Sunday at 8:00 AM UTC
+    - cron: '0 8 * * 0'
+    # Monthly: 1st of every month at 8:00 AM UTC
+    - cron: '0 8 1 * *'
+  workflow_dispatch:
+    inputs:
+      frequency:
+        description: 'Newsletter frequency to dispatch'
+        required: true
+        type: choice
+        options:
+          - weekly
+          - monthly
+      custom_message:
+        description: 'Optional custom message to include'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch:
+    name: Send Newsletter
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Determine Frequency
+        id: frequency
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "value=${{ inputs.frequency }}" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.schedule }}" = "0 8 1 * *" ]; then
+            echo "value=monthly" >> $GITHUB_OUTPUT
+          else
+            echo "value=weekly" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Extract Recent Blog Posts
+        id: content
+        run: |
+          FREQUENCY="${{ steps.frequency.outputs.value }}"
+          
+          if [ "$FREQUENCY" = "monthly" ]; then
+            DAYS=30
+          else
+            DAYS=7
+          fi
+          
+          # Find blog posts modified in the last N days
+          CUTOFF_DATE=$(date -d "${DAYS} days ago" +%Y-%m-%d 2>/dev/null || date -v-${DAYS}d +%Y-%m-%d)
+          
+          echo "Looking for blog posts since ${CUTOFF_DATE}..."
+          
+          # Extract blog post metadata from MDX files
+          POSTS="[]"
+          for file in blog/*.mdx; do
+            if [ ! -f "$file" ]; then continue; fi
+            
+            # Get file modification date from git
+            FILE_DATE=$(git log -1 --format="%cs" -- "$file" 2>/dev/null || echo "")
+            if [ -z "$FILE_DATE" ]; then continue; fi
+            
+            # Compare dates
+            if [[ "$FILE_DATE" > "$CUTOFF_DATE" ]] || [[ "$FILE_DATE" == "$CUTOFF_DATE" ]]; then
+              # Extract frontmatter
+              TITLE=$(sed -n 's/^title: *//p' "$file" | head -1 | tr -d '"' | tr -d "'")
+              DESCRIPTION=$(sed -n 's/^description: *//p' "$file" | head -1 | tr -d '"' | tr -d "'")
+              # Extract slug from filename (remove date prefix and extension)
+              SLUG=$(basename "$file" .mdx | sed 's/^[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}-//')
+              
+              if [ -n "$TITLE" ] && [ -n "$SLUG" ]; then
+                POST="{\"slug\":\"$SLUG\",\"title\":\"$TITLE\",\"description\":\"${DESCRIPTION:-}\"}"
+                if [ "$POSTS" = "[]" ]; then
+                  POSTS="[$POST]"
+                else
+                  POSTS="${POSTS%]},${POST}]"
+                fi
+              fi
+            fi
+          done
+          
+          echo "Found posts: $POSTS"
+          echo "posts=$POSTS" >> $GITHUB_OUTPUT
+
+      - name: Dispatch Newsletter
+        run: |
+          FREQUENCY="${{ steps.frequency.outputs.value }}"
+          POSTS='${{ steps.content.outputs.posts }}'
+          CUSTOM_MESSAGE='${{ inputs.custom_message || '' }}'
+          
+          # Build request body
+          BODY=$(jq -n \
+            --arg freq "$FREQUENCY" \
+            --argjson posts "$POSTS" \
+            --arg msg "$CUSTOM_MESSAGE" \
+            '{frequency: $freq, blogPosts: $posts, customMessage: $msg}')
+          
+          echo "Dispatching ${FREQUENCY} newsletter..."
+          
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "X-Newsletter-Key: ${{ secrets.NEWSLETTER_DISPATCH_KEY }}" \
+            -d "$BODY" \
+            "https://dsanchezcr.com/api/newsletter/dispatch")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          RESPONSE_BODY=$(echo "$RESPONSE" | sed '$d')
+          
+          echo "Response (${HTTP_CODE}): ${RESPONSE_BODY}"
+          
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "Newsletter dispatched successfully!"
+          else
+            echo "::warning::Newsletter dispatch returned HTTP ${HTTP_CODE}"
+          fi

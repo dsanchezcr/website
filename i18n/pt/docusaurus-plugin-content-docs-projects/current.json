@@ -1,0 +1,10 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.defaultSidebar.category.Projects from Previous Roles": {
+    "message": "Projects from Previous Roles",
+    "description": "The label for category 'Projects from Previous Roles' in sidebar 'defaultSidebar'"
+  }
+}

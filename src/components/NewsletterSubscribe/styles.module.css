@@ -1,0 +1,146 @@
+.newsletterBanner {
+  background: linear-gradient(135deg, #0a1628 0%, #1a2744 100%);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(94, 234, 212, 0.2);
+}
+
+.newsletterContent {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.newsletterTitle {
+  color: #5eead4;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.newsletterDescription {
+  color: #d1d5db;
+  font-size: 0.9rem;
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.newsletterForm {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.emailInput {
+  flex: 1;
+  min-width: 200px;
+  padding: 0.6rem 1rem;
+  border: 1px solid rgba(94, 234, 212, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.emailInput:focus {
+  border-color: #5eead4;
+}
+
+.emailInput::placeholder {
+  color: #94a3b8;
+}
+
+.frequencySelect {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgba(94, 234, 212, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e7eb;
+  font-size: 0.9rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.frequencySelect:focus {
+  border-color: #5eead4;
+}
+
+.submitButton {
+  padding: 0.6rem 1.5rem;
+  background: #5eead4;
+  color: #0a1628;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.submitButton:hover {
+  background: #99f6e4;
+}
+
+.submitButton:active {
+  transform: scale(0.98);
+}
+
+.submitButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.successMessage {
+  color: #5eead4;
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+.errorMessage {
+  color: #f87171;
+  font-size: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.privacyNote {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.privacyNote a {
+  color: #5eead4;
+  text-decoration: none;
+}
+
+.privacyNote a:hover {
+  text-decoration: underline;
+}
+
+/* Honeypot field - hidden from users */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 480px) {
+  .newsletterBanner {
+    padding: 1.5rem 1rem;
+  }
+
+  .newsletterForm {
+    flex-direction: column;
+  }
+
+  .emailInput {
+    min-width: unset;
+  }
+}

@@ -120,6 +120,40 @@ var host = new HostBuilder()
                 return new NullCosmosContentService(initializationError: ex.Message);
             }
         });
+        
+        // Register Newsletter Service (subscriber management in Cosmos DB)
+        services.AddSingleton<INewsletterService>(sp =>
+        {
+            var endpoint = Environment.GetEnvironmentVariable("AZURE_COSMOS_ENDPOINT");
+            var key = Environment.GetEnvironmentVariable("AZURE_COSMOS_KEY");
+            var databaseName = Environment.GetEnvironmentVariable("AZURE_COSMOS_DATABASE_NAME") ?? "website-content";
+            
+            if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key))
+            {
+                return new NullNewsletterService();
+            }
+
+            try
+            {
+                var logger = sp.GetRequiredService<ILogger<CosmosNewsletterService>>();
+                var clientOptions = new CosmosClientOptions
+                {
+                    UseSystemTextJsonSerializerWithOptions = new System.Text.Json.JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase
+                    },
+                    ConnectionMode = ConnectionMode.Gateway
+                };
+                var client = new CosmosClient(endpoint, key, clientOptions);
+                return new CosmosNewsletterService(client, databaseName, logger);
+            }
+            catch (Exception ex)
+            {
+                var fallbackLogger = sp.GetRequiredService<ILogger<CosmosNewsletterService>>();
+                fallbackLogger.LogError(ex, "Failed to initialize Newsletter service — falling back to NullNewsletterService.");
+                return new NullNewsletterService();
+            }
+        });
     })
     .ConfigureLogging(logging =>
     {

@@ -37,6 +37,11 @@ export const config = {
     contentGaming: '/api/content/gaming',
     contentParks: '/api/content/parks',
     contentMonthlyUpdates: '/api/content/monthly-updates',
+    newsletterSubscribe: '/api/newsletter/subscribe',
+    newsletterVerify: '/api/newsletter/verify',
+    newsletterUnsubscribe: '/api/newsletter/unsubscribe',
+    newsletterPreferences: '/api/newsletter/preferences',
+    newsletterStatus: '/api/newsletter/status',
   },
   
   // Production domains

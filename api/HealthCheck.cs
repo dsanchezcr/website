@@ -159,7 +159,10 @@ public class HealthCheck
         // Cosmos DB Content
         { "AZURE_COSMOS_ENDPOINT", ("Azure Cosmos DB account endpoint URL", false) },
         { "AZURE_COSMOS_KEY", ("Azure Cosmos DB account key", false) },
-        { "AZURE_COSMOS_DATABASE_NAME", ("Azure Cosmos DB database name (default: website-content)", false) }
+        { "AZURE_COSMOS_DATABASE_NAME", ("Azure Cosmos DB database name (default: website-content)", false) },
+        
+        // Newsletter
+        { "NEWSLETTER_DISPATCH_KEY", ("Secret key for authenticating newsletter dispatch from GitHub Actions", false) }
     };
 
     [Function("HealthCheck")]

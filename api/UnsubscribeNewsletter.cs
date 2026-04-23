@@ -1,0 +1,114 @@
+using System.Net;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+using Microsoft.Extensions.Logging;
+using api.Services;
+
+namespace api;
+
+public class UnsubscribeNewsletter
+{
+    private readonly ILogger<UnsubscribeNewsletter> _logger;
+    private readonly INewsletterService _newsletterService;
+
+    public UnsubscribeNewsletter(ILogger<UnsubscribeNewsletter> logger, INewsletterService newsletterService)
+    {
+        _logger = logger;
+        _newsletterService = newsletterService;
+    }
+
+    [Function("UnsubscribeNewsletter")]
+    public async Task<HttpResponseData> Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "newsletter/unsubscribe")] HttpRequestData req,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("UnsubscribeNewsletter Function Triggered");
+
+        var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
+        var token = query["token"];
+
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
+                "Invalid unsubscribe link.", "en", false);
+        }
+
+        try
+        {
+            var subscriber = await _newsletterService.GetSubscriberByUnsubscribeTokenAsync(token);
+            if (subscriber == null)
+            {
+                return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
+                    "This subscription was not found or is already unsubscribed.", "en", false);
+            }
+
+            subscriber.Status = "unsubscribed";
+            await _newsletterService.UpdateSubscriberAsync(subscriber);
+
+            _logger.LogInformation("Newsletter unsubscribed: {Email}", subscriber.Email);
+
+            var lang = subscriber.Language;
+            var successMessage = lang switch
+            {
+                "es" => "Has sido dado de baja del boletín. Lamentamos verte partir.",
+                "pt" => "Você foi desinscrito do boletim. Lamentamos ver você partir.",
+                _ => "You have been unsubscribed from the newsletter. We're sorry to see you go."
+            };
+
+            return await CreateHtmlResponseAsync(req, HttpStatusCode.OK, successMessage, lang, true);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing newsletter unsubscription");
+            return await CreateHtmlResponseAsync(req, HttpStatusCode.InternalServerError,
+                "An error occurred. Please try again later.", "en", false);
+        }
+    }
+
+    private static async Task<HttpResponseData> CreateHtmlResponseAsync(HttpRequestData req, HttpStatusCode statusCode, string message, string language, bool success)
+    {
+        var websiteUrl = Environment.GetEnvironmentVariable("WEBSITE_URL") ?? "https://dsanchezcr.com";
+        var homeUrl = language switch
+        {
+            "es" => $"{websiteUrl}/es/",
+            "pt" => $"{websiteUrl}/pt/",
+            _ => $"{websiteUrl}/"
+        };
+        var returnText = language switch
+        {
+            "es" => "Volver al Inicio",
+            "pt" => "Voltar ao Início",
+            _ => "Return to Home"
+        };
+        var title = success
+            ? (language switch { "es" => "Suscripción Cancelada", "pt" => "Assinatura Cancelada", _ => "Unsubscribed" })
+            : (language switch { "es" => "Error", "pt" => "Erro", _ => "Error" });
+
+        var response = req.CreateResponse(statusCode);
+        response.Headers.Add("Content-Type", "text/html; charset=utf-8");
+        await response.WriteStringAsync($$"""
+            <!DOCTYPE html>
+            <html lang="{{language}}">
+            <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>{{title}}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f5f5f5; }
+                    .container { text-align: center; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 500px; }
+                    a { color: #007acc; text-decoration: none; }
+                    a:hover { text-decoration: underline; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h2>{{title}}</h2>
+                    <p>{{message}}</p>
+                    <p><a href="{{homeUrl}}">{{returnText}}</a></p>
+                </div>
+            </body>
+            </html>
+            """);
+        return response;
+    }
+}

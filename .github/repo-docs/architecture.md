@@ -75,6 +75,17 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 | GetXboxProfile | `/api/gaming/xbox` | Xbox Live profile with Table Storage cache |
 | GetPlayStationProfile | `/api/gaming/playstation` | PSN profile with JWT auth and cache |
 | RefreshGamingProfiles | `/api/gaming/refresh` | Admin trigger for gaming data refresh |
+| GetMoviesContent | `/api/content/movies` | Movies from Cosmos DB |
+| GetSeriesContent | `/api/content/series` | TV series from Cosmos DB |
+| GetGamingContent | `/api/content/gaming` | Gaming entries from Cosmos DB |
+| GetParksContent | `/api/content/parks` | Theme parks from Cosmos DB |
+| GetMonthlyUpdatesContent | `/api/content/monthly-updates` | Monthly gaming updates from Cosmos DB |
+| SubscribeNewsletter | `/api/newsletter/subscribe` | Newsletter subscription with double opt-in |
+| VerifySubscription | `/api/newsletter/verify` | Confirm newsletter subscription |
+| UnsubscribeNewsletter | `/api/newsletter/unsubscribe` | One-click unsubscribe |
+| UpdatePreferences | `/api/newsletter/preferences` | Change frequency (weekly/monthly) |
+| GetSubscriptionStatus | `/api/newsletter/status` | Check subscription state |
+| DispatchNewsletter | `/api/newsletter/dispatch` | Send digest (GitHub Actions triggered) |
 
 ### Data Flow: RAG Pipeline
 

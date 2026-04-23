@@ -46,5 +46,17 @@
   "item.label.Interests": {
     "message": "Intereses",
     "description": "Navbar item with label Interests"
+  },
+  "logo.alt": {
+    "message": "David Sanchez - Website",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Disney World": {
+    "message": "Disney World",
+    "description": "Navbar item with label Disney World"
+  },
+  "item.label.Universal Orlando": {
+    "message": "Universal Orlando",
+    "description": "Navbar item with label Universal Orlando"
   }
 }

@@ -158,12 +158,13 @@ The current rate limiting implementation uses in-memory caching (`IMemoryCache`)
 - Azure Functions configured with HTTPS-only setting
 
 ### Data Privacy
-- No personal data stored in databases
+- No personal data stored in databases except newsletter subscribers (email, language, frequency)
 - Contact form submissions sent via email only
 - Email verification tokens temporarily cached (24-hour TTL)
+- Newsletter subscribers can unsubscribe at any time via one-click link
 - No third-party analytics tracking in Azure Functions
-- Google Analytics used on frontend
+- Google Analytics used on frontend (anonymizeIP enabled)
 
 ---
 
-**Last Updated**: February 2026
+**Last Updated**: April 2026
