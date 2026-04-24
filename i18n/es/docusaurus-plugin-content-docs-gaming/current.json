@@ -1,6 +1,6 @@
 {
   "version.label": {
-    "message": "Next",
+    "message": "Siguiente",
     "description": "The label for version current"
   },
   "sidebar.defaultSidebar.category.🟢 Xbox & PC": {
@@ -8,7 +8,7 @@
     "description": "The label for category '🟢 Xbox & PC' in sidebar 'defaultSidebar'"
   },
   "sidebar.defaultSidebar.category.📰 Monthly Updates": {
-    "message": "📰 Monthly Updates",
+    "message": "📰 Actualizaciones Mensuales",
     "description": "The label for category '📰 Monthly Updates' in sidebar 'defaultSidebar'"
   }
 }

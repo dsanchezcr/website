@@ -1,14 +1,14 @@
 {
   "version.label": {
-    "message": "Next",
+    "message": "Próximo",
     "description": "The label for version current"
   },
   "sidebar.defaultSidebar.category.🎬 Movies": {
-    "message": "🎬 Movies",
+    "message": "🎬 Filmes",
     "description": "The label for category '🎬 Movies' in sidebar 'defaultSidebar'"
   },
   "sidebar.defaultSidebar.category.📺 TV Shows": {
-    "message": "📺 TV Shows",
+    "message": "📺 Séries de TV",
     "description": "The label for category '📺 TV Shows' in sidebar 'defaultSidebar'"
   }
 }

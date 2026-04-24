@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from '@docusaurus/Link';
 import { config } from '@site/src/config/environment';
 import { useLocale } from '@site/src/hooks';
 import styles from './styles.module.css';
@@ -167,7 +168,7 @@ export default function NewsletterSubscribe() {
         </form>
         {error && <p className={styles.errorMessage}>{error}</p>}
         <p className={styles.privacyNote}>
-          {t.privacyNote} <a href={privacyPath}>{t.privacyLink}</a>
+          {t.privacyNote} <Link to={privacyPath}>{t.privacyLink}</Link>
         </p>
       </div>
     </div>

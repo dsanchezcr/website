@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '@theme/Layout';
+import Link from '@docusaurus/Link';
 import { config } from '../config/environment';
 import { useLocale } from '@site/src/hooks';
 
@@ -29,10 +30,7 @@ const translations = {
     errorUnsubscribe: 'Could not unsubscribe. Please try again.',
     noSubscription: 'No subscription found for this email.',
     subscribePrompt: 'Want to subscribe? Enter your email in the newsletter form at the bottom of any page.',
-    enterEmail: 'Enter your email to manage your subscription:',
-    emailPlaceholder: 'Your email address',
-    lookupButton: 'Look Up',
-    lookingUp: 'Looking up...',
+    linkRequired: 'To manage your subscription, use the management link included in your newsletter emails.',
     privacyNote: 'Your data is handled according to our',
     privacyLink: 'Privacy Policy',
   },
@@ -61,10 +59,7 @@ const translations = {
     errorUnsubscribe: 'No se pudo cancelar la suscripción. Inténtalo de nuevo.',
     noSubscription: 'No se encontró una suscripción para este correo.',
     subscribePrompt: '¿Quieres suscribirte? Ingresa tu correo en el formulario del boletín al final de cualquier página.',
-    enterEmail: 'Ingresa tu correo para gestionar tu suscripción:',
-    emailPlaceholder: 'Tu correo electrónico',
-    lookupButton: 'Buscar',
-    lookingUp: 'Buscando...',
+    linkRequired: 'Para gestionar tu suscripción, usa el enlace de gestión incluido en los correos del boletín.',
     privacyNote: 'Tus datos se manejan según nuestra',
     privacyLink: 'Política de Privacidad',
   },
@@ -93,10 +88,7 @@ const translations = {
     errorUnsubscribe: 'Não foi possível cancelar a assinatura. Tente novamente.',
     noSubscription: 'Nenhuma assinatura encontrada para este e-mail.',
     subscribePrompt: 'Quer se inscrever? Insira seu e-mail no formulário do boletim no final de qualquer página.',
-    enterEmail: 'Insira seu e-mail para gerenciar sua assinatura:',
-    emailPlaceholder: 'Seu endereço de e-mail',
-    lookupButton: 'Buscar',
-    lookingUp: 'Buscando...',
+    linkRequired: 'Para gerenciar sua assinatura, use o link de gerenciamento incluído nos e-mails do boletim.',
     privacyNote: 'Seus dados são tratados de acordo com nossa',
     privacyLink: 'Política de Privacidade',
   },
@@ -228,35 +220,17 @@ function NewsletterManagement() {
             <h1>{t.manageTitle}</h1>
             <p>{t.manageDescription}</p>
 
-            {!subscription && !error && (
+            {!subscription && !error && !hasParams && (
               <div>
-                <p>{t.enterEmail}</p>
-                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={t.emailPlaceholder}
-                    style={{
-                      flex: 1,
-                      padding: '0.6rem 1rem',
-                      border: '1px solid var(--ifm-color-emphasis-300)',
-                      borderRadius: '6px',
-                      fontSize: '0.9rem',
-                    }}
-                  />
-                  <button
-                    onClick={loadSubscription}
-                    disabled={isLoading || !email}
-                    className="button button--primary"
-                  >
-                    {isLoading ? t.lookingUp : t.lookupButton}
-                  </button>
-                </div>
+                <p>{t.linkRequired}</p>
                 <p style={{ color: 'var(--ifm-color-emphasis-600)', fontSize: '0.85rem' }}>
                   {t.subscribePrompt}
                 </p>
               </div>
+            )}
+
+            {!subscription && !error && hasParams && isLoading && (
+              <p>{t.lookingUp || 'Loading...'}</p>
             )}
 
             {subscription && (
@@ -327,7 +301,7 @@ function NewsletterManagement() {
               fontSize: '0.8rem',
               marginTop: '2rem',
             }}>
-              {t.privacyNote} <a href={privacyPath}>{t.privacyLink}</a>.
+              {t.privacyNote} <Link to={privacyPath}>{t.privacyLink}</Link>.
             </p>
           </div>
         </div>
