@@ -103,14 +103,16 @@ The website has no mechanism for readers to receive updates about new blog posts
 ### Security
 
 - Double opt-in email verification (reuses existing pattern from contact form)
-- HMAC-signed unsubscribe tokens (no login required, RFC 8058 compliant)
+- HMAC-signed unsubscribe tokens using dedicated `NEWSLETTER_HMAC_KEY` (no login required)
+- Verification tokens expire after 24 hours
 - Rate limiting: 3 subscribe requests/IP/hour
 - Honeypot field on subscription form
-- reCAPTCHA v3 on subscribe form
+- reCAPTCHA v3 validation (optional — honeypot + rate limiting provide primary protection; reCAPTCHA is validated when a token is provided)
 - `NEWSLETTER_DISPATCH_KEY` for authenticating GitHub Actions dispatch call
 - Constant-time comparison for dispatch key validation
-- `List-Unsubscribe` header in all newsletter emails
+- Link-based unsubscribe in all newsletter emails
 - Input validation at all API boundaries
+- Dispatch idempotency: subscribers already sent within the current frequency window are skipped
 
 ## Edge Cases
 

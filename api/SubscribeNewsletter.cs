@@ -207,10 +207,9 @@ public partial class SubscribeNewsletter
 
     private static string GenerateHmacToken(string email)
     {
-        var key = Environment.GetEnvironmentVariable("NEWSLETTER_HMAC_KEY")
-            ?? Environment.GetEnvironmentVariable("NEWSLETTER_DISPATCH_KEY");
+        var key = Environment.GetEnvironmentVariable("NEWSLETTER_HMAC_KEY");
         if (string.IsNullOrWhiteSpace(key))
-            throw new InvalidOperationException("NEWSLETTER_HMAC_KEY (or NEWSLETTER_DISPATCH_KEY) is not configured. Cannot generate secure tokens.");
+            throw new InvalidOperationException("NEWSLETTER_HMAC_KEY is not configured. Cannot generate secure tokens.");
         using var hmac = new HMACSHA256(System.Text.Encoding.UTF8.GetBytes(key));
         var hash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(email.ToLowerInvariant()));
         return Convert.ToBase64String(hash).Replace("+", "-").Replace("/", "_").Replace("=", "");

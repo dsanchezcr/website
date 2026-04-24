@@ -57,6 +57,16 @@ public class VerifySubscription
                     "Invalid or expired verification link. Please subscribe again.", "en");
             }
 
+            // Enforce 24-hour TTL on verification tokens
+            if (subscriber.Status == "pending" &&
+                subscriber.SubscribedAt.AddHours(24) < DateTime.UtcNow)
+            {
+                subscriber.VerificationToken = null;
+                await _newsletterService.UpdateSubscriberAsync(subscriber);
+                return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
+                    "This verification link has expired. Please subscribe again.", subscriber.Language);
+            }
+
             subscriber.Status = "active";
             subscriber.VerifiedAt = DateTime.UtcNow;
             subscriber.VerificationToken = null;

@@ -83,6 +83,16 @@ public class DispatchNewsletter
 
         frequency = frequency.ToLowerInvariant();
 
+        // Skip sending when there's no content
+        var hasBlogPosts = body!.BlogPosts != null && body.BlogPosts.Count > 0;
+        var hasCustomMessage = !string.IsNullOrWhiteSpace(body.CustomMessage);
+        if (!hasBlogPosts && !hasCustomMessage)
+        {
+            var noContent = req.CreateResponse(HttpStatusCode.OK);
+            await noContent.WriteAsJsonAsync(new { message = "No content to send. Dispatch skipped.", sent = 0 });
+            return noContent;
+        }
+
         try
         {
             var subscribers = await _newsletterService.GetActiveSubscribersByFrequencyAsync(frequency);
@@ -108,6 +118,17 @@ public class DispatchNewsletter
             {
                 try
                 {
+                    // Skip subscribers already sent within current frequency window (idempotency)
+                    if (subscriber.LastSentAt.HasValue)
+                    {
+                        var windowHours = frequency == "weekly" ? 24 * 6 : 24 * 27;
+                        if (subscriber.LastSentAt.Value.AddHours(windowHours) > DateTime.UtcNow)
+                        {
+                            _logger.LogInformation("Skipping {Email} — already sent within {Frequency} window", subscriber.Email, frequency);
+                            continue;
+                        }
+                    }
+
                     await SendNewsletterEmailAsync(subscriber, body!, cancellationToken);
                     subscriber.LastSentAt = DateTime.UtcNow;
                     await _newsletterService.UpdateSubscriberAsync(subscriber);
