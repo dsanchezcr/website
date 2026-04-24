@@ -78,7 +78,7 @@ public class CosmosNewsletterService : INewsletterService
 
     public async Task<NewsletterSubscriber?> GetSubscriberByUnsubscribeTokenAsync(string token)
     {
-        var query = new QueryDefinition("SELECT * FROM c WHERE c.unsubscribeToken = @token AND c.status = 'active'")
+        var query = new QueryDefinition("SELECT * FROM c WHERE c.unsubscribeToken = @token")
             .WithParameter("@token", token);
         var results = await ExecuteQueryAsync(query);
         return results.FirstOrDefault();

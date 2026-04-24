@@ -62,7 +62,7 @@ The website has no mechanism for readers to receive updates about new blog posts
 | `VerifySubscription` | `/api/newsletter/verify` | GET | Confirm subscription via token |
 | `UnsubscribeNewsletter` | `/api/newsletter/unsubscribe` | GET | One-click unsubscribe |
 | `UpdatePreferences` | `/api/newsletter/preferences` | POST | Change frequency |
-| `GetSubscriptionStatus` | `/api/newsletter/status` | GET | Check status by email |
+| `GetSubscriptionStatus` | `/api/newsletter/status` | GET | Check status by unsubscribe token |
 | `DispatchNewsletter` | `/api/newsletter/dispatch` | POST | Build + send digest (called by GitHub Actions) |
 
 ### Frontend Components

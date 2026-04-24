@@ -102,7 +102,7 @@ public partial class SubscribeNewsletter
             return tooMany;
         }
 
-        // Validate reCAPTCHA (optional — the newsletter component is site-wide in Layout,
+        // Validate reCAPTCHA (optional — the newsletter component is mounted via the Footer theme override,
         // so it doesn't use GoogleReCaptchaProvider; honeypot + rate limiting provide protection)
         if (!string.IsNullOrWhiteSpace(request.RecaptchaToken))
         {
