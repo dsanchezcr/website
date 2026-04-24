@@ -34,6 +34,12 @@ public class VerifySubscription
     {
         _logger.LogInformation("VerifySubscription Function Triggered");
 
+        if (!await _newsletterService.IsConfiguredAsync())
+        {
+            return await CreateHtmlResponseAsync(req, HttpStatusCode.ServiceUnavailable,
+                "Newsletter service is not available. Please try again later.", "en");
+        }
+
         var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
         var token = query["token"];
 
@@ -56,8 +62,15 @@ public class VerifySubscription
             subscriber.VerificationToken = null;
             await _newsletterService.UpdateSubscriberAsync(subscriber);
 
-            // Send welcome email
-            await SendWelcomeEmailAsync(subscriber, cancellationToken);
+            // Send welcome email (best-effort — verification already succeeded)
+            try
+            {
+                await SendWelcomeEmailAsync(subscriber, cancellationToken);
+            }
+            catch (Exception emailEx)
+            {
+                _logger.LogWarning(emailEx, "Newsletter subscription verified for {Email}, but sending the welcome email failed", subscriber.Email);
+            }
 
             _logger.LogInformation("Newsletter subscription verified for {Email}", subscriber.Email);
 

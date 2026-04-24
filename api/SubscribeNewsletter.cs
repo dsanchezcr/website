@@ -143,7 +143,7 @@ public partial class SubscribeNewsletter
             {
                 var subscriber = new NewsletterSubscriber
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = request.Email.ToLowerInvariant(),
                     Email = request.Email.ToLowerInvariant(),
                     Frequency = request.Frequency,
                     Language = request.Language,

@@ -116,14 +116,15 @@ jobs:
           echo "Found EN posts: $POSTS_EN"
           echo "Found ES posts: $POSTS_ES"
           echo "Found PT posts: $POSTS_PT"
-          echo "posts_en=$POSTS_EN" >> $GITHUB_OUTPUT
-          echo "posts_es=$POSTS_ES" >> $GITHUB_OUTPUT
-          echo "posts_pt=$POSTS_PT" >> $GITHUB_OUTPUT
+          echo "posts_en=$(echo "$POSTS_EN" | jq -c .)" >> $GITHUB_OUTPUT
+          echo "posts_es=$(echo "$POSTS_ES" | jq -c .)" >> $GITHUB_OUTPUT
+          echo "posts_pt=$(echo "$POSTS_PT" | jq -c .)" >> $GITHUB_OUTPUT
 
       - name: Dispatch Newsletter
+        env:
+          CUSTOM_MESSAGE: ${{ inputs.custom_message || '' }}
         run: |
           FREQUENCY="${{ steps.frequency.outputs.value }}"
-          CUSTOM_MESSAGE='${{ inputs.custom_message || '' }}'
           SITE_URL="https://dsanchezcr.com"
           
           dispatch_for_lang() {

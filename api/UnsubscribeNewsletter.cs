@@ -24,6 +24,12 @@ public class UnsubscribeNewsletter
     {
         _logger.LogInformation("UnsubscribeNewsletter Function Triggered");
 
+        if (!await _newsletterService.IsConfiguredAsync())
+        {
+            return await CreateHtmlResponseAsync(req, HttpStatusCode.ServiceUnavailable,
+                "Newsletter service is not available. Please try again later.", "en", false);
+        }
+
         var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
         var token = query["token"];
 
