@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Caching.Memory;
 using Azure.Communication.Email;
 using Azure;
 using api.Models.Newsletter;
@@ -18,7 +17,7 @@ public partial class SubscribeNewsletter
     private readonly ILogger<SubscribeNewsletter> _logger;
     private readonly INewsletterService _newsletterService;
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly IMemoryCache _cache;
+    private readonly IRateLimitService _rateLimitService;
     private const int MaxSubscriptionsPerIpPerHour = 3;
     private const double MinRecaptchaScore = 0.5;
 
@@ -33,12 +32,12 @@ public partial class SubscribeNewsletter
     [GeneratedRegex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")]
     private static partial Regex EmailRegex();
 
-    public SubscribeNewsletter(ILogger<SubscribeNewsletter> logger, INewsletterService newsletterService, IHttpClientFactory httpClientFactory, IMemoryCache cache)
+    public SubscribeNewsletter(ILogger<SubscribeNewsletter> logger, INewsletterService newsletterService, IHttpClientFactory httpClientFactory, IRateLimitService rateLimitService)
     {
         _logger = logger;
         _newsletterService = newsletterService;
         _httpClientFactory = httpClientFactory;
-        _cache = cache;
+        _rateLimitService = rateLimitService;
     }
 
     [Function("SubscribeNewsletter")]
@@ -95,14 +94,13 @@ public partial class SubscribeNewsletter
         // Rate limiting
         var clientIp = GetClientIp(req);
         var rateLimitKey = $"newsletter:subscribe:{clientIp}";
-        if (_cache.TryGetValue<int>(rateLimitKey, out var attempts) && attempts >= MaxSubscriptionsPerIpPerHour)
+        if (_rateLimitService.IsRateLimited(rateLimitKey, MaxSubscriptionsPerIpPerHour, TimeSpan.FromHours(1)))
         {
             _logger.LogWarning("Newsletter subscribe rate limit exceeded for IP: {ClientIp}", clientIp);
             var tooMany = req.CreateResponse(HttpStatusCode.TooManyRequests);
             await tooMany.WriteAsJsonAsync(new { error = "Too many subscription attempts. Please try again later." });
             return tooMany;
         }
-        _cache.Set(rateLimitKey, (attempts) + 1, TimeSpan.FromHours(1));
 
         // Validate reCAPTCHA (optional — the newsletter component is site-wide in Layout,
         // so it doesn't use GoogleReCaptchaProvider; honeypot + rate limiting provide protection)
@@ -209,7 +207,10 @@ public partial class SubscribeNewsletter
 
     private static string GenerateHmacToken(string email)
     {
-        var key = Environment.GetEnvironmentVariable("NEWSLETTER_DISPATCH_KEY") ?? "default-key";
+        var key = Environment.GetEnvironmentVariable("NEWSLETTER_HMAC_KEY")
+            ?? Environment.GetEnvironmentVariable("NEWSLETTER_DISPATCH_KEY");
+        if (string.IsNullOrWhiteSpace(key))
+            throw new InvalidOperationException("NEWSLETTER_HMAC_KEY (or NEWSLETTER_DISPATCH_KEY) is not configured. Cannot generate secure tokens.");
         using var hmac = new HMACSHA256(System.Text.Encoding.UTF8.GetBytes(key));
         var hash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(email.ToLowerInvariant()));
         return Convert.ToBase64String(hash).Replace("+", "-").Replace("/", "_").Replace("=", "");

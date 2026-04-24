@@ -252,10 +252,11 @@ function NewsletterManagement() {
                 {subscription.status === 'active' && (
                   <>
                     <div style={{ marginBottom: '1rem' }}>
-                      <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
+                      <label htmlFor="newsletter-frequency" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
                         {t.frequencyLabel}
                       </label>
                       <select
+                        id="newsletter-frequency"
                         value={frequency}
                         onChange={(e) => setFrequency(e.target.value)}
                         style={{

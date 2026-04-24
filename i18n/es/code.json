@@ -332,7 +332,7 @@
     "description": "Dollars label"
   },
   "onlineStatus.usersLast24Hours": {
-    "message": "{count} visitors in 24h",
+    "message": "{count} visitantes en 24h",
     "description": "Number of users who visited in the last 24 hours"
   },
   "theme.colorToggle.ariaLabel.mode.system": {
