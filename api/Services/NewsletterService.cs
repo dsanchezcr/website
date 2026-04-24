@@ -39,10 +39,11 @@ public class CosmosNewsletterService : INewsletterService
     {
         try
         {
-            var query = new QueryDefinition("SELECT * FROM c WHERE c.email = @email")
-                .WithParameter("@email", email.ToLowerInvariant());
-            var results = await ExecuteQueryAsync(query, new PartitionKey(email.ToLowerInvariant()));
-            return results.FirstOrDefault();
+            var emailLower = email.ToLowerInvariant();
+            var response = await _container.ReadItemAsync<NewsletterSubscriber>(
+                id: emailLower,
+                partitionKey: new PartitionKey(emailLower));
+            return response.Resource;
         }
         catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
         {

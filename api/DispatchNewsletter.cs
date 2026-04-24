@@ -113,9 +113,11 @@ public class DispatchNewsletter
 
             var sent = 0;
             var failed = 0;
+            var semaphore = new SemaphoreSlim(5); // Bounded concurrency
 
-            foreach (var subscriber in subscribers)
+            var tasks = subscribers.Select(async subscriber =>
             {
+                await semaphore.WaitAsync(cancellationToken);
                 try
                 {
                     // Skip subscribers already sent within current frequency window (idempotency)
@@ -125,21 +127,27 @@ public class DispatchNewsletter
                         if (subscriber.LastSentAt.Value.Add(window) > DateTime.UtcNow)
                         {
                             _logger.LogInformation("Skipping {Email} — already sent within {Frequency} window", subscriber.Email, frequency);
-                            continue;
+                            return;
                         }
                     }
 
                     await SendNewsletterEmailAsync(subscriber, body!, cancellationToken);
                     subscriber.LastSentAt = DateTime.UtcNow;
                     await _newsletterService.UpdateSubscriberAsync(subscriber);
-                    sent++;
+                    Interlocked.Increment(ref sent);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Failed to send newsletter to {Email}", subscriber.Email);
-                    failed++;
+                    Interlocked.Increment(ref failed);
                 }
-            }
+                finally
+                {
+                    semaphore.Release();
+                }
+            });
+
+            await Task.WhenAll(tasks);
 
             _logger.LogInformation("Newsletter dispatch completed: {Sent} sent, {Failed} failed", sent, failed);
 
