@@ -10,6 +10,7 @@ const translations = {
     emailPlaceholder: 'Your email address',
     weekly: 'Weekly',
     monthly: 'Monthly',
+    frequencyLabel: 'Frequency',
     subscribe: 'Subscribe',
     subscribing: 'Subscribing...',
     successTitle: 'Check your email!',
@@ -26,6 +27,7 @@ const translations = {
     emailPlaceholder: 'Tu correo electrónico',
     weekly: 'Semanal',
     monthly: 'Mensual',
+    frequencyLabel: 'Frecuencia',
     subscribe: 'Suscribirse',
     subscribing: 'Suscribiendo...',
     successTitle: '¡Revisa tu correo!',
@@ -42,6 +44,7 @@ const translations = {
     emailPlaceholder: 'Seu endereço de e-mail',
     weekly: 'Semanal',
     monthly: 'Mensal',
+    frequencyLabel: 'Frequência',
     subscribe: 'Assinar',
     subscribing: 'Assinando...',
     successTitle: 'Verifique seu e-mail!',
@@ -149,7 +152,7 @@ export default function NewsletterSubscribe() {
             value={frequency}
             onChange={(e) => setFrequency(e.target.value)}
             className={styles.frequencySelect}
-            aria-label="Frequency"
+            aria-label={t.frequencyLabel}
           >
             <option value="weekly">{t.weekly}</option>
             <option value="monthly">{t.monthly}</option>

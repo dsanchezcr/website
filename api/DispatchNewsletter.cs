@@ -45,10 +45,17 @@ public class DispatchNewsletter
             return unavailable;
         }
 
-        if (!req.Headers.TryGetValues("X-Newsletter-Key", out var keyValues) ||
-            !CryptographicOperations.FixedTimeEquals(
-                System.Text.Encoding.UTF8.GetBytes(dispatchKey),
-                System.Text.Encoding.UTF8.GetBytes(keyValues.First())))
+        if (!req.Headers.TryGetValues("X-Newsletter-Key", out var keyValues))
+        {
+            var unauthorized = req.CreateResponse(HttpStatusCode.Unauthorized);
+            await unauthorized.WriteAsJsonAsync(new { error = "Invalid dispatch key." });
+            return unauthorized;
+        }
+
+        var providedKeyBytes = System.Text.Encoding.UTF8.GetBytes(keyValues.First());
+        var expectedKeyBytes = System.Text.Encoding.UTF8.GetBytes(dispatchKey);
+        if (providedKeyBytes.Length != expectedKeyBytes.Length ||
+            !CryptographicOperations.FixedTimeEquals(providedKeyBytes, expectedKeyBytes))
         {
             var unauthorized = req.CreateResponse(HttpStatusCode.Unauthorized);
             await unauthorized.WriteAsJsonAsync(new { error = "Invalid dispatch key." });
@@ -124,7 +131,6 @@ public class DispatchNewsletter
         var unsubscribeText = LocalizationHelper.GetText(lang, "newsletterUnsubscribe");
         var manageText = LocalizationHelper.GetText(lang, "newsletterManagePreferences");
         var newPostsTitle = LocalizationHelper.GetText(lang, "newsletterNewBlogPosts");
-        var readMore = LocalizationHelper.GetText(lang, "newsletterReadMore");
         var noContent = LocalizationHelper.GetText(lang, "newsletterNoContent");
 
         var websiteUrl = Environment.GetEnvironmentVariable("WEBSITE_URL") ?? "https://dsanchezcr.com";
@@ -139,7 +145,8 @@ public class DispatchNewsletter
             contentHtml += $"<h3>{newPostsTitle}</h3><ul>";
             foreach (var post in content.BlogPosts)
             {
-                contentHtml += $"<li><a href=\"{websiteUrl}{langPrefix}/blog/{System.Net.WebUtility.HtmlEncode(post.Slug)}\">{System.Net.WebUtility.HtmlEncode(post.Title)}</a> — {System.Net.WebUtility.HtmlEncode(post.Description)}</li>";
+                var escapedSlug = Uri.EscapeDataString(post.Slug);
+                contentHtml += $"<li><a href=\"{websiteUrl}{langPrefix}/blog/{escapedSlug}\">{System.Net.WebUtility.HtmlEncode(post.Title)}</a> — {System.Net.WebUtility.HtmlEncode(post.Description)}</li>";
             }
             contentHtml += "</ul>";
         }

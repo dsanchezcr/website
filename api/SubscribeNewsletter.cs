@@ -136,6 +136,7 @@ public partial class SubscribeNewsletter
                 existing.Frequency = request.Frequency;
                 existing.Language = request.Language;
                 existing.VerificationToken = GenerateToken();
+                existing.UnsubscribeToken = GenerateHmacToken(existing.Email);
                 existing.SubscribedAt = DateTime.UtcNow;
                 await _newsletterService.UpdateSubscriberAsync(existing);
                 await SendVerificationEmailAsync(existing, cancellationToken);

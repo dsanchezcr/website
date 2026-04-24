@@ -245,6 +245,13 @@ function NewsletterManagement() {
                       fontSize: '0.9rem',
                     }}
                   />
+                  <button
+                    onClick={loadSubscription}
+                    disabled={isLoading || !email}
+                    className="button button--primary"
+                  >
+                    {isLoading ? t.lookingUp : t.lookupButton}
+                  </button>
                 </div>
                 <p style={{ color: 'var(--ifm-color-emphasis-600)', fontSize: '0.85rem' }}>
                   {t.subscribePrompt}

@@ -60,9 +60,10 @@ public class UpdatePreferences
             }
 
             // Verify the unsubscribe token matches (proves ownership)
-            if (!CryptographicOperations.FixedTimeEquals(
-                System.Text.Encoding.UTF8.GetBytes(subscriber.UnsubscribeToken),
-                System.Text.Encoding.UTF8.GetBytes(request.Token)))
+            var expectedTokenBytes = System.Text.Encoding.UTF8.GetBytes(subscriber.UnsubscribeToken);
+            var providedTokenBytes = System.Text.Encoding.UTF8.GetBytes(request.Token);
+            if (expectedTokenBytes.Length != providedTokenBytes.Length ||
+                !CryptographicOperations.FixedTimeEquals(expectedTokenBytes, providedTokenBytes))
             {
                 var forbidden = req.CreateResponse(HttpStatusCode.Forbidden);
                 await forbidden.WriteAsJsonAsync(new { error = "Invalid token." });
