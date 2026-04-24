@@ -66,69 +66,102 @@ jobs:
           
           echo "Looking for blog posts since ${CUTOFF_DATE}..."
           
-          # Extract blog post metadata from MDX files using jq for safe JSON
-          POSTS="[]"
-          for file in blog/*.mdx; do
-            if [ ! -f "$file" ]; then continue; fi
-            
-            # Get file modification date from git
-            FILE_DATE=$(git log -1 --format="%cs" -- "$file" 2>/dev/null || echo "")
-            if [ -z "$FILE_DATE" ]; then continue; fi
-            
-            # Compare dates
-            if [[ "$FILE_DATE" > "$CUTOFF_DATE" ]] || [[ "$FILE_DATE" == "$CUTOFF_DATE" ]]; then
-              # Extract frontmatter
-              TITLE=$(sed -n 's/^title: *//p' "$file" | head -1 | tr -d '"' | tr -d "'")
-              DESCRIPTION=$(sed -n 's/^description: *//p' "$file" | head -1 | tr -d '"' | tr -d "'")
-              # Prefer explicit frontmatter slug; fall back to filename (remove date prefix and extension)
-              FRONTMATTER_SLUG=$(sed -n 's/^slug: *//p' "$file" | head -1 | tr -d '"' | tr -d "'")
-              if [ -n "$FRONTMATTER_SLUG" ]; then
-                SLUG="$FRONTMATTER_SLUG"
-              else
-                SLUG=$(basename "$file" .mdx | sed 's/^[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}-//')
-              fi
+          extract_posts() {
+            local BLOG_DIR="$1"
+            local POSTS="[]"
+            for file in ${BLOG_DIR}/*.mdx; do
+              if [ ! -f "$file" ]; then continue; fi
               
-              if [ -n "$TITLE" ] && [ -n "$SLUG" ]; then
-                # Use jq to safely build JSON (handles quotes, backslashes, special chars)
-                POST=$(jq -n --arg s "$SLUG" --arg t "$TITLE" --arg d "${DESCRIPTION:-}" \
-                  '{slug: $s, title: $t, description: $d}')
-                POSTS=$(echo "$POSTS" | jq --argjson post "$POST" '. + [$post]')
+              # Get file modification date from git
+              FILE_DATE=$(git log -1 --format="%cs" -- "$file" 2>/dev/null || echo "")
+              if [ -z "$FILE_DATE" ]; then continue; fi
+              
+              # Compare dates
+              if [[ "$FILE_DATE" > "$CUTOFF_DATE" ]] || [[ "$FILE_DATE" == "$CUTOFF_DATE" ]]; then
+                # Extract frontmatter
+                TITLE=$(sed -n 's/^title: *//p' "$file" | head -1 | tr -d '"' | tr -d "'")
+                DESCRIPTION=$(sed -n 's/^description: *//p' "$file" | head -1 | tr -d '"' | tr -d "'")
+                # Prefer explicit frontmatter slug; fall back to filename (remove date prefix and extension)
+                FRONTMATTER_SLUG=$(sed -n 's/^slug: *//p' "$file" | head -1 | tr -d '"' | tr -d "'")
+                if [ -n "$FRONTMATTER_SLUG" ]; then
+                  SLUG="$FRONTMATTER_SLUG"
+                else
+                  SLUG=$(basename "$file" .mdx | sed 's/^[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}-//')
+                fi
+                
+                if [ -n "$TITLE" ] && [ -n "$SLUG" ]; then
+                  # Use jq to safely build JSON (handles quotes, backslashes, special chars)
+                  POST=$(jq -n --arg s "$SLUG" --arg t "$TITLE" --arg d "${DESCRIPTION:-}" \
+                    '{slug: $s, title: $t, description: $d}')
+                  POSTS=$(echo "$POSTS" | jq --argjson post "$POST" '. + [$post]')
+                fi
               fi
-            fi
-          done
+            done
+            echo "$POSTS"
+          }
           
-          echo "Found posts: $POSTS"
-          echo "posts=$POSTS" >> $GITHUB_OUTPUT
+          # Extract posts for each locale
+          POSTS_EN=$(extract_posts "blog")
+          POSTS_ES=$(extract_posts "i18n/es/docusaurus-plugin-content-blog")
+          POSTS_PT=$(extract_posts "i18n/pt/docusaurus-plugin-content-blog")
+          
+          # Fall back to English if no localized posts found
+          if [ "$(echo "$POSTS_ES" | jq length)" -eq 0 ]; then
+            POSTS_ES="$POSTS_EN"
+          fi
+          if [ "$(echo "$POSTS_PT" | jq length)" -eq 0 ]; then
+            POSTS_PT="$POSTS_EN"
+          fi
+          
+          echo "Found EN posts: $POSTS_EN"
+          echo "Found ES posts: $POSTS_ES"
+          echo "Found PT posts: $POSTS_PT"
+          echo "posts_en=$POSTS_EN" >> $GITHUB_OUTPUT
+          echo "posts_es=$POSTS_ES" >> $GITHUB_OUTPUT
+          echo "posts_pt=$POSTS_PT" >> $GITHUB_OUTPUT
 
       - name: Dispatch Newsletter
         run: |
           FREQUENCY="${{ steps.frequency.outputs.value }}"
-          POSTS='${{ steps.content.outputs.posts }}'
           CUSTOM_MESSAGE='${{ inputs.custom_message || '' }}'
+          SITE_URL="https://dsanchezcr.com"
           
-          # Build request body
-          BODY=$(jq -n \
-            --arg freq "$FREQUENCY" \
-            --argjson posts "$POSTS" \
-            --arg msg "$CUSTOM_MESSAGE" \
-            '{frequency: $freq, blogPosts: $posts, customMessage: $msg}')
+          dispatch_for_lang() {
+            local LANG="$1"
+            local POSTS="$2"
+            
+            BODY=$(jq -n \
+              --arg freq "$FREQUENCY" \
+              --argjson posts "$POSTS" \
+              --arg msg "$CUSTOM_MESSAGE" \
+              --arg lang "$LANG" \
+              '{frequency: $freq, blogPosts: $posts, customMessage: $msg, language: $lang}')
+            
+            echo "Dispatching ${FREQUENCY} newsletter for language: ${LANG}..."
+            
+            RESPONSE=$(curl -s -w "\n%{http_code}" \
+              -X POST \
+              -H "Content-Type: application/json" \
+              -H "X-Newsletter-Key: ${{ secrets.NEWSLETTER_DISPATCH_KEY }}" \
+              -d "$BODY" \
+              "${SITE_URL}/api/newsletter/dispatch")
+            
+            HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+            RESPONSE_BODY=$(echo "$RESPONSE" | sed '$d')
+            
+            echo "Response for ${LANG} (${HTTP_CODE}): ${RESPONSE_BODY}"
+            
+            if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+              echo "Newsletter dispatched successfully for ${LANG}!"
+            else
+              echo "::warning::Newsletter dispatch for ${LANG} returned HTTP ${HTTP_CODE}"
+            fi
+          }
           
-          echo "Dispatching ${FREQUENCY} newsletter..."
+          POSTS_EN='${{ steps.content.outputs.posts_en }}'
+          POSTS_ES='${{ steps.content.outputs.posts_es }}'
+          POSTS_PT='${{ steps.content.outputs.posts_pt }}'
           
-          RESPONSE=$(curl -s -w "\n%{http_code}" \
-            -X POST \
-            -H "Content-Type: application/json" \
-            -H "X-Newsletter-Key: ${{ secrets.NEWSLETTER_DISPATCH_KEY }}" \
-            -d "$BODY" \
-            "https://dsanchezcr.com/api/newsletter/dispatch")
-          
-          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
-          RESPONSE_BODY=$(echo "$RESPONSE" | sed '$d')
-          
-          echo "Response (${HTTP_CODE}): ${RESPONSE_BODY}"
-          
-          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
-            echo "Newsletter dispatched successfully!"
-          else
-            echo "::warning::Newsletter dispatch returned HTTP ${HTTP_CODE}"
-          fi
+          dispatch_for_lang "en" "$POSTS_EN"
+          dispatch_for_lang "es" "$POSTS_ES"
+          dispatch_for_lang "pt" "$POSTS_PT"

@@ -31,6 +31,7 @@ const translations = {
     noSubscription: 'No subscription found for this email.',
     subscribePrompt: 'Want to subscribe? Enter your email in the newsletter form at the bottom of any page.',
     linkRequired: 'To manage your subscription, use the management link included in your newsletter emails.',
+    lookingUp: 'Loading...',
     privacyNote: 'Your data is handled according to our',
     privacyLink: 'Privacy Policy',
   },
@@ -60,6 +61,7 @@ const translations = {
     noSubscription: 'No se encontró una suscripción para este correo.',
     subscribePrompt: '¿Quieres suscribirte? Ingresa tu correo en el formulario del boletín al final de cualquier página.',
     linkRequired: 'Para gestionar tu suscripción, usa el enlace de gestión incluido en los correos del boletín.',
+    lookingUp: 'Cargando...',
     privacyNote: 'Tus datos se manejan según nuestra',
     privacyLink: 'Política de Privacidad',
   },
@@ -89,6 +91,7 @@ const translations = {
     noSubscription: 'Nenhuma assinatura encontrada para este e-mail.',
     subscribePrompt: 'Quer se inscrever? Insira seu e-mail no formulário do boletim no final de qualquer página.',
     linkRequired: 'Para gerenciar sua assinatura, use o link de gerenciamento incluído nos e-mails do boletim.',
+    lookingUp: 'Carregando...',
     privacyNote: 'Seus dados são tratados de acordo com nossa',
     privacyLink: 'Política de Privacidade',
   },
@@ -230,7 +233,7 @@ function NewsletterManagement() {
             )}
 
             {!subscription && !error && hasParams && isLoading && (
-              <p>{t.lookingUp || 'Loading...'}</p>
+              <p>{t.lookingUp}</p>
             )}
 
             {subscription && (

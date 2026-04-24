@@ -71,16 +71,29 @@ public class DispatchNewsletter
 
         // Parse request body for content and frequency
         var body = await req.ReadFromJsonAsync<DispatchRequest>(cancellationToken);
-        if (body == null || string.IsNullOrWhiteSpace(body.Frequency))
+        var frequency = body?.Frequency?.Trim();
+        if (body == null || string.IsNullOrWhiteSpace(frequency) ||
+            (!string.Equals(frequency, "weekly", StringComparison.OrdinalIgnoreCase) &&
+             !string.Equals(frequency, "monthly", StringComparison.OrdinalIgnoreCase)))
         {
             var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badRequest.WriteAsJsonAsync(new { error = "Frequency and content are required." });
+            await badRequest.WriteAsJsonAsync(new { error = "Frequency is required and must be either 'weekly' or 'monthly'." });
             return badRequest;
         }
 
+        frequency = frequency.ToLowerInvariant();
+
         try
         {
-            var subscribers = await _newsletterService.GetActiveSubscribersByFrequencyAsync(body.Frequency);
+            var subscribers = await _newsletterService.GetActiveSubscribersByFrequencyAsync(frequency);
+
+            // Filter by language if specified (workflow dispatches per-language)
+            var language = body?.Language?.Trim()?.ToLowerInvariant();
+            if (!string.IsNullOrEmpty(language))
+            {
+                subscribers = subscribers.Where(s => string.Equals(s.Language, language, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
             if (subscribers.Count == 0)
             {
                 var noSubscribers = req.CreateResponse(HttpStatusCode.OK);
@@ -95,7 +108,7 @@ public class DispatchNewsletter
             {
                 try
                 {
-                    await SendNewsletterEmailAsync(subscriber, body, cancellationToken);
+                    await SendNewsletterEmailAsync(subscriber, body!, cancellationToken);
                     subscriber.LastSentAt = DateTime.UtcNow;
                     await _newsletterService.UpdateSubscriberAsync(subscriber);
                     sent++;
@@ -193,6 +206,9 @@ public class DispatchNewsletter
 
         [System.Text.Json.Serialization.JsonPropertyName("customMessage")]
         public string? CustomMessage { get; set; }
+
+        [System.Text.Json.Serialization.JsonPropertyName("language")]
+        public string? Language { get; set; }
     }
 
     public class BlogPostEntry
