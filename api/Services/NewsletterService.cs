@@ -54,6 +54,7 @@ public class CosmosNewsletterService : INewsletterService
     public async Task<NewsletterSubscriber> CreateSubscriberAsync(NewsletterSubscriber subscriber)
     {
         subscriber.Email = subscriber.Email.ToLowerInvariant();
+        subscriber.Id = subscriber.Email;
         var response = await _container.CreateItemAsync(subscriber, new PartitionKey(subscriber.Email));
         _logger.LogInformation("Created newsletter subscriber: {Email}", subscriber.Email);
         return response.Resource;
@@ -62,6 +63,7 @@ public class CosmosNewsletterService : INewsletterService
     public async Task<NewsletterSubscriber> UpdateSubscriberAsync(NewsletterSubscriber subscriber)
     {
         subscriber.Email = subscriber.Email.ToLowerInvariant();
+        subscriber.Id = subscriber.Email;
         var response = await _container.ReplaceItemAsync(subscriber, subscriber.Id, new PartitionKey(subscriber.Email));
         _logger.LogInformation("Updated newsletter subscriber: {Email}, status: {Status}", subscriber.Email, subscriber.Status);
         return response.Resource;

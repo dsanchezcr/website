@@ -111,6 +111,8 @@ describe('NewsletterSubscribe', () => {
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.click(submitButton);
 
-    expect(screen.getByText('Subscribing...')).toBeDisabled();
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /subscribing/i })).toBeDisabled();
+    });
   });
 });

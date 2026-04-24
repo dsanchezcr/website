@@ -1,5 +1,4 @@
 using System.Net;
-using System.Security.Cryptography;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -33,35 +32,23 @@ public class GetSubscriptionStatus
         }
 
         var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
-        var email = query["email"];
         var token = query["token"];
 
-        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(token))
+        if (string.IsNullOrWhiteSpace(token))
         {
             var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badRequest.WriteAsJsonAsync(new { error = "Email and token are required." });
+            await badRequest.WriteAsJsonAsync(new { error = "Token is required." });
             return badRequest;
         }
 
         try
         {
-            var subscriber = await _newsletterService.GetSubscriberAsync(email);
+            var subscriber = await _newsletterService.GetSubscriberByUnsubscribeTokenAsync(token);
             if (subscriber == null)
             {
                 var notFound = req.CreateResponse(HttpStatusCode.NotFound);
                 await notFound.WriteAsJsonAsync(new { error = "Subscription not found." });
                 return notFound;
-            }
-
-            // Verify token (proves ownership)
-            var expectedTokenBytes = System.Text.Encoding.UTF8.GetBytes(subscriber.UnsubscribeToken);
-            var providedTokenBytes = System.Text.Encoding.UTF8.GetBytes(token);
-            if (expectedTokenBytes.Length != providedTokenBytes.Length ||
-                !CryptographicOperations.FixedTimeEquals(expectedTokenBytes, providedTokenBytes))
-            {
-                var forbidden = req.CreateResponse(HttpStatusCode.Forbidden);
-                await forbidden.WriteAsJsonAsync(new { error = "Invalid token." });
-                return forbidden;
             }
 
             var response = req.CreateResponse(HttpStatusCode.OK);

@@ -115,10 +115,8 @@ function NewsletterManagement() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      const emailParam = params.get('email');
       const tokenParam = params.get('token');
-      if (emailParam && tokenParam) {
-        setEmail(emailParam);
+      if (tokenParam) {
         setToken(tokenParam);
         setHasParams(true);
       }
@@ -127,7 +125,7 @@ function NewsletterManagement() {
 
   // Auto-load subscription when params are present
   useEffect(() => {
-    if (hasParams && email && token) {
+    if (hasParams && token) {
       loadSubscription();
     }
   }, [hasParams]);
@@ -140,13 +138,14 @@ function NewsletterManagement() {
     try {
       const apiEndpoint = config.getApiEndpoint();
       const response = await fetch(
-        `${apiEndpoint}${config.routes.newsletterStatus}?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`
+        `${apiEndpoint}${config.routes.newsletterStatus}?token=${encodeURIComponent(token)}`
       );
 
       if (response.ok) {
         const data = await response.json();
         setSubscription(data);
         setFrequency(data.frequency);
+        if (data.email) setEmail(data.email);
       } else if (response.status === 404) {
         setError(t.noSubscription);
       } else {
