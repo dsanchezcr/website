@@ -60,6 +60,7 @@ public class CosmosNewsletterService : INewsletterService
 
     public async Task<NewsletterSubscriber> UpdateSubscriberAsync(NewsletterSubscriber subscriber)
     {
+        subscriber.Email = subscriber.Email.ToLowerInvariant();
         var response = await _container.ReplaceItemAsync(subscriber, subscriber.Id, new PartitionKey(subscriber.Email));
         _logger.LogInformation("Updated newsletter subscriber: {Email}, status: {Status}", subscriber.Email, subscriber.Status);
         return response.Resource;

@@ -37,6 +37,7 @@ public static class LocalizationHelper
             // Newsletter
             ["newsletterVerificationSubject"] = "Verify your newsletter subscription",
             ["newsletterVerificationMessage"] = "Please click the link below to confirm your subscription:<br/><br/><a href=\"{0}\">Confirm Subscription</a><br/><br/>This link will expire in 24 hours.",
+            ["newsletterVerificationDisclaimer"] = "If you did not request this, please ignore this email.",
             ["newsletterWelcomeSubject"] = "Welcome to the Newsletter!",
             ["newsletterWelcomeGreeting"] = "Hello!",
             ["newsletterWelcomeMessage"] = "Thank you for subscribing to the newsletter. You will receive {0} updates with the latest blog posts, projects, and content from the website.",
@@ -82,6 +83,7 @@ public static class LocalizationHelper
             // Newsletter
             ["newsletterVerificationSubject"] = "Verifica tu suscripción al boletín",
             ["newsletterVerificationMessage"] = "Por favor haz clic en el enlace a continuación para confirmar tu suscripción:<br/><br/><a href=\"{0}\">Confirmar Suscripción</a><br/><br/>Este enlace expirará en 24 horas.",
+            ["newsletterVerificationDisclaimer"] = "Si no solicitaste esto, ignora este correo.",
             ["newsletterWelcomeSubject"] = "¡Bienvenido al Boletín!",
             ["newsletterWelcomeGreeting"] = "¡Hola!",
             ["newsletterWelcomeMessage"] = "Gracias por suscribirte al boletín. Recibirás actualizaciones {0} con las últimas publicaciones del blog, proyectos y contenido del sitio web.",
@@ -127,6 +129,7 @@ public static class LocalizationHelper
             // Newsletter
             ["newsletterVerificationSubject"] = "Verifique sua assinatura do boletim",
             ["newsletterVerificationMessage"] = "Por favor, clique no link abaixo para confirmar sua assinatura:<br/><br/><a href=\"{0}\">Confirmar Assinatura</a><br/><br/>Este link expirará em 24 horas.",
+            ["newsletterVerificationDisclaimer"] = "Se você não solicitou isso, ignore este e-mail.",
             ["newsletterWelcomeSubject"] = "Bem-vindo ao Boletim!",
             ["newsletterWelcomeGreeting"] = "Olá!",
             ["newsletterWelcomeMessage"] = "Obrigado por se inscrever no boletim. Você receberá atualizações {0} com as últimas publicações do blog, projetos e conteúdo do site.",

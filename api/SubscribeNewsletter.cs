@@ -189,7 +189,7 @@ public partial class SubscribeNewsletter
                     <body style="font-family: Arial, sans-serif;">
                         <h2>{subject}</h2>
                         <p>{message}</p>
-                        <p style="color: #666; font-size: 12px;">If you did not request this, please ignore this email.</p>
+                        <p style="color: #666; font-size: 12px;">{LocalizationHelper.GetText(subscriber.Language, "newsletterVerificationDisclaimer")}</p>
                     </body>
                 </html>
                 """,

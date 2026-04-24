@@ -69,7 +69,7 @@ public class VerifySubscription
             }
             catch (Exception emailEx)
             {
-                _logger.LogWarning(emailEx, "Newsletter subscription verified for {Email}, but sending the welcome email failed", subscriber.Email);
+                _logger.LogWarning("Newsletter subscription verified for {Email}, but sending the welcome email failed: {ErrorType}", subscriber.Email, emailEx.GetType().Name);
             }
 
             _logger.LogInformation("Newsletter subscription verified for {Email}", subscriber.Email);
