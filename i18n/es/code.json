@@ -591,7 +591,7 @@
     "description": "The text for suggested query"
   },
   "theme.SearchModal.noResultsScreen.reportMissingResultsText": {
-    "message": "Crees que esta consulta debería devolver resultados?",
+    "message": "¿Crees que esta consulta debería devolver resultados?",
     "description": "The text for reporting missing results"
   },
   "theme.SearchModal.noResultsScreen.reportMissingResultsLinkText": {
@@ -607,15 +607,15 @@
     "description": "The title of the page for a blog author"
   },
   "theme.blog.authorsList.pageTitle": {
-    "message": "Authors",
+    "message": "Autores",
     "description": "The title of the authors page"
   },
   "theme.blog.authorsList.viewAll": {
-    "message": "View All Authors",
+    "message": "Ver Todos los Autores",
     "description": "The label of the link targeting the blog authors page"
   },
   "theme.blog.author.noPosts": {
-    "message": "This author has not written any posts yet.",
+    "message": "Este autor aún no ha escrito ninguna publicación.",
     "description": "The text for authors with 0 blog post"
   },
   "theme.contentVisibility.unlistedBanner.title": {
@@ -623,15 +623,15 @@
     "description": "The unlisted content banner title"
   },
   "theme.contentVisibility.unlistedBanner.message": {
-    "message": "Esta página está sin clasificar. Los motores de búsqueda no la indexaran, y solo los usuarios con el enlace directo podrán acceder a esta.",
+    "message": "Esta página está sin clasificar. Los motores de búsqueda no la indexarán, y solo los usuarios con el enlace directo podrán acceder a esta.",
     "description": "The unlisted content banner message"
   },
   "theme.contentVisibility.draftBanner.title": {
-    "message": "Draft page",
+    "message": "Página en borrador",
     "description": "The draft content banner title"
   },
   "theme.contentVisibility.draftBanner.message": {
-    "message": "This page is a draft. It will only be visible in dev and be excluded from the production build.",
+    "message": "Esta página es un borrador. Solo será visible en desarrollo y se excluirá de la compilación de producción.",
     "description": "The draft content banner message"
   },
   "theme.docs.DocCard.categoryDescription.plurals": {

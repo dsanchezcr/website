@@ -121,8 +121,8 @@ public class DispatchNewsletter
                     // Skip subscribers already sent within current frequency window (idempotency)
                     if (subscriber.LastSentAt.HasValue)
                     {
-                        var windowHours = frequency == "weekly" ? 24 * 6 : 24 * 27;
-                        if (subscriber.LastSentAt.Value.AddHours(windowHours) > DateTime.UtcNow)
+                        var window = TimeSpan.FromDays(frequency == "weekly" ? 7 : 30);
+                        if (subscriber.LastSentAt.Value.Add(window) > DateTime.UtcNow)
                         {
                             _logger.LogInformation("Skipping {Email} — already sent within {Frequency} window", subscriber.Email, frequency);
                             continue;
