@@ -162,7 +162,8 @@ public class HealthCheck
         { "AZURE_COSMOS_DATABASE_NAME", ("Azure Cosmos DB database name (default: website-content)", false) },
         
         // Newsletter
-        { "NEWSLETTER_DISPATCH_KEY", ("Secret key for authenticating newsletter dispatch from GitHub Actions", false) }
+        { "NEWSLETTER_DISPATCH_KEY", ("Secret key for authenticating newsletter dispatch from GitHub Actions", false) },
+        { "NEWSLETTER_HMAC_KEY", ("Secret key for generating newsletter unsubscribe tokens", false) }
     };
 
     [Function("HealthCheck")]
