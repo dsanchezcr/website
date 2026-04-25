@@ -1,5 +1,4 @@
 using System.Net;
-using System.Security.Cryptography;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -34,30 +33,18 @@ public class GetSubscriptionStatus
 
         var request = await req.ReadFromJsonAsync<StatusRequest>(cancellationToken);
         var token = request?.Token;
-        var email = request?.Email;
 
-        if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
+        if (string.IsNullOrWhiteSpace(token))
         {
             var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badRequest.WriteAsJsonAsync(new { error = "Token and email are required." });
+            await badRequest.WriteAsJsonAsync(new { error = "Token is required." });
             return badRequest;
         }
 
         try
         {
-            var subscriber = await _newsletterService.GetSubscriberAsync(email);
+            var subscriber = await _newsletterService.GetSubscriberByUnsubscribeTokenAsync(token);
             if (subscriber == null)
-            {
-                var notFound = req.CreateResponse(HttpStatusCode.NotFound);
-                await notFound.WriteAsJsonAsync(new { error = "Subscription not found." });
-                return notFound;
-            }
-
-            // Verify the unsubscribe token matches (constant-time comparison)
-            var expectedTokenBytes = System.Text.Encoding.UTF8.GetBytes(subscriber.UnsubscribeToken);
-            var providedTokenBytes = System.Text.Encoding.UTF8.GetBytes(token);
-            if (expectedTokenBytes.Length != providedTokenBytes.Length ||
-                !CryptographicOperations.FixedTimeEquals(expectedTokenBytes, providedTokenBytes))
             {
                 var notFound = req.CreateResponse(HttpStatusCode.NotFound);
                 await notFound.WriteAsJsonAsync(new { error = "Subscription not found." });
@@ -84,5 +71,5 @@ public class GetSubscriptionStatus
         }
     }
 
-    private record StatusRequest(string? Token, string? Email);
+    private record StatusRequest(string? Token);
 }

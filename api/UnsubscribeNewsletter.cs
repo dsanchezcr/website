@@ -1,6 +1,4 @@
 using System.Net;
-using System.Security.Cryptography;
-using System.Net.Http.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -32,10 +30,9 @@ public class UnsubscribeNewsletter
                 "Newsletter service is not available. Please try again later.", "en", false);
         }
 
-        // Read token/email from query string first; override from JSON body if Content-Type is application/json
+        // Read token from query string; override from JSON body if Content-Type is application/json
         var qs = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
         string? token = qs["token"];
-        string? email = qs["email"];
         if (req.Method.Equals("POST", StringComparison.OrdinalIgnoreCase) &&
             req.Headers.TryGetValues("Content-Type", out var contentTypeValues) &&
             contentTypeValues.Any(ct => ct.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)))
@@ -43,11 +40,9 @@ public class UnsubscribeNewsletter
             var body = await req.ReadFromJsonAsync<UnsubscribeRequest>(cancellationToken);
             if (!string.IsNullOrWhiteSpace(body?.Token))
                 token = body.Token;
-            if (!string.IsNullOrWhiteSpace(body?.Email))
-                email = body.Email;
         }
 
-        if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
+        if (string.IsNullOrWhiteSpace(token))
         {
             return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
                 "Invalid unsubscribe link.", "en", false);
@@ -55,18 +50,8 @@ public class UnsubscribeNewsletter
 
         try
         {
-            var subscriber = await _newsletterService.GetSubscriberAsync(email);
+            var subscriber = await _newsletterService.GetSubscriberByUnsubscribeTokenAsync(token);
             if (subscriber == null)
-            {
-                return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
-                    "This subscription was not found or is already unsubscribed.", "en", false);
-            }
-
-            // Verify the unsubscribe token matches (constant-time comparison)
-            var expectedTokenBytes = System.Text.Encoding.UTF8.GetBytes(subscriber.UnsubscribeToken);
-            var providedTokenBytes = System.Text.Encoding.UTF8.GetBytes(token);
-            if (expectedTokenBytes.Length != providedTokenBytes.Length ||
-                !CryptographicOperations.FixedTimeEquals(expectedTokenBytes, providedTokenBytes))
             {
                 return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
                     "This subscription was not found or is already unsubscribed.", "en", false);
@@ -75,7 +60,7 @@ public class UnsubscribeNewsletter
             // GET shows confirmation page; POST performs the unsubscribe
             if (req.Method.Equals("GET", StringComparison.OrdinalIgnoreCase))
             {
-                return await CreateConfirmationPageAsync(req, token, email, subscriber.Language);
+                return await CreateConfirmationPageAsync(req, token, subscriber.Language);
             }
 
             subscriber.Status = "unsubscribed";
@@ -101,7 +86,7 @@ public class UnsubscribeNewsletter
         }
     }
 
-    private static async Task<HttpResponseData> CreateConfirmationPageAsync(HttpRequestData req, string token, string email, string language)
+    private static async Task<HttpResponseData> CreateConfirmationPageAsync(HttpRequestData req, string token, string language)
     {
         var title = language switch
         {
@@ -121,7 +106,7 @@ public class UnsubscribeNewsletter
             "pt" => "Sim, cancelar assinatura",
             _ => "Yes, unsubscribe"
         };
-        var actionUrl = System.Net.WebUtility.HtmlEncode($"/api/newsletter/unsubscribe?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(email)}");
+        var actionUrl = System.Net.WebUtility.HtmlEncode($"/api/newsletter/unsubscribe?token={Uri.EscapeDataString(token)}");
 
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "text/html; charset=utf-8");
@@ -200,5 +185,5 @@ public class UnsubscribeNewsletter
         return response;
     }
 
-    private record UnsubscribeRequest(string? Token, string? Email);
+    private record UnsubscribeRequest(string? Token);
 }

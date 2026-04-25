@@ -65,9 +65,9 @@ public class UpdatePreferences
             if (expectedTokenBytes.Length != providedTokenBytes.Length ||
                 !CryptographicOperations.FixedTimeEquals(expectedTokenBytes, providedTokenBytes))
             {
-                var forbidden = req.CreateResponse(HttpStatusCode.Forbidden);
-                await forbidden.WriteAsJsonAsync(new { error = "Invalid token." });
-                return forbidden;
+                var notFound = req.CreateResponse(HttpStatusCode.NotFound);
+                await notFound.WriteAsJsonAsync(new { error = "Subscription not found." });
+                return notFound;
             }
 
             subscriber.Frequency = request.Frequency;

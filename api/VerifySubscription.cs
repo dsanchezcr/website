@@ -112,7 +112,7 @@ public class VerifySubscription
         var signature = LocalizationHelper.GetText(subscriber.Language, "newsletterWelcomeSignature");
 
         var websiteUrl = Environment.GetEnvironmentVariable("WEBSITE_URL") ?? "https://dsanchezcr.com";
-        var unsubscribeUrl = $"{websiteUrl}/api/newsletter/unsubscribe?token={subscriber.UnsubscribeToken}&email={Uri.EscapeDataString(subscriber.Email)}";
+        var unsubscribeUrl = $"{websiteUrl}/api/newsletter/unsubscribe?token={subscriber.UnsubscribeToken}";
         var unsubscribeText = LocalizationHelper.GetText(subscriber.Language, "newsletterUnsubscribe");
 
         await _emailClient.Value.SendAsync(

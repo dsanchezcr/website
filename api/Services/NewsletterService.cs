@@ -14,6 +14,7 @@ public interface INewsletterService
     Task<NewsletterSubscriber> UpdateSubscriberAsync(NewsletterSubscriber subscriber);
     Task<IReadOnlyList<NewsletterSubscriber>> GetActiveSubscribersByFrequencyAsync(string frequency);
     Task<NewsletterSubscriber?> GetSubscriberByVerificationTokenAsync(string token);
+    Task<NewsletterSubscriber?> GetSubscriberByUnsubscribeTokenAsync(string token);
     Task<bool> IsConfiguredAsync();
 }
 
@@ -87,6 +88,15 @@ public class CosmosNewsletterService : INewsletterService
         return results.FirstOrDefault();
     }
 
+    // Cross-partition query — used for token-only unsubscribe/status lookups.
+    public async Task<NewsletterSubscriber?> GetSubscriberByUnsubscribeTokenAsync(string token)
+    {
+        var query = new QueryDefinition("SELECT * FROM c WHERE c.unsubscribeToken = @token")
+            .WithParameter("@token", token);
+        var results = await ExecuteQueryAsync(query);
+        return results.FirstOrDefault();
+    }
+
     private async Task<IReadOnlyList<NewsletterSubscriber>> ExecuteQueryAsync(QueryDefinition query, PartitionKey? partitionKey = null)
     {
         var results = new List<NewsletterSubscriber>();
@@ -118,4 +128,5 @@ public class NullNewsletterService : INewsletterService
     public Task<NewsletterSubscriber> UpdateSubscriberAsync(NewsletterSubscriber subscriber) => throw new InvalidOperationException("Newsletter service not configured.");
     public Task<IReadOnlyList<NewsletterSubscriber>> GetActiveSubscribersByFrequencyAsync(string frequency) => Task.FromResult<IReadOnlyList<NewsletterSubscriber>>(Array.Empty<NewsletterSubscriber>());
     public Task<NewsletterSubscriber?> GetSubscriberByVerificationTokenAsync(string token) => Task.FromResult<NewsletterSubscriber?>(null);
+    public Task<NewsletterSubscriber?> GetSubscriberByUnsubscribeTokenAsync(string token) => Task.FromResult<NewsletterSubscriber?>(null);
 }

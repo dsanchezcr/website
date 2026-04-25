@@ -106,21 +106,19 @@ function NewsletterManagement() {
   const [token, setToken] = useState('');
   const [subscription, setSubscription] = useState(null);
   const [frequency, setFrequency] = useState('weekly');
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingAction, setLoadingAction] = useState(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [hasParams, setHasParams] = useState(false);
 
-  // Load email/token from URL fragment (avoids leaking PII via query string in browser history/logs)
+  // Load token from URL fragment (avoids leaking PII via query string in browser history/logs)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const hash = window.location.hash.replace(/^#/, '');
       const params = new URLSearchParams(hash);
       const tokenParam = params.get('token');
-      const emailParam = params.get('email');
-      if (tokenParam && emailParam) {
+      if (tokenParam) {
         setToken(tokenParam);
-        setEmail(emailParam);
         setHasParams(true);
       }
     }
@@ -128,13 +126,13 @@ function NewsletterManagement() {
 
   // Auto-load subscription when params are present
   useEffect(() => {
-    if (hasParams && token && email) {
+    if (hasParams && token) {
       loadSubscription();
     }
-  }, [hasParams, token, email]);
+  }, [hasParams, token]);
 
   const loadSubscription = async () => {
-    setIsLoading(true);
+    setLoadingAction('load');
     setError('');
     setMessage('');
 
@@ -145,7 +143,7 @@ function NewsletterManagement() {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token, email }),
+          body: JSON.stringify({ token }),
         }
       );
 
@@ -162,12 +160,12 @@ function NewsletterManagement() {
     } catch {
       setError(t.errorLoad);
     } finally {
-      setIsLoading(false);
+      setLoadingAction(null);
     }
   };
 
   const handleUpdatePreferences = async () => {
-    setIsLoading(true);
+    setLoadingAction('update');
     setError('');
     setMessage('');
 
@@ -188,12 +186,12 @@ function NewsletterManagement() {
     } catch {
       setError(t.errorUpdate);
     } finally {
-      setIsLoading(false);
+      setLoadingAction(null);
     }
   };
 
   const handleUnsubscribe = async () => {
-    setIsLoading(true);
+    setLoadingAction('unsubscribe');
     setError('');
     setMessage('');
 
@@ -204,7 +202,7 @@ function NewsletterManagement() {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token, email }),
+          body: JSON.stringify({ token }),
         }
       );
 
@@ -217,7 +215,7 @@ function NewsletterManagement() {
     } catch {
       setError(t.errorUnsubscribe);
     } finally {
-      setIsLoading(false);
+      setLoadingAction(null);
     }
   };
 
@@ -244,7 +242,7 @@ function NewsletterManagement() {
               </div>
             )}
 
-            {!subscription && !error && hasParams && isLoading && (
+            {!subscription && !error && hasParams && loadingAction === 'load' && (
               <p>{t.lookingUp}</p>
             )}
 
@@ -287,17 +285,17 @@ function NewsletterManagement() {
                     <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                       <button
                         onClick={handleUpdatePreferences}
-                        disabled={isLoading}
+                        disabled={!!loadingAction}
                         className="button button--primary"
                       >
-                        {isLoading ? t.updating : t.updateButton}
+                        {loadingAction === 'update' ? t.updating : t.updateButton}
                       </button>
                       <button
                         onClick={handleUnsubscribe}
-                        disabled={isLoading}
+                        disabled={!!loadingAction}
                         className="button button--danger button--outline"
                       >
-                        {isLoading ? t.unsubscribing : t.unsubscribeButton}
+                        {loadingAction === 'unsubscribe' ? t.unsubscribing : t.unsubscribeButton}
                       </button>
                     </div>
                   </>
