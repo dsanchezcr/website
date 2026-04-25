@@ -196,7 +196,7 @@ public partial class SubscribeNewsletter
         var apiUrl = Environment.GetEnvironmentVariable("API_URL")
             ?? Environment.GetEnvironmentVariable("WEBSITE_URL")
             ?? "https://dsanchezcr.com";
-        var verificationUrl = $"{apiUrl}/api/newsletter/verify?token={subscriber.VerificationToken}&email={Uri.EscapeDataString(subscriber.Email)}";
+        var verificationUrl = $"{apiUrl}/api/newsletter/verify?token={subscriber.VerificationToken}";
 
         var subject = LocalizationHelper.GetText(subscriber.Language, "newsletterVerificationSubject");
         var message = LocalizationHelper.GetText(subscriber.Language, "newsletterVerificationMessage", System.Net.WebUtility.HtmlEncode(verificationUrl));

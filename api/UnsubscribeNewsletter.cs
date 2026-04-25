@@ -32,28 +32,19 @@ public class UnsubscribeNewsletter
                 "Newsletter service is not available. Please try again later.", "en", false);
         }
 
-        // GET: read from query string (email link click)
-        // POST: read from body (management page)
-        string? token;
-        string? email;
-        if (req.Method.Equals("POST", StringComparison.OrdinalIgnoreCase))
+        // Read token/email from query string first; override from JSON body if Content-Type is application/json
+        var qs = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
+        string? token = qs["token"];
+        string? email = qs["email"];
+        if (req.Method.Equals("POST", StringComparison.OrdinalIgnoreCase) &&
+            req.Headers.TryGetValues("Content-Type", out var contentTypeValues) &&
+            contentTypeValues.Any(ct => ct.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)))
         {
             var body = await req.ReadFromJsonAsync<UnsubscribeRequest>(cancellationToken);
-            token = body?.Token;
-            email = body?.Email;
-            // Fall back to query string if body is empty (form POST from confirmation page)
-            if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
-            {
-                var qs = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
-                token = qs["token"];
-                email = qs["email"];
-            }
-        }
-        else
-        {
-            var qs = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
-            token = qs["token"];
-            email = qs["email"];
+            if (!string.IsNullOrWhiteSpace(body?.Token))
+                token = body.Token;
+            if (!string.IsNullOrWhiteSpace(body?.Email))
+                email = body.Email;
         }
 
         if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
