@@ -76,8 +76,9 @@ export default function NewsletterSubscribe() {
     setError('');
 
     // Basic email validation
+    const trimmedEmail = email.trim();
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!email || !emailRegex.test(email)) {
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
       setError(t.errorInvalidEmail);
       return;
     }
@@ -90,7 +91,7 @@ export default function NewsletterSubscribe() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email,
+          email: trimmedEmail,
           frequency,
           language: lang,
           recaptchaToken: '', // reCAPTCHA can be added later for enhanced protection

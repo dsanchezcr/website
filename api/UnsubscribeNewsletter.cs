@@ -20,7 +20,7 @@ public class UnsubscribeNewsletter
 
     [Function("UnsubscribeNewsletter")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "newsletter/unsubscribe")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "newsletter/unsubscribe")] HttpRequestData req,
         CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("UnsubscribeNewsletter Function Triggered");
@@ -60,6 +60,12 @@ public class UnsubscribeNewsletter
                     "This subscription was not found or is already unsubscribed.", "en", false);
             }
 
+            // GET shows confirmation page; POST performs the unsubscribe
+            if (req.Method.Equals("GET", StringComparison.OrdinalIgnoreCase))
+            {
+                return await CreateConfirmationPageAsync(req, token, email, subscriber.Language);
+            }
+
             subscriber.Status = "unsubscribed";
             await _newsletterService.UpdateSubscriberAsync(subscriber);
 
@@ -81,6 +87,60 @@ public class UnsubscribeNewsletter
             return await CreateHtmlResponseAsync(req, HttpStatusCode.InternalServerError,
                 "An error occurred. Please try again later.", "en", false);
         }
+    }
+
+    private static async Task<HttpResponseData> CreateConfirmationPageAsync(HttpRequestData req, string token, string email, string language)
+    {
+        var title = language switch
+        {
+            "es" => "Confirmar Cancelación",
+            "pt" => "Confirmar Cancelamento",
+            _ => "Confirm Unsubscribe"
+        };
+        var promptMessage = language switch
+        {
+            "es" => "¿Estás seguro de que deseas cancelar tu suscripción al boletín?",
+            "pt" => "Tem certeza de que deseja cancelar sua assinatura do boletim?",
+            _ => "Are you sure you want to unsubscribe from the newsletter?"
+        };
+        var buttonText = language switch
+        {
+            "es" => "Sí, cancelar suscripción",
+            "pt" => "Sim, cancelar assinatura",
+            _ => "Yes, unsubscribe"
+        };
+        var encodedToken = System.Net.WebUtility.HtmlEncode(token);
+        var encodedEmail = System.Net.WebUtility.HtmlEncode(email);
+        var actionUrl = $"/api/newsletter/unsubscribe?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(email)}";
+
+        var response = req.CreateResponse(HttpStatusCode.OK);
+        response.Headers.Add("Content-Type", "text/html; charset=utf-8");
+        await response.WriteStringAsync($$"""
+            <!DOCTYPE html>
+            <html lang="{{language}}">
+            <head>
+                <meta charset="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>{{title}}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background-color: #f5f5f5; }
+                    .container { text-align: center; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 500px; }
+                    button { background-color: #d32f2f; color: white; border: none; padding: 12px 24px; font-size: 16px; border-radius: 4px; cursor: pointer; margin-top: 1rem; }
+                    button:hover { background-color: #b71c1c; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h2>{{title}}</h2>
+                    <p>{{promptMessage}}</p>
+                    <form method="POST" action="{{actionUrl}}">
+                        <button type="submit">{{buttonText}}</button>
+                    </form>
+                </div>
+            </body>
+            </html>
+            """);
+        return response;
     }
 
     private static async Task<HttpResponseData> CreateHtmlResponseAsync(HttpRequestData req, HttpStatusCode statusCode, string message, string language, bool success)

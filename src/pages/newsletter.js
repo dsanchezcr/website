@@ -127,10 +127,10 @@ function NewsletterManagement() {
 
   // Auto-load subscription when params are present
   useEffect(() => {
-    if (hasParams && token) {
+    if (hasParams && token && email) {
       loadSubscription();
     }
-  }, [hasParams]);
+  }, [hasParams, token, email]);
 
   const loadSubscription = async () => {
     setIsLoading(true);
@@ -194,7 +194,8 @@ function NewsletterManagement() {
     try {
       const apiEndpoint = config.getApiEndpoint();
       const response = await fetch(
-        `${apiEndpoint}${config.routes.newsletterUnsubscribe}?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`
+        `${apiEndpoint}${config.routes.newsletterUnsubscribe}?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`,
+        { method: 'POST' }
       );
 
       if (response.ok) {
