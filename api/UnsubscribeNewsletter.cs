@@ -1,4 +1,5 @@
 using System.Net;
+using System.Security.Cryptography;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -32,8 +33,9 @@ public class UnsubscribeNewsletter
 
         var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
         var token = query["token"];
+        var email = query["email"];
 
-        if (string.IsNullOrWhiteSpace(token))
+        if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
         {
             return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
                 "Invalid unsubscribe link.", "en", false);
@@ -41,8 +43,18 @@ public class UnsubscribeNewsletter
 
         try
         {
-            var subscriber = await _newsletterService.GetSubscriberByUnsubscribeTokenAsync(token);
+            var subscriber = await _newsletterService.GetSubscriberAsync(email);
             if (subscriber == null)
+            {
+                return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
+                    "This subscription was not found or is already unsubscribed.", "en", false);
+            }
+
+            // Verify the unsubscribe token matches (constant-time comparison)
+            var expectedTokenBytes = System.Text.Encoding.UTF8.GetBytes(subscriber.UnsubscribeToken);
+            var providedTokenBytes = System.Text.Encoding.UTF8.GetBytes(token);
+            if (expectedTokenBytes.Length != providedTokenBytes.Length ||
+                !CryptographicOperations.FixedTimeEquals(expectedTokenBytes, providedTokenBytes))
             {
                 return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
                     "This subscription was not found or is already unsubscribed.", "en", false);

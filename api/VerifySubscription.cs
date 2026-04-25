@@ -1,4 +1,5 @@
 using System.Net;
+using System.Security.Cryptography;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -42,16 +43,27 @@ public class VerifySubscription
 
         var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
         var token = query["token"];
+        var email = query["email"];
 
-        if (string.IsNullOrWhiteSpace(token))
+        if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
         {
             return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest, "Invalid verification link.", "en");
         }
 
         try
         {
-            var subscriber = await _newsletterService.GetSubscriberByVerificationTokenAsync(token);
-            if (subscriber == null)
+            var subscriber = await _newsletterService.GetSubscriberAsync(email);
+            if (subscriber == null || subscriber.Status != "pending" || subscriber.VerificationToken == null)
+            {
+                return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
+                    "Invalid or expired verification link. Please subscribe again.", "en");
+            }
+
+            // Verify the token matches (constant-time comparison)
+            var expectedTokenBytes = System.Text.Encoding.UTF8.GetBytes(subscriber.VerificationToken);
+            var providedTokenBytes = System.Text.Encoding.UTF8.GetBytes(token);
+            if (expectedTokenBytes.Length != providedTokenBytes.Length ||
+                !CryptographicOperations.FixedTimeEquals(expectedTokenBytes, providedTokenBytes))
             {
                 return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
                     "Invalid or expired verification link. Please subscribe again.", "en");
@@ -112,7 +124,7 @@ public class VerifySubscription
         var signature = LocalizationHelper.GetText(subscriber.Language, "newsletterWelcomeSignature");
 
         var websiteUrl = Environment.GetEnvironmentVariable("WEBSITE_URL") ?? "https://dsanchezcr.com";
-        var unsubscribeUrl = $"{websiteUrl}/api/newsletter/unsubscribe?token={subscriber.UnsubscribeToken}";
+        var unsubscribeUrl = $"{websiteUrl}/api/newsletter/unsubscribe?token={subscriber.UnsubscribeToken}&email={Uri.EscapeDataString(subscriber.Email)}";
         var unsubscribeText = LocalizationHelper.GetText(subscriber.Language, "newsletterUnsubscribe");
 
         await _emailClient.Value.SendAsync(

@@ -62,6 +62,17 @@ public partial class SubscribeNewsletter
             return badRequest;
         }
 
+        // Rate limiting (applied before honeypot to prevent abuse via honeypot bypass)
+        var clientIp = GetClientIp(req);
+        var rateLimitKey = $"newsletter:subscribe:{clientIp}";
+        if (_rateLimitService.IsRateLimited(rateLimitKey, MaxSubscriptionsPerIpPerHour, TimeSpan.FromHours(1)))
+        {
+            _logger.LogWarning("Newsletter subscribe rate limit exceeded for IP: {ClientIp}", clientIp);
+            var tooMany = req.CreateResponse(HttpStatusCode.TooManyRequests);
+            await tooMany.WriteAsJsonAsync(new { error = "Too many subscription attempts. Please try again later." });
+            return tooMany;
+        }
+
         // Honeypot check
         if (!string.IsNullOrEmpty(request.Website))
         {
@@ -89,17 +100,6 @@ public partial class SubscribeNewsletter
         if (request.Language != "en" && request.Language != "es" && request.Language != "pt")
         {
             request.Language = "en";
-        }
-
-        // Rate limiting
-        var clientIp = GetClientIp(req);
-        var rateLimitKey = $"newsletter:subscribe:{clientIp}";
-        if (_rateLimitService.IsRateLimited(rateLimitKey, MaxSubscriptionsPerIpPerHour, TimeSpan.FromHours(1)))
-        {
-            _logger.LogWarning("Newsletter subscribe rate limit exceeded for IP: {ClientIp}", clientIp);
-            var tooMany = req.CreateResponse(HttpStatusCode.TooManyRequests);
-            await tooMany.WriteAsJsonAsync(new { error = "Too many subscription attempts. Please try again later." });
-            return tooMany;
         }
 
         // Validate reCAPTCHA (optional — the newsletter component is mounted via the Footer theme override,
@@ -174,7 +174,7 @@ public partial class SubscribeNewsletter
         var apiUrl = Environment.GetEnvironmentVariable("API_URL")
             ?? Environment.GetEnvironmentVariable("WEBSITE_URL")
             ?? "https://dsanchezcr.com";
-        var verificationUrl = $"{apiUrl}/api/newsletter/verify?token={subscriber.VerificationToken}";
+        var verificationUrl = $"{apiUrl}/api/newsletter/verify?token={subscriber.VerificationToken}&email={Uri.EscapeDataString(subscriber.Email)}";
 
         var subject = LocalizationHelper.GetText(subscriber.Language, "newsletterVerificationSubject");
         var message = LocalizationHelper.GetText(subscriber.Language, "newsletterVerificationMessage", verificationUrl);

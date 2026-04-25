@@ -1,4 +1,5 @@
 using System.Net;
+using System.Security.Cryptography;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -33,18 +34,30 @@ public class GetSubscriptionStatus
 
         var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
         var token = query["token"];
+        var email = query["email"];
 
-        if (string.IsNullOrWhiteSpace(token))
+        if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
         {
             var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
-            await badRequest.WriteAsJsonAsync(new { error = "Token is required." });
+            await badRequest.WriteAsJsonAsync(new { error = "Token and email are required." });
             return badRequest;
         }
 
         try
         {
-            var subscriber = await _newsletterService.GetSubscriberByUnsubscribeTokenAsync(token);
+            var subscriber = await _newsletterService.GetSubscriberAsync(email);
             if (subscriber == null)
+            {
+                var notFound = req.CreateResponse(HttpStatusCode.NotFound);
+                await notFound.WriteAsJsonAsync(new { error = "Subscription not found." });
+                return notFound;
+            }
+
+            // Verify the unsubscribe token matches (constant-time comparison)
+            var expectedTokenBytes = System.Text.Encoding.UTF8.GetBytes(subscriber.UnsubscribeToken);
+            var providedTokenBytes = System.Text.Encoding.UTF8.GetBytes(token);
+            if (expectedTokenBytes.Length != providedTokenBytes.Length ||
+                !CryptographicOperations.FixedTimeEquals(expectedTokenBytes, providedTokenBytes))
             {
                 var notFound = req.CreateResponse(HttpStatusCode.NotFound);
                 await notFound.WriteAsJsonAsync(new { error = "Subscription not found." });

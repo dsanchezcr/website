@@ -116,8 +116,10 @@ function NewsletterManagement() {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const tokenParam = params.get('token');
-      if (tokenParam) {
+      const emailParam = params.get('email');
+      if (tokenParam && emailParam) {
         setToken(tokenParam);
+        setEmail(emailParam);
         setHasParams(true);
       }
     }
@@ -138,7 +140,7 @@ function NewsletterManagement() {
     try {
       const apiEndpoint = config.getApiEndpoint();
       const response = await fetch(
-        `${apiEndpoint}${config.routes.newsletterStatus}?token=${encodeURIComponent(token)}`
+        `${apiEndpoint}${config.routes.newsletterStatus}?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`
       );
 
       if (response.ok) {
@@ -192,7 +194,7 @@ function NewsletterManagement() {
     try {
       const apiEndpoint = config.getApiEndpoint();
       const response = await fetch(
-        `${apiEndpoint}${config.routes.newsletterUnsubscribe}?token=${encodeURIComponent(token)}`
+        `${apiEndpoint}${config.routes.newsletterUnsubscribe}?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`
       );
 
       if (response.ok) {

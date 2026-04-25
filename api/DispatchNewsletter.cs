@@ -177,8 +177,8 @@ public class DispatchNewsletter
 
         var websiteUrl = Environment.GetEnvironmentVariable("WEBSITE_URL") ?? "https://dsanchezcr.com";
         var langPrefix = lang == "en" ? "" : $"/{lang}";
-        var unsubscribeUrl = $"{websiteUrl}/api/newsletter/unsubscribe?token={subscriber.UnsubscribeToken}";
-        var preferencesUrl = $"{websiteUrl}{langPrefix}/newsletter?token={subscriber.UnsubscribeToken}";
+        var unsubscribeUrl = $"{websiteUrl}/api/newsletter/unsubscribe?token={subscriber.UnsubscribeToken}&email={Uri.EscapeDataString(subscriber.Email)}";
+        var preferencesUrl = $"{websiteUrl}{langPrefix}/newsletter?token={subscriber.UnsubscribeToken}&email={Uri.EscapeDataString(subscriber.Email)}";
 
         // Build content sections
         var contentHtml = "";
