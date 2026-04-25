@@ -111,10 +111,11 @@ function NewsletterManagement() {
   const [error, setError] = useState('');
   const [hasParams, setHasParams] = useState(false);
 
-  // Load email/token from URL params
+  // Load email/token from URL fragment (avoids leaking PII via query string in browser history/logs)
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
+      const hash = window.location.hash.replace(/^#/, '');
+      const params = new URLSearchParams(hash);
       const tokenParam = params.get('token');
       const emailParam = params.get('email');
       if (tokenParam && emailParam) {

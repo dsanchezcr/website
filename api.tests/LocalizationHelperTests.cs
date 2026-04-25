@@ -19,6 +19,7 @@ public class LocalizationHelperTests
             "confirmationSubject", "confirmationGreeting", "confirmationMessage",
             "confirmationSignature", "confirmationTitle",
             "newsletterVerificationSubject", "newsletterVerificationMessage",
+            "newsletterVerificationDisclaimer",
             "newsletterWelcomeSubject", "newsletterWelcomeGreeting",
             "newsletterWelcomeMessage", "newsletterWelcomeSignature",
             "newsletterFrequencyWeekly", "newsletterFrequencyMonthly",
