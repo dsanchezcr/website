@@ -19,6 +19,7 @@ public partial class SubscribeNewsletter
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IRateLimitService _rateLimitService;
     private const int MaxSubscriptionsPerIpPerHour = 3;
+    private const int MaxSubscriptionsPerEmailPerDay = 2;
     private const double MinRecaptchaScore = 0.5;
 
     private static readonly Lazy<EmailClient> _emailClient = new(() =>
@@ -97,6 +98,16 @@ public partial class SubscribeNewsletter
             var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
             await badRequest.WriteAsJsonAsync(new { error = "Invalid email address." });
             return badRequest;
+        }
+
+        // Email-based rate limiting (prevent verification email spam from distributed IPs)
+        var emailRateLimitKey = $"newsletter:subscribe:email:{request.Email}";
+        if (_rateLimitService.IsRateLimited(emailRateLimitKey, MaxSubscriptionsPerEmailPerDay, TimeSpan.FromDays(1)))
+        {
+            _logger.LogWarning("Newsletter subscribe email rate limit exceeded");
+            var tooMany = req.CreateResponse(HttpStatusCode.TooManyRequests);
+            await tooMany.WriteAsJsonAsync(new { error = "Too many subscription attempts for this email. Please try again later." });
+            return tooMany;
         }
 
         // Validate frequency
@@ -188,7 +199,7 @@ public partial class SubscribeNewsletter
         var verificationUrl = $"{apiUrl}/api/newsletter/verify?token={subscriber.VerificationToken}&email={Uri.EscapeDataString(subscriber.Email)}";
 
         var subject = LocalizationHelper.GetText(subscriber.Language, "newsletterVerificationSubject");
-        var message = LocalizationHelper.GetText(subscriber.Language, "newsletterVerificationMessage", verificationUrl);
+        var message = LocalizationHelper.GetText(subscriber.Language, "newsletterVerificationMessage", System.Net.WebUtility.HtmlEncode(verificationUrl));
 
         await _emailClient.Value.SendAsync(
             wait: WaitUntil.Completed,

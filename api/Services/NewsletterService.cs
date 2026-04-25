@@ -67,6 +67,9 @@ public class CosmosNewsletterService : INewsletterService
         return response.Resource;
     }
 
+    // Note: This is a cross-partition query (container partitioned by /email).
+    // Acceptable for a personal blog with limited subscribers. If scale grows significantly,
+    // consider a secondary container keyed by frequency or a change feed-based materialized view.
     public async Task<IReadOnlyList<NewsletterSubscriber>> GetActiveSubscribersByFrequencyAsync(string frequency)
     {
         var query = new QueryDefinition("SELECT * FROM c WHERE c.status = 'active' AND c.frequency = @frequency")

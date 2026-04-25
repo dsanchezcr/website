@@ -130,7 +130,7 @@ public class UnsubscribeNewsletter
             "pt" => "Sim, cancelar assinatura",
             _ => "Yes, unsubscribe"
         };
-        var actionUrl = $"/api/newsletter/unsubscribe?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(email)}";
+        var actionUrl = System.Net.WebUtility.HtmlEncode($"/api/newsletter/unsubscribe?token={Uri.EscapeDataString(token)}&email={Uri.EscapeDataString(email)}");
 
         var response = req.CreateResponse(HttpStatusCode.OK);
         response.Headers.Add("Content-Type", "text/html; charset=utf-8");

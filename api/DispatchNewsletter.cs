@@ -218,7 +218,7 @@ public class DispatchNewsletter
                         <hr style="margin: 30px 0; border: none; border-top: 1px solid #e5e5e5;" />
                         <p style="color: #666; font-size: 12px;">
                             {footer}<br/>
-                            <a href="{preferencesUrl}">{manageText}</a> · <a href="{unsubscribeUrl}">{unsubscribeText}</a>
+                            <a href="{System.Net.WebUtility.HtmlEncode(preferencesUrl)}">{manageText}</a> · <a href="{System.Net.WebUtility.HtmlEncode(unsubscribeUrl)}">{unsubscribeText}</a>
                         </p>
                     </body>
                 </html>

@@ -141,7 +141,7 @@ public class VerifySubscription
                         <p>{signature}</p>
                         <hr style="margin: 20px 0;" />
                         <p style="color: #666; font-size: 12px;">
-                            <a href="{unsubscribeUrl}">{unsubscribeText}</a>
+                            <a href="{System.Net.WebUtility.HtmlEncode(unsubscribeUrl)}">{unsubscribeText}</a>
                         </p>
                     </body>
                 </html>
