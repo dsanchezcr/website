@@ -161,7 +161,7 @@ The current rate limiting implementation uses in-memory caching (`IMemoryCache`)
 - No personal data stored in databases except newsletter subscribers (email, language, frequency)
 - Contact form submissions sent via email only
 - Email verification tokens temporarily cached (24-hour TTL)
-- Newsletter subscribers can unsubscribe at any time via one-click link
+- Newsletter subscribers can unsubscribe at any time via unsubscribe link
 - No third-party analytics tracking in Azure Functions
 - Google Analytics used on frontend (anonymizeIP enabled)
 

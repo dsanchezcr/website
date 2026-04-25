@@ -38,7 +38,7 @@ Located in `api/` directory:
 - **GetParksContent.cs**: Content endpoint (`/api/content/parks`) for theme parks from Cosmos DB
 - **SubscribeNewsletter.cs**: Newsletter subscription endpoint (`/api/newsletter/subscribe`) with double opt-in, reCAPTCHA, rate limiting, honeypot
 - **VerifySubscription.cs**: Newsletter subscription verification (`/api/newsletter/verify`) via token link
-- **UnsubscribeNewsletter.cs**: One-click newsletter unsubscribe (`/api/newsletter/unsubscribe`) via signed token
+- **UnsubscribeNewsletter.cs**: Newsletter unsubscribe (`/api/newsletter/unsubscribe`) via signed token with confirmation page
 - **UpdatePreferences.cs**: Newsletter frequency update (`/api/newsletter/preferences`) with token authentication
 - **GetSubscriptionStatus.cs**: Newsletter status check (`/api/newsletter/status`) with token authentication
 - **DispatchNewsletter.cs**: Newsletter sending endpoint (`/api/newsletter/dispatch`) called by GitHub Actions cron

@@ -20,7 +20,7 @@ The website has no mechanism for readers to receive updates about new blog posts
 1. A newsletter subscription banner appears site-wide (above footer) inviting visitors to subscribe
 2. Users provide their email, choose frequency (weekly/monthly), and complete double opt-in verification
 3. A GitHub Actions cron job triggers newsletter dispatch at scheduled intervals
-4. Every newsletter email includes a one-click unsubscribe link
+4. Every newsletter email includes an unsubscribe link (confirmation required)
 5. A dedicated `/newsletter` page allows users to manage preferences or unsubscribe
 6. All UI supports en/es/pt locales
 
@@ -60,7 +60,7 @@ The website has no mechanism for readers to receive updates about new blog posts
 |----------|-------|--------|---------|
 | `SubscribeNewsletter` | `/api/newsletter/subscribe` | POST | Create pending subscription + send verification email |
 | `VerifySubscription` | `/api/newsletter/verify` | GET | Confirm subscription via token |
-| `UnsubscribeNewsletter` | `/api/newsletter/unsubscribe` | GET | One-click unsubscribe |
+| `UnsubscribeNewsletter` | `/api/newsletter/unsubscribe` | GET/POST | Unsubscribe with confirmation |
 | `UpdatePreferences` | `/api/newsletter/preferences` | POST | Change frequency |
 | `GetSubscriptionStatus` | `/api/newsletter/status` | GET | Check status by unsubscribe token |
 | `DispatchNewsletter` | `/api/newsletter/dispatch` | POST | Build + send digest (called by GitHub Actions) |

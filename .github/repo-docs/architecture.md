@@ -82,7 +82,7 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 | GetMonthlyUpdatesContent | `/api/content/monthly-updates` | Monthly gaming updates from Cosmos DB |
 | SubscribeNewsletter | `/api/newsletter/subscribe` | Newsletter subscription with double opt-in |
 | VerifySubscription | `/api/newsletter/verify` | Confirm newsletter subscription |
-| UnsubscribeNewsletter | `/api/newsletter/unsubscribe` | One-click unsubscribe |
+| UnsubscribeNewsletter | `/api/newsletter/unsubscribe` | Unsubscribe with confirmation |
 | UpdatePreferences | `/api/newsletter/preferences` | Change frequency (weekly/monthly) |
 | GetSubscriptionStatus | `/api/newsletter/status` | Check subscription state |
 | DispatchNewsletter | `/api/newsletter/dispatch` | Send digest (GitHub Actions triggered) |

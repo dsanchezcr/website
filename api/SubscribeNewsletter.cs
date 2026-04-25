@@ -133,6 +133,8 @@ public partial class SubscribeNewsletter
                 existing.Status = "pending";
                 existing.Frequency = request.Frequency;
                 existing.Language = request.Language;
+                existing.VerifiedAt = null;
+                existing.LastSentAt = null;
                 existing.VerificationToken = GenerateToken();
                 existing.UnsubscribeToken = GenerateHmacToken(existing.Email);
                 existing.SubscribedAt = DateTime.UtcNow;
