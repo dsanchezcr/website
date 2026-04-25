@@ -23,6 +23,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: newsletter-dispatch
+  cancel-in-progress: false
+
 jobs:
   dispatch:
     name: Send Newsletter
@@ -44,7 +48,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "value=${{ inputs.frequency }}" >> $GITHUB_OUTPUT
-          elif [ "$(date +%d)" = "01" ]; then
+          elif [ "${{ github.event.schedule }}" = "0 8 1 * *" ]; then
             echo "value=monthly" >> $GITHUB_OUTPUT
           else
             echo "value=weekly" >> $GITHUB_OUTPUT

@@ -90,7 +90,8 @@ public partial class SubscribeNewsletter
             return ok;
         }
 
-        // Validate email
+        // Normalize and validate email
+        request.Email = request.Email?.Trim().ToLowerInvariant();
         if (string.IsNullOrWhiteSpace(request.Email) || !EmailRegex().IsMatch(request.Email) || request.Email.Length > 254)
         {
             var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);

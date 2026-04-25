@@ -130,16 +130,16 @@ public class DispatchNewsletter
                         }
                     }
 
-                    // Mark as sent before sending to prevent duplicate emails if Cosmos update fails after send
+                    await SendNewsletterEmailAsync(subscriber, body!, cancellationToken);
+
+                    // Only mark as sent after the email has been sent successfully
                     subscriber.LastSentAt = DateTime.UtcNow;
                     await _newsletterService.UpdateSubscriberAsync(subscriber);
-
-                    await SendNewsletterEmailAsync(subscriber, body!, cancellationToken);
                     Interlocked.Increment(ref sent);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Failed to send newsletter to {Email}", subscriber.Email);
+                    _logger.LogError(ex, "Failed to send newsletter");
                     Interlocked.Increment(ref failed);
                 }
                 finally
