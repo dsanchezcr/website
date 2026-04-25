@@ -125,7 +125,7 @@ public class DispatchNewsletter
                         var window = TimeSpan.FromDays(frequency == "weekly" ? 7 : 30);
                         if (subscriber.LastSentAt.Value.Add(window) > DateTime.UtcNow)
                         {
-                            _logger.LogInformation("Skipping {Email} — already sent within {Frequency} window", subscriber.Email, frequency);
+                            _logger.LogInformation("Skipping subscriber — already sent within {Frequency} window", frequency);
                             return;
                         }
                     }

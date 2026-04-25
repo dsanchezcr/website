@@ -79,7 +79,7 @@ The website has no mechanism for readers to receive updates about new blog posts
 | `src/components/NewsletterSubscribe/index.js` | Create | Subscription form component |
 | `src/components/NewsletterSubscribe/styles.module.css` | Create | Component styles |
 | `src/pages/newsletter.js` | Create | Preferences management page |
-| `src/theme/Layout/index.js` | Modify | Inject `NewsletterSubscribe` |
+| `src/theme/Footer/index.js` | Modify | Inject `NewsletterSubscribe` |
 | `src/config/environment.js` | Modify | Add newsletter API routes |
 | `api/SubscribeNewsletter.cs` | Create | Subscribe endpoint |
 | `api/VerifySubscription.cs` | Create | Verify subscription endpoint |

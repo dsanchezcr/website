@@ -78,11 +78,11 @@ jobs:
               
               # Compare dates
               if [[ "$FILE_DATE" > "$CUTOFF_DATE" ]] || [[ "$FILE_DATE" == "$CUTOFF_DATE" ]]; then
-                # Extract frontmatter
-                TITLE=$(sed -n 's/^title: *//p' "$file" | head -1 | tr -d '"' | tr -d "'")
-                DESCRIPTION=$(sed -n 's/^description: *//p' "$file" | head -1 | tr -d '"' | tr -d "'")
+                # Extract frontmatter (strip only surrounding quotes, preserving internal apostrophes/quotes)
+                TITLE=$(sed -n 's/^title: *//p' "$file" | head -1 | sed 's/^["'\'']\(.*\)["'\''"]$/\1/')
+                DESCRIPTION=$(sed -n 's/^description: *//p' "$file" | head -1 | sed 's/^["'\'']\(.*\)["'\''"]$/\1/')
                 # Prefer explicit frontmatter slug; fall back to filename (remove date prefix and extension)
-                FRONTMATTER_SLUG=$(sed -n 's/^slug: *//p' "$file" | head -1 | tr -d '"' | tr -d "'")
+                FRONTMATTER_SLUG=$(sed -n 's/^slug: *//p' "$file" | head -1 | sed 's/^["'\'']\(.*\)["'\''"]$/\1/')
                 if [ -n "$FRONTMATTER_SLUG" ]; then
                   SLUG="$FRONTMATTER_SLUG"
                 else

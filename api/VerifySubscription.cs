@@ -91,10 +91,10 @@ public class VerifySubscription
             }
             catch (Exception emailEx)
             {
-                _logger.LogWarning("Newsletter subscription verified for {Email}, but sending the welcome email failed: {ErrorType}", subscriber.Email, emailEx.GetType().Name);
+                _logger.LogWarning("Newsletter subscription verified, but sending the welcome email failed: {ErrorType}", emailEx.GetType().Name);
             }
 
-            _logger.LogInformation("Newsletter subscription verified for {Email}", subscriber.Email);
+            _logger.LogInformation("Newsletter subscription verified");
 
             var lang = subscriber.Language;
             var successMessage = lang switch
@@ -148,7 +148,7 @@ public class VerifySubscription
                 """,
             cancellationToken: cancellationToken);
 
-        _logger.LogInformation("Newsletter welcome email sent to {Email}", subscriber.Email);
+        _logger.LogInformation("Newsletter welcome email sent");
     }
 
     private static async Task<HttpResponseData> CreateHtmlResponseAsync(HttpRequestData req, HttpStatusCode statusCode, string message, string language)

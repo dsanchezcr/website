@@ -69,7 +69,7 @@ public class UnsubscribeNewsletter
             subscriber.Status = "unsubscribed";
             await _newsletterService.UpdateSubscriberAsync(subscriber);
 
-            _logger.LogInformation("Newsletter unsubscribed: {Email}", subscriber.Email);
+            _logger.LogInformation("Newsletter subscriber unsubscribed");
 
             var lang = subscriber.Language;
             var successMessage = lang switch

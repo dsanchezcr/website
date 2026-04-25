@@ -197,7 +197,7 @@ public partial class SubscribeNewsletter
                 """,
             cancellationToken: cancellationToken);
 
-        _logger.LogInformation("Newsletter verification email sent to {Email}", subscriber.Email);
+        _logger.LogInformation("Newsletter verification email sent");
     }
 
     private static string GenerateToken()
