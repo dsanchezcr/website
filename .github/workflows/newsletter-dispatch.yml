@@ -44,7 +44,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "value=${{ inputs.frequency }}" >> $GITHUB_OUTPUT
-          elif [ "${{ github.event.schedule }}" = "0 8 1 * *" ]; then
+          elif [ "$(date +%d)" = "01" ]; then
             echo "value=monthly" >> $GITHUB_OUTPUT
           else
             echo "value=weekly" >> $GITHUB_OUTPUT

@@ -20,7 +20,7 @@ public class GetSubscriptionStatus
 
     [Function("GetSubscriptionStatus")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "newsletter/status")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "newsletter/status")] HttpRequestData req,
         CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("GetSubscriptionStatus Function Triggered");
@@ -32,9 +32,9 @@ public class GetSubscriptionStatus
             return unavailable;
         }
 
-        var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
-        var token = query["token"];
-        var email = query["email"];
+        var request = await req.ReadFromJsonAsync<StatusRequest>(cancellationToken);
+        var token = request?.Token;
+        var email = request?.Email;
 
         if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
         {
@@ -83,4 +83,6 @@ public class GetSubscriptionStatus
             return error;
         }
     }
+
+    private record StatusRequest(string? Token, string? Email);
 }

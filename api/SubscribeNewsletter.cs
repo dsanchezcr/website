@@ -54,6 +54,14 @@ public partial class SubscribeNewsletter
             return unavailable;
         }
 
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("NEWSLETTER_HMAC_KEY")))
+        {
+            _logger.LogError("NEWSLETTER_HMAC_KEY is not configured");
+            var unavailable = req.CreateResponse(HttpStatusCode.ServiceUnavailable);
+            await unavailable.WriteAsJsonAsync(new { error = "Newsletter service is not fully configured." });
+            return unavailable;
+        }
+
         var request = await req.ReadFromJsonAsync<SubscribeRequest>(cancellationToken);
         if (request == null)
         {

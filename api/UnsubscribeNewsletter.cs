@@ -1,5 +1,6 @@
 using System.Net;
 using System.Security.Cryptography;
+using System.Net.Http.Json;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -31,9 +32,29 @@ public class UnsubscribeNewsletter
                 "Newsletter service is not available. Please try again later.", "en", false);
         }
 
-        var query = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
-        var token = query["token"];
-        var email = query["email"];
+        // GET: read from query string (email link click)
+        // POST: read from body (management page)
+        string? token;
+        string? email;
+        if (req.Method.Equals("POST", StringComparison.OrdinalIgnoreCase))
+        {
+            var body = await req.ReadFromJsonAsync<UnsubscribeRequest>(cancellationToken);
+            token = body?.Token;
+            email = body?.Email;
+            // Fall back to query string if body is empty (form POST from confirmation page)
+            if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
+            {
+                var qs = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
+                token = qs["token"];
+                email = qs["email"];
+            }
+        }
+        else
+        {
+            var qs = System.Web.HttpUtility.ParseQueryString(req.Url.Query);
+            token = qs["token"];
+            email = qs["email"];
+        }
 
         if (string.IsNullOrWhiteSpace(token) || string.IsNullOrWhiteSpace(email))
         {
@@ -187,4 +208,6 @@ public class UnsubscribeNewsletter
             """);
         return response;
     }
+
+    private record UnsubscribeRequest(string? Token, string? Email);
 }

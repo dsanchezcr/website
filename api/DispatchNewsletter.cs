@@ -130,9 +130,11 @@ public class DispatchNewsletter
                         }
                     }
 
-                    await SendNewsletterEmailAsync(subscriber, body!, cancellationToken);
+                    // Mark as sent before sending to prevent duplicate emails if Cosmos update fails after send
                     subscriber.LastSentAt = DateTime.UtcNow;
                     await _newsletterService.UpdateSubscriberAsync(subscriber);
+
+                    await SendNewsletterEmailAsync(subscriber, body!, cancellationToken);
                     Interlocked.Increment(ref sent);
                 }
                 catch (Exception ex)

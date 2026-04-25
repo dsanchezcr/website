@@ -141,7 +141,12 @@ function NewsletterManagement() {
     try {
       const apiEndpoint = config.getApiEndpoint();
       const response = await fetch(
-        `${apiEndpoint}${config.routes.newsletterStatus}?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`
+        `${apiEndpoint}${config.routes.newsletterStatus}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, email }),
+        }
       );
 
       if (response.ok) {
@@ -195,8 +200,12 @@ function NewsletterManagement() {
     try {
       const apiEndpoint = config.getApiEndpoint();
       const response = await fetch(
-        `${apiEndpoint}${config.routes.newsletterUnsubscribe}?token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`,
-        { method: 'POST' }
+        `${apiEndpoint}${config.routes.newsletterUnsubscribe}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token, email }),
+        }
       );
 
       if (response.ok) {
