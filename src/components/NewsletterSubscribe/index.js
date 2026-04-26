@@ -129,7 +129,7 @@ export default function NewsletterSubscribe() {
       <div className={styles.newsletterContent}>
         <h3 className={styles.newsletterTitle}>{t.title}</h3>
         <p className={styles.newsletterDescription}>{t.description}</p>
-        <form className={styles.newsletterForm} onSubmit={handleSubmit}>
+        <form className={styles.newsletterForm} onSubmit={handleSubmit} noValidate>
           {/* Honeypot field - hidden from users, bots will fill it */}
           <input
             type="text"
