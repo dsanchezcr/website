@@ -17,7 +17,15 @@ public class LocalizationHelperTests
             "verificationMessage", "verificationSuccess", "verificationError",
             "notificationSubject", "notificationTitle", "fieldLabels",
             "confirmationSubject", "confirmationGreeting", "confirmationMessage",
-            "confirmationSignature", "confirmationTitle"
+            "confirmationSignature", "confirmationTitle",
+            "newsletterVerificationSubject", "newsletterVerificationMessage",
+            "newsletterVerificationDisclaimer",
+            "newsletterWelcomeSubject", "newsletterWelcomeGreeting",
+            "newsletterWelcomeMessage", "newsletterWelcomeSignature",
+            "newsletterFrequencyWeekly", "newsletterFrequencyMonthly",
+            "newsletterSubject", "newsletterUnsubscribe", "newsletterManagePreferences",
+            "newsletterGreeting", "newsletterFooter", "newsletterNewBlogPosts",
+            "newsletterLatestUpdates", "newsletterReadMore", "newsletterNoContent"
         };
 
         foreach (var key in keys)

@@ -116,6 +116,10 @@ param azureCosmosKey string = ''
 @description('Azure Cosmos DB database name for content data.')
 param azureCosmosDatabaseName string = 'website-content'
 
+@description('Secret key for authenticating newsletter dispatch from GitHub Actions.')
+@secure()
+param newsletterDispatchKey string = ''
+
 // ============================================================================
 // Resources
 // ============================================================================
@@ -260,6 +264,9 @@ resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2024-04-01' = {
     AZURE_COSMOS_ENDPOINT: azureCosmosEndpoint
     AZURE_COSMOS_KEY: azureCosmosKey
     AZURE_COSMOS_DATABASE_NAME: azureCosmosDatabaseName
+    
+    // Newsletter
+    NEWSLETTER_DISPATCH_KEY: newsletterDispatchKey
   }
 }
 

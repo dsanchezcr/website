@@ -1,0 +1,10 @@
+{
+  "version.label": {
+    "message": "Próximo",
+    "description": "The label for version current"
+  },
+  "sidebar.defaultSidebar.category.Projects from Previous Roles": {
+    "message": "Projetos de Fun\u00e7\u00f5es Anteriores",
+    "description": "The label for category 'Projects from Previous Roles' in sidebar 'defaultSidebar'"
+  }
+}
