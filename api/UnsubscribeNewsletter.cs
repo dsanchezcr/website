@@ -37,9 +37,16 @@ public class UnsubscribeNewsletter
             req.Headers.TryGetValues("Content-Type", out var contentTypeValues) &&
             contentTypeValues.Any(ct => ct.StartsWith("application/json", StringComparison.OrdinalIgnoreCase)))
         {
-            var body = await req.ReadFromJsonAsync<UnsubscribeRequest>(cancellationToken);
-            if (!string.IsNullOrWhiteSpace(body?.Token))
-                token = body.Token;
+            try
+            {
+                var body = await req.ReadFromJsonAsync<UnsubscribeRequest>(cancellationToken);
+                if (!string.IsNullOrWhiteSpace(body?.Token))
+                    token = body.Token;
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                // Ignore malformed JSON — fall through to query string token
+            }
         }
 
         if (string.IsNullOrWhiteSpace(token))

@@ -69,7 +69,17 @@ public class DispatchNewsletter
         }
 
         // Parse request body for content and frequency
-        var body = await req.ReadFromJsonAsync<DispatchRequest>(cancellationToken);
+        DispatchRequest? body;
+        try
+        {
+            body = await req.ReadFromJsonAsync<DispatchRequest>(cancellationToken);
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
+            await badRequest.WriteAsJsonAsync(new { error = "Invalid request body." });
+            return badRequest;
+        }
         var frequency = body?.Frequency?.Trim();
         if (body == null || string.IsNullOrWhiteSpace(frequency) ||
             (!string.Equals(frequency, "weekly", StringComparison.OrdinalIgnoreCase) &&

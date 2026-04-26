@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Security.Cryptography;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -55,15 +56,17 @@ public partial class SubscribeNewsletter
             return unavailable;
         }
 
-        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("NEWSLETTER_HMAC_KEY")))
+        SubscribeRequest? request;
+        try
         {
-            _logger.LogError("NEWSLETTER_HMAC_KEY is not configured");
-            var unavailable = req.CreateResponse(HttpStatusCode.ServiceUnavailable);
-            await unavailable.WriteAsJsonAsync(new { error = "Newsletter service is not fully configured." });
-            return unavailable;
+            request = await req.ReadFromJsonAsync<SubscribeRequest>(cancellationToken);
         }
-
-        var request = await req.ReadFromJsonAsync<SubscribeRequest>(cancellationToken);
+        catch (JsonException)
+        {
+            var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
+            await badRequest.WriteAsJsonAsync(new { error = "Invalid request body." });
+            return badRequest;
+        }
         if (request == null)
         {
             var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
@@ -156,7 +159,7 @@ public partial class SubscribeNewsletter
                 existing.VerifiedAt = null;
                 existing.LastSentAt = null;
                 existing.VerificationToken = GenerateToken();
-                existing.UnsubscribeToken = GenerateHmacToken(existing.Email);
+                existing.UnsubscribeToken = GenerateToken();
                 existing.SubscribedAt = DateTime.UtcNow;
                 await _newsletterService.UpdateSubscriberAsync(existing);
                 await SendVerificationEmailAsync(existing, cancellationToken);
@@ -172,7 +175,7 @@ public partial class SubscribeNewsletter
                     Status = "pending",
                     SubscribedAt = DateTime.UtcNow,
                     VerificationToken = GenerateToken(),
-                    UnsubscribeToken = GenerateHmacToken(request.Email)
+                    UnsubscribeToken = GenerateToken()
                 };
                 await _newsletterService.CreateSubscriberAsync(subscriber);
                 await SendVerificationEmailAsync(subscriber, cancellationToken);
@@ -184,7 +187,7 @@ public partial class SubscribeNewsletter
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error processing newsletter subscription for {Email}", request.Email);
+            _logger.LogError(ex, "Error processing newsletter subscription");
             var error = req.CreateResponse(HttpStatusCode.InternalServerError);
             await error.WriteAsJsonAsync(new { error = "An error occurred. Please try again later." });
             return error;
@@ -225,16 +228,6 @@ public partial class SubscribeNewsletter
         var bytes = new byte[32];
         RandomNumberGenerator.Fill(bytes);
         return Convert.ToBase64String(bytes).Replace("+", "-").Replace("/", "_").Replace("=", "");
-    }
-
-    private static string GenerateHmacToken(string email)
-    {
-        var key = Environment.GetEnvironmentVariable("NEWSLETTER_HMAC_KEY");
-        if (string.IsNullOrWhiteSpace(key))
-            throw new InvalidOperationException("NEWSLETTER_HMAC_KEY is not configured. Cannot generate secure tokens.");
-        using var hmac = new HMACSHA256(System.Text.Encoding.UTF8.GetBytes(key));
-        var hash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(email.ToLowerInvariant()));
-        return Convert.ToBase64String(hash).Replace("+", "-").Replace("/", "_").Replace("=", "");
     }
 
     private static string GetClientIp(HttpRequestData req)

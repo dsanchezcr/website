@@ -33,7 +33,17 @@ public class UpdatePreferences
             return unavailable;
         }
 
-        var request = await req.ReadFromJsonAsync<UpdatePreferencesRequest>(cancellationToken);
+        UpdatePreferencesRequest? request;
+        try
+        {
+            request = await req.ReadFromJsonAsync<UpdatePreferencesRequest>(cancellationToken);
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
+            await badRequest.WriteAsJsonAsync(new { error = "Invalid request body." });
+            return badRequest;
+        }
         if (request == null || string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Token))
         {
             var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);

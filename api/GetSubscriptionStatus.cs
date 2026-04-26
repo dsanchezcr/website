@@ -31,7 +31,17 @@ public class GetSubscriptionStatus
             return unavailable;
         }
 
-        var request = await req.ReadFromJsonAsync<StatusRequest>(cancellationToken);
+        StatusRequest? request;
+        try
+        {
+            request = await req.ReadFromJsonAsync<StatusRequest>(cancellationToken);
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            var badRequest = req.CreateResponse(HttpStatusCode.BadRequest);
+            await badRequest.WriteAsJsonAsync(new { error = "Invalid request body." });
+            return badRequest;
+        }
         var token = request?.Token;
 
         if (string.IsNullOrWhiteSpace(token))

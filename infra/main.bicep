@@ -120,10 +120,6 @@ param azureCosmosDatabaseName string = 'website-content'
 @secure()
 param newsletterDispatchKey string = ''
 
-@description('Secret key for generating newsletter unsubscribe/manage tokens (HMAC).')
-@secure()
-param newsletterHmacKey string = ''
-
 // ============================================================================
 // Resources
 // ============================================================================
@@ -271,7 +267,6 @@ resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2024-04-01' = {
     
     // Newsletter
     NEWSLETTER_DISPATCH_KEY: newsletterDispatchKey
-    NEWSLETTER_HMAC_KEY: newsletterHmacKey
   }
 }
 

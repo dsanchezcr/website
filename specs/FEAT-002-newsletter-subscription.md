@@ -103,7 +103,7 @@ The website has no mechanism for readers to receive updates about new blog posts
 ### Security
 
 - Double opt-in email verification (reuses existing pattern from contact form)
-- HMAC-signed unsubscribe tokens using dedicated `NEWSLETTER_HMAC_KEY` (no login required)
+- Cryptographically random unsubscribe tokens per subscriber (rotated on re-subscribe, no login required)
 - Verification tokens expire after 24 hours
 - Rate limiting: 3 subscribe requests/IP/hour
 - Honeypot field on subscription form
