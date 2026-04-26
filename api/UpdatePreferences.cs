@@ -51,6 +51,9 @@ public class UpdatePreferences
             return badRequest;
         }
 
+        // Normalize email for consistent lookup
+        request.Email = request.Email.Trim().ToLowerInvariant();
+
         // Validate frequency
         if (request.Frequency != "weekly" && request.Frequency != "monthly")
         {

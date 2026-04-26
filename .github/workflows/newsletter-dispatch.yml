@@ -127,6 +127,9 @@ jobs:
       - name: Dispatch Newsletter
         env:
           CUSTOM_MESSAGE: ${{ inputs.custom_message || '' }}
+          POSTS_EN: ${{ steps.content.outputs.posts_en }}
+          POSTS_ES: ${{ steps.content.outputs.posts_es }}
+          POSTS_PT: ${{ steps.content.outputs.posts_pt }}
         run: |
           FREQUENCY="${{ steps.frequency.outputs.value }}"
           SITE_URL="https://dsanchezcr.com"
@@ -162,10 +165,6 @@ jobs:
               echo "::warning::Newsletter dispatch for ${LANG} returned HTTP ${HTTP_CODE}"
             fi
           }
-          
-          POSTS_EN='${{ steps.content.outputs.posts_en }}'
-          POSTS_ES='${{ steps.content.outputs.posts_es }}'
-          POSTS_PT='${{ steps.content.outputs.posts_pt }}'
           
           dispatch_for_lang "en" "$POSTS_EN"
           dispatch_for_lang "es" "$POSTS_ES"
