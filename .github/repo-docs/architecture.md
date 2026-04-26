@@ -18,10 +18,10 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 │  │  - Disney (docs)    │   │  /api/online-users       │  │
 │  │  - Universal (docs) │   │  /api/nlweb/ask (RAG)    │  │
 │  │  - Pages (React)    │   │  /api/health             │  │
-│  │  - i18n (en/es/pt)  │   │  /api/reindex            │  │
-│  │                     │   │  /api/gaming/xbox         │  │
-│  └─────────────────────┘   │  /api/gaming/playstation  │  │
-│                            │  /api/gaming/refresh      │  │
+│  │  - i18n (en/es/pt)  │   │  /api/gaming/*           │  │
+│  │                     │   │  /api/content/*          │  │
+│  └─────────────────────┘   │  /api/newsletter/*       │  │
+│                            │  /api/reindex            │  │
 │                            └──────────────────────────┘  │
 └──────────────────────────────────────────────────────────┘
          │                              │
@@ -33,6 +33,7 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
   └──────────────┘    │  - Foundry (GPT + RAG + Images) │
                       │  - AI Search (Content Index)    │
                       │  - Table Storage (Tokens/Cache) │
+                      │  - Cosmos DB (Content/Newsletter)│
                       │  - Application Insights         │
                       └─────────────────────────────────┘
          │                              │
@@ -109,7 +110,7 @@ Push to main → GitHub Actions builds Docusaurus + .NET API
 - **Content translation**: Docusaurus i18n structure under `i18n/es/` and `i18n/pt/`
 - **Component translations**: Some pages embed translations inline (e.g., `3dprinting.js`, `volunteering.js`, `sponsors.js`)
 - **Backend localization**: `LocalizationHelper.cs` for email templates
-- **Movie/TV reviews**: Multilingual reviews embedded in JSON data (`src/data/movies.json`, `src/data/series.json`)
+- **Movie/TV reviews**: Multilingual reviews stored in Cosmos DB (`content-movies`, `content-series` containers)
 
 ## Infrastructure
 

@@ -135,7 +135,7 @@ The website has no mechanism for readers to receive updates about new blog posts
 
 - [x] Subscription form appears on all pages (above footer)
 - [x] Double opt-in email flow works end-to-end
-- [x] Unsubscribe link in every email works with single click
+- [x] Unsubscribe link in every email works (confirmation step before unsubscribe)
 - [x] `/newsletter` page allows preference management
 - [x] GitHub Actions workflow dispatches on schedule
 - [x] All 3 locales render correctly
