@@ -159,19 +159,8 @@ public class UnsubscribeNewsletter
 
     private static async Task<HttpResponseData> CreateHtmlResponseAsync(HttpRequestData req, HttpStatusCode statusCode, string message, string language, bool success)
     {
-        var websiteUrl = Environment.GetEnvironmentVariable("WEBSITE_URL") ?? "https://dsanchezcr.com";
-        var homeUrl = language switch
-        {
-            "es" => $"{websiteUrl}/es/",
-            "pt" => $"{websiteUrl}/pt/",
-            _ => $"{websiteUrl}/"
-        };
-        var returnText = language switch
-        {
-            "es" => "Volver al Inicio",
-            "pt" => "Voltar ao Início",
-            _ => "Return to Home"
-        };
+        var homeUrl = LocalizationHelper.GetHomeUrl(language);
+        var returnText = LocalizationHelper.GetReturnHomeText(language);
         var title = success
             ? (language switch { "es" => "Suscripción Cancelada", "pt" => "Assinatura Cancelada", _ => "Unsubscribed" })
             : (language switch { "es" => "Error", "pt" => "Erro", _ => "Error" });

@@ -141,19 +141,8 @@ public class VerifySubscription
 
     private static async Task<HttpResponseData> CreateHtmlResponseAsync(HttpRequestData req, HttpStatusCode statusCode, string message, string language)
     {
-        var websiteUrl = Environment.GetEnvironmentVariable("WEBSITE_URL") ?? "https://dsanchezcr.com";
-        var homeUrl = language switch
-        {
-            "es" => $"{websiteUrl}/es/",
-            "pt" => $"{websiteUrl}/pt/",
-            _ => $"{websiteUrl}/"
-        };
-        var returnText = language switch
-        {
-            "es" => "Volver al Inicio",
-            "pt" => "Voltar ao Início",
-            _ => "Return to Home"
-        };
+        var homeUrl = LocalizationHelper.GetHomeUrl(language);
+        var returnText = LocalizationHelper.GetReturnHomeText(language);
         var title = statusCode == HttpStatusCode.OK
             ? (language switch { "es" => "Suscripción Confirmada", "pt" => "Assinatura Confirmada", _ => "Subscription Confirmed" })
             : (language switch { "es" => "Error", "pt" => "Erro", _ => "Error" });

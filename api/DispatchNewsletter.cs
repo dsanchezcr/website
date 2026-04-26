@@ -199,7 +199,8 @@ public class DispatchNewsletter
             foreach (var post in content.BlogPosts)
             {
                 var escapedSlug = Uri.EscapeDataString(post.Slug);
-                contentHtml += $"<li><a href=\"{websiteUrl}{langPrefix}/blog/{escapedSlug}\">{System.Net.WebUtility.HtmlEncode(post.Title)}</a> — {System.Net.WebUtility.HtmlEncode(post.Description)}</li>";
+                var blogPostUrl = System.Net.WebUtility.HtmlEncode($"{websiteUrl}{langPrefix}/blog/{escapedSlug}");
+                contentHtml += $"<li><a href=\"{blogPostUrl}\">{System.Net.WebUtility.HtmlEncode(post.Title)}</a> \u2014 {System.Net.WebUtility.HtmlEncode(post.Description)}</li>";
             }
             contentHtml += "</ul>";
         }
