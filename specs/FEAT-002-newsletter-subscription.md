@@ -42,7 +42,7 @@ The website has no mechanism for readers to receive updates about new blog posts
 
 ```json
 {
-  "id": "unique-guid",
+  "id": "user@example.com",
   "email": "user@example.com",
   "frequency": "weekly",
   "language": "en",
@@ -50,7 +50,8 @@ The website has no mechanism for readers to receive updates about new blog posts
   "subscribedAt": "2026-04-23T00:00:00Z",
   "verifiedAt": "2026-04-23T00:05:00Z",
   "lastSentAt": null,
-  "unsubscribeToken": "hmac-signed-token"
+  "verificationToken": null,
+  "unsubscribeToken": "random-base64url-token"
 }
 ```
 
@@ -62,7 +63,7 @@ The website has no mechanism for readers to receive updates about new blog posts
 | `VerifySubscription` | `/api/newsletter/verify` | GET | Confirm subscription via token |
 | `UnsubscribeNewsletter` | `/api/newsletter/unsubscribe` | GET/POST | Unsubscribe with confirmation |
 | `UpdatePreferences` | `/api/newsletter/preferences` | POST | Change frequency |
-| `GetSubscriptionStatus` | `/api/newsletter/status` | GET | Check status by unsubscribe token |
+| `GetSubscriptionStatus` | `/api/newsletter/status` | POST | Check status by unsubscribe token |
 | `DispatchNewsletter` | `/api/newsletter/dispatch` | POST | Build + send digest (called by GitHub Actions) |
 
 ### Frontend Components
@@ -147,7 +148,7 @@ The website has no mechanism for readers to receive updates about new blog posts
 
 - Email addresses stored in Cosmos DB with partition key isolation
 - No PII stored beyond email + language + frequency
-- Unsubscribe tokens are HMAC-signed, not guessable
+- Unsubscribe tokens are cryptographically random (256-bit), not guessable
 - Privacy page (FEAT-001) documents newsletter data handling
 
 ## Out of Scope

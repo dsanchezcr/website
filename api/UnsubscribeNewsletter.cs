@@ -61,7 +61,19 @@ public class UnsubscribeNewsletter
             if (subscriber == null)
             {
                 return await CreateHtmlResponseAsync(req, HttpStatusCode.BadRequest,
-                    "This subscription was not found or is already unsubscribed.", "en", false);
+                    "This subscription was not found.", "en", false);
+            }
+
+            // Already unsubscribed — show success page without re-writing to DB
+            if (subscriber.Status == "unsubscribed")
+            {
+                var alreadyMessage = subscriber.Language switch
+                {
+                    "es" => "Ya has sido dado de baja del boletín.",
+                    "pt" => "Você já foi desinscrito do boletim.",
+                    _ => "You are already unsubscribed from the newsletter."
+                };
+                return await CreateHtmlResponseAsync(req, HttpStatusCode.OK, alreadyMessage, subscriber.Language, true);
             }
 
             // GET shows confirmation page; POST performs the unsubscribe
