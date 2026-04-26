@@ -205,14 +205,14 @@ public class DispatchNewsletter
             contentHtml += "</ul>";
         }
 
-        if (string.IsNullOrEmpty(contentHtml))
-        {
-            contentHtml = $"<p>{noContent}</p>";
-        }
-
         if (!string.IsNullOrEmpty(content.CustomMessage))
         {
             contentHtml += $"<p>{System.Net.WebUtility.HtmlEncode(content.CustomMessage)}</p>";
+        }
+
+        if (string.IsNullOrEmpty(contentHtml))
+        {
+            contentHtml = $"<p>{noContent}</p>";
         }
 
         await _emailClient.Value.SendAsync(
