@@ -67,7 +67,7 @@
     "babel-plugin-module-resolver": "^5.0.3",
     "jsdom": "^29.0.2",
     "typescript": "^6.0.3",
-    "vite": "^8.0.9",
+    "vite": "^8.0.10",
     "vitest": "^4.1.4"
   },
   "overrides": {
