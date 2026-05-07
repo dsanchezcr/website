@@ -14,9 +14,9 @@ const MONTH_NAMES = {
 const MONTH_SLUGS = ['january','february','march','april','may','june','july','august','september','october','november','december'];
 
 const SECTION_LABELS = {
-  en: { upcoming: 'Upcoming Releases', playing: "What I'm Playing" },
-  es: { upcoming: 'Próximos Lanzamientos', playing: 'Lo Que Estoy Jugando' },
-  pt: { upcoming: 'Próximos Lançamentos', playing: 'O Que Estou Jogando' },
+  en: { upcoming: 'Upcoming Releases', event: 'Events & Showcases', playing: "What I'm Playing" },
+  es: { upcoming: 'Próximos Lanzamientos', event: 'Eventos y Presentaciones', playing: 'Lo Que Estoy Jugando' },
+  pt: { upcoming: 'Próximos Lançamentos', event: 'Eventos e Apresentações', playing: 'O Que Estou Jogando' },
 };
 
 function formatMonth(monthKey, locale) {
@@ -172,6 +172,7 @@ const HubInner = () => {
         const heroImage = meta?.heroImageUrl;
         const introText = meta ? localizeValue(meta.introText, locale) : null;
         const upcomingItems = data.filter(d => d.category === 'upcoming');
+        const eventItems = data.filter(d => d.category === 'event');
         const playingItems = data.filter(d => d.category === 'playing');
         const title = formatMonth(monthKey, locale);
         const slug = monthKeyToSlug(monthKey);
@@ -202,6 +203,13 @@ const HubInner = () => {
                   <>
                     <h2>{labels.upcoming}</h2>
                     <ApiMonthlyReleases month={monthKey} category="upcoming" />
+                  </>
+                )}
+
+                {eventItems.length > 0 && (
+                  <>
+                    <h2>{labels.event}</h2>
+                    <ApiMonthlyReleases month={monthKey} category="event" />
                   </>
                 )}
 
