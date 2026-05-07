@@ -77,6 +77,7 @@ const ApiMonthlyReleasesInner = ({ month, category }) => {
   }
 
   const upcomingItems = filteredItems.filter(item => item.category === 'upcoming');
+  const eventItems = filteredItems.filter(item => item.category === 'event');
   const playingItems = filteredItems.filter(item => item.category === 'playing');
 
   return (
@@ -84,6 +85,34 @@ const ApiMonthlyReleasesInner = ({ month, category }) => {
       {upcomingItems.length > 0 && (
         <>
           {upcomingItems.map((item) => {
+            const title = localizeValue(item.title, localeKey);
+            const description = localizeValue(item.description, localeKey);
+            const youtubeTitle = localizeValue(item.youtubeTitle, localeKey);
+
+            return (
+              <div key={item.id} style={{ marginBottom: '2rem' }}>
+                <h3>{title}{item.releaseDate ? ` — ${item.releaseDate}` : ''}</h3>
+                {description && <p>{description}{item.platforms ? ` ${item.platforms}` : ''}</p>}
+                {item.youtubeVideoId && (
+                  <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', maxWidth: '100%', marginTop: '1rem' }}>
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${item.youtubeVideoId}`}
+                      title={youtubeTitle || title}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </>
+      )}
+      {eventItems.length > 0 && (
+        <>
+          {eventItems.map((item) => {
             const title = localizeValue(item.title, localeKey);
             const description = localizeValue(item.description, localeKey);
             const youtubeTitle = localizeValue(item.youtubeTitle, localeKey);
