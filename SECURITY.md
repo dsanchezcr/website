@@ -158,12 +158,13 @@ The current rate limiting implementation uses in-memory caching (`IMemoryCache`)
 - Azure Functions configured with HTTPS-only setting
 
 ### Data Privacy
-- No personal data stored in databases
-- Contact form submissions sent via email only
-- Email verification tokens temporarily cached (24-hour TTL)
+- No personal data stored in databases except newsletter subscribers (email, language, frequency) and temporary contact verification data when Azure Table Storage is configured
+- Contact form submissions are sent via email; when `AZURE_STORAGE_CONNECTION_STRING` is configured, contact verification data may be temporarily stored in Azure Table Storage
+- Contact verification data and email verification tokens are temporary and expire after 24 hours
+- Newsletter subscribers can unsubscribe at any time via unsubscribe link
 - No third-party analytics tracking in Azure Functions
-- Google Analytics used on frontend
+- Google Analytics used on frontend (anonymizeIP enabled)
 
 ---
 
-**Last Updated**: February 2026
+**Last Updated**: April 2026

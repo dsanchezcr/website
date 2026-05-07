@@ -1,0 +1,95 @@
+---
+title: Privacy & Data Transparency
+description: Learn about how dsanchezcr.com handles your data, what third-party services are used, and our commitment to never displaying advertisements.
+hide_table_of_contents: false
+---
+
+# Privacy & Data Transparency
+
+Your privacy matters. This page explains what data is collected when you visit this website, which third-party services are used, and how your information is handled. This website is a personal project — not a business — and is committed to transparency and respect for visitors.
+
+## Analytics
+
+This website uses **Google Analytics 4** (property `G-18J431S7WG`) to understand how visitors use the site. The following settings are in place:
+
+- **IP Anonymization** is enabled (`anonymizeIP: true`) — your full IP address is never stored
+- Analytics data is used solely to understand traffic patterns (page views, popular content, visitor geography at country level)
+- No personally identifiable information (PII) is collected through analytics
+- Google Analytics may set cookies (e.g., `_ga`, `_ga_*`) to distinguish unique visitors
+
+You can opt out of Google Analytics by using a [browser extension](https://tools.google.com/dlpage/gaoptout) or by blocking cookies from `googletagmanager.com`.
+
+## Spam Protection
+
+The [Contact](/contact) page uses **Google reCAPTCHA v3** to prevent spam and abuse. reCAPTCHA may collect hardware and software information (such as device and application data) and send it to Google for analysis. This data is subject to Google's [Privacy Policy](https://policies.google.com/privacy) and [Terms of Service](https://policies.google.com/terms).
+
+reCAPTCHA runs only on pages where it's needed (contact form) and does not track you across the site.
+
+## Third-Party Services
+
+This website integrates with the following third-party services:
+
+| Service | Purpose | Data Shared |
+|---------|---------|-------------|
+| **Google Analytics** | Traffic analytics | Anonymized page views, device type, country |
+| **Google reCAPTCHA v3** | Spam protection | Device/browser fingerprint (Google-managed) |
+| **Giscus** | Blog comments (via GitHub) | Your GitHub username (if you comment) |
+| **Algolia** | Site search | Search queries (anonymized) |
+| **Open-Meteo** | Weather widget | Your approximate location (browser geolocation, only if you allow) |
+| **Azure Communication Services** | Email delivery | Email address (contact form, newsletter) |
+| **Azure Application Insights** | API monitoring | Server-side telemetry and operational logs (may include limited request data) |
+
+## Contact Form
+
+When you submit the [Contact](/contact) form:
+
+1. Your name, email, and message are validated server-side
+2. A verification email is sent to confirm your email address
+3. Upon verification, the message is forwarded to the site owner and a confirmation is sent to you
+4. **No data is stored permanently** — verification data may be temporarily stored in Azure Table Storage and expires automatically after 24 hours
+5. Rate limiting is applied to prevent abuse (3 submissions per IP per hour)
+
+## Newsletter
+
+When you subscribe to the newsletter:
+
+1. Your **email address**, **language preference**, and **frequency choice** (weekly or monthly) are stored in a secure database
+2. A verification email confirms your subscription (double opt-in)
+3. You can **unsubscribe at any time** via the unsubscribe link in every newsletter email
+4. You can manage your preferences on the [Newsletter](/newsletter) page
+5. Your data is never shared with third parties or used for marketing beyond this website's newsletter
+
+## Cookies
+
+This website uses a minimal number of cookies:
+
+| Cookie | Source | Purpose | Duration |
+|--------|--------|---------|----------|
+| `_ga` | Google Analytics | Distinguishes unique visitors | 2 years |
+| `_ga_*` | Google Analytics | Stores session state | 2 years |
+| `_GRECAPTCHA` | Google reCAPTCHA | Spam protection | Session |
+
+No advertising cookies are set. No tracking cookies beyond analytics are used.
+
+## No Advertisements — Ever
+
+**This website will never display advertisements.** This is a personal project built to share knowledge, not to generate revenue. You will never see:
+
+- Banner ads or pop-up ads
+- Sponsored content or paid placements
+- Affiliate marketing links disguised as content
+- Tracking for ad targeting purposes
+
+This commitment is permanent and unconditional.
+
+## Open Source
+
+This entire website is [open source on GitHub](https://github.com/dsanchezcr/website). You can inspect every line of code, every configuration, and every integration to verify the claims made on this page.
+
+## Contact
+
+If you have questions about privacy or data handling, please reach out through the [Contact](/contact) page.
+
+---
+
+*Last updated: April 2026*

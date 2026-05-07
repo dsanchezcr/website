@@ -2,6 +2,9 @@
   "name": "dsanchezcr",
   "version": "3.5.4",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
@@ -80,6 +83,12 @@
     },
     "@exodus/bytes": {
       "@noble/hashes": "^2.0.0"
+    },
+    "mermaid": {
+      "uuid": "^14.0.0"
+    },
+    "sockjs": {
+      "uuid": "^14.0.0"
     }
   }
 }

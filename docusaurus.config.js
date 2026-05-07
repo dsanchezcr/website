@@ -353,6 +353,14 @@ const config = {
                 label: 'GoodReads',
                 href: 'https://goodreads.com/dsanchezcr',
               },
+              {
+                label: 'Newsletter',
+                to: '/newsletter',
+              },
+              {
+                label: 'Privacy',
+                to: '/privacy',
+              },
             ],
           },
         ],                      

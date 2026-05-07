@@ -14,7 +14,7 @@ Both frontend and backend are hosted together on **Azure Static Web Apps**. The 
 - **Blog**: MDX files in `blog/` with frontmatter metadata
 - **Static Pages**: React components in `src/pages/` (e.g., `contact.js`, `weather.js`, `exchangerates.js`, `volunteering.js`)
   - **Volunteering**: Displays volunteering experience with card-based layout, category badges, organization links, and pre-populated contact form for volunteer project inquiries
-- **Custom Components**: Reusable widgets in `src/components/` (CareerTimeline, Comments, ErrorBoundary, ExchangeRatesWidget, Gaming, GitHubStats, Homepage, ImageCompareSlider, MediaCard, Movies, NLWebChat, OnlineStatusWidget, WeatherWidget, YouTubeEmbed)
+- **Custom Components**: Reusable widgets in `src/components/` (CareerTimeline, Comments, ErrorBoundary, ExchangeRatesWidget, Gaming, GitHubStats, Homepage, ImageCompareSlider, MediaCard, Movies, NewsletterSubscribe, NLWebChat, OnlineStatusWidget, WeatherWidget, YouTubeEmbed)
 - **Shared Homepage**: The `Homepage` component (`src/components/Homepage/`) is shared across all three locale index pages — editing one component updates all locales. Locale-specific text is passed as props.
 - **i18n**: Translations in `i18n/es/` and `i18n/pt/` directories following Docusaurus i18n structure
 - **Gaming**: Docs in `gaming/` fetch content from Cosmos DB at runtime via `ApiGamingSection`; images are in `static/img/gaming/<platform>/`; keep status values like `completed`, `playing`, `backlog`, `dropped`
@@ -36,13 +36,21 @@ Located in `api/` directory:
 - **GetSeriesContent.cs**: Content endpoint (`/api/content/series`) for TV series from Cosmos DB
 - **GetGamingContent.cs**: Content endpoint (`/api/content/gaming`) for gaming entries from Cosmos DB
 - **GetParksContent.cs**: Content endpoint (`/api/content/parks`) for theme parks from Cosmos DB
-- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, SearchService, GamingCacheService, and CosmosContentService
-- **LocalizationHelper.cs**: Centralized localization for email templates
+- **SubscribeNewsletter.cs**: Newsletter subscription endpoint (`/api/newsletter/subscribe`) with double opt-in, reCAPTCHA, rate limiting, honeypot
+- **VerifySubscription.cs**: Newsletter subscription verification (`/api/newsletter/verify`) via token link
+- **UnsubscribeNewsletter.cs**: Newsletter unsubscribe (`/api/newsletter/unsubscribe`) via signed token with confirmation page
+- **UpdatePreferences.cs**: Newsletter frequency update (`/api/newsletter/preferences`) with token authentication
+- **GetSubscriptionStatus.cs**: Newsletter status check (`/api/newsletter/status`) with token authentication
+- **DispatchNewsletter.cs**: Newsletter sending endpoint (`/api/newsletter/dispatch`) called by GitHub Actions cron
+- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, SearchService, GamingCacheService, CosmosContentService, and NewsletterService
+- **LocalizationHelper.cs**: Centralized localization for email templates (contact form + newsletter)
 - **Models/Content/ContentModels.cs**: Data models for Cosmos DB content (movies, series, gaming, parks)
+- **Models/Newsletter/NewsletterModels.cs**: Data models for newsletter subscribers and requests
 - **Services/TokenStorageService.cs**: Azure Table Storage integration for persistent email verification tokens
 - **Services/SearchService.cs**: Azure AI Search integration for querying and indexing documents (RAG pattern)
 - **Services/GamingCacheService.cs**: Dual-layer cache (memory + Table Storage) for gaming profiles with automatic fallback
 - **Services/CosmosContentService.cs**: Read-only Cosmos DB service for content queries across all domains
+- **Services/NewsletterService.cs**: Cosmos DB service for newsletter subscriber management (CRUD, query by frequency/token)
 
 ### Infrastructure (Bicep)
 Located in `infra/` directory:
@@ -181,11 +189,18 @@ contentMovies: '/api/content/movies'
 contentSeries: '/api/content/series'
 contentGaming: '/api/content/gaming'
 contentParks: '/api/content/parks'
+contentMonthlyUpdates: '/api/content/monthly-updates'
+newsletterSubscribe: '/api/newsletter/subscribe'
+newsletterVerify: '/api/newsletter/verify'
+newsletterUnsubscribe: '/api/newsletter/unsubscribe'
+newsletterPreferences: '/api/newsletter/preferences'
+newsletterStatus: '/api/newsletter/status'
 ```
 
 Additional API endpoints (not used by the public UI — backend/CI/admin only):
 - `/api/reindex` — Called by GitHub Actions, requires `X-Reindex-Key` header
 - `/api/gaming/refresh` — Admin-only manual trigger, requires `X-Gaming-Refresh-Key` header
+- `/api/newsletter/dispatch` — Called by GitHub Actions cron, requires `X-Newsletter-Key` header
 
 ### CI/CD (Unified Deployment)
 Single GitHub Actions workflow deploys both frontend and managed API together:
@@ -198,7 +213,7 @@ Single GitHub Actions workflow deploys both frontend and managed API together:
 - **Azure Communication Services**: Email sending (connection string in environment)
 - **Microsoft Foundry**: Chat functionality with RAG (endpoint + key + deployment required)
 - **Azure AI Search**: Content search for RAG pattern in chatbot (endpoint + API key + index name)
-- **Azure Cosmos DB**: Read-only content store for movies, series, gaming, and parks data
+- **Azure Cosmos DB**: Read-only content store for movies, series, gaming, and parks data; also stores newsletter subscribers
 - **Azure Table Storage**: Persistent storage for email verification tokens (connection string)
 - **Google reCAPTCHA v3**: Site key `6LcGaAIsAAAAALzUAxzGFx5R1uJ2Wgxn4RmNsy2I` (client-side) + secret key (server-side)
 - **Google Analytics**: Via `@docusaurus/plugin-google-gtag` (tracking ID: `G-18J431S7WG`) and Data API for visitor count
@@ -243,6 +258,9 @@ GAMING_REFRESH_KEY
 AZURE_COSMOS_ENDPOINT
 AZURE_COSMOS_KEY
 AZURE_COSMOS_DATABASE_NAME
+
+# Newsletter
+NEWSLETTER_DISPATCH_KEY
 
 # Telemetry
 APPLICATIONINSIGHTS_CONNECTION_STRING
@@ -364,10 +382,10 @@ All user-facing content **must** support English (default), Spanish, and Portugu
 - `i18n/pt/docusaurus-plugin-content-docs-movies-tv/current/`
 
 **React pages with inline translations** (no i18n files needed — translations embedded in component):
-- `3dprinting.js`, `volunteering.js`, `sponsors.js` — use inline translation objects
+- `3dprinting.js`, `volunteering.js`, `sponsors.js`, `newsletter.js` — use inline translation objects
 - `movies.js` — redirect only, no translation needed
 
-**Pages with i18n files**: `about.mdx`, `contact.js`, `exchangerates.js`, `index.js`, `weather.js` have translations in:
+**Pages with i18n files**: `about.mdx`, `contact.js`, `exchangerates.js`, `index.js`, `privacy.mdx`, `weather.js` have translations in:
 - `i18n/es/docusaurus-plugin-content-pages/`
 - `i18n/pt/docusaurus-plugin-content-pages/`
 

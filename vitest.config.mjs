@@ -26,6 +26,7 @@ export default defineConfig({
       '@docusaurus/router': path.resolve(__dirname, 'src/__tests__/mocks/router.js'),
       '@docusaurus/Translate': path.resolve(__dirname, 'src/__tests__/mocks/Translate.js'),
       '@docusaurus/BrowserOnly': path.resolve(__dirname, 'src/__tests__/mocks/BrowserOnly.js'),
+      '@docusaurus/Link': path.resolve(__dirname, 'src/__tests__/mocks/Link.js'),
     },
   },
 });

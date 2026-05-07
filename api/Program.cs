@@ -81,26 +81,15 @@ var host = new HostBuilder()
             return new InMemoryGamingCacheService(memoryCache, inMemoryLogger);
         });
         
-        // Register Cosmos Content Service (read-only content from Cosmos DB)
-        services.AddSingleton<ICosmosContentService>(sp =>
+        // Register shared Cosmos DB client singleton
+        var cosmosEndpoint = Environment.GetEnvironmentVariable("AZURE_COSMOS_ENDPOINT");
+        var cosmosKey = Environment.GetEnvironmentVariable("AZURE_COSMOS_KEY");
+        var cosmosDatabaseName = Environment.GetEnvironmentVariable("AZURE_COSMOS_DATABASE_NAME") ?? "website-content";
+        
+        if (!string.IsNullOrEmpty(cosmosEndpoint) && !string.IsNullOrEmpty(cosmosKey))
         {
-            var endpoint = Environment.GetEnvironmentVariable("AZURE_COSMOS_ENDPOINT");
-            var key = Environment.GetEnvironmentVariable("AZURE_COSMOS_KEY");
-            var databaseName = Environment.GetEnvironmentVariable("AZURE_COSMOS_DATABASE_NAME") ?? "website-content";
-            
-            if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key))
+            services.AddSingleton(sp =>
             {
-                var logger = sp.GetRequiredService<ILogger<CosmosContentService>>();
-                logger.LogInformation(
-                    "Cosmos DB content service not configured: AZURE_COSMOS_ENDPOINT={EndpointSet}, AZURE_COSMOS_KEY={KeySet}. Content APIs will return 503.",
-                    !string.IsNullOrEmpty(endpoint),
-                    !string.IsNullOrEmpty(key));
-                return new NullCosmosContentService();
-            }
-
-            try
-            {
-                var logger = sp.GetRequiredService<ILogger<CosmosContentService>>();
                 var clientOptions = new CosmosClientOptions
                 {
                     UseSystemTextJsonSerializerWithOptions = new System.Text.Json.JsonSerializerOptions
@@ -109,15 +98,57 @@ var host = new HostBuilder()
                     },
                     ConnectionMode = ConnectionMode.Gateway
                 };
-                var client = new CosmosClient(endpoint, key, clientOptions);
-                logger.LogInformation("Cosmos DB content service initialized. Database: {DatabaseName}", databaseName);
-                return new CosmosContentService(client, databaseName, logger);
+                return new CosmosClient(cosmosEndpoint, cosmosKey, clientOptions);
+            });
+        }
+
+        // Register Cosmos Content Service (read-only content from Cosmos DB)
+        services.AddSingleton<ICosmosContentService>(sp =>
+        {
+            if (string.IsNullOrEmpty(cosmosEndpoint) || string.IsNullOrEmpty(cosmosKey))
+            {
+                var logger = sp.GetRequiredService<ILogger<CosmosContentService>>();
+                logger.LogInformation(
+                    "Cosmos DB content service not configured: AZURE_COSMOS_ENDPOINT={EndpointSet}, AZURE_COSMOS_KEY={KeySet}. Content APIs will return 503.",
+                    !string.IsNullOrEmpty(cosmosEndpoint),
+                    !string.IsNullOrEmpty(cosmosKey));
+                return new NullCosmosContentService();
+            }
+
+            try
+            {
+                var logger = sp.GetRequiredService<ILogger<CosmosContentService>>();
+                var client = sp.GetRequiredService<CosmosClient>();
+                logger.LogInformation("Cosmos DB content service initialized. Database: {DatabaseName}", cosmosDatabaseName);
+                return new CosmosContentService(client, cosmosDatabaseName, logger);
             }
             catch (Exception ex)
             {
                 var fallbackLogger = sp.GetRequiredService<ILogger<CosmosContentService>>();
-                fallbackLogger.LogError(ex, "Failed to initialize Cosmos content service — falling back to NullCosmosContentService. Endpoint: {Endpoint}", endpoint);
+                fallbackLogger.LogError(ex, "Failed to initialize Cosmos content service — falling back to NullCosmosContentService. Endpoint: {Endpoint}", cosmosEndpoint);
                 return new NullCosmosContentService(initializationError: ex.Message);
+            }
+        });
+        
+        // Register Newsletter Service (subscriber management in Cosmos DB)
+        services.AddSingleton<INewsletterService>(sp =>
+        {
+            if (string.IsNullOrEmpty(cosmosEndpoint) || string.IsNullOrEmpty(cosmosKey))
+            {
+                return new NullNewsletterService();
+            }
+
+            try
+            {
+                var logger = sp.GetRequiredService<ILogger<CosmosNewsletterService>>();
+                var client = sp.GetRequiredService<CosmosClient>();
+                return new CosmosNewsletterService(client, cosmosDatabaseName, logger);
+            }
+            catch (Exception ex)
+            {
+                var fallbackLogger = sp.GetRequiredService<ILogger<CosmosNewsletterService>>();
+                fallbackLogger.LogError(ex, "Failed to initialize Newsletter service — falling back to NullNewsletterService.");
+                return new NullNewsletterService();
             }
         });
     })

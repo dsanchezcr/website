@@ -74,5 +74,17 @@
   "item.label.YouTube": {
     "message": "YouTube",
     "description": "Navbar item with label YouTube"
+  },
+  "logo.alt": {
+    "message": "David Sanchez - Site",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Disney World": {
+    "message": "Disney World",
+    "description": "Navbar item with label Disney World"
+  },
+  "item.label.Universal Orlando": {
+    "message": "Universal Orlando",
+    "description": "Navbar item with label Universal Orlando"
   }
 }

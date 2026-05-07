@@ -32,7 +32,27 @@ public static class LocalizationHelper
             ["confirmationGreeting"] = "Hello {0},",
             ["confirmationMessage"] = "Thank you very much for your message. I will try to get back to you as soon as possible.",
             ["confirmationSignature"] = "Best regards,<br/>David Sanchez",
-            ["confirmationTitle"] = "Thank you for reaching out!"
+            ["confirmationTitle"] = "Thank you for reaching out!",
+            
+            // Newsletter
+            ["newsletterVerificationSubject"] = "Verify your newsletter subscription",
+            ["newsletterVerificationMessage"] = "Please click the link below to confirm your subscription:<br/><br/><a href=\"{0}\">Confirm Subscription</a><br/><br/>This link will expire in 24 hours.",
+            ["newsletterVerificationDisclaimer"] = "If you did not request this, please ignore this email.",
+            ["newsletterWelcomeSubject"] = "Welcome to the Newsletter!",
+            ["newsletterWelcomeGreeting"] = "Hello!",
+            ["newsletterWelcomeMessage"] = "Thank you for subscribing to the newsletter. You will receive {0} updates with the latest blog posts, projects, and content from the website.",
+            ["newsletterWelcomeSignature"] = "Best regards,<br/>David Sanchez",
+            ["newsletterFrequencyWeekly"] = "weekly",
+            ["newsletterFrequencyMonthly"] = "monthly",
+            ["newsletterSubject"] = "Newsletter — What's New",
+            ["newsletterUnsubscribe"] = "Unsubscribe",
+            ["newsletterManagePreferences"] = "Manage Preferences",
+            ["newsletterGreeting"] = "Hello!",
+            ["newsletterFooter"] = "You are receiving this email because you subscribed to the newsletter at dsanchezcr.com.",
+            ["newsletterNewBlogPosts"] = "New Blog Posts",
+            ["newsletterLatestUpdates"] = "Latest Updates",
+            ["newsletterReadMore"] = "Read more",
+            ["newsletterNoContent"] = "No new content this period — stay tuned for upcoming updates!"
         },
         ["es"] = new()
         {
@@ -58,7 +78,27 @@ public static class LocalizationHelper
             ["confirmationGreeting"] = "Hola {0},",
             ["confirmationMessage"] = "Muchas gracias por tu mensaje. Trataré de responderte lo antes posible.",
             ["confirmationSignature"] = "Saludos cordiales,<br/>David Sanchez",
-            ["confirmationTitle"] = "¡Gracias por comunicarte!"
+            ["confirmationTitle"] = "¡Gracias por comunicarte!",
+            
+            // Newsletter
+            ["newsletterVerificationSubject"] = "Verifica tu suscripción al boletín",
+            ["newsletterVerificationMessage"] = "Por favor haz clic en el enlace a continuación para confirmar tu suscripción:<br/><br/><a href=\"{0}\">Confirmar Suscripción</a><br/><br/>Este enlace expirará en 24 horas.",
+            ["newsletterVerificationDisclaimer"] = "Si no solicitaste esto, ignora este correo.",
+            ["newsletterWelcomeSubject"] = "¡Bienvenido al Boletín!",
+            ["newsletterWelcomeGreeting"] = "¡Hola!",
+            ["newsletterWelcomeMessage"] = "Gracias por suscribirte al boletín. Recibirás actualizaciones {0} con las últimas publicaciones del blog, proyectos y contenido del sitio web.",
+            ["newsletterWelcomeSignature"] = "Saludos cordiales,<br/>David Sanchez",
+            ["newsletterFrequencyWeekly"] = "semanales",
+            ["newsletterFrequencyMonthly"] = "mensuales",
+            ["newsletterSubject"] = "Boletín — Novedades",
+            ["newsletterUnsubscribe"] = "Cancelar suscripción",
+            ["newsletterManagePreferences"] = "Gestionar Preferencias",
+            ["newsletterGreeting"] = "¡Hola!",
+            ["newsletterFooter"] = "Recibes este correo porque te suscribiste al boletín en dsanchezcr.com.",
+            ["newsletterNewBlogPosts"] = "Nuevas Publicaciones del Blog",
+            ["newsletterLatestUpdates"] = "Últimas Actualizaciones",
+            ["newsletterReadMore"] = "Leer más",
+            ["newsletterNoContent"] = "No hay contenido nuevo en este período — ¡mantente atento a las próximas actualizaciones!"
         },
         ["pt"] = new()
         {
@@ -84,7 +124,27 @@ public static class LocalizationHelper
             ["confirmationGreeting"] = "Olá {0},",
             ["confirmationMessage"] = "Muito obrigado pela sua mensagem. Tentarei responder o mais breve possível.",
             ["confirmationSignature"] = "Atenciosamente,<br/>David Sanchez",
-            ["confirmationTitle"] = "Obrigado por entrar em contato!"
+            ["confirmationTitle"] = "Obrigado por entrar em contato!",
+            
+            // Newsletter
+            ["newsletterVerificationSubject"] = "Verifique sua assinatura do boletim",
+            ["newsletterVerificationMessage"] = "Por favor, clique no link abaixo para confirmar sua assinatura:<br/><br/><a href=\"{0}\">Confirmar Assinatura</a><br/><br/>Este link expirará em 24 horas.",
+            ["newsletterVerificationDisclaimer"] = "Se você não solicitou isso, ignore este e-mail.",
+            ["newsletterWelcomeSubject"] = "Bem-vindo ao Boletim!",
+            ["newsletterWelcomeGreeting"] = "Olá!",
+            ["newsletterWelcomeMessage"] = "Obrigado por se inscrever no boletim. Você receberá atualizações {0} com as últimas publicações do blog, projetos e conteúdo do site.",
+            ["newsletterWelcomeSignature"] = "Atenciosamente,<br/>David Sanchez",
+            ["newsletterFrequencyWeekly"] = "semanais",
+            ["newsletterFrequencyMonthly"] = "mensais",
+            ["newsletterSubject"] = "Boletim — Novidades",
+            ["newsletterUnsubscribe"] = "Cancelar assinatura",
+            ["newsletterManagePreferences"] = "Gerenciar Preferências",
+            ["newsletterGreeting"] = "Olá!",
+            ["newsletterFooter"] = "Você está recebendo este e-mail porque se inscreveu no boletim em dsanchezcr.com.",
+            ["newsletterNewBlogPosts"] = "Novas Publicações do Blog",
+            ["newsletterLatestUpdates"] = "Últimas Atualizações",
+            ["newsletterReadMore"] = "Leia mais",
+            ["newsletterNoContent"] = "Sem conteúdo novo neste período — fique atento às próximas atualizações!"
         }
     };
 

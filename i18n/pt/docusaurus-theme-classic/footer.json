@@ -1,6 +1,62 @@
 {
-    "copyright": {
-      "message": "Direitos autorais © 2026 David Sanchez. Construído com <a href='https://docusaurus.io' target='_blank'>Docusaurus</a> · <a href='https://learn.microsoft.com/azure/static-web-apps/overview' target='_blank'>Azure Static Web Apps</a> · <a href='https://github.com/dsanchezcr/website' target='_blank'>Código no GitHub</a><br />As opiniões expressas neste site são minhas e não refletem necessariamente as opiniões do meu empregador.",
-      "description": "The footer copyright notice"
-    }
+  "copyright": {
+    "message": "Direitos autorais © 2026 David Sanchez. Construído com <a href='https://docusaurus.io' target='_blank'>Docusaurus</a> · <a href='https://learn.microsoft.com/azure/static-web-apps/overview' target='_blank'>Azure Static Web Apps</a> · <a href='https://github.com/dsanchezcr/website' target='_blank'>Código no GitHub</a><br />As opiniões expressas neste site são minhas e não refletem necessariamente as opiniões do meu empregador.",
+    "description": "The footer copyright"
+  },
+  "link.item.label.Newsletter": {
+    "message": "Boletim",
+    "description": "The label of footer link with label=Newsletter linking to /newsletter"
+  },
+  "link.item.label.Privacy": {
+    "message": "Privacidade",
+    "description": "The label of footer link with label=Privacy linking to /privacy"
+  },
+  "link.title.Content": {
+    "message": "Conteúdo",
+    "description": "The title of the footer links column with title=Content in the footer"
+  },
+  "link.title.Social": {
+    "message": "Social",
+    "description": "The title of the footer links column with title=Social in the footer"
+  },
+  "link.title.More": {
+    "message": "Mais",
+    "description": "The title of the footer links column with title=More in the footer"
+  },
+  "link.item.label.Blog": {
+    "message": "Blog",
+    "description": "The label of footer link with label=Blog linking to /blog"
+  },
+  "link.item.label.Projects": {
+    "message": "Projetos",
+    "description": "The label of footer link with label=Projects linking to /projects"
+  },
+  "link.item.label.About": {
+    "message": "Sobre",
+    "description": "The label of footer link with label=About linking to /about"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "The label of footer link with label=GitHub linking to https://github.com/dsanchezcr"
+  },
+  "link.item.label.LinkedIn": {
+    "message": "LinkedIn",
+    "description": "The label of footer link with label=LinkedIn linking to https://linkedin.com/in/dsanchezcr"
+  },
+  "link.item.label.X (Twitter)": {
+    "message": "X (Twitter)",
+    "description": "The label of footer link with label=X (Twitter) linking to https://twitter.com/dsanchezcr"
+  },
+  "link.item.label.YouTube": {
+    "message": "YouTube",
+    "description": "The label of footer link with label=YouTube linking to https://youtube.com/@dsanchezcr"
+  },
+  "link.item.label.Sessionize": {
+    "message": "Sessionize",
+    "description": "The label of footer link with label=Sessionize linking to https://sessionize.com/dsanchezcr"
+  },
+  "link.item.label.GoodReads": {
+    "message": "GoodReads",
+    "description": "The label of footer link with label=GoodReads linking to https://goodreads.com/dsanchezcr"
   }
+}

@@ -18,10 +18,10 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 │  │  - Disney (docs)    │   │  /api/online-users       │  │
 │  │  - Universal (docs) │   │  /api/nlweb/ask (RAG)    │  │
 │  │  - Pages (React)    │   │  /api/health             │  │
-│  │  - i18n (en/es/pt)  │   │  /api/reindex            │  │
-│  │                     │   │  /api/gaming/xbox         │  │
-│  └─────────────────────┘   │  /api/gaming/playstation  │  │
-│                            │  /api/gaming/refresh      │  │
+│  │  - i18n (en/es/pt)  │   │  /api/gaming/*           │  │
+│  │                     │   │  /api/content/*          │  │
+│  └─────────────────────┘   │  /api/newsletter/*       │  │
+│                            │  /api/reindex            │  │
 │                            └──────────────────────────┘  │
 └──────────────────────────────────────────────────────────┘
          │                              │
@@ -33,6 +33,7 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
   └──────────────┘    │  - Foundry (GPT + RAG + Images) │
                       │  - AI Search (Content Index)    │
                       │  - Table Storage (Tokens/Cache) │
+                      │  - Cosmos DB (Content/Newsletter)│
                       │  - Application Insights         │
                       └─────────────────────────────────┘
          │                              │
@@ -75,6 +76,17 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 | GetXboxProfile | `/api/gaming/xbox` | Xbox Live profile with Table Storage cache |
 | GetPlayStationProfile | `/api/gaming/playstation` | PSN profile with JWT auth and cache |
 | RefreshGamingProfiles | `/api/gaming/refresh` | Admin trigger for gaming data refresh |
+| GetMoviesContent | `/api/content/movies` | Movies from Cosmos DB |
+| GetSeriesContent | `/api/content/series` | TV series from Cosmos DB |
+| GetGamingContent | `/api/content/gaming` | Gaming entries from Cosmos DB |
+| GetParksContent | `/api/content/parks` | Theme parks from Cosmos DB |
+| GetMonthlyUpdatesContent | `/api/content/monthly-updates` | Monthly gaming updates from Cosmos DB |
+| SubscribeNewsletter | `/api/newsletter/subscribe` | Newsletter subscription with double opt-in |
+| VerifySubscription | `/api/newsletter/verify` | Confirm newsletter subscription |
+| UnsubscribeNewsletter | `/api/newsletter/unsubscribe` | Unsubscribe with confirmation |
+| UpdatePreferences | `/api/newsletter/preferences` | Change frequency (weekly/monthly) |
+| GetSubscriptionStatus | `/api/newsletter/status` | Check subscription state |
+| DispatchNewsletter | `/api/newsletter/dispatch` | Send digest (GitHub Actions triggered) |
 
 ### Data Flow: RAG Pipeline
 
@@ -98,7 +110,7 @@ Push to main → GitHub Actions builds Docusaurus + .NET API
 - **Content translation**: Docusaurus i18n structure under `i18n/es/` and `i18n/pt/`
 - **Component translations**: Some pages embed translations inline (e.g., `3dprinting.js`, `volunteering.js`, `sponsors.js`)
 - **Backend localization**: `LocalizationHelper.cs` for email templates
-- **Movie/TV reviews**: Multilingual reviews embedded in JSON data (`src/data/movies.json`, `src/data/series.json`)
+- **Movie/TV reviews**: Multilingual reviews stored in Cosmos DB (`content-movies`, `content-series` containers)
 
 ## Infrastructure
 
