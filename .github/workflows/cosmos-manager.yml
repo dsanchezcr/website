@@ -5,19 +5,32 @@ on:
     branches: [ "main" ]
     paths:
       - 'cosmos-manager/**'
+      - '.github/workflows/cosmos-manager.yml'
+    tags:
+      - 'cosmos-manager-v*'
   pull_request:
     branches: [ "main" ]
     paths:
       - 'cosmos-manager/**'
+      - '.github/workflows/cosmos-manager.yml'
   workflow_dispatch:
+    inputs:
+      release:
+        description: 'Create a GitHub Release with the published EXE'
+        type: boolean
+        default: false
+      version:
+        description: 'Version tag for the release (e.g. 1.1.0). Required when release=true.'
+        type: string
+        required: false
 
 permissions:
-  contents: read
+  contents: write   # required to publish releases
   actions: write
 
 jobs:
   build:
-    name: Build
+    name: Build & Publish
     runs-on: windows-latest
     steps:
       - name: Check Out Repo
@@ -32,12 +45,26 @@ jobs:
         run: dotnet restore
         working-directory: cosmos-manager
 
+      - name: Determine Version
+        id: version
+        shell: pwsh
+        run: |
+          if ("${{ github.ref }}".StartsWith("refs/tags/cosmos-manager-v")) {
+            $v = "${{ github.ref }}".Replace("refs/tags/cosmos-manager-v", "")
+          } elseif ("${{ inputs.version }}") {
+            $v = "${{ inputs.version }}"
+          } else {
+            $v = "1.0.${{ github.run_number }}"
+          }
+          echo "version=$v" >> $env:GITHUB_OUTPUT
+          echo "Version: $v"
+
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore /p:Version=${{ steps.version.outputs.version }}
         working-directory: cosmos-manager
 
-      - name: Publish
-        run: dotnet publish --configuration Release --no-build --output ./publish
+      - name: Publish (framework-dependent, dev artifact)
+        run: dotnet publish --configuration Release --no-build --output ./publish /p:Version=${{ steps.version.outputs.version }}
         working-directory: cosmos-manager
 
       - name: Upload Build Artifact
@@ -46,3 +73,63 @@ jobs:
           name: cosmos-manager
           path: cosmos-manager/publish/
           retention-days: 14
+
+      # ── Release packaging ──
+      - name: Publish Self-Contained Single-File EXE (win-x64)
+        if: startsWith(github.ref, 'refs/tags/cosmos-manager-v') || inputs.release == true
+        run: |
+          dotnet publish CosmosManager.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true `
+            -p:DebugType=embedded `
+            -p:Version=${{ steps.version.outputs.version }} `
+            -p:AssemblyVersion=${{ steps.version.outputs.version }}.0 `
+            -p:FileVersion=${{ steps.version.outputs.version }}.0 `
+            --output ./release/win-x64
+        working-directory: cosmos-manager
+
+      - name: Package Release ZIP
+        if: startsWith(github.ref, 'refs/tags/cosmos-manager-v') || inputs.release == true
+        shell: pwsh
+        run: |
+          $v = "${{ steps.version.outputs.version }}"
+          $zip = "CosmosManager-$v-win-x64.zip"
+          # Strip *.pdb so the zip stays small.
+          Get-ChildItem -Path ./release/win-x64 -Filter *.pdb -Recurse | Remove-Item -Force
+          Compress-Archive -Path ./release/win-x64/* -DestinationPath ./release/$zip -Force
+          Get-ChildItem ./release/$zip | Format-List
+        working-directory: cosmos-manager
+
+      - name: Upload Release Artifact
+        if: startsWith(github.ref, 'refs/tags/cosmos-manager-v') || inputs.release == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: cosmos-manager-release-${{ steps.version.outputs.version }}
+          path: cosmos-manager/release/CosmosManager-*.zip
+          retention-days: 90
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/cosmos-manager-v')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Cosmos Manager v${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          files: cosmos-manager/release/CosmosManager-*.zip
+          body: |
+            ## Cosmos DB Content Manager — v${{ steps.version.outputs.version }}
+
+            Self-contained Windows x64 build. No .NET install required.
+
+            ### How to install
+            1. Download `CosmosManager-${{ steps.version.outputs.version }}-win-x64.zip` below.
+            2. Extract anywhere.
+            3. Run `CosmosManager.exe`.
+
+            ### Sign-in
+            Click **Sign in with Microsoft** to discover your Cosmos DB accounts via Entra ID.
+            Your sign-in is cached securely on your machine (DPAPI), so you only authenticate once.

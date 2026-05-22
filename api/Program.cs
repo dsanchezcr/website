@@ -84,7 +84,7 @@ var host = new HostBuilder()
         // Register shared Cosmos DB client singleton
         var cosmosEndpoint = Environment.GetEnvironmentVariable("AZURE_COSMOS_ENDPOINT");
         var cosmosKey = Environment.GetEnvironmentVariable("AZURE_COSMOS_KEY");
-        var cosmosDatabaseName = Environment.GetEnvironmentVariable("AZURE_COSMOS_DATABASE_NAME") ?? "website-content";
+        var cosmosDatabaseName = Environment.GetEnvironmentVariable("AZURE_COSMOS_DATABASE_NAME") ?? "dsanchezcr-website";
         
         if (!string.IsNullOrEmpty(cosmosEndpoint) && !string.IsNullOrEmpty(cosmosKey))
         {

@@ -5,17 +5,23 @@ namespace CosmosManager;
 
 public partial class MainWindow : Window
 {
+    private readonly MainViewModel _vm;
+
     public MainWindow()
     {
         InitializeComponent();
-        DataContext = new MainViewModel();
+        _vm = new MainViewModel();
+        DataContext = _vm;
+        Loaded += MainWindow_Loaded;
+    }
+
+    private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+        await _vm.InitializeAsync();
     }
 
     private void KeyBox_PasswordChanged(object sender, RoutedEventArgs e)
     {
-        if (DataContext is MainViewModel vm)
-        {
-            vm.Key = KeyBox.Password;
-        }
+        _vm.Key = KeyBox.Password;
     }
 }

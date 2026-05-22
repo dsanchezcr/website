@@ -166,6 +166,9 @@ DocProject/Help/html
 # Click-Once directory
 publish/
 
+# Cosmos Manager local release output
+cosmos-manager/release/
+
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml

@@ -31,29 +31,103 @@
 
         <!-- Connection Bar -->
         <Border Grid.Row="0" Background="#F0F0F0" Padding="10" BorderBrush="#CCC" BorderThickness="0,0,0,1">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="160"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Endpoint:" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                <TextBox Grid.Column="1" Text="{Binding Endpoint, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0" VerticalContentAlignment="Center"/>
-                <TextBlock Grid.Column="2" Text="Key:" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                <PasswordBox Grid.Column="3" x:Name="KeyBox" Margin="0,0,10,0" VerticalContentAlignment="Center" PasswordChanged="KeyBox_PasswordChanged"/>
-                <TextBlock Grid.Column="4" Text="DB:" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                <TextBox Grid.Column="5" Text="{Binding DatabaseName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0" VerticalContentAlignment="Center"/>
-                <StackPanel Grid.Column="6" Orientation="Horizontal">
-                    <Button Content="Connect" Command="{Binding ConnectCommand}" Style="{StaticResource ActionButton}"
-                            Visibility="{Binding IsConnected, Converter={StaticResource InverseBoolToVis}}"/>
-                    <Button Content="Disconnect" Command="{Binding DisconnectCommand}" Style="{StaticResource ActionButton}"
-                            Visibility="{Binding IsConnected, Converter={StaticResource BoolToVis}}"/>
-                </StackPanel>
-            </Grid>
+            <StackPanel>
+                <!-- Microsoft sign-in row -->
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Sign in button when not signed in -->
+                    <Button Grid.Column="0" Grid.ColumnSpan="6" Content="🔐  Sign in with Microsoft"
+                            Command="{Binding SignInCommand}" Style="{StaticResource ActionButton}"
+                            HorizontalAlignment="Left" Padding="14,6"
+                            Visibility="{Binding IsSignedIn, Converter={StaticResource InverseBoolToVis}}"/>
+
+                    <!-- Discovery row when signed in -->
+                    <TextBlock Grid.Column="0" Text="Subscription:" VerticalAlignment="Center" Margin="0,0,6,0"
+                               Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVis}}"/>
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding Subscriptions}" SelectedItem="{Binding SelectedSubscription}"
+                              Margin="0,0,10,0" VerticalContentAlignment="Center"
+                              Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVis}}"/>
+                    <TextBlock Grid.Column="2" Text="Account:" VerticalAlignment="Center" Margin="0,0,6,0"
+                               Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVis}}"/>
+                    <ComboBox Grid.Column="3" ItemsSource="{Binding CosmosAccounts}" SelectedItem="{Binding SelectedCosmosAccount}"
+                              Margin="0,0,10,0" VerticalContentAlignment="Center"
+                              Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVis}}"/>
+                    <TextBlock Grid.Column="4" Text="DB:" VerticalAlignment="Center" Margin="0,0,6,0"
+                               Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVis}}"/>
+                    <ComboBox Grid.Column="5" ItemsSource="{Binding Databases}" SelectedItem="{Binding SelectedDatabase}"
+                              Margin="0,0,10,0" VerticalContentAlignment="Center"
+                              Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVis}}"/>
+
+                    <StackPanel Grid.Column="6" Orientation="Horizontal"
+                                Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVis}}">
+                        <Button Content="Connect" Command="{Binding ConnectDiscoveredCommand}" Style="{StaticResource ActionButton}"
+                                Visibility="{Binding IsConnected, Converter={StaticResource InverseBoolToVis}}"/>
+                        <Button Content="Disconnect" Command="{Binding DisconnectCommand}" Style="{StaticResource ActionButton}"
+                                Visibility="{Binding IsConnected, Converter={StaticResource BoolToVis}}"/>
+                        <Button Content="Sign out" Command="{Binding SignOutCommand}" Style="{StaticResource ActionButton}"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Signed-in account / advanced toggle -->
+                <Grid Visibility="{Binding IsSignedIn, Converter={StaticResource BoolToVis}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" Foreground="#555" FontSize="11">
+                        <Run Text="Signed in as: "/><Run Text="{Binding SignedInAccount}" FontWeight="SemiBold"/>
+                    </TextBlock>
+                    <Button Grid.Column="1" Content="Manual connection ▾" Command="{Binding ToggleManualConnectionCommand}"
+                            Background="Transparent" BorderBrush="Transparent" Foreground="#06C" Cursor="Hand"/>
+                </Grid>
+
+                <!-- Manual connection fallback (legacy endpoint+key) -->
+                <Grid Margin="0,6,0,0">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSignedIn}" Value="False">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding ShowManualConnection}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Endpoint:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox Grid.Column="1" Text="{Binding Endpoint, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0" VerticalContentAlignment="Center"/>
+                    <TextBlock Grid.Column="2" Text="Key:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <PasswordBox Grid.Column="3" x:Name="KeyBox" Margin="0,0,10,0" VerticalContentAlignment="Center" PasswordChanged="KeyBox_PasswordChanged"/>
+                    <TextBlock Grid.Column="4" Text="DB:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox Grid.Column="5" Text="{Binding DatabaseName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0" VerticalContentAlignment="Center"/>
+                    <StackPanel Grid.Column="6" Orientation="Horizontal">
+                        <Button Content="Connect" Command="{Binding ConnectCommand}" Style="{StaticResource ActionButton}"
+                                Visibility="{Binding IsConnected, Converter={StaticResource InverseBoolToVis}}"/>
+                        <Button Content="Disconnect" Command="{Binding DisconnectCommand}" Style="{StaticResource ActionButton}"
+                                Visibility="{Binding IsConnected, Converter={StaticResource BoolToVis}}"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
         </Border>
 
         <!-- Main Content -->
@@ -228,7 +302,10 @@
             <StackPanel Visibility="{Binding IsConnected, Converter={StaticResource InverseBoolToVis}}"
                         VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock Text="Cosmos DB Content Manager" FontSize="24" FontWeight="Light" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                <TextBlock Text="Enter your Cosmos DB endpoint and key above to connect." FontSize="14" Foreground="Gray" HorizontalAlignment="Center"/>
+                <TextBlock FontSize="14" Foreground="Gray" HorizontalAlignment="Center" TextWrapping="Wrap" MaxWidth="540" TextAlignment="Center">
+                    Sign in with your Microsoft account to auto-discover Cosmos DB accounts in your Azure subscriptions —
+                    no keys to manage. Falls back to manual endpoint + key entry if needed.
+                </TextBlock>
             </StackPanel>
 
             <!-- JSON Editor Overlay -->

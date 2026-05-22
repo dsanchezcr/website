@@ -114,7 +114,7 @@ param azureCosmosEndpoint string = ''
 param azureCosmosKey string = ''
 
 @description('Azure Cosmos DB database name for content data.')
-param azureCosmosDatabaseName string = 'website-content'
+param azureCosmosDatabaseName string = 'dsanchezcr-website'
 
 @description('Secret key for authenticating newsletter dispatch from GitHub Actions.')
 @secure()

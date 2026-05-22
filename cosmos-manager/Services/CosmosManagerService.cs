@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.Json;
+using Azure.Core;
 using Microsoft.Azure.Cosmos;
 using CosmosManager.Models;
 
@@ -24,14 +25,23 @@ public class CosmosManagerService : IDisposable
 
     public CosmosManagerService(string endpoint, string key, string databaseName)
     {
-        var options = new CosmosClientOptions
-        {
-            UseSystemTextJsonSerializerWithOptions = JsonOptions,
-            ConnectionMode = ConnectionMode.Gateway
-        };
+        var options = BuildOptions();
         _client = new CosmosClient(endpoint, key, options);
         _databaseName = databaseName;
     }
+
+    public CosmosManagerService(string endpoint, TokenCredential credential, string databaseName)
+    {
+        var options = BuildOptions();
+        _client = new CosmosClient(endpoint, credential, options);
+        _databaseName = databaseName;
+    }
+
+    private static CosmosClientOptions BuildOptions() => new()
+    {
+        UseSystemTextJsonSerializerWithOptions = JsonOptions,
+        ConnectionMode = ConnectionMode.Gateway
+    };
 
     private Container GetContainer(string containerName) =>
         _client.GetContainer(_databaseName, containerName);
@@ -105,23 +115,72 @@ public class CosmosManagerService : IDisposable
     public async Task SaveItemJsonAsync(string containerName, string json, string partitionKeyValue)
     {
         var container = GetContainer(containerName);
-        using var doc = JsonDocument.Parse(json);
-        var id = doc.RootElement.GetProperty("id").GetString()
-                 ?? throw new InvalidOperationException("JSON must contain an 'id' property.");
-        using var stream = new MemoryStream();
-        await JsonSerializer.SerializeAsync(stream, doc, JsonOptions);
-        stream.Position = 0;
-        await container.ReplaceItemStreamAsync(stream, id, new PartitionKey(partitionKeyValue));
+        string id;
+        using (var doc = JsonDocument.Parse(json))
+        {
+            if (!doc.RootElement.TryGetProperty("id", out var idElem) || idElem.GetString() is not string parsed || string.IsNullOrEmpty(parsed))
+                throw new InvalidOperationException("JSON must contain a non-empty 'id' property.");
+            id = parsed;
+        }
+        var bytes = System.Text.Encoding.UTF8.GetBytes(json);
+        using var stream = new MemoryStream(bytes, writable: false);
+        using var response = await container.ReplaceItemStreamAsync(stream, id, new PartitionKey(partitionKeyValue));
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException($"Cosmos replace failed: {(int)response.StatusCode} {response.StatusCode}. {await ReadBodyAsync(response.Content)}");
     }
 
     public async Task CreateItemFromJsonAsync(string containerName, string json, string partitionKeyValue)
     {
         var container = GetContainer(containerName);
-        using var stream = new MemoryStream();
-        using var doc = JsonDocument.Parse(json);
-        await JsonSerializer.SerializeAsync(stream, doc, JsonOptions);
-        stream.Position = 0;
-        await container.CreateItemStreamAsync(stream, new PartitionKey(partitionKeyValue));
+        using (var doc = JsonDocument.Parse(json))
+        {
+            if (!doc.RootElement.TryGetProperty("id", out _))
+                throw new InvalidOperationException("JSON must contain an 'id' property.");
+        }
+        var bytes = System.Text.Encoding.UTF8.GetBytes(json);
+        using var stream = new MemoryStream(bytes, writable: false);
+        using var response = await container.CreateItemStreamAsync(stream, new PartitionKey(partitionKeyValue));
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException($"Cosmos create failed: {(int)response.StatusCode} {response.StatusCode}. {await ReadBodyAsync(response.Content)}");
+    }
+
+    private static async Task<string> ReadBodyAsync(Stream? content)
+    {
+        if (content is null) return string.Empty;
+        try { using var r = new StreamReader(content); return await r.ReadToEndAsync(); }
+        catch { return string.Empty; }
+    }
+
+    /// <summary>
+    /// Fetches a single sample document (TOP 1) from the container — optionally filtered by partition key —
+    /// so the form can show the actual data structure stored in the database.
+    /// </summary>
+    public async Task<string?> GetSampleDocumentAsync(string containerName, string? partitionKeyField, string? partitionKeyValue)
+    {
+        var container = GetContainer(containerName);
+        QueryDefinition query;
+        QueryRequestOptions? options = null;
+        if (!string.IsNullOrEmpty(partitionKeyField) && !string.IsNullOrEmpty(partitionKeyValue))
+        {
+            query = new QueryDefinition($"SELECT TOP 1 * FROM c WHERE c.{partitionKeyField} = @pk").WithParameter("@pk", partitionKeyValue);
+            options = new QueryRequestOptions { PartitionKey = new PartitionKey(partitionKeyValue) };
+        }
+        else
+        {
+            query = new QueryDefinition("SELECT TOP 1 * FROM c");
+        }
+        using var iterator = container.GetItemQueryStreamIterator(query, requestOptions: options);
+        while (iterator.HasMoreResults)
+        {
+            using var response = await iterator.ReadNextAsync();
+            if (!response.IsSuccessStatusCode) continue;
+            using var reader = new StreamReader(response.Content);
+            var raw = await reader.ReadToEndAsync();
+            using var doc = JsonDocument.Parse(raw);
+            if (doc.RootElement.TryGetProperty("Documents", out var docs) && docs.ValueKind == JsonValueKind.Array && docs.GetArrayLength() > 0)
+                return JsonSerializer.Serialize(docs[0], JsonOptions);
+        }
+        return null;
     }
 
     // ── Distinct values ──
