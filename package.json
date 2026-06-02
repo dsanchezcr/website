@@ -70,7 +70,7 @@
     "babel-plugin-module-resolver": "^5.0.3",
     "jsdom": "^29.1.1",
     "typescript": "^6.0.3",
-    "vite": "^8.0.14",
+    "vite": "^8.0.16",
     "vitest": "^4.1.7"
   },
   "overrides": {
