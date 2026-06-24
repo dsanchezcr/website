@@ -20,16 +20,52 @@ shipped inside the existing Static Web App at `/admin`.
 
 ## Local development & testing
 
-The admin needs three things running together: the static SPA, the .NET API (managed
-functions), and the SWA **auth emulator**. The reliable way to get all three is the SWA CLI
-serving the built output.
+The admin needs the .NET API (managed functions) plus an auth identity. There are two ways to run
+it locally:
 
-### Full local test (auth + CRUD)
+- **Recommended — Vite dev server with mock auth** (reliable on Windows). The Vite dev server
+  ([vite.config.ts](vite.config.ts)) mocks `/.auth/*` and injects the SWA `x-ms-client-principal`
+  header into the `/api` proxy, so you exercise the **real** SPA + API + Cosmos CRUD without the
+  (Windows-flaky) SWA CLI.
+- **Optional — full SWA CLI emulator** (closest to production: real `/.auth/*` mock login + route
+  gating, but the CLI is unstable on Windows — see the caveat below).
 
-> **Node version matters.** The SWA CLI 2.0.9 (latest) crashes on **Node 22/24** on Windows
-> with a libuv assertion (`!(handle->flags & UV_HANDLE_CLOSING) ... async.c`). Run the **emulator**
-> on **Node 20 LTS**. (Your Docusaurus/admin builds and the .NET API are unaffected — only the SWA
-> CLI process needs Node 20.) One-time setup:
+### Recommended: Vite dev server + mock auth
+
+```powershell
+# Terminal 1: start the API (Functions host) — VS Code task "func: 4", or:
+cd api ; func start                 # http://localhost:7071
+
+# Terminal 2: start the admin SPA with mock auth
+npm --prefix admin run dev          # http://localhost:5173/admin/
+```
+
+Open <http://localhost:5173/admin/>. You're signed in as a mock **admin** by default, so the app
+loads and CRUD calls hit the live Functions host. Control the mock identity with env vars (set
+them in Terminal 2 *before* `npm run dev`):
+
+| Env var | Default | Effect |
+|---------|---------|--------|
+| `ADMIN_DEV_ROLES` | `admin` | Comma-separated roles. Use `authenticated` to see the **Access denied** screen; `none` (or empty) to see the **Sign in** screen. |
+| `ADMIN_DEV_USER` | `local-admin@dev.local` | The `userDetails` shown in the UI. |
+
+```powershell
+# Example: test the "not authorized" path
+$env:ADMIN_DEV_ROLES = "authenticated"; npm --prefix admin run dev
+```
+
+> This mock **only** runs under `npm run dev` (`apply: 'serve'`); `vite build` never includes it.
+> It does not test the SWA *route* gating (`allowedRoles`) — that's a platform feature validated in
+> the deployed Azure SWA — but it fully exercises the SPA auth gate and the in-function `admin`
+> check (`api/AdminContent.cs` → `api/ClientPrincipal.cs`).
+
+### Optional: full SWA CLI emulator (full-fidelity, Windows-flaky)
+
+> **The SWA CLI 2.0.9 (latest) is unstable on Windows.** It crashes on **Node 22/24** with a libuv
+> assertion (`!(handle->flags & UV_HANDLE_CLOSING) ... async.c`), and even on **Node 20 LTS** it can
+> intermittently crash with `unexpected response content-type` while serving the Docusaurus
+> `404.html`. Prefer the Vite path above for day-to-day work; use this when you specifically need
+> the real `/.auth/*` mock login or route-gating behavior. One-time setup:
 >
 > ```powershell
 > winget install -e --id CoreyButler.NVMforWindows
@@ -42,39 +78,24 @@ serving the built output.
 npm run build                 # Docusaurus -> build/
 npm --prefix admin run build  # Admin SPA  -> build/admin/
 
-# Terminal 1: start the API (Functions host) from the api/ directory
+# Terminal 1: start the API (Functions host)
 cd api ; func start           # http://localhost:7071
 
-# Terminal 2: serve the built site + API + auth emulator with the SWA CLI on Node 20.
-# This helper resolves the Node 20 binary (from nvm) and the SWA CLI entry point, sets the
-# dummy auth env vars, and launches the emulator — no elevated `nvm use` required.
+# Terminal 2: serve the built output + API + auth emulator with the SWA CLI on Node 20.
+# The helper resolves the Node 20 binary (from nvm) and the SWA CLI entry point, sets the
+# dummy auth env vars, and launches the emulator — no elevated `nvm use` required. Run it from
+# anywhere; it resolves paths against the repo root.
 ./scripts/start-swa-admin.ps1
 ```
 
-The helper sets `AZURE_CLIENT_ID` / `AZURE_CLIENT_SECRET` to dummy values automatically. The
-custom Entra provider in `staticwebapp.config.json` only requires these to *exist* locally — no
-real Entra call is made; the CLI still shows its mock login form.
-
-Open <http://localhost:4280/admin>. The SPA loads and shows its **Sign in** screen; clicking it
-opens the SWA CLI's **mock login** — set **Roles** to `admin` and submit. The emulator injects an
-`x-ms-client-principal` with that role, so the SPA shows the app and the `/api/content-admin/*`
-endpoints authorize you. (The static `/admin` page is intentionally *not* edge-gated — it gates
-itself via `/.auth/me`, so the SWA CLI never has to serve a `401`→login redirect, which previously
-crashed the Windows emulator.)
+Open <http://localhost:4280/admin>. The SPA shows its **Sign in** screen; clicking it opens the SWA
+CLI's **mock login** — set **Roles** to `admin` and submit. The emulator injects an
+`x-ms-client-principal` with that role, so the SPA loads and `/api/content-admin/*` authorizes you.
+(The static `/admin` page is intentionally *not* edge-gated — it gates itself via `/.auth/me`, so
+the CLI never serves a `401`→login redirect, which made the crashes worse.)
 
 > The `<AAD_TENANT_ID>` placeholder in `static/staticwebapp.config.json` does **not** matter
 > locally — the SWA CLI mocks sign-in and never contacts Entra ID.
-
-### Fast UI iteration (SPA only)
-
-```powershell
-npm --prefix admin run dev    # http://localhost:5173, proxies /api -> :7071
-```
-
-Use this for styling/markup only. The auth emulator isn't in front, so `/.auth/me` returns
-nothing and you'll see the sign-in screen — exercise auth and CRUD with the full flow above.
-
-### Type-check
 
 ```powershell
 npm --prefix admin run typecheck

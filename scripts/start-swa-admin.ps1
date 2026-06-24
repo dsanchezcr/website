@@ -27,6 +27,17 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+# Resolve paths relative to the repo root (this script lives in <repo>/scripts), so the
+# emulator works no matter which directory you launch it from.
+$repoRoot = Split-Path -Parent $PSScriptRoot
+if (-not [System.IO.Path]::IsPathRooted($AppLocation)) {
+    $AppLocation = Join-Path $repoRoot $AppLocation
+}
+if (-not (Test-Path $AppLocation)) {
+    throw "App location '$AppLocation' not found. Build first: npm run build ; npm --prefix admin run build"
+}
+Set-Location $repoRoot
+
 # Locate the nvm root (machine env var, then common fallbacks).
 $nvmHome = [Environment]::GetEnvironmentVariable('NVM_HOME', 'Machine')
 if (-not $nvmHome) { $nvmHome = $env:NVM_HOME }
