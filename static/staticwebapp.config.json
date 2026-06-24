@@ -3,6 +3,18 @@
   "platform": {
     "apiRuntime": "dotnet-isolated:9.0"
   },
+  "auth": {
+    "rolesSource": "/api/auth/roles",
+    "identityProviders": {
+      "azureActiveDirectory": {
+        "registration": {
+          "openIdIssuer": "https://login.microsoftonline.com/<AAD_TENANT_ID>/v2.0",
+          "clientIdSettingName": "AZURE_CLIENT_ID",
+          "clientSecretSettingName": "AZURE_CLIENT_SECRET"
+        }
+      }
+    }
+  },
   "routes": [
     {
       "route": "/videogames",
@@ -33,6 +45,10 @@
       "route": "/pt/videogames/*",
       "redirect": "/pt/gaming/:splat",
       "statusCode": 301
+    },
+    {
+      "route": "/api/content-admin/*",
+      "allowedRoles": ["admin"]
     },
     {
       "route": "/api/*",

@@ -151,6 +151,28 @@ var host = new HostBuilder()
                 return new NullNewsletterService();
             }
         });
+
+        // Register Cosmos Admin Service (read/write CRUD for the authenticated /admin app)
+        services.AddSingleton<ICosmosAdminService>(sp =>
+        {
+            if (string.IsNullOrEmpty(cosmosEndpoint) || string.IsNullOrEmpty(cosmosKey))
+            {
+                return new NullCosmosAdminService();
+            }
+
+            try
+            {
+                var logger = sp.GetRequiredService<ILogger<CosmosAdminService>>();
+                var client = sp.GetRequiredService<CosmosClient>();
+                return new CosmosAdminService(client, cosmosDatabaseName, logger);
+            }
+            catch (Exception ex)
+            {
+                var fallbackLogger = sp.GetRequiredService<ILogger<CosmosAdminService>>();
+                fallbackLogger.LogError(ex, "Failed to initialize Cosmos admin service — falling back to NullCosmosAdminService.");
+                return new NullCosmosAdminService();
+            }
+        });
     })
     .ConfigureLogging(logging =>
     {

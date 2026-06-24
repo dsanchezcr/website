@@ -42,7 +42,10 @@ Located in `api/` directory:
 - **UpdatePreferences.cs**: Newsletter frequency update (`/api/newsletter/preferences`) with token authentication
 - **GetSubscriptionStatus.cs**: Newsletter status check (`/api/newsletter/status`) with token authentication
 - **DispatchNewsletter.cs**: Newsletter sending endpoint (`/api/newsletter/dispatch`) called by GitHub Actions cron
-- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, SearchService, GamingCacheService, CosmosContentService, and NewsletterService
+- **AdminContent.cs**: Authenticated content CRUD (`/api/content-admin/{type}` and `/api/content-admin/{type}/{id}`) for the `/admin` SPA; raw-JSON read/write that preserves unknown fields, with server-side validation and an in-function `admin` role check (`admin` is a reserved Functions route prefix, hence `content-admin`)
+- **GetRoles.cs**: SWA `rolesSource` (`/api/auth/roles`); maps allow-listed accounts (`ADMIN_ALLOWED_EMAILS`) to the `admin` role
+- **ClientPrincipal.cs**: Parses the SWA-injected `x-ms-client-principal` header for in-function role checks
+- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, SearchService, GamingCacheService, CosmosContentService, NewsletterService, and CosmosAdminService
 - **LocalizationHelper.cs**: Centralized localization for email templates (contact form + newsletter)
 - **Models/Content/ContentModels.cs**: Data models for Cosmos DB content (movies, series, gaming, parks)
 - **Models/Newsletter/NewsletterModels.cs**: Data models for newsletter subscribers and requests
@@ -51,6 +54,11 @@ Located in `api/` directory:
 - **Services/GamingCacheService.cs**: Dual-layer cache (memory + Table Storage) for gaming profiles with automatic fallback
 - **Services/CosmosContentService.cs**: Read-only Cosmos DB service for content queries across all domains
 - **Services/NewsletterService.cs**: Cosmos DB service for newsletter subscriber management (CRUD, query by frequency/token)
+- **Services/CosmosAdminService.cs**: Read/write Cosmos DB service for the admin app; generic JSON CRUD over the 5 content containers (preserves unknown fields)
+- **Services/ContentValidator.cs**: Server-side validation of admin content writes (partition key, localized shape, gaming status enum, numeric ranges)
+
+### Admin SPA (`admin/`)
+Standalone Vite + React + TypeScript app served at `/admin`, built into `build/admin/` and shipped with the same SWA deploy. Uses `base: '/admin/'` + HashRouter so the SWA serves only `/admin/index.html`. Requires Microsoft Entra ID sign-in + the `admin` role. Provides per-container grids with partition-key filters, a typed + dynamic + raw-JSON form editor, and media previews (image / YouTube / IMDb / map). English-only internal tool (excluded from i18n governance).
 
 ### Infrastructure (Bicep)
 Located in `infra/` directory:
@@ -201,6 +209,8 @@ Additional API endpoints (not used by the public UI — backend/CI/admin only):
 - `/api/reindex` — Called by GitHub Actions, requires `X-Reindex-Key` header
 - `/api/gaming/refresh` — Admin-only manual trigger, requires `X-Gaming-Refresh-Key` header
 - `/api/newsletter/dispatch` — Called by GitHub Actions cron, requires `X-Newsletter-Key` header
+- `/api/content-admin/{type}` and `/api/content-admin/{type}/{id}` — Authenticated content CRUD for the `/admin` SPA (Entra ID + `admin` role). Types: movies, series, gaming, parks, monthly-updates
+- `/api/auth/roles` — SWA `rolesSource`; maps allow-listed accounts (`ADMIN_ALLOWED_EMAILS`) to the `admin` role
 
 ### CI/CD (Unified Deployment)
 Single GitHub Actions workflow deploys both frontend and managed API together:
@@ -262,6 +272,11 @@ AZURE_COSMOS_DATABASE_NAME  # default: dsanchezcr-website
 # Newsletter
 NEWSLETTER_DISPATCH_KEY
 
+# Admin (/admin app — Microsoft Entra ID auth + RBAC)
+AZURE_CLIENT_ID
+AZURE_CLIENT_SECRET
+ADMIN_ALLOWED_EMAILS  # comma/semicolon-separated allow-list of admin emails
+
 # Telemetry
 APPLICATIONINSIGHTS_CONNECTION_STRING
 ```
@@ -306,7 +321,8 @@ Repository-level documentation (architecture, domain, coding standards, ADRs) li
     ├── 005-cosmos-content-readonly-source-of-truth.md
     ├── 002-azure-swa-managed-functions.md
     ├── 003-rag-chatbot.md
-    └── 004-agentic-modernization.md
+    ├── 004-agentic-modernization.md
+    └── 006-web-admin-cosmos-crud.md
 ```
 
 When making architectural decisions, create a new ADR in `.github/repo-docs/adr/` following the existing format (Status, Date, Context, Decision, Consequences).

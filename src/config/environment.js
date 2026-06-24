@@ -42,6 +42,10 @@ export const config = {
     newsletterUnsubscribe: '/api/newsletter/unsubscribe',
     newsletterPreferences: '/api/newsletter/preferences',
     newsletterStatus: '/api/newsletter/status',
+    // Admin CRUD API base (consumed by the standalone /admin SPA, not the Docusaurus site).
+    // Authenticated (Entra ID) + role-gated ("admin"). e.g. `${adminContent}/movies`.
+    // Note: 'admin' is a reserved Azure Functions route prefix, so the API uses 'content-admin'.
+    adminContent: '/api/content-admin',
   },
   
   // Production domains

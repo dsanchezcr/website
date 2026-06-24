@@ -9,7 +9,6 @@ on:
       - '.github/workflows/dependency-review.yml'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/PULL_REQUEST_TEMPLATE/**'
-      - 'cosmos-manager/**'
       - 'LICENSE'
   pull_request:
     types: [opened, synchronize, reopened, closed]
@@ -20,7 +19,6 @@ on:
       - '.github/workflows/dependency-review.yml'
       - '.github/ISSUE_TEMPLATE/**'
       - '.github/PULL_REQUEST_TEMPLATE/**'
-      - 'cosmos-manager/**'
       - 'LICENSE'
   workflow_dispatch:
 
@@ -69,6 +67,20 @@ jobs:
 
       - name: Build Docusaurus Website
         run: npm run build
+
+      # Build the standalone admin SPA into build/admin so it ships with the same SWA deploy.
+      # Must run AFTER the Docusaurus build (which populates build/).
+      - name: Install Admin SPA Dependencies
+        run: npm ci
+        working-directory: admin
+
+      - name: Type-check Admin SPA
+        run: npm run typecheck
+        working-directory: admin
+
+      - name: Build Admin SPA
+        run: npm run build
+        working-directory: admin
 
       - name: Lighthouse CI - Performance Audit
         if: github.event_name == 'pull_request'
