@@ -1,0 +1,98 @@
+name: Refresh Gaming Profiles
+
+# Refreshes the cached Xbox and PlayStation profile data once a day.
+#
+# How it works:
+#   The public GET endpoints (/api/gaming/xbox and /api/gaming/playstation) attempt a
+#   LIVE fetch from the platform APIs on every call and re-cache the result in Table
+#   Storage. Hitting them here keeps the data fresh without waiting for a site visitor.
+#
+#   Each response includes an "isCached" flag. When a live fetch fails (e.g. the PSN
+#   NPSSO token has expired, or the Xbox API key is invalid) the endpoint falls back to
+#   the last cached copy and returns "isCached": true (or 503 if there is no cache at
+#   all). This job treats either case as a FAILURE and exits non-zero, so a broken
+#   token shows up as a red run in the Actions tab with a clear error annotation.
+#
+# Notes:
+#   - No secrets are required: the GET endpoints are public.
+#   - Scheduled runs only fire from the repository's DEFAULT branch, so this must be on
+#     main to run daily. Use "Run workflow" (workflow_dispatch) to test it on demand.
+#   - Production must have a valid PSN_NPSSO_TOKEN (and XBOX_API_KEY / XBOX_GAMERTAG_XUID)
+#     configured in the Static Web App settings for the live fetch to succeed.
+
+on:
+  schedule:
+    # Daily at 07:00 UTC
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: refresh-gaming
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Refresh Xbox & PlayStation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SITE_URL: https://dsanchezcr.com
+    steps:
+      - name: Refresh and verify gaming profiles
+        run: |
+          set -uo pipefail
+
+          OVERALL=0
+          {
+            echo "## Gaming profile refresh"
+            echo ""
+            echo "| Platform | HTTP | Source | Last updated |"
+            echo "| --- | --- | --- | --- |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          refresh_platform() {
+            local PLATFORM="$1"
+            echo "::group::Refresh ${PLATFORM}"
+
+            local RESPONSE HTTP_CODE BODY
+            RESPONSE=$(curl -sS -m 60 -w $'\n%{http_code}' "${SITE_URL}/api/gaming/${PLATFORM}" || true)
+            HTTP_CODE=$(printf '%s' "$RESPONSE" | tail -n1)
+            BODY=$(printf '%s' "$RESPONSE" | sed '$d')
+
+            echo "HTTP ${HTTP_CODE}"
+            printf '%s' "$BODY" | jq . 2>/dev/null || printf '%s\n' "$BODY"
+
+            if ! [[ "$HTTP_CODE" =~ ^2[0-9][0-9]$ ]]; then
+              echo "::error::${PLATFORM}: refresh request failed with HTTP ${HTTP_CODE}"
+              echo "| ${PLATFORM} | ${HTTP_CODE:-n/a} | :x: request failed | - |" >> "$GITHUB_STEP_SUMMARY"
+              OVERALL=1
+              echo "::endgroup::"
+              return
+            fi
+
+            local IS_CACHED LAST_UPDATED
+            IS_CACHED=$(printf '%s' "$BODY" | jq -r '.isCached // empty' || true)
+            LAST_UPDATED=$(printf '%s' "$BODY" | jq -r '.lastUpdated // "unknown"' || true)
+
+            if [ "$IS_CACHED" = "true" ]; then
+              echo "::error::${PLATFORM}: live fetch failed — served STALE cached data (last updated ${LAST_UPDATED}). Check the platform token / API key."
+              echo "| ${PLATFORM} | ${HTTP_CODE} | :warning: stale cache | ${LAST_UPDATED} |" >> "$GITHUB_STEP_SUMMARY"
+              OVERALL=1
+            else
+              echo "${PLATFORM}: refreshed with LIVE data (last updated ${LAST_UPDATED})."
+              echo "| ${PLATFORM} | ${HTTP_CODE} | :white_check_mark: live | ${LAST_UPDATED} |" >> "$GITHUB_STEP_SUMMARY"
+            fi
+            echo "::endgroup::"
+          }
+
+          refresh_platform "xbox"
+          refresh_platform "playstation"
+
+          if [ "$OVERALL" -ne 0 ]; then
+            echo "::error::One or more gaming profiles could not be refreshed with live data."
+            exit 1
+          fi
+          echo "All gaming profiles refreshed with live data."
