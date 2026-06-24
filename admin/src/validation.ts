@@ -45,6 +45,10 @@ export function validate(type: ContentTypeDef, doc: Doc): string[] {
   switch (type.slug) {
     case 'movies':
     case 'series': {
+      const titleId = doc.titleId;
+      if (typeof titleId !== 'string' || titleId.trim() === '') {
+        errors.push("Field 'titleId' is required.");
+      }
       const r = doc.myRating;
       if (!isAbsent(r) && (typeof r !== 'number' || r < 0 || r > 10)) errors.push("Field 'myRating' must be between 0 and 10.");
       int('order');
@@ -54,7 +58,7 @@ export function validate(type: ContentTypeDef, doc: Doc): string[] {
     case 'gaming': {
       int('order');
       const s = doc.status;
-      if (!isAbsent(s) && (typeof s !== 'string' || !GAMING_STATUSES.includes(s))) {
+      if (!isAbsent(s) && (typeof s !== 'string' || !GAMING_STATUSES.includes(s.toLowerCase()))) {
         errors.push("Field 'status' must be one of: completed, playing, backlog, dropped.");
       }
       localized('title', true);

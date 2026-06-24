@@ -91,7 +91,12 @@ public static class ContentValidator
             return;
         }
         if (Kind(node) != JsonValueKind.String)
+        {
             errors.Add($"Field '{field}' must be a string.");
+            return;
+        }
+        if (required && string.IsNullOrWhiteSpace(AsString(node)))
+            errors.Add($"Field '{field}' is required.");
     }
 
     private static void RequireBool(JsonObject doc, string field, List<string> errors)

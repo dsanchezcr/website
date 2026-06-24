@@ -11,18 +11,15 @@ function firstString(doc: Doc, keys: string[]): string | undefined {
 }
 
 /**
- * Returns the value only when it is an absolute http(s) URL. Document values come from the
- * raw-JSON editor and are therefore untrusted: this blocks dangerous schemes (e.g. javascript:,
- * data:) from ever reaching an href/src and being reinterpreted by the browser.
+ * Returns the value only when it is an absolute http(s) URL, with HTML meta-characters stripped.
+ * Document values come from the raw-JSON editor and are untrusted DOM text: removing < > " ' ` and
+ * whitespace stops the URL from being reinterpreted as HTML, and the scheme allow-list blocks
+ * javascript:/data:/vbscript: URLs from ever reaching an href/src.
  */
-function safeHttpUrl(value: string | undefined): string | undefined {
-  if (!value) return undefined;
-  try {
-    const u = new URL(value);
-    return u.protocol === 'http:' || u.protocol === 'https:' ? value : undefined;
-  } catch {
-    return undefined;
-  }
+function safeHttpUrl(value: unknown): string | undefined {
+  if (typeof value !== 'string') return undefined;
+  const cleaned = value.replace(/[<>"'`\s]/g, '');
+  return /^https?:\/\//i.test(cleaned) ? cleaned : undefined;
 }
 
 /** Keep only characters valid for the id, neutralizing any injected URL/HTML syntax. */

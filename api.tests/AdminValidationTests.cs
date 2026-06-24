@@ -53,6 +53,14 @@ public class AdminValidationTests
     }
 
     [Fact]
+    public void Movies_EmptyTitleId_Fails()
+    {
+        var doc = new JsonObject { ["category"] = "drama", ["titleId"] = "  " };
+        var errors = ContentValidator.Validate(Type("movies"), doc);
+        Assert.Contains(errors, e => e.Contains("titleId"));
+    }
+
+    [Fact]
     public void Movies_RatingOutOfRange_Fails()
     {
         var doc = new JsonObject { ["category"] = "drama", ["myRating"] = 12 };
