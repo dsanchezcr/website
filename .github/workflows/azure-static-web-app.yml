@@ -68,20 +68,6 @@ jobs:
       - name: Build Docusaurus Website
         run: npm run build
 
-      # Build the standalone admin SPA into build/admin so it ships with the same SWA deploy.
-      # Must run AFTER the Docusaurus build (which populates build/).
-      - name: Install Admin SPA Dependencies
-        run: npm ci
-        working-directory: admin
-
-      - name: Type-check Admin SPA
-        run: npm run typecheck
-        working-directory: admin
-
-      - name: Build Admin SPA
-        run: npm run build
-        working-directory: admin
-
       - name: Lighthouse CI - Performance Audit
         if: github.event_name == 'pull_request'
         continue-on-error: true
@@ -106,6 +92,22 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+      # Build the standalone admin SPA into build/admin LAST, immediately before deploy. This MUST
+      # run after the Playwright E2E step, whose webServer command (`npm run build && npm run serve`)
+      # re-runs the Docusaurus build and wipes build/ — which would otherwise delete build/admin and
+      # cause /admin to 404 on PR preview deployments.
+      - name: Install Admin SPA Dependencies
+        run: npm ci
+        working-directory: admin
+
+      - name: Type-check Admin SPA
+        run: npm run typecheck
+        working-directory: admin
+
+      - name: Build Admin SPA
+        run: npm run build
+        working-directory: admin
 
       - name: Inject Entra tenant ID into SWA config
         env:
