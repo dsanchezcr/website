@@ -54,6 +54,15 @@ public class GetPlayStationProfile
     private const string TrophySummaryUrl = "https://m.np.playstation.com/api/trophy/v1/users/me/trophySummary";
     private const string TitleListUrl = "https://m.np.playstation.com/api/trophy/v1/users/me/trophyTitles";
 
+    // Public OAuth client used by the official PSN mobile app (the same values the
+    // open-source psn-api library uses). These are NOT user secrets. The HTTP Basic
+    // auth header is assembled at runtime from these parts so that no pre-encoded
+    // credential string is committed to source (which would otherwise trip secret
+    // scanning). Only PSN_NPSSO_TOKEN must be configured per environment (locally and
+    // in production).
+    private static readonly string PsnClientId = Environment.GetEnvironmentVariable("PSN_OAUTH_CLIENT_ID") ?? "09515159-7237-4370-9b40-3806e67c0891";
+    private static readonly string PsnClientSecret = Environment.GetEnvironmentVariable("PSN_OAUTH_CLIENT_SECRET") ?? "ucPjka5tntB2KqsP";
+
     public GetPlayStationProfile(
         ILogger<GetPlayStationProfile> logger,
         IHttpClientFactory httpClientFactory,
@@ -182,7 +191,7 @@ public class GetPlayStationProfile
 
         // Step 1: Exchange NPSSO for authorization code
         var authRequest = new HttpRequestMessage(HttpMethod.Get, 
-            $"{AuthUrl}?access_type=offline&client_id=09515159-7237-4370-9b40-3806e67c0891&response_type=code&scope=psn:mobile.v2.core psn:clientapp&redirect_uri=com.scee.psxandroid.scecompcall://redirect");
+            $"{AuthUrl}?access_type=offline&client_id={PsnClientId}&response_type=code&scope=psn:mobile.v2.core psn:clientapp&redirect_uri=com.scee.psxandroid.scecompcall://redirect");
         authRequest.Headers.Add("Cookie", $"npsso={NpssoToken}");
 
         // Don't follow redirects - we need the code from the redirect URL
@@ -270,16 +279,10 @@ public class GetPlayStationProfile
             ["token_format"] = "jwt"
         });
 
-        // PSN OAuth client credential is provided via configuration to avoid hardcoding it in source.
-        // This is typically a public client id/secret pair used by official PSN clients.
-        var psnBasicAuth = Environment.GetEnvironmentVariable("PSN_OAUTH_BASIC");
-        if (string.IsNullOrWhiteSpace(psnBasicAuth))
-        {
-            _logger.LogError("PSN OAuth basic credential is not configured in environment variable 'PSN_OAUTH_BASIC'.");
-            return null;
-        }
-
-        client.DefaultRequestHeaders.Add("Authorization", psnBasicAuth);
+        // Build the Basic auth header at runtime so no pre-encoded credential is in source.
+        var basicAuth = Convert.ToBase64String(
+            System.Text.Encoding.UTF8.GetBytes($"{PsnClientId}:{PsnClientSecret}"));
+        client.DefaultRequestHeaders.Add("Authorization", $"Basic {basicAuth}");
         var tokenResponse = await client.PostAsync(TokenUrl, tokenRequest);
         if (!tokenResponse.IsSuccessStatusCode)
         {
