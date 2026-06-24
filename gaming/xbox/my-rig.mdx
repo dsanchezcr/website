@@ -1,0 +1,159 @@
+---
+title: My Rig
+sidebar_label: My Rig
+sidebar_position: 3
+hide_table_of_contents: true
+description: My gaming PC rig with dual-boot dual SSD setup, Xbox full screen handheld mode, and the game launchers I use.
+keywords: [gaming PC, gaming rig, dual boot, Windows 11, Xbox full screen experience, Steam, Epic Games, EA app, Ubisoft Connect, Battle.net, BuildCores]
+---
+
+export const cardGridStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+  gap: '1rem',
+  marginBottom: '1.25rem',
+};
+
+export const panelStyle = {
+  border: '1px solid var(--ifm-color-emphasis-200)',
+  borderRadius: '12px',
+  background: 'var(--ifm-card-background-color, var(--content-background))',
+  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
+  padding: '1.25rem',
+};
+
+export const launchers = [
+  {
+    name: 'Xbox',
+    role: 'Primary',
+    description: 'My main launcher for Game Pass, Play Anywhere titles, and the full screen experience.',
+    url: 'https://www.xbox.com/play',
+  },
+  {
+    name: 'Steam',
+    role: 'Library',
+    description: 'My largest catalog of games, with sales, mods, and a great community.',
+    url: 'https://store.steampowered.com/',
+  },
+  {
+    name: 'Epic Games',
+    role: 'Library',
+    description: 'Free weekly games and a few Epic exclusives.',
+    url: 'https://store.epicgames.com/',
+  },
+  {
+    name: 'EA',
+    role: 'Publisher',
+    description: "EA Sports and racing titles (also included via EA Play with Game Pass).",
+    url: 'https://www.ea.com/ea-app',
+  },
+  {
+    name: 'Ubisoft Connect',
+    role: 'Publisher',
+    description: "Assassin's Creed and other Ubisoft franchises.",
+    url: 'https://www.ubisoft.com/en-us/ubisoft-connect',
+  },
+  {
+    name: 'Battle.net',
+    role: 'Publisher',
+    description: 'Blizzard and Activision titles.',
+    url: 'https://www.blizzard.com/apps/battle.net/desktop',
+  },
+];
+
+export const partLabelStyle = {
+  display: 'inline-block',
+  fontSize: '0.72rem',
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  letterSpacing: '0.05em',
+  color: 'var(--ifm-color-primary)',
+  marginBottom: '0.4rem',
+};
+
+export const components = [
+  { part: 'Case', name: 'Cooler Master MasterBox TD500 Mesh V2 ATX Mid Tower (Tempered Glass)' },
+  { part: 'CPU', name: 'AMD Ryzen 9 3950X', note: 'Perfect balance for productivity and gaming.' },
+  { part: 'Motherboard', name: 'ASUS ROG STRIX B550-F GAMING WIFI' },
+  { part: 'GPU', name: 'ASUS ROG Strix GeForce RTX 3070 Ti OC Edition 8GB GDDR6X', note: 'Thinking about upgrading to a 5080, but not needed yet (waiting for a price drop).' },
+  { part: 'RAM', name: 'Corsair Vengeance RGB Pro DDR4-3600 CL18 128GB (4x32GB)', note: 'Needed for containers and virtualization, overkill for gaming.' },
+  { part: 'CPU Cooler', name: 'Deepcool CASTLE 360EX 360mm RGB (AIO Liquid)' },
+  { part: 'Storage', name: 'WD_BLACK SN7100 1TB NVMe + Sabrent Rocket 2TB NVMe 4.0' },
+  { part: 'Power Supply', name: 'ASUS ROG Strix 1000W Fully Modular (80+ Platinum)' },
+  { part: 'Monitor', name: 'Samsung Odyssey G5 C34G55T 34" 1440p 165Hz' },
+  { part: 'Speaker', name: 'Logitech Z906 5.1 Surround Sound System', note: 'I love the surround sound, great for games and even Teams calls with spatial audio 😁' },
+];
+
+# 🖥️ My Rig
+
+My desktop gaming PC is the heart of my setup. It's a custom build I keep tuned for both productivity and gaming.
+
+<img
+  src="https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/rig.jpg"
+  alt="My gaming PC rig and desk setup"
+  loading="lazy"
+  style={{ width: '100%', borderRadius: '12px', boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)', marginBottom: '1.25rem' }}
+/>
+
+:::tip[Full parts list on BuildCores]
+For the complete, up-to-date component breakdown (CPU, GPU, motherboard, memory, cooling, and more), check out my build on **[BuildCores](https://www.buildcores.com/setup/REywsdEtT)**.
+:::
+
+## 🧩 Core Components
+
+A few of the key parts in my current build.
+
+<div style={cardGridStyle}>
+  {components.map((c) => (
+    <div key={c.name} style={panelStyle}>
+      <div style={partLabelStyle}>{c.part}</div>
+      <p style={{ margin: '0 0 0.4rem', fontWeight: 600 }}>{c.name}</p>
+      {c.note && <p style={{ margin: 0, color: 'var(--ifm-color-emphasis-700)', fontSize: '0.92rem' }}>{c.note}</p>}
+    </div>
+  ))}
+</div>
+
+## 💾 Dual-Boot, Dual SSD Setup
+
+I run **two separate SSDs**, each with its own Windows 11 installation. This keeps work and gaming completely isolated, with separate drives, separate environments, and zero compromises.
+
+<div style={cardGridStyle}>
+  <div style={panelStyle}>
+    <h3>💼 Work SSD</h3>
+    <p><strong>Windows 11 Enterprise</strong></p>
+    <p>My dedicated work environment, kept clean and focused for productivity with no gaming clutter.</p>
+  </div>
+  <div style={panelStyle}>
+    <h3>🎮 Gaming SSD</h3>
+    <p><strong>Windows 11 Pro</strong></p>
+    <p>My dedicated gaming environment, booting straight into the Xbox full screen experience as a handheld-style device.</p>
+  </div>
+</div>
+
+## 🎮 Xbox Full Screen Experience (Handheld Mode)
+
+On the gaming SSD, I boot directly into the **Xbox full screen experience**, the same console-like, controller-first interface you find on handhelds like the ROG Ally. It turns my desktop into a big-screen console: no desktop clutter, no mouse required, just power on and play.
+
+I enable it with the **[Xbox Full Screen Experience Tool](https://github.com/8bit2qubit/XboxFullscreenExperienceTool)** by 8bit2qubit, a one-click GUI utility that safely turns on the hidden Xbox full screen gaming experience on Windows 11.
+
+:::info[Why I love handheld mode on a desktop]
+- **Console-like boot** straight into a controller-friendly UI
+- **Handheld experience** to navigate my whole library with a controller
+- **Less overhead** than the full Windows desktop while gaming
+:::
+
+## 🚀 Game Launchers I Use
+
+Xbox is my **primary** platform, but I keep a few launchers installed so my entire library is one click away.
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+  {launchers.map((item) => (
+    <div key={item.name} style={panelStyle}>
+      <h3>{item.name}{item.role === 'Primary' ? ' ⭐' : ''}</h3>
+      <p><em>{item.role}</em></p>
+      <p>{item.description}</p>
+    </div>
+  ))}
+</div>
+
+➡️ **[Back to Xbox & PC](./)**

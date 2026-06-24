@@ -1,0 +1,159 @@
+---
+title: Meu Setup
+sidebar_label: Meu Setup
+sidebar_position: 3
+hide_table_of_contents: true
+description: A configuração do meu PC gamer com boot duplo de dois SSDs, modo Xbox em tela cheia estilo portátil e os lançadores de jogos que eu uso.
+keywords: [PC gamer, setup gaming, boot duplo, Windows 11, experiência Xbox tela cheia, Steam, Epic Games, EA app, Ubisoft Connect, Battle.net, BuildCores]
+---
+
+export const cardGridStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+  gap: '1rem',
+  marginBottom: '1.25rem',
+};
+
+export const panelStyle = {
+  border: '1px solid var(--ifm-color-emphasis-200)',
+  borderRadius: '12px',
+  background: 'var(--ifm-card-background-color, var(--content-background))',
+  boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
+  padding: '1.25rem',
+};
+
+export const launchers = [
+  {
+    name: 'Xbox',
+    role: 'Principal',
+    description: 'Meu lançador principal para Game Pass, títulos Play Anywhere e a experiência em tela cheia.',
+    url: 'https://www.xbox.com/play',
+  },
+  {
+    name: 'Steam',
+    role: 'Biblioteca',
+    description: 'Meu maior catálogo de jogos, com promoções, mods e uma ótima comunidade.',
+    url: 'https://store.steampowered.com/',
+  },
+  {
+    name: 'Epic Games',
+    role: 'Biblioteca',
+    description: 'Jogos grátis toda semana e alguns exclusivos da Epic.',
+    url: 'https://store.epicgames.com/',
+  },
+  {
+    name: 'EA',
+    role: 'Distribuidora',
+    description: 'Títulos de EA Sports e corrida (também incluídos via EA Play com o Game Pass).',
+    url: 'https://www.ea.com/ea-app',
+  },
+  {
+    name: 'Ubisoft Connect',
+    role: 'Distribuidora',
+    description: "Assassin's Creed e outras franquias da Ubisoft.",
+    url: 'https://www.ubisoft.com/pt-br/ubisoft-connect',
+  },
+  {
+    name: 'Battle.net',
+    role: 'Distribuidora',
+    description: 'Títulos da Blizzard e Activision.',
+    url: 'https://www.blizzard.com/apps/battle.net/desktop',
+  },
+];
+
+export const partLabelStyle = {
+  display: 'inline-block',
+  fontSize: '0.72rem',
+  fontWeight: 700,
+  textTransform: 'uppercase',
+  letterSpacing: '0.05em',
+  color: 'var(--ifm-color-primary)',
+  marginBottom: '0.4rem',
+};
+
+export const components = [
+  { part: 'Gabinete', name: 'Cooler Master MasterBox TD500 Mesh V2 ATX Mid Tower (Vidro Temperado)' },
+  { part: 'CPU', name: 'AMD Ryzen 9 3950X', note: 'Equilíbrio perfeito entre produtividade e jogos.' },
+  { part: 'Placa-Mãe', name: 'ASUS ROG STRIX B550-F GAMING WIFI' },
+  { part: 'GPU', name: 'ASUS ROG Strix GeForce RTX 3070 Ti OC Edition 8GB GDDR6X', note: 'Pensando em subir para uma 5080, mas ainda não é necessário (esperando o preço cair).' },
+  { part: 'RAM', name: 'Corsair Vengeance RGB Pro DDR4-3600 CL18 128GB (4x32GB)', note: 'Necessária para containers e virtualização, exagero para jogos.' },
+  { part: 'Cooler da CPU', name: 'Deepcool CASTLE 360EX 360mm RGB (Líquido AIO)' },
+  { part: 'Armazenamento', name: 'WD_BLACK SN7100 1TB NVMe + Sabrent Rocket 2TB NVMe 4.0' },
+  { part: 'Fonte', name: 'ASUS ROG Strix 1000W Totalmente Modular (80+ Platinum)' },
+  { part: 'Monitor', name: 'Samsung Odyssey G5 C34G55T 34" 1440p 165Hz' },
+  { part: 'Caixas de Som', name: 'Logitech Z906 5.1 Som Surround', note: 'Adoro o som surround, ótimo para jogos e até para chamadas no Teams com áudio espacial 😁' },
+];
+
+# 🖥️ Meu Setup
+
+Meu PC gamer de mesa é o coração da minha configuração. É uma montagem personalizada que mantenho otimizada tanto para produtividade quanto para jogos.
+
+<img
+  src="https://dsanchezcrwebsite.blob.core.windows.net/images/gaming/rig.jpg"
+  alt="Meu PC gamer e minha configuração de mesa"
+  loading="lazy"
+  style={{ width: '100%', borderRadius: '12px', boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)', marginBottom: '1.25rem' }}
+/>
+
+:::tip[Lista completa de componentes no BuildCores]
+Para ver o detalhamento completo e atualizado dos componentes (CPU, GPU, placa-mãe, memória, refrigeração e mais), confira minha configuração no **[BuildCores](https://www.buildcores.com/setup/REywsdEtT)**.
+:::
+
+## 🧩 Componentes Principais
+
+Algumas das peças principais da minha build atual.
+
+<div style={cardGridStyle}>
+  {components.map((c) => (
+    <div key={c.name} style={panelStyle}>
+      <div style={partLabelStyle}>{c.part}</div>
+      <p style={{ margin: '0 0 0.4rem', fontWeight: 600 }}>{c.name}</p>
+      {c.note && <p style={{ margin: 0, color: 'var(--ifm-color-emphasis-700)', fontSize: '0.92rem' }}>{c.note}</p>}
+    </div>
+  ))}
+</div>
+
+## 💾 Boot Duplo com Dois SSDs
+
+Eu uso **dois SSDs separados**, cada um com sua própria instalação do Windows 11. Assim mantenho trabalho e jogos completamente isolados, com unidades separadas, ambientes separados e sem concessões.
+
+<div style={cardGridStyle}>
+  <div style={panelStyle}>
+    <h3>💼 SSD de Trabalho</h3>
+    <p><strong>Windows 11 Enterprise</strong></p>
+    <p>Meu ambiente dedicado ao trabalho, limpo e focado em produtividade, sem distrações de jogos.</p>
+  </div>
+  <div style={panelStyle}>
+    <h3>🎮 SSD de Jogos</h3>
+    <p><strong>Windows 11 Pro</strong></p>
+    <p>Meu ambiente dedicado aos jogos, que inicia direto na experiência Xbox em tela cheia como um dispositivo estilo portátil.</p>
+  </div>
+</div>
+
+## 🎮 Experiência Xbox em Tela Cheia (Modo Portátil)
+
+No SSD de jogos eu inicio direto na **experiência Xbox em tela cheia**, a mesma interface estilo console, pensada para controle, que você encontra em portáteis como o ROG Ally. Ela transforma meu desktop em um console de tela grande: sem distrações da área de trabalho, sem precisar de mouse, é só ligar e jogar.
+
+Eu a ativo com a **[Xbox Full Screen Experience Tool](https://github.com/8bit2qubit/XboxFullscreenExperienceTool)** do 8bit2qubit, um utilitário com interface gráfica de um clique que ativa com segurança a experiência oculta de jogos em tela cheia do Xbox no Windows 11.
+
+:::info[Por que eu amo o modo portátil em um desktop]
+- **Boot estilo console** direto para uma interface pensada para controle
+- **Experiência portátil** para navegar por toda a minha biblioteca com o controle
+- **Menos sobrecarga** do que a área de trabalho completa do Windows enquanto jogo
+:::
+
+## 🚀 Lançadores de Jogos que Eu Uso
+
+Xbox é minha plataforma **principal**, mas mantenho alguns lançadores instalados para ter toda a minha biblioteca a um clique de distância.
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '1rem', marginBottom: '1.25rem' }}>
+  {launchers.map((item) => (
+    <div key={item.name} style={panelStyle}>
+      <h3>{item.name}{item.role === 'Principal' ? ' ⭐' : ''}</h3>
+      <p><em>{item.role}</em></p>
+      <p>{item.description}</p>
+    </div>
+  ))}
+</div>
+
+➡️ **[Voltar para Xbox e PC](./)**
