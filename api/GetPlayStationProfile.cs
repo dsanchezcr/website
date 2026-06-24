@@ -60,8 +60,8 @@ public class GetPlayStationProfile
     // credential string is committed to source (which would otherwise trip secret
     // scanning). Only PSN_NPSSO_TOKEN must be configured per environment (locally and
     // in production).
-    private const string PsnClientId = "09515159-7237-4370-9b40-3806e67c0891";
-    private const string PsnClientSecret = "ucPjka5tntB2KqsP";
+    private static readonly string PsnClientId = Environment.GetEnvironmentVariable("PSN_OAUTH_CLIENT_ID") ?? "09515159-7237-4370-9b40-3806e67c0891";
+    private static readonly string PsnClientSecret = Environment.GetEnvironmentVariable("PSN_OAUTH_CLIENT_SECRET") ?? "ucPjka5tntB2KqsP";
 
     public GetPlayStationProfile(
         ILogger<GetPlayStationProfile> logger,
