@@ -129,7 +129,10 @@ are what the admin API actually uses to read/write data.
    `https://<your-site>/.auth/login/aad/callback`. Create a client secret.
 2. In the Static Web App, add application settings: `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`,
    and `ADMIN_ALLOWED_EMAILS` (comma/semicolon-separated emails granted the `admin` role).
-3. In `static/staticwebapp.config.json`, replace `<AAD_TENANT_ID>` with your tenant ID.
+3. Add a GitHub Actions **repository variable** `AAD_TENANT_ID` (Settings → Secrets and variables →
+   Actions → Variables) with your Entra tenant ID. The deploy workflow injects it into
+   `staticwebapp.config.json` (replacing the `<AAD_TENANT_ID>` placeholder) at build time — SWA
+   can't substitute env vars in `openIdIssuer`, and the build fails fast if the variable is unset.
 
 ## How it fits together
 

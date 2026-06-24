@@ -107,6 +107,27 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
+      - name: Inject Entra tenant ID into SWA config
+        env:
+          AAD_TENANT_ID: ${{ vars.AAD_TENANT_ID }}
+          IS_PRODUCTION: ${{ github.event_name == 'push' }}
+        run: |
+          CONFIG="build/staticwebapp.config.json"
+          if ! grep -q '<AAD_TENANT_ID>' "$CONFIG"; then
+            echo "No <AAD_TENANT_ID> placeholder in $CONFIG; nothing to inject."
+            exit 0
+          fi
+          if [ -z "$AAD_TENANT_ID" ]; then
+            if [ "$IS_PRODUCTION" = "true" ]; then
+              echo "::error::Repository variable AAD_TENANT_ID is not set. Add it under Settings → Secrets and variables → Actions → Variables so Entra ID auth (the /admin app) works in production."
+              exit 1
+            fi
+            echo "::warning::AAD_TENANT_ID not set; leaving placeholder (preview auth for /admin will not work)."
+            exit 0
+          fi
+          sed -i "s/<AAD_TENANT_ID>/${AAD_TENANT_ID}/g" "$CONFIG"
+          echo "Injected AAD_TENANT_ID into $CONFIG."
+
       - name: Deploy to Azure Static Web Apps
         id: deploy
         uses: azure/static-web-apps-deploy@v1

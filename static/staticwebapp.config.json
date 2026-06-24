@@ -47,6 +47,10 @@
       "statusCode": 301
     },
     {
+      "route": "/api/auth/roles",
+      "allowedRoles": ["authenticated"]
+    },
+    {
       "route": "/api/content-admin/*",
       "allowedRoles": ["admin"]
     },

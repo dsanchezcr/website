@@ -48,6 +48,21 @@ export async function getSample(type: string): Promise<Doc | null> {
   return (await res.json()) as Doc | null;
 }
 
+export interface DocWithEtag {
+  doc: Doc;
+  etag: string | null;
+}
+
+/** Fetch a single document plus its ETag, so updates can use optimistic concurrency (If-Match). */
+export async function getDoc(type: string, id: string, pk: string): Promise<DocWithEtag> {
+  const res = await fetch(`${BASE}/${type}/${encodeURIComponent(id)}?pk=${encodeURIComponent(pk)}`, {
+    headers: { accept: 'application/json' },
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  const doc = (await res.json()) as Doc;
+  return { doc, etag: res.headers.get('ETag') };
+}
+
 export async function createDoc(type: string, doc: Doc): Promise<Doc> {
   const res = await fetch(`${BASE}/${type}`, {
     method: 'POST',
@@ -58,10 +73,13 @@ export async function createDoc(type: string, doc: Doc): Promise<Doc> {
   return (await res.json()) as Doc;
 }
 
-export async function updateDoc(type: string, id: string, doc: Doc): Promise<Doc> {
+export async function updateDoc(type: string, id: string, doc: Doc, etag?: string | null): Promise<Doc> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  // Optimistic concurrency: only overwrite if the document hasn't changed since it was loaded.
+  if (etag) headers['If-Match'] = etag;
   const res = await fetch(`${BASE}/${type}/${encodeURIComponent(id)}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify(doc),
   });
   if (!res.ok) throw new Error(await parseError(res));

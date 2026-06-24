@@ -40,7 +40,7 @@ public static class ContentValidator
         {
             case "movies":
             case "series":
-                RequireString(doc, "titleId", errors, required: false);
+                RequireString(doc, "titleId", errors, required: true);
                 RequireNumberInRange(doc, "myRating", 0, 10, errors);
                 RequireInt(doc, "order", errors);
                 RequireLocalized(doc, "review", errors, allowPlainString: false);

@@ -19,8 +19,7 @@ export const CONTENT_TYPES: ContentTypeDef[] = [
       { key: 'review', label: 'Review', type: 'localized' },
     ],
     listColumns: [
-      { key: 'title', label: 'Title' },
-      { key: 'titleId', label: 'IMDb' },
+      { key: 'titleId', label: 'IMDb Title' },
       { key: 'category', label: 'Category' },
       { key: 'myRating', label: 'Rating' },
       { key: 'order', label: 'Order' },
@@ -40,8 +39,7 @@ export const CONTENT_TYPES: ContentTypeDef[] = [
       { key: 'review', label: 'Review', type: 'localized' },
     ],
     listColumns: [
-      { key: 'title', label: 'Title' },
-      { key: 'titleId', label: 'IMDb' },
+      { key: 'titleId', label: 'IMDb Title' },
       { key: 'category', label: 'Category' },
       { key: 'myRating', label: 'Rating' },
       { key: 'order', label: 'Order' },

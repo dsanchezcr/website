@@ -63,8 +63,8 @@ Microsoft (Entra ID) sign-in, hosted on the existing Static Web App.
 ```
 GET    /api/content-admin/{type}                 -> 200 [ {doc}, ... ]            (type ∈ movies|series|gaming|parks|monthly-updates)
 GET    /api/content-admin/{type}?pk={value}      -> 200 [ {doc}, ... ]            (filter by partition key)
-GET    /api/content-admin/{type}/sample          -> 200 {doc}                    (schema introspection)
-GET    /api/content-admin/{type}/partitions      -> 200 [ "value", ... ]         (distinct partition-key values)
+GET    /api/content-admin/{type}?meta=sample     -> 200 {doc}                    (schema introspection)
+GET    /api/content-admin/{type}?meta=partitions -> 200 [ "value", ... ]         (distinct partition-key values)
 GET    /api/content-admin/{type}/{id}?pk={value} -> 200 {doc} | 404
 POST   /api/content-admin/{type}                 -> 201 {doc}                     (body = full JSON document)
 PUT    /api/content-admin/{type}/{id}            -> 200 {doc}                     (body = full JSON document; If-Match optional)

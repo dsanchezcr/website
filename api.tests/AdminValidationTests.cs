@@ -37,6 +37,22 @@ public class AdminValidationTests
     }
 
     [Fact]
+    public void Movies_MissingTitleId_Fails()
+    {
+        var doc = new JsonObject { ["category"] = "drama" };
+        var errors = ContentValidator.Validate(Type("movies"), doc);
+        Assert.Contains(errors, e => e.Contains("titleId"));
+    }
+
+    [Fact]
+    public void Series_MissingTitleId_Fails()
+    {
+        var doc = new JsonObject { ["category"] = "drama" };
+        var errors = ContentValidator.Validate(Type("series"), doc);
+        Assert.Contains(errors, e => e.Contains("titleId"));
+    }
+
+    [Fact]
     public void Movies_RatingOutOfRange_Fails()
     {
         var doc = new JsonObject { ["category"] = "drama", ["myRating"] = 12 };
@@ -140,6 +156,7 @@ public class AdminValidationTests
         var doc = new JsonObject
         {
             ["category"] = "drama",
+            ["titleId"] = "tt0111161",
             ["someFutureField"] = "kept",
             ["nested"] = new JsonObject { ["x"] = 1 }
         };

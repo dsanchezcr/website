@@ -11,17 +11,39 @@ function firstString(doc: Doc, keys: string[]): string | undefined {
 }
 
 /**
+ * Returns the value only when it is an absolute http(s) URL. Document values come from the
+ * raw-JSON editor and are therefore untrusted: this blocks dangerous schemes (e.g. javascript:,
+ * data:) from ever reaching an href/src and being reinterpreted by the browser.
+ */
+function safeHttpUrl(value: string | undefined): string | undefined {
+  if (!value) return undefined;
+  try {
+    const u = new URL(value);
+    return u.protocol === 'http:' || u.protocol === 'https:' ? value : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Keep only characters valid for the id, neutralizing any injected URL/HTML syntax. */
+function sanitizeId(value: unknown, disallowed: RegExp): string {
+  return typeof value === 'string' ? value.replace(disallowed, '') : '';
+}
+
+/**
  * Visual preview of a document's media. Uses only sources permitted by the site's CSP:
  * images (img-src https:), a YouTube embed (frame-src youtube-nocookie), and external links
  * for IMDb and OpenStreetMap (opened in a new tab — no iframe needed).
  */
 export default function MediaPreview({ doc }: { doc: Doc }) {
-  const image = firstString(doc, IMAGE_KEYS);
-  const youtubeId = typeof doc.youtubeVideoId === 'string' ? doc.youtubeVideoId.trim() : '';
-  const titleId = typeof doc.titleId === 'string' ? doc.titleId.trim() : '';
+  const image = safeHttpUrl(firstString(doc, IMAGE_KEYS));
+  const youtubeId = sanitizeId(doc.youtubeVideoId, /[^A-Za-z0-9_-]/g);
+  const titleId = sanitizeId(doc.titleId, /[^A-Za-z0-9]/g);
   const mapCenter = Array.isArray(doc.mapCenter) ? (doc.mapCenter as unknown[]) : null;
-  const mapZoom = typeof doc.mapZoom === 'number' ? doc.mapZoom : 12;
   const hasMap = !!mapCenter && mapCenter.length === 2 && typeof mapCenter[0] === 'number' && typeof mapCenter[1] === 'number';
+  const mapLat = hasMap ? Number(mapCenter![0]) : 0;
+  const mapLng = hasMap ? Number(mapCenter![1]) : 0;
+  const mapZoom = typeof doc.mapZoom === 'number' ? doc.mapZoom : 12;
 
   const nothing = !image && !youtubeId && !titleId && !hasMap;
 
@@ -69,16 +91,16 @@ export default function MediaPreview({ doc }: { doc: Doc }) {
         </div>
       )}
 
-      {hasMap && mapCenter && (
+      {hasMap && (
         <div className="admin-media-block">
           <div className="admin-media-label">Map</div>
           <a
             className="admin-link"
-            href={`https://www.openstreetmap.org/?mlat=${mapCenter[0]}&mlon=${mapCenter[1]}#map=${Math.round(mapZoom)}/${mapCenter[0]}/${mapCenter[1]}`}
+            href={`https://www.openstreetmap.org/?mlat=${mapLat}&mlon=${mapLng}#map=${Math.round(mapZoom)}/${mapLat}/${mapLng}`}
             target="_blank"
             rel="noreferrer"
           >
-            Open map at {String(mapCenter[0])}, {String(mapCenter[1])} ↗
+            Open map at {mapLat}, {mapLng} ↗
           </a>
         </div>
       )}

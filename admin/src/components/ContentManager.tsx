@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { ContentTypeDef, Doc } from '../types';
-import { createDoc, deleteDoc, getPartitions, listDocs, updateDoc } from '../api';
+import { createDoc, deleteDoc, getDoc, getPartitions, listDocs, updateDoc } from '../api';
 import { cellValue } from './fields';
 import FormEditor from './FormEditor';
 
@@ -10,7 +10,7 @@ export default function ContentManager({ type }: { type: ContentTypeDef }) {
   const [items, setItems] = useState<Doc[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [editing, setEditing] = useState<{ doc: Doc; isNew: boolean } | null>(null);
+  const [editing, setEditing] = useState<{ doc: Doc; isNew: boolean; etag?: string | null } | null>(null);
 
   const refreshPartitions = useCallback(() => {
     getPartitions(type.slug).then(setPartitions).catch(() => setPartitions([]));
@@ -48,6 +48,23 @@ export default function ContentManager({ type }: { type: ContentTypeDef }) {
     setEditing({ doc, isNew: true });
   };
 
+  const onEdit = async (item: Doc) => {
+    const id = String(item.id ?? '');
+    const pk = String(item[type.partitionKeyField] ?? '');
+    if (!id || !pk) {
+      setEditing({ doc: item, isNew: false });
+      return;
+    }
+    try {
+      // Re-fetch the latest document + ETag so the editor shows current data and the save can use
+      // optimistic concurrency (If-Match) instead of silently overwriting a concurrent edit.
+      const { doc, etag } = await getDoc(type.slug, id, pk);
+      setEditing({ doc, isNew: false, etag });
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
   const onDelete = async (doc: Doc) => {
     const id = String(doc.id ?? '');
     const pk = String(doc[type.partitionKeyField] ?? '');
@@ -70,7 +87,7 @@ export default function ContentManager({ type }: { type: ContentTypeDef }) {
     if (editing?.isNew) {
       await createDoc(type.slug, doc);
     } else {
-      await updateDoc(type.slug, String(doc.id ?? ''), doc);
+      await updateDoc(type.slug, String(doc.id ?? ''), doc, editing?.etag);
     }
     setEditing(null);
     await load();
@@ -119,7 +136,7 @@ export default function ContentManager({ type }: { type: ContentTypeDef }) {
                   <td key={c.key}>{cellValue(doc[c.key])}</td>
                 ))}
                 <td className="admin-actions-col">
-                  <button className="admin-btn admin-btn-xs" onClick={() => setEditing({ doc, isNew: false })}>Edit</button>
+                  <button className="admin-btn admin-btn-xs" onClick={() => onEdit(doc)}>Edit</button>
                   <button className="admin-btn admin-btn-xs admin-btn-danger" onClick={() => onDelete(doc)}>Delete</button>
                 </td>
               </tr>
