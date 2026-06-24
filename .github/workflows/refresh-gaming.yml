@@ -74,10 +74,14 @@ jobs:
             fi
 
             local IS_CACHED LAST_UPDATED
-            IS_CACHED=$(printf '%s' "$BODY" | jq -r '.isCached // empty' || true)
-            LAST_UPDATED=$(printf '%s' "$BODY" | jq -r '.lastUpdated // "unknown"' || true)
+            IS_CACHED=$(printf '%s' "$BODY" | jq -r '.isCached // empty' 2>/dev/null || true)
+            LAST_UPDATED=$(printf '%s' "$BODY" | jq -r '.lastUpdated // "unknown"' 2>/dev/null || true)
 
-            if [ "$IS_CACHED" = "true" ]; then
+            if [ -z "$IS_CACHED" ]; then
+              echo "::error::${PLATFORM}: response is missing .isCached (or is not valid JSON); cannot verify live refresh."
+              echo "| ${PLATFORM} | ${HTTP_CODE} | :x: invalid response | ${LAST_UPDATED} |" >> "$GITHUB_STEP_SUMMARY"
+              OVERALL=1
+            elif [ "$IS_CACHED" = "true" ]; then
               echo "::error::${PLATFORM}: live fetch failed — served STALE cached data (last updated ${LAST_UPDATED}). Check the platform token / API key."
               echo "| ${PLATFORM} | ${HTTP_CODE} | :warning: stale cache | ${LAST_UPDATED} |" >> "$GITHUB_STEP_SUMMARY"
               OVERALL=1
