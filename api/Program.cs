@@ -84,7 +84,7 @@ var host = new HostBuilder()
         // Register shared Cosmos DB client singleton
         var cosmosEndpoint = Environment.GetEnvironmentVariable("AZURE_COSMOS_ENDPOINT");
         var cosmosKey = Environment.GetEnvironmentVariable("AZURE_COSMOS_KEY");
-        var cosmosDatabaseName = Environment.GetEnvironmentVariable("AZURE_COSMOS_DATABASE_NAME") ?? "website-content";
+        var cosmosDatabaseName = Environment.GetEnvironmentVariable("AZURE_COSMOS_DATABASE_NAME") ?? "dsanchezcr-website";
         
         if (!string.IsNullOrEmpty(cosmosEndpoint) && !string.IsNullOrEmpty(cosmosKey))
         {
@@ -149,6 +149,28 @@ var host = new HostBuilder()
                 var fallbackLogger = sp.GetRequiredService<ILogger<CosmosNewsletterService>>();
                 fallbackLogger.LogError(ex, "Failed to initialize Newsletter service — falling back to NullNewsletterService.");
                 return new NullNewsletterService();
+            }
+        });
+
+        // Register Cosmos Admin Service (read/write CRUD for the authenticated /admin app)
+        services.AddSingleton<ICosmosAdminService>(sp =>
+        {
+            if (string.IsNullOrEmpty(cosmosEndpoint) || string.IsNullOrEmpty(cosmosKey))
+            {
+                return new NullCosmosAdminService();
+            }
+
+            try
+            {
+                var logger = sp.GetRequiredService<ILogger<CosmosAdminService>>();
+                var client = sp.GetRequiredService<CosmosClient>();
+                return new CosmosAdminService(client, cosmosDatabaseName, logger);
+            }
+            catch (Exception ex)
+            {
+                var fallbackLogger = sp.GetRequiredService<ILogger<CosmosAdminService>>();
+                fallbackLogger.LogError(ex, "Failed to initialize Cosmos admin service — falling back to NullCosmosAdminService.");
+                return new NullCosmosAdminService();
             }
         });
     })

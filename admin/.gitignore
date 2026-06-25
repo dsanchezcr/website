@@ -1,0 +1,4 @@
+# Admin SPA build artifacts and dependencies
+node_modules/
+dist/
+*.local
