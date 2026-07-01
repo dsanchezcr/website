@@ -23,8 +23,10 @@ namespace api
                 if (string.IsNullOrEmpty(credentialsJson))
                     return null;
                 
-                var credential = CredentialFactory.FromJson<ServiceAccountCredential>(credentialsJson)
-                    .CreateScoped(new[] { "https://www.googleapis.com/auth/analytics.readonly" });
+                var credential = CredentialFactory
+                    .FromJson<ServiceAccountCredential>(credentialsJson)
+                    .ToGoogleCredential()
+                    .CreateScoped(BetaAnalyticsDataClient.DefaultScopes);
                 return new BetaAnalyticsDataClientBuilder
                 {
                     Credential = credential
