@@ -460,7 +460,10 @@ public class HealthCheck
             var sw = System.Diagnostics.Stopwatch.StartNew();
             
             // Validate credentials JSON can be parsed
-            var credential = GoogleCredential.FromJson(credentialsJson);
+            var credential = CredentialFactory
+                .FromJson<ServiceAccountCredential>(credentialsJson)
+                .ToGoogleCredential()
+                .CreateScoped(BetaAnalyticsDataClient.DefaultScopes);
             _ = new BetaAnalyticsDataClientBuilder
             {
                 Credential = credential

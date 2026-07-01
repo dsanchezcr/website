@@ -104,7 +104,10 @@ async function generateImage() {
         }]
       }],
       generationConfig: {
-        responseModalities: ['IMAGE', 'TEXT']
+        responseModalities: ['IMAGE', 'TEXT'],
+        imageConfig: {
+          aspectRatio: '16:9'
+        }
       }
     }),
   });
