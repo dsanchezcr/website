@@ -297,4 +297,3 @@ jobs:
 
           console.log('Required page locale parity validation passed');
           "
-name: Content Validation
