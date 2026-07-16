@@ -187,12 +187,14 @@ No markdown, no code fences, no extra keys, no commentary.";
         if (string.IsNullOrWhiteSpace(en) && string.IsNullOrWhiteSpace(es) && string.IsNullOrWhiteSpace(pt))
             throw new InvalidOperationException("The model response did not contain any localized text.");
 
-        // Fall back to English for any locale the model omitted.
-        var enText = (en ?? es ?? pt)!.Trim();
+        // Fall back to the first non-empty locale for any locale the model omitted.
+        var fallback = !string.IsNullOrWhiteSpace(en) ? en!.Trim()
+            : !string.IsNullOrWhiteSpace(es) ? es!.Trim()
+            : pt!.Trim();
         return new LocalizedText(
-            En: string.IsNullOrWhiteSpace(en) ? enText : en!.Trim(),
-            Es: string.IsNullOrWhiteSpace(es) ? enText : es!.Trim(),
-            Pt: string.IsNullOrWhiteSpace(pt) ? enText : pt!.Trim());
+            En: string.IsNullOrWhiteSpace(en) ? fallback : en!.Trim(),
+            Es: string.IsNullOrWhiteSpace(es) ? fallback : es!.Trim(),
+            Pt: string.IsNullOrWhiteSpace(pt) ? fallback : pt!.Trim());
     }
 
     private static string? GetString(JsonObject obj, string key) =>
