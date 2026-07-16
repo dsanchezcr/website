@@ -191,7 +191,8 @@ body {
 
 
 .admin-dynamic { margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--admin-border); }
-.admin-dynamic h3, .admin-media h3 { font-size: 0.9rem; margin: 0 0 0.6rem; }.admin-readonly-json {
+.admin-dynamic h3, .admin-media h3 { font-size: 0.9rem; margin: 0 0 0.6rem; }
+.admin-readonly-json {
   background: #f6f8fa; border: 1px solid var(--admin-border); border-radius: var(--admin-radius);
   padding: 0.5rem; font-size: 0.75rem; overflow: auto; max-height: 240px; white-space: pre-wrap; word-break: break-word;
 }
