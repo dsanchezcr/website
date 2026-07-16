@@ -137,7 +137,7 @@ No markdown, no code fences, no extra keys, no commentary.";
 
     private static string FieldGuidance(string contentType, string field) => field.ToLowerInvariant() switch
     {
-        "review" => "FIELD: a short personal review (about 2-4 sentences). Share what you thought and why it's worth watching.",
+        "review" => "FIELD: a short personal review (about 2-4 sentences). Share what you thought and why it's worth your time.",
         "recommendation" => "FIELD: a brief recommendation line (1-2 sentences) on who would enjoy this and why.",
         "name" => "FIELD: a short, clean display name or title (a few words). No sentences.",
         "title" => "FIELD: a short, clean title (a few words). No full sentences.",
