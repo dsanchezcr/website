@@ -108,6 +108,16 @@ public class AdminContentGeneration
             _logger.LogWarning(ex, "AI content generation produced an unusable response for {Type}/{Field}", body.ContentType, body.Field);
             return await Error(req, HttpStatusCode.BadGateway, "The AI model returned an unexpected response. Please try again.");
         }
+        catch (Azure.RequestFailedException ex)
+        {
+            _logger.LogWarning(ex, "AI content generation request to Foundry failed for {Type}/{Field}", body.ContentType, body.Field);
+            return await Error(req, HttpStatusCode.BadGateway, "AI content generation failed upstream. Please try again.");
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogWarning(ex, "AI content generation request to Foundry failed for {Type}/{Field}", body.ContentType, body.Field);
+            return await Error(req, HttpStatusCode.BadGateway, "AI content generation failed upstream. Please try again.");
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "AI content generation failed for {Type}/{Field}", body.ContentType, body.Field);
