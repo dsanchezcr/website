@@ -66,6 +66,8 @@ public class AdminContentGeneration
         {
             using var reader = new StreamReader(req.Body);
             var json = await reader.ReadToEndAsync(ct);
+            if (Encoding.UTF8.GetByteCount(json) > 16 * 1024)
+                return await Error(req, HttpStatusCode.BadRequest, "Request body is too large.");
             if (string.IsNullOrWhiteSpace(json))
                 return await Error(req, HttpStatusCode.BadRequest, "Request body is required.");
             body = JsonSerializer.Deserialize<GenerateRequest>(json, JsonOptions);
