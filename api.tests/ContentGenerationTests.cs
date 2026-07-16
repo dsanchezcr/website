@@ -66,6 +66,16 @@ public class ContentGenerationTests
     }
 
     [Fact]
+    public void ParseLocalized_FallsBackWhenEnglishIsWhitespace()
+    {
+        var result = FoundryContentGenerationService.ParseLocalized("{\"en\":\"   \",\"es\":\"Hola\"}");
+
+        Assert.Equal("Hola", result.En);
+        Assert.Equal("Hola", result.Es);
+        Assert.Equal("Hola", result.Pt);
+    }
+
+    [Fact]
     public void ParseLocalized_TrimsWhitespace()
     {
         var result = FoundryContentGenerationService.ParseLocalized(
