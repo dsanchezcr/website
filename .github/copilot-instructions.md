@@ -43,9 +43,10 @@ Located in `api/` directory:
 - **GetSubscriptionStatus.cs**: Newsletter status check (`/api/newsletter/status`) with token authentication
 - **DispatchNewsletter.cs**: Newsletter sending endpoint (`/api/newsletter/dispatch`) called by GitHub Actions cron
 - **AdminContent.cs**: Authenticated content CRUD (`/api/content-admin/{type}` and `/api/content-admin/{type}/{id}`) for the `/admin` SPA; raw-JSON read/write that preserves unknown fields, with server-side validation and an in-function `admin` role check (`admin` is a reserved Functions route prefix, hence `content-admin`)
+- **AdminContentGeneration.cs**: Admin-only AI content generation (`/api/content-admin/ai/generate`) using Microsoft Foundry; expands a brief prompt into localized (`en`/`es`/`pt`) text in the site's tone for the admin editor. Same `admin` role gate as the CRUD endpoints; stateless (nothing persisted)
 - **GetRoles.cs**: SWA `rolesSource` (`/api/auth/roles`); maps allow-listed accounts (`ADMIN_ALLOWED_EMAILS`) to the `admin` role
 - **ClientPrincipal.cs**: Parses the SWA-injected `x-ms-client-principal` header for in-function role checks
-- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, SearchService, GamingCacheService, CosmosContentService, NewsletterService, and CosmosAdminService
+- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, SearchService, GamingCacheService, CosmosContentService, NewsletterService, CosmosAdminService, and ContentGenerationService
 - **LocalizationHelper.cs**: Centralized localization for email templates (contact form + newsletter)
 - **Models/Content/ContentModels.cs**: Data models for Cosmos DB content (movies, series, gaming, parks)
 - **Models/Newsletter/NewsletterModels.cs**: Data models for newsletter subscribers and requests
@@ -55,10 +56,11 @@ Located in `api/` directory:
 - **Services/CosmosContentService.cs**: Read-only Cosmos DB service for content queries across all domains
 - **Services/NewsletterService.cs**: Cosmos DB service for newsletter subscriber management (CRUD, query by frequency/token)
 - **Services/CosmosAdminService.cs**: Read/write Cosmos DB service for the admin app; generic JSON CRUD over the 5 content containers (preserves unknown fields)
+- **Services/ContentGenerationService.cs**: Foundry-backed service (admin-only) that expands a brief prompt into localized `{ en, es, pt }` text in the site's tone; reuses the existing Foundry settings and returns a Null impl when unconfigured
 - **Services/ContentValidator.cs**: Server-side validation of admin content writes (partition key, localized shape, gaming status enum, numeric ranges)
 
 ### Admin SPA (`admin/`)
-Standalone Vite + React + TypeScript app served at `/admin`, built into `build/admin/` and shipped with the same SWA deploy. Uses `base: '/admin/'` + HashRouter so the SWA serves only `/admin/index.html`. Requires Microsoft Entra ID sign-in + the `admin` role. Provides per-container grids with partition-key filters, a typed + dynamic + raw-JSON form editor, and media previews (image / YouTube / IMDb / map). English-only internal tool (excluded from i18n governance).
+Standalone Vite + React + TypeScript app served at `/admin`, built into `build/admin/` and shipped with the same SWA deploy. Uses `base: '/admin/'` + HashRouter so the SWA serves only `/admin/index.html`. Requires Microsoft Entra ID sign-in + the `admin` role. Provides per-container grids with partition-key filters, a typed + dynamic + raw-JSON form editor, and media previews (image / YouTube / IMDb / map). Localized fields include a "Generate with AI" control that expands a brief prompt into `en`/`es`/`pt` via `/api/content-admin/ai/generate` (Foundry). English-only internal tool (excluded from i18n governance).
 
 ### Infrastructure (Bicep)
 Located in `infra/` directory:
@@ -210,6 +212,7 @@ Additional API endpoints (not used by the public UI — backend/CI/admin only):
 - `/api/gaming/refresh` — Admin-only manual trigger, requires `X-Gaming-Refresh-Key` header
 - `/api/newsletter/dispatch` — Called by GitHub Actions cron, requires `X-Newsletter-Key` header
 - `/api/content-admin/{type}` and `/api/content-admin/{type}/{id}` — Authenticated content CRUD for the `/admin` SPA (Entra ID + `admin` role). Types: movies, series, gaming, parks, monthly-updates
+- `/api/content-admin/ai/generate` — Admin-only AI content generation (Entra ID + `admin` role); POST a brief prompt, returns localized `{ en, es, pt }` text (Foundry)
 - `/api/auth/roles` — SWA `rolesSource`; maps allow-listed accounts (`ADMIN_ALLOWED_EMAILS`) to the `admin` role
 
 ### CI/CD (Unified Deployment)

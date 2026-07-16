@@ -152,6 +152,32 @@ var host = new HostBuilder()
             }
         });
 
+        // Register Content Generation Service (Foundry-backed; admin-only AI localized content).
+        // Reuses the existing Foundry (Azure OpenAI) settings; returns Null impl when unconfigured.
+        services.AddSingleton<IContentGenerationService>(sp =>
+        {
+            var logger = sp.GetRequiredService<ILogger<FoundryContentGenerationService>>();
+            var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT");
+            var key = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY");
+            var deployment = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT");
+
+            if (string.IsNullOrWhiteSpace(endpoint) || string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(deployment))
+            {
+                logger.LogInformation("Foundry not configured; AI content generation endpoint will return 503.");
+                return new NullContentGenerationService();
+            }
+
+            try
+            {
+                return new FoundryContentGenerationService(logger);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to initialize content generation service — falling back to Null implementation.");
+                return new NullContentGenerationService();
+            }
+        });
+
         // Register Cosmos Admin Service (read/write CRUD for the authenticated /admin app)
         services.AddSingleton<ICosmosAdminService>(sp =>
         {

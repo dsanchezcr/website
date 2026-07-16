@@ -157,9 +157,41 @@ body {
 .admin-mode-select { margin-bottom: 0.35rem; width: auto !important; }
 .admin-coords { display: flex; gap: 0.5rem; }
 
+/* AI generate control */
+.admin-ai-btn {
+  margin-top: 0.35rem;
+  border: 1px dashed var(--admin-primary);
+  background: #eef2ff;
+  color: var(--admin-primary);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--admin-radius);
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.admin-ai-btn:hover { background: #e0e7ff; }
+.admin-ai-panel {
+  margin-top: 0.4rem;
+  border: 1px solid var(--admin-primary);
+  border-radius: var(--admin-radius);
+  padding: 0.5rem;
+  background: #f8faff;
+}
+.admin-ai-prompt {
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  font-size: 0.82rem;
+  font-family: inherit;
+  resize: vertical;
+}
+.admin-ai-actions { display: flex; justify-content: flex-end; gap: 0.4rem; margin-top: 0.4rem; }
+.admin-ai-error { color: var(--admin-danger); font-size: 0.78rem; margin-top: 0.35rem; }
+
+
 .admin-dynamic { margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed var(--admin-border); }
 .admin-dynamic h3, .admin-media h3 { font-size: 0.9rem; margin: 0 0 0.6rem; }
-
 .admin-readonly-json {
   background: #f6f8fa; border: 1px solid var(--admin-border); border-radius: var(--admin-radius);
   padding: 0.5rem; font-size: 0.75rem; overflow: auto; max-height: 240px; white-space: pre-wrap; word-break: break-word;
