@@ -46,6 +46,9 @@ export const config = {
     // Authenticated (Entra ID) + role-gated ("admin"). e.g. `${adminContent}/movies`.
     // Note: 'admin' is a reserved Azure Functions route prefix, so the API uses 'content-admin'.
     adminContent: '/api/content-admin',
+    // Admin-only AI content generation (Foundry): POST expands a brief prompt into localized
+    // (en/es/pt) text in the site's tone. Same role gate as the CRUD endpoints.
+    adminGenerate: '/api/content-admin/ai/generate',
   },
   
   // Production domains

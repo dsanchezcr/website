@@ -92,3 +92,30 @@ export async function deleteDoc(type: string, id: string, pk: string): Promise<v
   });
   if (!res.ok) throw new Error(await parseError(res));
 }
+
+/** Localized text produced by the AI generator, one string per supported locale. */
+export interface LocalizedText {
+  en: string;
+  es: string;
+  pt: string;
+}
+
+/**
+ * Expand a brief prompt into localized (en/es/pt) content for a field, using the admin-only
+ * Foundry endpoint. `type` is the content-type slug; `field` is the logical field name
+ * (review | description | recommendation | name | title | introText).
+ */
+export async function generateLocalizedText(
+  type: string,
+  field: string,
+  prompt: string,
+  title?: string,
+): Promise<LocalizedText> {
+  const res = await fetch(`${BASE}/ai/generate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contentType: type, field, prompt, title }),
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  return (await res.json()) as LocalizedText;
+}

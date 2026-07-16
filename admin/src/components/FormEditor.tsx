@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import type { ContentTypeDef, Doc } from '../types';
-import { DynamicField, FieldInput } from './fields';
+import { DynamicField, FieldInput, localizedToText } from './fields';
 import MediaPreview from './MediaPreview';
+import AiGenerate from './AiGenerate';
 import { validate } from '../validation';
-import { getSample } from '../api';
+import { getSample, type LocalizedText } from '../api';
 
 interface Props {
   type: ContentTypeDef;
@@ -31,6 +32,24 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
       if (value === undefined) delete next[key];
       else next[key] = value;
       return next;
+    });
+  };
+
+  // A short human reference for the item, passed to the AI generator for context.
+  const contextTitle = useMemo(() => {
+    const raw = doc.title ?? doc.name ?? doc.titleId ?? doc.parkId ?? doc.month;
+    return localizedToText(raw) || undefined;
+  }, [doc]);
+
+  // Merge AI-generated localized text into a field. `localizedOrString` fields become a
+  // localized object; `localized` fields merge over any existing locale values.
+  const applyGenerated = (key: string, loc: LocalizedText) => {
+    setDoc((prev) => {
+      const existing = prev[key];
+      const base = existing && typeof existing === 'object' && !Array.isArray(existing)
+        ? (existing as Record<string, unknown>)
+        : {};
+      return { ...prev, [key]: { ...base, en: loc.en, es: loc.es, pt: loc.pt } };
     });
   };
 
@@ -100,6 +119,14 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
                       {f.partitionKey && <span className="admin-pk-badge">partition key</span>}
                     </label>
                     <FieldInput field={f} value={doc[f.key]} isNew={isNew} onChange={(v) => setField(f.key, v)} />
+                    {(f.type === 'localized' || f.type === 'localizedOrString') && (
+                      <AiGenerate
+                        typeSlug={type.slug}
+                        field={f.key}
+                        title={contextTitle}
+                        onGenerated={(loc) => applyGenerated(f.key, loc)}
+                      />
+                    )}
                     {f.help && <div className="admin-field-help">{f.help}</div>}
                   </div>
                 ))}
