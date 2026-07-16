@@ -131,9 +131,17 @@ public class AdminContentGeneration
     private static string GetClientIp(HttpRequestData req)
     {
         if (req.Headers.TryGetValues("X-Forwarded-For", out var forwarded))
-            return forwarded.First().Split(',')[0].Trim();
+        {
+            var raw = forwarded.FirstOrDefault();
+            if (!string.IsNullOrWhiteSpace(raw))
+                return raw.Split(',')[0].Trim();
+        }
         if (req.Headers.TryGetValues("X-Real-IP", out var realIp))
-            return realIp.First();
+        {
+            var raw = realIp.FirstOrDefault();
+            if (!string.IsNullOrWhiteSpace(raw))
+                return raw.Trim();
+        }
         return "unknown";
     }
 
