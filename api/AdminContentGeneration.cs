@@ -94,8 +94,8 @@ public class AdminContentGeneration
             return await Error(req, HttpStatusCode.BadRequest, $"'prompt' must be {MaxPromptLength} characters or fewer.");
 
         var title = body.Title?.Trim();
-        if (title != null && title.Length > MaxTitleLength)
-            title = title[..MaxTitleLength];
+        if (!string.IsNullOrEmpty(title) && title.Length > MaxTitleLength)
+            return await Error(req, HttpStatusCode.BadRequest, $"'title' must be {MaxTitleLength} characters or fewer.");
 
         try
         {
