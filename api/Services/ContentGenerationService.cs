@@ -81,11 +81,15 @@ public sealed class FoundryContentGenerationService : IContentGenerationService
 
         var options = new ChatCompletionOptions
         {
+            MaxOutputTokenCount = 600,
             Temperature = 0.7f,
             ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat(),
         };
 
-        var completion = await _chatClient.CompleteChatAsync(messages, options, ct);
+        using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        timeoutCts.CancelAfter(TimeSpan.FromSeconds(30));
+
+        var completion = await _chatClient.CompleteChatAsync(messages, options, timeoutCts.Token);
         var raw = completion.Value.Content.Count > 0 ? completion.Value.Content[0].Text : null;
 
         if (string.IsNullOrWhiteSpace(raw))
