@@ -161,7 +161,7 @@ var host = new HostBuilder()
             var key = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY");
             var deployment = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT");
 
-            if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key) || string.IsNullOrEmpty(deployment))
+            if (string.IsNullOrWhiteSpace(endpoint) || string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(deployment))
             {
                 logger.LogInformation("Foundry not configured; AI content generation endpoint will return 503.");
                 return new NullContentGenerationService();
