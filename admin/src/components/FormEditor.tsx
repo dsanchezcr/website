@@ -119,7 +119,8 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
                       {f.partitionKey && <span className="admin-pk-badge">partition key</span>}
                     </label>
                     <FieldInput field={f} value={doc[f.key]} isNew={isNew} onChange={(v) => setField(f.key, v)} />
-                    {(f.type === 'localized' || f.type === 'localizedOrString') && (
+                    {(f.type === 'localized' || f.type === 'localizedOrString') &&
+                      ['review', 'description', 'recommendation', 'name', 'title', 'introText'].includes(f.key) && (
                       <AiGenerate
                         typeSlug={type.slug}
                         field={f.key}
