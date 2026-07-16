@@ -57,7 +57,7 @@ public sealed class FoundryContentGenerationService : IContentGenerationService
         var key = Environment.GetEnvironmentVariable("AZURE_OPENAI_KEY");
         var deployment = Environment.GetEnvironmentVariable("AZURE_OPENAI_DEPLOYMENT");
 
-        if (string.IsNullOrEmpty(endpoint) || string.IsNullOrEmpty(key) || string.IsNullOrEmpty(deployment))
+        if (string.IsNullOrWhiteSpace(endpoint) || string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(deployment))
         {
             _logger.LogInformation(
                 "Content generation service not configured (missing Foundry settings). /api/content-admin/ai/generate will return 503.");
