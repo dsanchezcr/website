@@ -186,8 +186,8 @@ Example:
 
 ## Cover Image Workflow
 
-The hub page uses the `meta.heroImageUrl` field. Monthly pages themselves do **not** embed the hero image anymore.
-
+The hub page uses the `meta.heroImageUrl` field.
+Monthly MDX shells currently also embed the hero image at the top (see the latest shell examples), so keep that URL aligned with `meta.heroImageUrl`.
 When the user wants a cover image:
 
 1. Craft a prompt that matches the established monthly-update style:
