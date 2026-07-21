@@ -27,9 +27,9 @@ Do **not** hand-author the full list of games directly inside the MDX page unles
    - `gaming/monthly-updates/july-2026.mdx`
    - `i18n/es/docusaurus-plugin-content-docs-gaming/current/monthly-updates/july-2026.mdx`
    - `i18n/pt/docusaurus-plugin-content-docs-gaming/current/monthly-updates/july-2026.mdx`
-- **Seed location**: `scripts/monthly-updates/<yyyy-mm>.json`
-- **Importer**: `scripts/import-monthly-updates.mjs`
-- **Monthly image generator**: `scripts/generate-gaming-monthly-image.mjs`
+- **Seed location (planned)**: `scripts/monthly-updates/<yyyy-mm>.json`
+- **Importer (planned)**: `scripts/import-monthly-updates.mjs`
+- **Monthly image generator (planned)**: `scripts/generate-gaming-monthly-image.mjs`
 
 ## Expected Deliverables
 
