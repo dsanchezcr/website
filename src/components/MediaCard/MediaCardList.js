@@ -9,8 +9,8 @@ const MediaCardList = ({ items, category }) => {
     () => {
       const result = category ? items.filter(item => item.category === category) : items;
       return result.slice().sort((a, b) => {
-        const aOrder = typeof a.order === 'number' ? a.order : Number.NEGATIVE_INFINITY;
-        const bOrder = typeof b.order === 'number' ? b.order : Number.NEGATIVE_INFINITY;
+        const aOrder = Number.isFinite(a.order) ? a.order : Number.NEGATIVE_INFINITY;
+        const bOrder = Number.isFinite(b.order) ? b.order : Number.NEGATIVE_INFINITY;
         return bOrder - aOrder;
       });
     },
