@@ -32,10 +32,11 @@ public sealed class SyncImdbContent
         var denied = await RejectIfNotAuthorized(req);
         if (denied != null) return denied;
 
+        var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         ImdbSyncRequest payload;
         try
         {
-            payload = await JsonSerializer.DeserializeAsync<ImdbSyncRequest>(req.Body, cancellationToken: ct)
+            payload = await JsonSerializer.DeserializeAsync<ImdbSyncRequest>(req.Body, jsonOptions, ct)
                       ?? new ImdbSyncRequest();
         }
         catch (JsonException)
