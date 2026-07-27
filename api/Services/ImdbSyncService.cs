@@ -440,7 +440,9 @@ public sealed class ImdbSyncService : IImdbSyncService
         if (!string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("IMDb URLs must use HTTPS.");
 
-        if (!uri.Host.EndsWith("imdb.com", StringComparison.OrdinalIgnoreCase))
+        var host = uri.Host;
+        if (!string.Equals(host, "imdb.com", StringComparison.OrdinalIgnoreCase) &&
+            !host.EndsWith(".imdb.com", StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("Only imdb.com URLs are allowed for sync.");
     }
 }
