@@ -49,6 +49,8 @@ export const config = {
     // Admin-only AI content generation (Foundry): POST expands a brief prompt into localized
     // (en/es/pt) text in the site's tone. Same role gate as the CRUD endpoints.
     adminGenerate: '/api/content-admin/ai/generate',
+    // Admin-only IMDb synchronization endpoint for watchlist/recently watched imports.
+    adminImdbSync: '/api/content-admin/imdb/sync',
   },
   
   // Production domains

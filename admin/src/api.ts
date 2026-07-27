@@ -100,6 +100,25 @@ export interface LocalizedText {
   pt: string;
 }
 
+export interface ImdbSyncRequest {
+  watchlistUrl?: string;
+  ratingsUrl?: string;
+  dryRun?: boolean;
+  maxItems?: number;
+}
+
+export interface ImdbSyncResult {
+  watchlistImported: number;
+  recentlyImported: number;
+  moviesUpdated: number;
+  seriesUpdated: number;
+  created: number;
+  replaced: number;
+  deleted: number;
+  skipped: number;
+  warnings: string[];
+}
+
 /**
  * Expand a brief prompt into localized (en/es/pt) content for a field, using the admin-only
  * Foundry endpoint. `type` is the content-type slug; `field` is the logical field name
@@ -118,4 +137,18 @@ export async function generateLocalizedText(
   });
   if (!res.ok) throw new Error(await parseError(res));
   return (await res.json()) as LocalizedText;
+}
+
+/**
+ * Triggers admin-only IMDb sync for watchlist and recently watched/completed content.
+ * URLs are optional when server-side IMDB_WATCHLIST_URL / IMDB_RATINGS_URL env vars are set.
+ */
+export async function syncImdbContent(payload: ImdbSyncRequest): Promise<ImdbSyncResult> {
+  const res = await fetch(`${BASE}/imdb/sync`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  return (await res.json()) as ImdbSyncResult;
 }

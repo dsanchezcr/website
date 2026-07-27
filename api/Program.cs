@@ -22,6 +22,7 @@ var host = new HostBuilder()
         }
         services.AddHttpClient();
         services.AddMemoryCache();
+        services.AddSingleton<IImdbSyncService, ImdbSyncService>();
         
         // Register Rate Limit Service (thread-safe atomic operations)
         services.AddSingleton<IRateLimitService, MemoryCacheRateLimitService>();

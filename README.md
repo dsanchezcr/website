@@ -138,6 +138,7 @@ Build artifacts:
 | `/api/gaming/xbox` | GET | Xbox Live profile, gamerscore, and recent games |
 | `/api/gaming/playstation` | GET | PSN profile, trophies, and recent games |
 | `/api/gaming/refresh` | POST | Admin: trigger gaming data refresh |
+| `/api/content-admin/imdb/sync` | POST | Admin/automation: sync IMDb watchlist + recently watched/completed |
 
 ## ☁️ Deployment
 
@@ -163,6 +164,31 @@ az deployment group create \
 
 See [infra/README.md](infra/README.md) for complete deployment instructions.
 
+## IMDb Sync Automation Configuration
+
+The daily IMDb sync job (`.github/workflows/imdb-sync.yml`) runs at **1:00 AM Eastern Time** and calls `/api/content-admin/imdb/sync` with a dedicated sync key.
+
+### GitHub configuration
+
+Set the following in your repository (or Environment: `Production`):
+
+**Secrets**
+- `IMDB_SYNC_KEY`: Shared secret used in `X-Imdb-Sync-Key` header.
+
+**Variables**
+- `WEBSITE_URL`: Public site URL (for example `https://dsanchezcr.com`).
+- `IMDB_SYNC_MAX_ITEMS`: Default max items per automated run (for example `250`).
+
+### Azure Static Web Apps app settings
+
+Set the following app settings in the SWA resource:
+
+- `IMDB_SYNC_KEY`: Must exactly match the GitHub secret `IMDB_SYNC_KEY`.
+- `IMDB_WATCHLIST_URL`: Public IMDb watchlist URL (for example `https://www.imdb.com/user/<id>/watchlist`).
+- `IMDB_RATINGS_URL`: Public IMDb ratings URL (for example `https://www.imdb.com/user/<id>/ratings`).
+
+If `IMDB_WATCHLIST_URL` and/or `IMDB_RATINGS_URL` are missing, the endpoint can still be run manually by passing URLs in the request body.
+
 ## 📁 Project Structure
 
 ```
@@ -174,6 +200,7 @@ See [infra/README.md](infra/README.md) for complete deployment instructions.
 │   ├── ChatWithOpenAI.cs   # AI chat with RAG
 │   ├── HealthCheck.cs      # Health monitoring
 │   ├── ReindexContent.cs   # Search index updates
+│   ├── SyncImdbContent.cs  # IMDb sync endpoint for watchlist/recently watched
 │   ├── GetXboxProfile.cs   # Xbox Live profile data
 │   ├── GetPlayStationProfile.cs # PSN profile & trophies
 │   ├── RefreshGamingProfiles.cs # Admin refresh endpoint

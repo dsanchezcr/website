@@ -1,0 +1,121 @@
+name: IMDb Content Sync
+
+on:
+  schedule:
+    # GitHub schedules are UTC. We run at both 05:00 and 06:00 UTC,
+    # then gate in-job to execute only when America/New_York local hour is 01.
+    # This keeps the run fixed at 1:00 AM Eastern across DST changes.
+    - cron: '0 5 * * *'
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Dry run (calculate only, no writes)
+        required: false
+        type: boolean
+        default: false
+      max_items:
+        description: Max IMDb items to process
+        required: false
+        type: number
+        default: 250
+
+permissions:
+  contents: read
+
+concurrency:
+  group: imdb-content-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync IMDb Watchlist and Recently Watched
+    runs-on: ubuntu-latest
+    environment: Production
+    env:
+      SITE_URL: ${{ vars.WEBSITE_URL || 'https://dsanchezcr.com' }}
+      IMDB_SYNC_MAX_ITEMS: ${{ vars[format('IMDB_SYNC_MAX_ITEMS')] || '250' }}
+    steps:
+      - name: Determine if this is 1 AM Eastern
+        id: gate
+        run: |
+          ET_HOUR=$(TZ=America/New_York date +%H)
+          ET_DATE=$(TZ=America/New_York date +%Y-%m-%d)
+          ET_TZ=$(TZ=America/New_York date +%Z)
+
+          echo "Eastern now: ${ET_DATE} ${ET_HOUR}:00 ${ET_TZ}"
+          echo "et_hour=${ET_HOUR}" >> "$GITHUB_OUTPUT"
+          echo "et_tz=${ET_TZ}" >> "$GITHUB_OUTPUT"
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          elif [ "$ET_HOUR" = "01" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skip non-1AM UTC slot
+        if: steps.gate.outputs.should_run != 'true'
+        run: |
+          echo "Not 1 AM Eastern; skipping this UTC slot."
+          echo "### IMDb Sync skipped" >> "$GITHUB_STEP_SUMMARY"
+          echo "Current ET hour is ${{ steps.gate.outputs.et_hour }} ${{ steps.gate.outputs.et_tz }}; this run only executes at 1 AM ET." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Build sync payload
+        if: steps.gate.outputs.should_run == 'true'
+        id: payload
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            DRY_RUN="${{ inputs.dry_run }}"
+            MAX_ITEMS="${{ inputs.max_items }}"
+          else
+            DRY_RUN="false"
+            MAX_ITEMS="${IMDB_SYNC_MAX_ITEMS}"
+          fi
+
+          jq -n \
+            --argjson dryRun "$DRY_RUN" \
+            --argjson maxItems "$MAX_ITEMS" \
+            '{dryRun: $dryRun, maxItems: $maxItems}' > imdb-sync-payload.json
+
+          echo "dry_run=${DRY_RUN}" >> "$GITHUB_OUTPUT"
+          echo "max_items=${MAX_ITEMS}" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger IMDb sync
+        if: steps.gate.outputs.should_run == 'true'
+        run: |
+          set -euo pipefail
+
+          RESPONSE=$(curl -sS -w "\n%{http_code}" \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "X-Imdb-Sync-Key: ${{ secrets[format('IMDB_SYNC_KEY')] }}" \
+            --data @imdb-sync-payload.json \
+            "${SITE_URL}/api/content-admin/imdb/sync")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | sed '$d')
+
+          echo "HTTP ${HTTP_CODE}"
+          echo "$BODY" | jq . || echo "$BODY"
+
+          {
+            echo "### IMDb Sync Result"
+            echo ""
+            echo "- Timezone gate: 1 AM ET (${{ steps.gate.outputs.et_tz }})"
+            echo "- Dry run: ${{ steps.payload.outputs.dry_run }}"
+            echo "- Max items: ${{ steps.payload.outputs.max_items }}"
+            echo "- HTTP: ${HTTP_CODE}"
+            echo ""
+            echo "JSON response:"
+            echo ""
+            echo '```json'
+            echo "$BODY"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$HTTP_CODE" -lt 200 ] || [ "$HTTP_CODE" -ge 300 ]; then
+            echo "::error::IMDb sync failed with HTTP ${HTTP_CODE}"
+            exit 1
+          fi
