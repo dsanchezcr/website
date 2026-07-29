@@ -149,6 +149,9 @@ public class HealthCheck
         
         // Reindex endpoint security
         { "REINDEX_SECRET_KEY", ("Secret key for authenticating reindex API calls from GitHub Actions", false) },
+        { "IMDB_SYNC_KEY", ("Secret key for authenticating automated IMDb sync calls from GitHub Actions", false) },
+        { "IMDB_WATCHLIST_URL", ("IMDb watchlist URL used by automated sync when request body omits URLs", false) },
+        { "IMDB_RATINGS_URL", ("IMDb ratings URL used by automated sync when request body omits URLs", false) },
         
         // Gaming APIs
         { "XBOX_API_KEY", ("OpenXBL API key for Xbox profile data (https://xbl.io)", false) },

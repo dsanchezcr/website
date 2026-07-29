@@ -3,6 +3,7 @@ import type { ContentTypeDef, Doc } from '../types';
 import { createDoc, deleteDoc, getDoc, getPartitions, listDocs, updateDoc } from '../api';
 import { cellValue } from './fields';
 import FormEditor from './FormEditor';
+import ImdbSyncPanel from './ImdbSyncPanel';
 
 export default function ContentManager({ type }: { type: ContentTypeDef }) {
   const [partitions, setPartitions] = useState<string[]>([]);
@@ -45,6 +46,27 @@ export default function ContentManager({ type }: { type: ContentTypeDef }) {
   const onNew = () => {
     const doc: Doc = {};
     if (partition) doc[type.partitionKeyField] = partition;
+
+    if ((type.slug === 'movies' || type.slug === 'series') && partition) {
+      const sameCategory = items.filter((item) => String(item[type.partitionKeyField] ?? '') === partition);
+      const maxOrder = sameCategory.reduce((max, item) => {
+        const value = item.order;
+        return typeof value === 'number' && Number.isInteger(value)
+          ? Math.max(max, value)
+          : max;
+      }, 0);
+
+      doc.order = maxOrder + 1;
+
+      const shouldSeedTbdReview =
+        (type.slug === 'movies' && partition === 'recently-watched') ||
+        (type.slug === 'series' && partition === 'completed');
+
+      if (shouldSeedTbdReview) {
+        doc.review = { en: 'TBD', es: 'TBD', pt: 'TBD' };
+      }
+    }
+
     setEditing({ doc, isNew: true });
   };
 
@@ -113,6 +135,13 @@ export default function ContentManager({ type }: { type: ContentTypeDef }) {
       </div>
 
       {error && <div className="admin-error">{error}</div>}
+
+      {(type.slug === 'movies' || type.slug === 'series') && (
+        <ImdbSyncPanel onSynced={async () => {
+          await load();
+          refreshPartitions();
+        }} />
+      )}
 
       <div className="admin-table-wrap">
         <table className="admin-table">

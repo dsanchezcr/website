@@ -40,30 +40,30 @@ describe('MediaCardList', () => {
     expect(screen.getByText('No titles to display yet.')).toBeInTheDocument();
   });
 
-  it('renders items sorted by order field (ascending)', () => {
+  it('renders items sorted by order field (descending)', () => {
     const items = [
-      makeItem('tt0000003', 3),
       makeItem('tt0000001', 1),
+      makeItem('tt0000003', 3),
       makeItem('tt0000002', 2),
     ];
     render(<MediaCardList items={items} />);
     const links = screen.getAllByRole('link');
-    expect(links[0]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000001/');
+    expect(links[0]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000003/');
     expect(links[1]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000002/');
-    expect(links[2]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000003/');
+    expect(links[2]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000001/');
   });
 
   it('renders items without order after items with order', () => {
     const items = [
       makeItem('tt0000099'),       // no order
-      makeItem('tt0000001', 1),
-      makeItem('tt0000098'),       // no order
       makeItem('tt0000002', 2),
+      makeItem('tt0000098'),       // no order
+      makeItem('tt0000001', 1),
     ];
     render(<MediaCardList items={items} />);
     const links = screen.getAllByRole('link');
-    expect(links[0]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000001/');
-    expect(links[1]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000002/');
+    expect(links[0]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000002/');
+    expect(links[1]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000001/');
     // Items without order come last (original relative order preserved via stable sort)
     const lastHrefs = [links[2], links[3]].map(l => l.getAttribute('href'));
     expect(lastHrefs).toContain('https://www.imdb.com/title/tt0000099/');
@@ -79,19 +79,19 @@ describe('MediaCardList', () => {
     render(<MediaCardList items={items} category="recently-watched" />);
     const links = screen.getAllByRole('link');
     expect(links).toHaveLength(2);
-    expect(links[0]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000002/');
-    expect(links[1]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000003/');
+    expect(links[0]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000003/');
+    expect(links[1]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000002/');
   });
 
   it('renders all items when no category filter is applied', () => {
     const items = [
-      { ...makeItem('tt0000002', 2), category: 'recently-watched' },
       { ...makeItem('tt0000001', 1), category: 'watchlist' },
+      { ...makeItem('tt0000002', 2), category: 'recently-watched' },
     ];
     render(<MediaCardList items={items} />);
     const links = screen.getAllByRole('link');
     expect(links).toHaveLength(2);
-    expect(links[0]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000001/');
-    expect(links[1]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000002/');
+    expect(links[0]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000002/');
+    expect(links[1]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000001/');
   });
 });

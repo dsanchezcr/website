@@ -80,6 +80,9 @@ The following environment variables are configured as app settings for the manag
 | `AZURE_SEARCH_INDEX_NAME` | Azure AI Search index name | No* |
 | `AZURE_STORAGE_CONNECTION_STRING` | Azure Storage connection for Table Storage | No* |
 | `REINDEX_SECRET_KEY` | Secret key for authenticating reindex API calls | No* |
+| `IMDB_SYNC_KEY` | Secret key for authenticating automated IMDb sync calls | No* |
+| `IMDB_WATCHLIST_URL` | Public IMDb watchlist URL used by automated sync | No* |
+| `IMDB_RATINGS_URL` | Public IMDb ratings URL used by automated sync | No* |
 | `WEBSITE_URL` | The public website URL | Yes |
 | `API_URL` | The API endpoint URL (auto-configured) | Auto |
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | App Insights connection (auto-configured) | Auto |
@@ -113,16 +116,21 @@ After deployment, the following API endpoints will be available:
 
 4. **Add the website URL** as a GitHub variable named `WEBSITE_URL` (e.g., `https://dsanchezcr.com`)
 
-5. **Create the Azure AI Search index** in Azure Portal:
+5. **Add IMDb sync configuration**:
+   - GitHub secret: `IMDB_SYNC_KEY`
+   - GitHub variable: `IMDB_SYNC_MAX_ITEMS` (recommended: `250`)
+   - SWA app settings: `IMDB_SYNC_KEY`, `IMDB_WATCHLIST_URL`, `IMDB_RATINGS_URL`
+
+6. **Create the Azure AI Search index** in Azure Portal:
    - Go to Azure AI Search > Indexes > Add Index
    - Name: `website-content`
    - Fields: `id` (key), `title`, `content`, `description`, `url`, `category`, `tags`, `date`
 
-6. **Configure custom domain** (optional):
+7. **Configure custom domain** (optional):
    - Add a CNAME record pointing to the Static Web App default hostname
    - Configure the custom domain in the Azure Portal or update the Bicep template
 
-4. **Verify the deployment**:
+8. **Verify the deployment**:
    - Visit the default hostname URL
    - Test each API endpoint
    - Check Application Insights for telemetry

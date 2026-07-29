@@ -49,12 +49,12 @@ public class CosmosContentService : ICosmosContentService
 
         if (!string.IsNullOrEmpty(category))
         {
-            var query = new QueryDefinition("SELECT * FROM c WHERE c.category = @category")
+            var query = new QueryDefinition("SELECT * FROM c WHERE c.category = @category ORDER BY c[\"order\"] DESC")
                 .WithParameter("@category", category);
             return await ExecuteQueryAsync<MovieDocument>(container, query, new PartitionKey(category));
         }
 
-        return await ExecuteQueryAsync<MovieDocument>(container, new QueryDefinition("SELECT * FROM c"));
+        return await ExecuteQueryAsync<MovieDocument>(container, new QueryDefinition("SELECT * FROM c ORDER BY c[\"order\"] DESC"));
     }
 
     public async Task<IReadOnlyList<SeriesDocument>> GetSeriesAsync(string? category = null)
@@ -63,12 +63,12 @@ public class CosmosContentService : ICosmosContentService
 
         if (!string.IsNullOrEmpty(category))
         {
-            var query = new QueryDefinition("SELECT * FROM c WHERE c.category = @category")
+            var query = new QueryDefinition("SELECT * FROM c WHERE c.category = @category ORDER BY c[\"order\"] DESC")
                 .WithParameter("@category", category);
             return await ExecuteQueryAsync<SeriesDocument>(container, query, new PartitionKey(category));
         }
 
-        return await ExecuteQueryAsync<SeriesDocument>(container, new QueryDefinition("SELECT * FROM c"));
+        return await ExecuteQueryAsync<SeriesDocument>(container, new QueryDefinition("SELECT * FROM c ORDER BY c[\"order\"] DESC"));
     }
 
     public async Task<IReadOnlyList<GamingDocument>> GetGamingAsync(string platform, string? section = null)

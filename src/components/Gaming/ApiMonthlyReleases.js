@@ -19,6 +19,24 @@ const localizeValue = (value, localeKey) => {
   return value[localeKey] || value.en || value.es || value.pt || Object.values(value).find((v) => typeof v === 'string') || '';
 };
 
+const renderInlineBold = (value) => {
+  if (typeof value !== 'string' || value.length === 0) {
+    return value;
+  }
+
+  const parts = value.split(/(\*\*[^*]+\*\*)/g).filter(Boolean);
+  if (parts.length <= 1) {
+    return value;
+  }
+
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+      return <strong key={`b-${index}`}>{part.slice(2, -2)}</strong>;
+    }
+    return <React.Fragment key={`t-${index}`}>{part}</React.Fragment>;
+  });
+};
+
 const ApiMonthlyReleasesInner = ({ month, category }) => {
   const { i18n } = useDocusaurusContext();
   const localeKey = i18n?.currentLocale || 'en';
@@ -88,11 +106,12 @@ const ApiMonthlyReleasesInner = ({ month, category }) => {
             const title = localizeValue(item.title, localeKey);
             const description = localizeValue(item.description, localeKey);
             const youtubeTitle = localizeValue(item.youtubeTitle, localeKey);
+            const detailText = `${description || ''}${item.platforms ? ` ${item.platforms}` : ''}`.trim();
 
             return (
               <div key={item.id} style={{ marginBottom: '2rem' }}>
                 <h3>{title}{item.releaseDate ? ` — ${item.releaseDate}` : ''}</h3>
-                {description && <p>{description}{item.platforms ? ` ${item.platforms}` : ''}</p>}
+                {detailText && <p>{renderInlineBold(detailText)}</p>}
                 {item.youtubeVideoId && (
                   <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', maxWidth: '100%', marginTop: '1rem' }}>
                     <iframe
@@ -116,11 +135,12 @@ const ApiMonthlyReleasesInner = ({ month, category }) => {
             const title = localizeValue(item.title, localeKey);
             const description = localizeValue(item.description, localeKey);
             const youtubeTitle = localizeValue(item.youtubeTitle, localeKey);
+            const detailText = `${description || ''}${item.platforms ? ` ${item.platforms}` : ''}`.trim();
 
             return (
               <div key={item.id} style={{ marginBottom: '2rem' }}>
                 <h3>{title}{item.releaseDate ? ` — ${item.releaseDate}` : ''}</h3>
-                {description && <p>{description}{item.platforms ? ` ${item.platforms}` : ''}</p>}
+                {detailText && <p>{renderInlineBold(detailText)}</p>}
                 {item.youtubeVideoId && (
                   <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', maxWidth: '100%', marginTop: '1rem' }}>
                     <iframe

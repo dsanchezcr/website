@@ -8,7 +8,11 @@ const MediaCardList = ({ items, category }) => {
   const filtered = useMemo(
     () => {
       const result = category ? items.filter(item => item.category === category) : items;
-      return result.slice().sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
+      return result.slice().sort((a, b) => {
+        const aOrder = Number.isFinite(a.order) ? a.order : Number.NEGATIVE_INFINITY;
+        const bOrder = Number.isFinite(b.order) ? b.order : Number.NEGATIVE_INFINITY;
+        return bOrder - aOrder;
+      });
     },
     [items, category]
   );

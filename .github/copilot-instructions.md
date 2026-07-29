@@ -42,6 +42,7 @@ Located in `api/` directory:
 - **UpdatePreferences.cs**: Newsletter frequency update (`/api/newsletter/preferences`) with token authentication
 - **GetSubscriptionStatus.cs**: Newsletter status check (`/api/newsletter/status`) with token authentication
 - **DispatchNewsletter.cs**: Newsletter sending endpoint (`/api/newsletter/dispatch`) called by GitHub Actions cron
+- **SyncImdbContent.cs**: Admin/automation endpoint (`/api/content-admin/imdb/sync`) for syncing IMDb watchlist and ratings into movies/series content containers
 - **AdminContent.cs**: Authenticated content CRUD (`/api/content-admin/{type}` and `/api/content-admin/{type}/{id}`) for the `/admin` SPA; raw-JSON read/write that preserves unknown fields, with server-side validation and an in-function `admin` role check (`admin` is a reserved Functions route prefix, hence `content-admin`)
 - **AdminContentGeneration.cs**: Admin-only AI content generation (`/api/content-admin/ai/generate`) using Microsoft Foundry; expands a brief prompt into localized (`en`/`es`/`pt`) text in the site's tone for the admin editor. Same `admin` role gate as the CRUD endpoints; stateless (nothing persisted)
 - **GetRoles.cs**: SWA `rolesSource` (`/api/auth/roles`); maps allow-listed accounts (`ADMIN_ALLOWED_EMAILS`) to the `admin` role
@@ -211,6 +212,7 @@ Additional API endpoints (not used by the public UI — backend/CI/admin only):
 - `/api/reindex` — Called by GitHub Actions, requires `X-Reindex-Key` header
 - `/api/gaming/refresh` — Admin-only manual trigger, requires `X-Gaming-Refresh-Key` header
 - `/api/newsletter/dispatch` — Called by GitHub Actions cron, requires `X-Newsletter-Key` header
+- `/api/content-admin/imdb/sync` — Called by GitHub Actions cron at 1:00 AM Eastern; authenticates with `X-Imdb-Sync-Key` (matches `IMDB_SYNC_KEY`) or admin role. Uses `IMDB_WATCHLIST_URL` / `IMDB_RATINGS_URL` app settings when request body omits URLs
 - `/api/content-admin/{type}` and `/api/content-admin/{type}/{id}` — Authenticated content CRUD for the `/admin` SPA (Entra ID + `admin` role). Types: movies, series, gaming, parks, monthly-updates
 - `/api/content-admin/ai/generate` — Admin-only AI content generation (Entra ID + `admin` role); POST a brief prompt, returns localized `{ en, es, pt }` text (Foundry)
 - `/api/auth/roles` — SWA `rolesSource`; maps allow-listed accounts (`ADMIN_ALLOWED_EMAILS`) to the `admin` role
@@ -219,6 +221,9 @@ Additional API endpoints (not used by the public UI — backend/CI/admin only):
 Single GitHub Actions workflow deploys both frontend and managed API together:
 - **azure-static-web-app.yml**: Builds Docusaurus site and .NET 9 API, deploys to SWA
 - SWA handles deploying both app and API from the same repository
+
+Additional scheduled automation workflows:
+- **imdb-sync.yml**: Runs daily at 1:00 AM Eastern (DST-safe UTC gating) and calls `/api/content-admin/imdb/sync` with `X-Imdb-Sync-Key`
 
 ## Dependencies & Integration Points
 
@@ -256,6 +261,11 @@ AZURE_STORAGE_CONNECTION_STRING
 
 # Search Index Update (Called by GitHub Actions)
 REINDEX_SECRET_KEY
+
+# IMDb Sync (Called by GitHub Actions)
+IMDB_SYNC_KEY
+IMDB_WATCHLIST_URL
+IMDB_RATINGS_URL
 
 # Google Analytics
 GOOGLE_ANALYTICS_PROPERTY_ID
