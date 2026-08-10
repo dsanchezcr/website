@@ -62,15 +62,15 @@
     "@azure/storage-blob": "^12.33.0",
     "@docusaurus/module-type-aliases": "^3.10.2",
     "@docusaurus/types": "^3.10.2",
-    "@playwright/test": "^1.62.0",
+    "@playwright/test": "^1.62.1",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
     "@tsconfig/docusaurus": "^2.0.9",
     "@vitest/coverage-v8": "^4.1.10",
     "babel-plugin-module-resolver": "^5.0.3",
-    "jsdom": "^30.0.0",
+    "jsdom": "^30.0.1",
     "typescript": "^7.0.2",
-    "vite": "^8.1.5",
+    "vite": "^8.2.1",
     "vitest": "^4.1.10"
   },
   "overrides": {
