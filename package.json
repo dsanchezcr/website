@@ -22,7 +22,7 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
-    "@docsearch/react": "^4.6.3",
+    "@docsearch/react": "^4.7.0",
     "@docusaurus/core": "^3.10.2",
     "@docusaurus/faster": "^3.10.2",
     "@docusaurus/plugin-google-analytics": "^3.10.2",
