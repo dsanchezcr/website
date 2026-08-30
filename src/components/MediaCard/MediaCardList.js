@@ -8,10 +8,9 @@ const MediaCardList = ({ items, category, itemsPerPage = 10 }) => {
   const locale = useLocale();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const isTopList = category === 'top-movies' || category === 'top-series' || category === 'top-tv';
-
   const filtered = useMemo(
     () => {
+      const isTopList = category === 'top-movies' || category === 'top-series' || category === 'top-tv';
       const result = category ? items.filter(item => item.category === category) : items;
       return result.slice().sort((a, b) => {
         if (isTopList) {
@@ -24,7 +23,7 @@ const MediaCardList = ({ items, category, itemsPerPage = 10 }) => {
         return bOrder - aOrder;
       });
     },
-    [items, category, isTopList]
+    [items, category]
   );
 
   useEffect(() => {

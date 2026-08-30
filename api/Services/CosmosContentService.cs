@@ -48,21 +48,22 @@ public class CosmosContentService : ICosmosContentService
         var container = _client.GetContainer(_databaseName, MoviesContainer);
         bool isTopList = string.Equals(category, "top-movies", StringComparison.OrdinalIgnoreCase);
         string orderClause = isTopList ? "ORDER BY c[\"order\"] ASC" : "ORDER BY c[\"order\"] DESC";
+        string paginationClause = BuildPaginationClause(page, pageSize);
 
         IReadOnlyList<MovieDocument> results;
         if (!string.IsNullOrEmpty(category))
         {
-            var query = new QueryDefinition($"SELECT * FROM c WHERE c.category = @category {orderClause}")
+            var query = new QueryDefinition($"SELECT * FROM c WHERE c.category = @category {orderClause} {paginationClause}".Trim())
                 .WithParameter("@category", category);
             results = await ExecuteQueryAsync<MovieDocument>(container, query, new PartitionKey(category));
         }
         else
         {
-            var query = new QueryDefinition($"SELECT * FROM c {orderClause}");
+            var query = new QueryDefinition($"SELECT * FROM c {orderClause} {paginationClause}".Trim());
             results = await ExecuteQueryAsync<MovieDocument>(container, query);
         }
 
-        return ApplyPagination(results, page, pageSize);
+        return results;
     }
 
     public async Task<IReadOnlyList<SeriesDocument>> GetSeriesAsync(string? category = null, int? page = null, int? pageSize = null)
@@ -71,72 +72,76 @@ public class CosmosContentService : ICosmosContentService
         bool isTopList = string.Equals(category, "top-series", StringComparison.OrdinalIgnoreCase) ||
                          string.Equals(category, "top-tv", StringComparison.OrdinalIgnoreCase);
         string orderClause = isTopList ? "ORDER BY c[\"order\"] ASC" : "ORDER BY c[\"order\"] DESC";
+        string paginationClause = BuildPaginationClause(page, pageSize);
 
         IReadOnlyList<SeriesDocument> results;
         if (!string.IsNullOrEmpty(category))
         {
-            var query = new QueryDefinition($"SELECT * FROM c WHERE c.category = @category {orderClause}")
+            var query = new QueryDefinition($"SELECT * FROM c WHERE c.category = @category {orderClause} {paginationClause}".Trim())
                 .WithParameter("@category", category);
             results = await ExecuteQueryAsync<SeriesDocument>(container, query, new PartitionKey(category));
         }
         else
         {
-            var query = new QueryDefinition($"SELECT * FROM c {orderClause}");
+            var query = new QueryDefinition($"SELECT * FROM c {orderClause} {paginationClause}".Trim());
             results = await ExecuteQueryAsync<SeriesDocument>(container, query);
         }
 
-        return ApplyPagination(results, page, pageSize);
+        return results;
     }
 
     public async Task<IReadOnlyList<GamingDocument>> GetGamingAsync(string platform, string? section = null, int? page = null, int? pageSize = null)
     {
         var container = _client.GetContainer(_databaseName, GamingContainer);
+        bool isTopList = string.Equals(section, "topGames", StringComparison.OrdinalIgnoreCase);
+        string orderClause = isTopList ? "ORDER BY c[\"order\"] ASC" : "ORDER BY c[\"order\"] DESC";
+        string paginationClause = BuildPaginationClause(page, pageSize);
 
         QueryDefinition query;
         if (!string.IsNullOrEmpty(section))
         {
-            query = new QueryDefinition("SELECT * FROM c WHERE c.platform = @platform AND c.section = @section ORDER BY c[\"order\"] DESC")
+            query = new QueryDefinition($"SELECT * FROM c WHERE c.platform = @platform AND c.section = @section {orderClause} {paginationClause}".Trim())
                 .WithParameter("@platform", platform)
                 .WithParameter("@section", section);
         }
         else
         {
-            query = new QueryDefinition("SELECT * FROM c WHERE c.platform = @platform ORDER BY c[\"order\"] DESC")
+            query = new QueryDefinition($"SELECT * FROM c WHERE c.platform = @platform {orderClause} {paginationClause}".Trim())
                 .WithParameter("@platform", platform);
         }
 
-        var results = await ExecuteQueryAsync<GamingDocument>(container, query, new PartitionKey(platform));
-        return ApplyPagination(results, page, pageSize);
+        return await ExecuteQueryAsync<GamingDocument>(container, query, new PartitionKey(platform));
     }
 
     public async Task<IReadOnlyList<ParkDocument>> GetParksAsync(string provider, string? parkId = null, int? page = null, int? pageSize = null)
     {
         var container = _client.GetContainer(_databaseName, ParksContainer);
+        string orderClause = "ORDER BY c[\"order\"] DESC";
+        string paginationClause = BuildPaginationClause(page, pageSize);
 
         QueryDefinition query;
         if (!string.IsNullOrEmpty(parkId))
         {
-            query = new QueryDefinition("SELECT * FROM c WHERE c.provider = @provider AND c.parkId = @parkId")
+            query = new QueryDefinition($"SELECT * FROM c WHERE c.provider = @provider AND c.parkId = @parkId {orderClause} {paginationClause}".Trim())
                 .WithParameter("@provider", provider)
                 .WithParameter("@parkId", parkId);
         }
         else
         {
-            query = new QueryDefinition("SELECT * FROM c WHERE c.provider = @provider")
+            query = new QueryDefinition($"SELECT * FROM c WHERE c.provider = @provider {orderClause} {paginationClause}".Trim())
                 .WithParameter("@provider", provider);
         }
 
-        var results = await ExecuteQueryAsync<ParkDocument>(container, query, new PartitionKey(provider));
-        return ApplyPagination(results, page, pageSize);
+        return await ExecuteQueryAsync<ParkDocument>(container, query, new PartitionKey(provider));
     }
 
     public async Task<IReadOnlyList<MonthlyUpdateDocument>> GetMonthlyUpdatesAsync(string month, int? page = null, int? pageSize = null)
     {
         var container = _client.GetContainer(_databaseName, MonthlyUpdatesContainer);
-        var query = new QueryDefinition("SELECT * FROM c WHERE c.month = @month ORDER BY c[\"order\"] DESC")
+        string paginationClause = BuildPaginationClause(page, pageSize);
+        var query = new QueryDefinition($"SELECT * FROM c WHERE c.month = @month ORDER BY c[\"order\"] DESC {paginationClause}".Trim())
             .WithParameter("@month", month);
-        var results = await ExecuteQueryAsync<MonthlyUpdateDocument>(container, query, new PartitionKey(month));
-        return ApplyPagination(results, page, pageSize);
+        return await ExecuteQueryAsync<MonthlyUpdateDocument>(container, query, new PartitionKey(month));
     }
 
     public async Task<IReadOnlyList<string>> GetMonthlyUpdateMonthsAsync()
@@ -147,15 +152,14 @@ public class CosmosContentService : ICosmosContentService
         return months.OrderByDescending(m => m).ToList();
     }
 
-    private static IReadOnlyList<T> ApplyPagination<T>(IReadOnlyList<T> items, int? page, int? pageSize)
+    private static string BuildPaginationClause(int? page, int? pageSize)
     {
-        if (!page.HasValue || !pageSize.HasValue || page.Value < 1 || pageSize.Value < 1)
+        if (page.HasValue && pageSize.HasValue && page.Value >= 1 && pageSize.Value >= 1)
         {
-            return items;
+            int skip = (page.Value - 1) * pageSize.Value;
+            return $"OFFSET {skip} LIMIT {pageSize.Value}";
         }
-
-        var skip = (page.Value - 1) * pageSize.Value;
-        return items.Skip(skip).Take(pageSize.Value).ToList();
+        return string.Empty;
     }
 
     private async Task<IReadOnlyList<T>> ExecuteQueryAsync<T>(Container container, QueryDefinition query, PartitionKey? partitionKey = null)

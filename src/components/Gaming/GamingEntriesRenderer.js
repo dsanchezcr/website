@@ -43,7 +43,7 @@ const GamingEntriesRenderer = ({ items, section, itemsPerPage = 10 }) => {
   const sortedItems = useMemo(() => {
     if (!Array.isArray(items)) return [];
     const validItems = items.filter(item => item && typeof item === 'object');
-    const isTopList = section === 'topGames' || section === 'top-movies' || section === 'top-series' || section === 'top-tv';
+    const isTopList = section === 'topGames';
     return validItems.slice().sort((a, b) => {
       if (isTopList) {
         const aOrder = Number.isFinite(a?.order) ? a.order : Number.POSITIVE_INFINITY;
