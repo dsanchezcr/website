@@ -27,6 +27,16 @@ internal static class QueryHelpers
         return null;
     }
 
+    /// <summary>
+    /// Extracts an integer query parameter value for <paramref name="key"/>.
+    /// Returns <see langword="null"/> if absent or not a positive integer.
+    /// </summary>
+    public static int? GetIntQueryParam(string query, string key)
+    {
+        var raw = GetQueryParam(query, key);
+        return int.TryParse(raw, out var val) && val > 0 ? val : null;
+    }
+
     // Handles both percent-encoding (%20) and form-urlencoded '+' as space.
     private static string Decode(string value) =>
         System.Net.WebUtility.UrlDecode(value);

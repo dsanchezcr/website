@@ -9,11 +9,11 @@ namespace api.Services;
 /// </summary>
 public interface ICosmosContentService
 {
-    Task<IReadOnlyList<MovieDocument>> GetMoviesAsync(string? category = null);
-    Task<IReadOnlyList<SeriesDocument>> GetSeriesAsync(string? category = null);
-    Task<IReadOnlyList<GamingDocument>> GetGamingAsync(string platform, string? section = null);
-    Task<IReadOnlyList<ParkDocument>> GetParksAsync(string provider, string? parkId = null);
-    Task<IReadOnlyList<MonthlyUpdateDocument>> GetMonthlyUpdatesAsync(string month);
+    Task<IReadOnlyList<MovieDocument>> GetMoviesAsync(string? category = null, int? page = null, int? pageSize = null);
+    Task<IReadOnlyList<SeriesDocument>> GetSeriesAsync(string? category = null, int? page = null, int? pageSize = null);
+    Task<IReadOnlyList<GamingDocument>> GetGamingAsync(string platform, string? section = null, int? page = null, int? pageSize = null);
+    Task<IReadOnlyList<ParkDocument>> GetParksAsync(string provider, string? parkId = null, int? page = null, int? pageSize = null);
+    Task<IReadOnlyList<MonthlyUpdateDocument>> GetMonthlyUpdatesAsync(string month, int? page = null, int? pageSize = null);
     Task<IReadOnlyList<string>> GetMonthlyUpdateMonthsAsync();
     Task<bool> IsConfiguredAsync();
 }
@@ -43,55 +43,73 @@ public class CosmosContentService : ICosmosContentService
 
     public Task<bool> IsConfiguredAsync() => Task.FromResult(true);
 
-    public async Task<IReadOnlyList<MovieDocument>> GetMoviesAsync(string? category = null)
+    public async Task<IReadOnlyList<MovieDocument>> GetMoviesAsync(string? category = null, int? page = null, int? pageSize = null)
     {
         var container = _client.GetContainer(_databaseName, MoviesContainer);
+        bool isTopList = string.Equals(category, "top-movies", StringComparison.OrdinalIgnoreCase);
+        string orderClause = isTopList ? "ORDER BY c[\"order\"] ASC" : "ORDER BY c[\"order\"] DESC";
 
+        IReadOnlyList<MovieDocument> results;
         if (!string.IsNullOrEmpty(category))
         {
-            var query = new QueryDefinition("SELECT * FROM c WHERE c.category = @category ORDER BY c[\"order\"] DESC")
+            var query = new QueryDefinition($"SELECT * FROM c WHERE c.category = @category {orderClause}")
                 .WithParameter("@category", category);
-            return await ExecuteQueryAsync<MovieDocument>(container, query, new PartitionKey(category));
+            results = await ExecuteQueryAsync<MovieDocument>(container, query, new PartitionKey(category));
+        }
+        else
+        {
+            var query = new QueryDefinition($"SELECT * FROM c {orderClause}");
+            results = await ExecuteQueryAsync<MovieDocument>(container, query);
         }
 
-        return await ExecuteQueryAsync<MovieDocument>(container, new QueryDefinition("SELECT * FROM c ORDER BY c[\"order\"] DESC"));
+        return ApplyPagination(results, page, pageSize);
     }
 
-    public async Task<IReadOnlyList<SeriesDocument>> GetSeriesAsync(string? category = null)
+    public async Task<IReadOnlyList<SeriesDocument>> GetSeriesAsync(string? category = null, int? page = null, int? pageSize = null)
     {
         var container = _client.GetContainer(_databaseName, SeriesContainer);
+        bool isTopList = string.Equals(category, "top-series", StringComparison.OrdinalIgnoreCase) ||
+                         string.Equals(category, "top-tv", StringComparison.OrdinalIgnoreCase);
+        string orderClause = isTopList ? "ORDER BY c[\"order\"] ASC" : "ORDER BY c[\"order\"] DESC";
 
+        IReadOnlyList<SeriesDocument> results;
         if (!string.IsNullOrEmpty(category))
         {
-            var query = new QueryDefinition("SELECT * FROM c WHERE c.category = @category ORDER BY c[\"order\"] DESC")
+            var query = new QueryDefinition($"SELECT * FROM c WHERE c.category = @category {orderClause}")
                 .WithParameter("@category", category);
-            return await ExecuteQueryAsync<SeriesDocument>(container, query, new PartitionKey(category));
+            results = await ExecuteQueryAsync<SeriesDocument>(container, query, new PartitionKey(category));
+        }
+        else
+        {
+            var query = new QueryDefinition($"SELECT * FROM c {orderClause}");
+            results = await ExecuteQueryAsync<SeriesDocument>(container, query);
         }
 
-        return await ExecuteQueryAsync<SeriesDocument>(container, new QueryDefinition("SELECT * FROM c ORDER BY c[\"order\"] DESC"));
+        return ApplyPagination(results, page, pageSize);
     }
 
-    public async Task<IReadOnlyList<GamingDocument>> GetGamingAsync(string platform, string? section = null)
+    public async Task<IReadOnlyList<GamingDocument>> GetGamingAsync(string platform, string? section = null, int? page = null, int? pageSize = null)
     {
         var container = _client.GetContainer(_databaseName, GamingContainer);
 
         QueryDefinition query;
         if (!string.IsNullOrEmpty(section))
         {
-            query = new QueryDefinition("SELECT * FROM c WHERE c.platform = @platform AND c.section = @section ORDER BY c[\"order\"]")
+            query = new QueryDefinition("SELECT * FROM c WHERE c.platform = @platform AND c.section = @section ORDER BY c[\"order\"] DESC")
                 .WithParameter("@platform", platform)
                 .WithParameter("@section", section);
         }
         else
         {
-            query = new QueryDefinition("SELECT * FROM c WHERE c.platform = @platform ORDER BY c[\"order\"]")
+            query = new QueryDefinition("SELECT * FROM c WHERE c.platform = @platform ORDER BY c[\"order\"] DESC")
                 .WithParameter("@platform", platform);
         }
 
-        return await ExecuteQueryAsync<GamingDocument>(container, query, new PartitionKey(platform));
+        var results = await ExecuteQueryAsync<GamingDocument>(container, query, new PartitionKey(platform));
+        return ApplyPagination(results, page, pageSize);
     }
 
-    public async Task<IReadOnlyList<ParkDocument>> GetParksAsync(string provider, string? parkId = null)
+    public async Task<IReadOnlyList<ParkDocument>> GetParksAsync(string provider, string? parkId = null, int? page = null, int? pageSize = null)
     {
         var container = _client.GetContainer(_databaseName, ParksContainer);
 
@@ -108,15 +126,17 @@ public class CosmosContentService : ICosmosContentService
                 .WithParameter("@provider", provider);
         }
 
-        return await ExecuteQueryAsync<ParkDocument>(container, query, new PartitionKey(provider));
+        var results = await ExecuteQueryAsync<ParkDocument>(container, query, new PartitionKey(provider));
+        return ApplyPagination(results, page, pageSize);
     }
 
-    public async Task<IReadOnlyList<MonthlyUpdateDocument>> GetMonthlyUpdatesAsync(string month)
+    public async Task<IReadOnlyList<MonthlyUpdateDocument>> GetMonthlyUpdatesAsync(string month, int? page = null, int? pageSize = null)
     {
         var container = _client.GetContainer(_databaseName, MonthlyUpdatesContainer);
-        var query = new QueryDefinition("SELECT * FROM c WHERE c.month = @month ORDER BY c[\"order\"]")
+        var query = new QueryDefinition("SELECT * FROM c WHERE c.month = @month ORDER BY c[\"order\"] DESC")
             .WithParameter("@month", month);
-        return await ExecuteQueryAsync<MonthlyUpdateDocument>(container, query, new PartitionKey(month));
+        var results = await ExecuteQueryAsync<MonthlyUpdateDocument>(container, query, new PartitionKey(month));
+        return ApplyPagination(results, page, pageSize);
     }
 
     public async Task<IReadOnlyList<string>> GetMonthlyUpdateMonthsAsync()
@@ -125,6 +145,17 @@ public class CosmosContentService : ICosmosContentService
         var query = new QueryDefinition("SELECT DISTINCT VALUE c.month FROM c");
         var months = await ExecuteQueryAsync<string>(container, query);
         return months.OrderByDescending(m => m).ToList();
+    }
+
+    private static IReadOnlyList<T> ApplyPagination<T>(IReadOnlyList<T> items, int? page, int? pageSize)
+    {
+        if (!page.HasValue || !pageSize.HasValue || page.Value < 1 || pageSize.Value < 1)
+        {
+            return items;
+        }
+
+        var skip = (page.Value - 1) * pageSize.Value;
+        return items.Skip(skip).Take(pageSize.Value).ToList();
     }
 
     private async Task<IReadOnlyList<T>> ExecuteQueryAsync<T>(Container container, QueryDefinition query, PartitionKey? partitionKey = null)
@@ -173,10 +204,10 @@ public class NullCosmosContentService : ICosmosContentService
     }
 
     public Task<bool> IsConfiguredAsync() => Task.FromResult(false);
-    public Task<IReadOnlyList<MovieDocument>> GetMoviesAsync(string? category = null) => Task.FromResult<IReadOnlyList<MovieDocument>>(Array.Empty<MovieDocument>());
-    public Task<IReadOnlyList<SeriesDocument>> GetSeriesAsync(string? category = null) => Task.FromResult<IReadOnlyList<SeriesDocument>>(Array.Empty<SeriesDocument>());
-    public Task<IReadOnlyList<GamingDocument>> GetGamingAsync(string platform, string? section = null) => Task.FromResult<IReadOnlyList<GamingDocument>>(Array.Empty<GamingDocument>());
-    public Task<IReadOnlyList<ParkDocument>> GetParksAsync(string provider, string? parkId = null) => Task.FromResult<IReadOnlyList<ParkDocument>>(Array.Empty<ParkDocument>());
-    public Task<IReadOnlyList<MonthlyUpdateDocument>> GetMonthlyUpdatesAsync(string month) => Task.FromResult<IReadOnlyList<MonthlyUpdateDocument>>(Array.Empty<MonthlyUpdateDocument>());
+    public Task<IReadOnlyList<MovieDocument>> GetMoviesAsync(string? category = null, int? page = null, int? pageSize = null) => Task.FromResult<IReadOnlyList<MovieDocument>>(Array.Empty<MovieDocument>());
+    public Task<IReadOnlyList<SeriesDocument>> GetSeriesAsync(string? category = null, int? page = null, int? pageSize = null) => Task.FromResult<IReadOnlyList<SeriesDocument>>(Array.Empty<SeriesDocument>());
+    public Task<IReadOnlyList<GamingDocument>> GetGamingAsync(string platform, string? section = null, int? page = null, int? pageSize = null) => Task.FromResult<IReadOnlyList<GamingDocument>>(Array.Empty<GamingDocument>());
+    public Task<IReadOnlyList<ParkDocument>> GetParksAsync(string provider, string? parkId = null, int? page = null, int? pageSize = null) => Task.FromResult<IReadOnlyList<ParkDocument>>(Array.Empty<ParkDocument>());
+    public Task<IReadOnlyList<MonthlyUpdateDocument>> GetMonthlyUpdatesAsync(string month, int? page = null, int? pageSize = null) => Task.FromResult<IReadOnlyList<MonthlyUpdateDocument>>(Array.Empty<MonthlyUpdateDocument>());
     public Task<IReadOnlyList<string>> GetMonthlyUpdateMonthsAsync() => Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 }

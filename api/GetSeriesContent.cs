@@ -29,10 +29,12 @@ public class GetSeriesContent
         }
 
         var category = QueryHelpers.GetQueryParam(req.Url.Query, "category");
+        var page = QueryHelpers.GetIntQueryParam(req.Url.Query, "page");
+        var pageSize = QueryHelpers.GetIntQueryParam(req.Url.Query, "pageSize");
 
         try
         {
-            var series = await _contentService.GetSeriesAsync(category);
+            var series = await _contentService.GetSeriesAsync(category, page, pageSize);
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Cache-Control", "public, max-age=300");
             await response.WriteAsJsonAsync(series);

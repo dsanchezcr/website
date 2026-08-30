@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from './styles.module.css';
 import CATEGORIES from './categories';
 import ParkItemCard from './ParkItemCard';
+import Pagination from '../Pagination';
 
 const getLocalized = (field, locale) => {
   if (!field) return '';
@@ -9,8 +10,9 @@ const getLocalized = (field, locale) => {
   return field[locale] || field.en || '';
 };
 
-const ParkList = ({ park, locale = 'en' }) => {
+const ParkList = ({ park, locale = 'en', itemsPerPage = 10 }) => {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredItems = useMemo(() => {
     const items = park.items || [];
@@ -19,8 +21,21 @@ const ParkList = ({ park, locale = 'en' }) => {
   }, [park.items, activeCategory]);
 
   const sortedItems = useMemo(() => {
-    return [...filteredItems].sort((a, b) => (a.order ?? Infinity) - (b.order ?? Infinity));
+    return [...filteredItems].sort((a, b) => {
+      const aOrder = Number.isFinite(a.order) ? a.order : Number.NEGATIVE_INFINITY;
+      const bOrder = Number.isFinite(b.order) ? b.order : Number.NEGATIVE_INFINITY;
+      return bOrder - aOrder;
+    });
   }, [filteredItems]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [activeCategory, park.items]);
+
+  const totalPages = Math.ceil(sortedItems.length / itemsPerPage);
+  const paginatedItems = useMemo(() => {
+    return sortedItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  }, [sortedItems, currentPage, itemsPerPage]);
 
   const availableCategories = useMemo(() => {
     const cats = new Set((park.items || []).map(item => item.category));
@@ -60,11 +75,19 @@ const ParkList = ({ park, locale = 'en' }) => {
       {sortedItems.length === 0 ? (
         <p className={styles.emptyMessage}>{t.noItems}</p>
       ) : (
-        <div className={styles.itemsList}>
-          {sortedItems.map(item => (
-            <ParkItemCard key={item.id} item={item} locale={locale} />
-          ))}
-        </div>
+        <>
+          <div className={styles.itemsList}>
+            {paginatedItems.map(item => (
+              <ParkItemCard key={item.id} item={item} locale={locale} />
+            ))}
+          </div>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            locale={locale}
+          />
+        </>
       )}
     </div>
   );

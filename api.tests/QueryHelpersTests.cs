@@ -120,6 +120,22 @@ public class QueryHelpersTests
         Assert.Equal("action", result);
     }
 
+    [Fact]
+    public void GetIntQueryParam_ReturnsParsedInt_ForValidPositiveInteger()
+    {
+        Assert.Equal(1, QueryHelpers.GetIntQueryParam("?page=1", "page"));
+        Assert.Equal(10, QueryHelpers.GetIntQueryParam("?pageSize=10", "pageSize"));
+    }
+
+    [Fact]
+    public void GetIntQueryParam_ReturnsNull_ForInvalidOrNonPositiveInteger()
+    {
+        Assert.Null(QueryHelpers.GetIntQueryParam("?page=abc", "page"));
+        Assert.Null(QueryHelpers.GetIntQueryParam("?page=0", "page"));
+        Assert.Null(QueryHelpers.GetIntQueryParam("?page=-5", "page"));
+        Assert.Null(QueryHelpers.GetIntQueryParam("?page=", "page"));
+    }
+
     // -------------------------------------------------------------------------
     // NullCosmosContentService initialization error tracking
     // -------------------------------------------------------------------------
