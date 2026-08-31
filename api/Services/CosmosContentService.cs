@@ -154,12 +154,16 @@ public class CosmosContentService : ICosmosContentService
 
     private static string BuildPaginationClause(int? page, int? pageSize)
     {
-        if (page.HasValue && pageSize.HasValue && page.Value >= 1 && pageSize.Value >= 1)
+        if (page is null || pageSize is null || page < 1 || pageSize < 1)
         {
-            int skip = (page.Value - 1) * pageSize.Value;
-            return $"OFFSET {skip} LIMIT {pageSize.Value}";
+            return string.Empty;
         }
-        return string.Empty;
+
+        const int maxPageSize = 100;
+        int effectivePageSize = Math.Min(pageSize.Value, maxPageSize);
+
+        long skip = ((long)page.Value - 1) * effectivePageSize;
+        return $"OFFSET {skip} LIMIT {effectivePageSize}";
     }
 
     private async Task<IReadOnlyList<T>> ExecuteQueryAsync<T>(Container container, QueryDefinition query, PartitionKey? partitionKey = null)
