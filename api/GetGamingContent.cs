@@ -38,10 +38,19 @@ public class GetGamingContent
         }
 
         var section = QueryHelpers.GetQueryParam(req.Url.Query, "section");
+        var page = QueryHelpers.GetIntQueryParam(req.Url.Query, "page");
+        var pageSize = QueryHelpers.GetIntQueryParam(req.Url.Query, "pageSize");
+
+        if (!QueryHelpers.TryValidatePagination(page, pageSize, out var paginationError))
+        {
+            var paginationBadReq = req.CreateResponse(HttpStatusCode.BadRequest);
+            await paginationBadReq.WriteAsJsonAsync(new { error = paginationError });
+            return paginationBadReq;
+        }
 
         try
         {
-            var gaming = await _contentService.GetGamingAsync(platform, section);
+            var gaming = await _contentService.GetGamingAsync(platform, section, page, pageSize);
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Cache-Control", "public, max-age=300");
             await response.WriteAsJsonAsync(gaming);

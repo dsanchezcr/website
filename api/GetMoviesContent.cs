@@ -29,10 +29,19 @@ public class GetMoviesContent
         }
 
         var category = QueryHelpers.GetQueryParam(req.Url.Query, "category");
+        var page = QueryHelpers.GetIntQueryParam(req.Url.Query, "page");
+        var pageSize = QueryHelpers.GetIntQueryParam(req.Url.Query, "pageSize");
+
+        if (!QueryHelpers.TryValidatePagination(page, pageSize, out var paginationError))
+        {
+            var badReq = req.CreateResponse(HttpStatusCode.BadRequest);
+            await badReq.WriteAsJsonAsync(new { error = paginationError });
+            return badReq;
+        }
 
         try
         {
-            var movies = await _contentService.GetMoviesAsync(category);
+            var movies = await _contentService.GetMoviesAsync(category, page, pageSize);
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Cache-Control", "public, max-age=300");
             await response.WriteAsJsonAsync(movies);

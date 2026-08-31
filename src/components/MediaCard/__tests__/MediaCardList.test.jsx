@@ -83,6 +83,34 @@ describe('MediaCardList', () => {
     expect(links[1]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000002/');
   });
 
+  it('renders top list items sorted by order field (ascending)', () => {
+    const items = [
+      { ...makeItem('tt0000003', 3), category: 'top-movies' },
+      { ...makeItem('tt0000001', 1), category: 'top-movies' },
+      { ...makeItem('tt0000002', 2), category: 'top-movies' },
+    ];
+    render(<MediaCardList items={items} category="top-movies" />);
+    const links = screen.getAllByRole('link');
+    expect(links[0]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000001/');
+    expect(links[1]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000002/');
+    expect(links[2]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000003/');
+  });
+
+  it('paginates items when item count exceeds itemsPerPage', () => {
+    const items = Array.from({ length: 15 }, (_, i) =>
+      makeItem(`tt00000${String(i + 1).padStart(2, '0')}`, i + 1)
+    );
+    render(<MediaCardList items={items} itemsPerPage={10} />);
+    
+    // Page 1 should show first 10 items (tt0000015 down to tt0000006 because DESC sort)
+    const linksPage1 = screen.getAllByRole('link');
+    expect(linksPage1).toHaveLength(10);
+    expect(linksPage1[0]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000015/');
+    expect(linksPage1[9]).toHaveAttribute('href', 'https://www.imdb.com/title/tt0000006/');
+
+    expect(screen.getByRole('navigation')).toBeInTheDocument();
+  });
+
   it('renders all items when no category filter is applied', () => {
     const items = [
       { ...makeItem('tt0000001', 1), category: 'watchlist' },

@@ -75,7 +75,7 @@ const ApiGamingSectionInner = ({ platform, section, filter }) => {
     return <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--ifm-color-danger)' }}>Error: {error}</div>;
   }
 
-  return <GamingEntriesRenderer items={filteredItems} />;
+  return <GamingEntriesRenderer items={filteredItems} section={section} />;
 };
 
 export default ApiGamingSection;

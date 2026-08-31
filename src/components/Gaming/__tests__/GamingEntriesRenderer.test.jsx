@@ -117,4 +117,51 @@ describe('GamingEntriesRenderer', () => {
     expect(screen.getByText('Serie Little Nightmares')).toBeInTheDocument();
     expect(screen.getByText(/Texto en espanol/i)).toBeInTheDocument();
   });
+
+  it('orders items descending by default (recent items first)', () => {
+    render(
+      <GamingEntriesRenderer
+        items={[
+          { type: 'card', title: 'Old Game', order: 1 },
+          { type: 'card', title: 'New Game', order: 5 },
+        ]}
+      />
+    );
+
+    const titles = screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent);
+    expect(titles[0]).toBe('New Game');
+    expect(titles[1]).toBe('Old Game');
+  });
+
+  it('orders topGames section ascending (rank 1 first)', () => {
+    render(
+      <GamingEntriesRenderer
+        section="topGames"
+        items={[
+          { type: 'card', title: 'Rank 2 Game', order: 2 },
+          { type: 'card', title: 'Rank 1 Game', order: 1 },
+        ]}
+      />
+    );
+
+    const titles = screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent);
+    expect(titles[0]).toBe('Rank 1 Game');
+    expect(titles[1]).toBe('Rank 2 Game');
+  });
+
+  it('paginates items when count exceeds itemsPerPage', () => {
+    const items = Array.from({ length: 15 }, (_, i) => ({
+      type: 'card',
+      title: `Game ${i + 1}`,
+      order: i + 1,
+    }));
+
+    render(<GamingEntriesRenderer items={items} itemsPerPage={10} />);
+
+    // Since items are sorted descending, Page 1 has Game 15 down to Game 6
+    expect(screen.getByText('Game 15')).toBeInTheDocument();
+    expect(screen.getByText('Game 6')).toBeInTheDocument();
+    expect(screen.queryByText('Game 5')).not.toBeInTheDocument();
+    expect(screen.getByRole('navigation')).toBeInTheDocument();
+  });
 });
