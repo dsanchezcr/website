@@ -46,20 +46,20 @@ Platform engineers, DevOps engineers, engineering leaders, and software teams ad
 | `blog/2026-08-31-GoldenPathsForAgents.mdx` | English blog post |
 | `i18n/es/docusaurus-plugin-content-blog/2026-08-31-GoldenPathsForAgents.mdx` | Spanish translation |
 | `i18n/pt/docusaurus-plugin-content-blog/2026-08-31-GoldenPathsForAgents.mdx` | Portuguese translation |
-| `static/img/blog/2026-08-31-golden-paths-agents/golden-paths-agents.png` | Hero image |
+| `static/img/blog/2026-08-31-golden-paths-agents/golden-paths-agents.webp` | Hero image |
 
 ## i18n Checklist
 
-- [ ] English version complete in `blog/`
-- [ ] Spanish translation in `i18n/es/docusaurus-plugin-content-blog/`
-- [ ] Portuguese translation in `i18n/pt/docusaurus-plugin-content-blog/`
-- [ ] Translations preserve all links and diagrams
-- [ ] Frontmatter is consistent across all three versions
+- [x] English version complete in `blog/`
+- [x] Spanish translation in `i18n/es/docusaurus-plugin-content-blog/`
+- [x] Portuguese translation in `i18n/pt/docusaurus-plugin-content-blog/`
+- [x] Translations preserve all links and diagrams
+- [x] Frontmatter is consistent across all three versions
 
 ## Review Criteria
 
-- [ ] Technical accuracy verified
-- [ ] Grammar and readability reviewed
-- [ ] SEO description, tags, and title optimized
-- [ ] Hero image has descriptive alt text
-- [ ] Links are valid and accessible
+- [x] Technical accuracy verified
+- [x] Grammar and readability reviewed
+- [x] SEO description, tags, and title optimized
+- [x] Hero image has descriptive alt text
+- [x] Links are valid and accessible
