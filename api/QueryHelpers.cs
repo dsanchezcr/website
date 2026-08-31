@@ -7,6 +7,18 @@ namespace api;
 internal static class QueryHelpers
 {
     /// <summary>
+    /// Maximum number of items allowed per page. Requests exceeding this are rejected
+    /// to prevent excessive Cosmos DB RU consumption.
+    /// </summary>
+    public const int MaxPageSize = 100;
+
+    /// <summary>
+    /// Maximum page number allowed. Requests exceeding this are rejected to prevent
+    /// unbounded OFFSET scans (and the associated RU/cost abuse) in Cosmos DB.
+    /// </summary>
+    public const int MaxPage = 1000;
+
+    /// <summary>
     /// Extracts the first value for <paramref name="key"/> from a raw query string
     /// (e.g. "?category=action&amp;page=1" or "category=action&amp;page=1").
     /// Returns <see langword="null"/> when the key is absent or its decoded value is
@@ -35,6 +47,29 @@ internal static class QueryHelpers
     {
         var raw = GetQueryParam(query, key);
         return int.TryParse(raw, out var val) && val > 0 ? val : null;
+    }
+
+    /// <summary>
+    /// Validates that <paramref name="page"/> and <paramref name="pageSize"/> (when present)
+    /// fall within the allowed bounds (<see cref="MaxPage"/> and <see cref="MaxPageSize"/>).
+    /// Returns <see langword="false"/> with an error message otherwise.
+    /// </summary>
+    public static bool TryValidatePagination(int? page, int? pageSize, out string? error)
+    {
+        if (pageSize is > MaxPageSize)
+        {
+            error = $"Query parameter 'pageSize' must not exceed {MaxPageSize}.";
+            return false;
+        }
+
+        if (page is > MaxPage)
+        {
+            error = $"Query parameter 'page' must not exceed {MaxPage}.";
+            return false;
+        }
+
+        error = null;
+        return true;
     }
 
     // Handles both percent-encoding (%20) and form-urlencoded '+' as space.

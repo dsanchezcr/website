@@ -30,6 +30,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, locale = 'en' }) =>
     <nav
       aria-label={t.pageOf(currentPage, totalPages)}
       style={{
+        display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         gap: '1rem',

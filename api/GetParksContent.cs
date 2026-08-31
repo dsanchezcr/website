@@ -41,6 +41,13 @@ public class GetParksContent
         var page = QueryHelpers.GetIntQueryParam(req.Url.Query, "page");
         var pageSize = QueryHelpers.GetIntQueryParam(req.Url.Query, "pageSize");
 
+        if (!QueryHelpers.TryValidatePagination(page, pageSize, out var paginationError))
+        {
+            var paginationBadReq = req.CreateResponse(HttpStatusCode.BadRequest);
+            await paginationBadReq.WriteAsJsonAsync(new { error = paginationError });
+            return paginationBadReq;
+        }
+
         try
         {
             var parks = await _contentService.GetParksAsync(provider, parkId, page, pageSize);

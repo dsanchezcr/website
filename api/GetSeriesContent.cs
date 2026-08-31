@@ -32,6 +32,13 @@ public class GetSeriesContent
         var page = QueryHelpers.GetIntQueryParam(req.Url.Query, "page");
         var pageSize = QueryHelpers.GetIntQueryParam(req.Url.Query, "pageSize");
 
+        if (!QueryHelpers.TryValidatePagination(page, pageSize, out var paginationError))
+        {
+            var badReq = req.CreateResponse(HttpStatusCode.BadRequest);
+            await badReq.WriteAsJsonAsync(new { error = paginationError });
+            return badReq;
+        }
+
         try
         {
             var series = await _contentService.GetSeriesAsync(category, page, pageSize);

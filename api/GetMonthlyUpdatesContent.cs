@@ -45,6 +45,14 @@ public class GetMonthlyUpdatesContent
             {
                 var page = QueryHelpers.GetIntQueryParam(req.Url.Query, "page");
                 var pageSize = QueryHelpers.GetIntQueryParam(req.Url.Query, "pageSize");
+
+                if (!QueryHelpers.TryValidatePagination(page, pageSize, out var paginationError))
+                {
+                    var paginationBadReq = req.CreateResponse(HttpStatusCode.BadRequest);
+                    await paginationBadReq.WriteAsJsonAsync(new { error = paginationError });
+                    return paginationBadReq;
+                }
+
                 var updates = await _contentService.GetMonthlyUpdatesAsync(month, page, pageSize);
                 var response = req.CreateResponse(HttpStatusCode.OK);
                 response.Headers.Add("Cache-Control", "public, max-age=300");
