@@ -137,6 +137,42 @@ public class QueryHelpersTests
     }
 
     // -------------------------------------------------------------------------
+    // TryValidatePagination bounds checking
+    // -------------------------------------------------------------------------
+
+    [Fact]
+    public void TryValidatePagination_ReturnsTrue_WhenPageAndPageSizeAreNull()
+    {
+        var isValid = QueryHelpers.TryValidatePagination(null, null, out var error);
+        Assert.True(isValid);
+        Assert.Null(error);
+    }
+
+    [Fact]
+    public void TryValidatePagination_ReturnsTrue_WithinBounds()
+    {
+        var isValid = QueryHelpers.TryValidatePagination(QueryHelpers.MaxPage, QueryHelpers.MaxPageSize, out var error);
+        Assert.True(isValid);
+        Assert.Null(error);
+    }
+
+    [Fact]
+    public void TryValidatePagination_ReturnsFalse_WhenPageSizeExceedsMax()
+    {
+        var isValid = QueryHelpers.TryValidatePagination(1, QueryHelpers.MaxPageSize + 1, out var error);
+        Assert.False(isValid);
+        Assert.Contains("pageSize", error);
+    }
+
+    [Fact]
+    public void TryValidatePagination_ReturnsFalse_WhenPageExceedsMax()
+    {
+        var isValid = QueryHelpers.TryValidatePagination(QueryHelpers.MaxPage + 1, 10, out var error);
+        Assert.False(isValid);
+        Assert.Contains("page", error);
+    }
+
+    // -------------------------------------------------------------------------
     // NullCosmosContentService initialization error tracking
     // -------------------------------------------------------------------------
 
