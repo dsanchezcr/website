@@ -22,7 +22,7 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
-    "@docsearch/react": "^4.7.0",
+    "@docsearch/react": "^5.0.4",
     "@docusaurus/core": "^3.10.2",
     "@docusaurus/faster": "^3.10.2",
     "@docusaurus/plugin-google-analytics": "^3.10.2",
@@ -70,8 +70,8 @@
     "babel-plugin-module-resolver": "^5.0.3",
     "jsdom": "^30.0.1",
     "typescript": "^7.0.2",
-    "vite": "^8.2.1",
-    "vitest": "^4.1.10"
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
   },
   "overrides": {
     "dompurify": "^3.4.10",
