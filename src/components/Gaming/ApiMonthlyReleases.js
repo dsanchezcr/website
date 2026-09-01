@@ -19,6 +19,61 @@ const localizeValue = (value, localeKey) => {
   return value[localeKey] || value.en || value.es || value.pt || Object.values(value).find((v) => typeof v === 'string') || '';
 };
 
+const MONTH_NAME_TO_INDEX = {
+  january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+  july: 6, august: 7, september: 8, october: 9, november: 10, december: 11,
+};
+
+/**
+ * Parses a free-form releaseDate string (e.g. "August 12", "TBA", "Q1 2027")
+ * combined with the item's month partition (e.g. "2026-08") into a sortable
+ * timestamp. Returns Number.POSITIVE_INFINITY when the date can't be parsed,
+ * so unparsable items sort to the end instead of disrupting known dates.
+ */
+const parseReleaseDateForSort = (releaseDate, month) => {
+  if (typeof releaseDate !== 'string' || releaseDate.trim().length === 0) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  const [yearPart] = (month || '').split('-');
+  const year = parseInt(yearPart, 10);
+
+  const match = releaseDate.match(/([A-Za-z]+)\s+(\d{1,2})/);
+  if (match) {
+    const monthIndex = MONTH_NAME_TO_INDEX[match[1].toLowerCase()];
+    const day = parseInt(match[2], 10);
+    if (monthIndex !== undefined && Number.isFinite(day) && Number.isFinite(year)) {
+      return new Date(year, monthIndex, day).getTime();
+    }
+  }
+
+  // Day-only fallback, e.g. "12th" or "12".
+  const dayOnlyMatch = releaseDate.match(/^(\d{1,2})/);
+  if (dayOnlyMatch && Number.isFinite(year)) {
+    const [, monthPart] = (month || '').split('-');
+    const monthIndex = parseInt(monthPart, 10) - 1;
+    const day = parseInt(dayOnlyMatch[1], 10);
+    if (Number.isFinite(monthIndex) && Number.isFinite(day)) {
+      return new Date(year, monthIndex, day).getTime();
+    }
+  }
+
+  return Number.POSITIVE_INFINITY;
+};
+
+export const sortByReleaseDateAscending = (items, month) =>
+  items.slice().sort((a, b) => {
+    const aTime = parseReleaseDateForSort(a.releaseDate, a.month || month);
+    const bTime = parseReleaseDateForSort(b.releaseDate, b.month || month);
+    if (aTime !== bTime) {
+      return aTime - bTime;
+    }
+    // Stable fallback for equal/unparsable dates: preserve curated order.
+    const aOrder = Number.isFinite(a.order) ? a.order : 0;
+    const bOrder = Number.isFinite(b.order) ? b.order : 0;
+    return bOrder - aOrder;
+  });
+
 const renderInlineBold = (value) => {
   if (typeof value !== 'string' || value.length === 0) {
     return value;
@@ -94,8 +149,8 @@ const ApiMonthlyReleasesInner = ({ month, category }) => {
     return null;
   }
 
-  const upcomingItems = filteredItems.filter(item => item.category === 'upcoming');
-  const eventItems = filteredItems.filter(item => item.category === 'event');
+  const upcomingItems = sortByReleaseDateAscending(filteredItems.filter(item => item.category === 'upcoming'), month);
+  const eventItems = sortByReleaseDateAscending(filteredItems.filter(item => item.category === 'event'), month);
   const playingItems = filteredItems.filter(item => item.category === 'playing');
 
   return (
