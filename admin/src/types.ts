@@ -18,7 +18,8 @@ export type FieldType =
   | 'localized'
   | 'localizedOrString'
   | 'status'
-  | 'coords';
+  | 'coords'
+  | 'stringArray';
 
 export interface FieldDef {
   key: string;

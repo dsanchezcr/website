@@ -1,24 +1,7 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import MediaCardList from '../MediaCardList';
-
-// Passthrough mock: return items enriched with minimal imdb data so MediaCard renders
-vi.mock('@site/src/hooks/useImdbData', () => ({
-  useImdbData: (items) =>
-    items.map(item => ({
-      ...item,
-      imdb: {
-        primaryTitle: item.titleId,
-        primaryImage: { url: '' },
-        rating: { aggregateRating: 8.0 },
-        startYear: 2020,
-        genres: ['Drama'],
-      },
-      loading: false,
-      error: null,
-    })),
-}));
 
 describe('MediaCardList', () => {
   const makeItem = (titleId, order) => ({

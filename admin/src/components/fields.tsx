@@ -89,8 +89,7 @@ function LocalizedOrStringInput({ label, value, onChange }: { label: string; val
   );
 }
 
-function CoordsInput({ value, onChange }: { value: unknown; onChange: (v: unknown) => void }) {
-  const arr = Array.isArray(value) ? (value as unknown[]) : [];
+function CoordsInput({ value, onChange }: { value: unknown; onChange: (v: unknown) => void }) {  const arr = Array.isArray(value) ? (value as unknown[]) : [];
   const lat = (arr[0] ?? '') as number | string;
   const lng = (arr[1] ?? '') as number | string;
   const update = (la: number | string, lo: number | string) => {
@@ -105,6 +104,24 @@ function CoordsInput({ value, onChange }: { value: unknown; onChange: (v: unknow
       <input type="number" step="any" placeholder="lat" value={lat} onChange={(e) => update(e.target.value, lng)} />
       <input type="number" step="any" placeholder="lng" value={lng} onChange={(e) => update(lat, e.target.value)} />
     </div>
+  );
+}
+
+function StringArrayInput({ label, value, onChange }: { label: string; value: unknown; onChange: (v: unknown) => void }) {
+  const text = Array.isArray(value) ? (value as unknown[]).filter((v) => typeof v === 'string').join(', ') : '';
+  const handleChange = (raw: string) => {
+    const items = raw.split(',').map((s) => s.trim()).filter((s) => s !== '');
+    onChange(items.length ? items : undefined);
+  };
+  return (
+    <input
+      type="text"
+      aria-label={label}
+      placeholder="Comma-separated (e.g. Drama, Thriller)"
+      defaultValue={text}
+      onBlur={(e) => handleChange(e.target.value)}
+      onChange={(e) => handleChange(e.target.value)}
+    />
   );
 }
 
@@ -150,6 +167,8 @@ export function FieldInput({ field, value, isNew, onChange }: FieldProps) {
       return <LocalizedOrStringInput label={aria} value={value} onChange={onChange} />;
     case 'coords':
       return <CoordsInput value={value} onChange={onChange} />;
+    case 'stringArray':
+      return <StringArrayInput label={aria} value={value} onChange={onChange} />;
     case 'string':
     default:
       return (

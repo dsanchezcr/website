@@ -34,8 +34,6 @@ public interface IImdbSyncService
 
 public sealed class ImdbSyncService : IImdbSyncService
 {
-    private const string ImdbApiBase = "https://api.imdbapi.dev";
-
     private static readonly Regex TitleIdRegex = new(@"/title/(tt\d{6,12})/", RegexOptions.Compiled | RegexOptions.IgnoreCase);
     private static readonly Regex TitleIdLooseRegex = new(@"\b(tt\d{6,12})\b", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
@@ -112,13 +110,21 @@ public sealed class ImdbSyncService : IImdbSyncService
         }
 
         var allIds = watchlistIds.Concat(ratingsOrderedIds).Distinct(StringComparer.OrdinalIgnoreCase).ToList();
-        var titleKinds = await FetchTitleKindsAsync(allIds, ct);
 
-        var watchlistMovies = watchlistIds.Where(id => !IsSeriesKind(GetKind(titleKinds, id))).ToList();
-        var watchlistSeries = watchlistIds.Where(id => IsSeriesKind(GetKind(titleKinds, id))).ToList();
+        // The third-party IMDb metadata API used to classify titles as movie vs. series
+        // (api.imdbapi.dev) has been permanently discontinued. Without an authoritative
+        // classification source, all synced titles default into the movies container;
+        // any TV series picked up by the sync must be manually moved to series in /admin.
+        if (allIds.Count > 0)
+        {
+            warnings.Add("IMDb title-kind classification is unavailable (upstream API discontinued); all synced titles were placed under movies. Move any TV series to the series container manually in /admin.");
+        }
 
-        var recentMovies = ratingsOrderedIds.Where(id => !IsSeriesKind(GetKind(titleKinds, id))).ToList();
-        var recentSeries = ratingsOrderedIds.Where(id => IsSeriesKind(GetKind(titleKinds, id))).ToList();
+        var watchlistMovies = watchlistIds;
+        var watchlistSeries = new List<string>();
+
+        var recentMovies = ratingsOrderedIds;
+        var recentSeries = new List<string>();
 
         var result = new ImdbSyncResult
         {
@@ -177,80 +183,11 @@ public sealed class ImdbSyncService : IImdbSyncService
         return await response.Content.ReadAsStringAsync(ct);
     }
 
-    private async Task<Dictionary<string, string>> FetchTitleKindsAsync(IReadOnlyList<string> titleIds, CancellationToken ct)
-    {
-        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        if (titleIds.Count == 0)
-            return result;
-
-        var client = _httpClientFactory.CreateClient();
-
-        foreach (var batch in titleIds.Chunk(10))
-        {
-            var query = string.Join("&", batch.Select(id => $"titleIds={Uri.EscapeDataString(id)}"));
-            var url = $"{ImdbApiBase}/titles:batchGet?{query}";
-
-            try
-            {
-                using var response = await client.GetAsync(url, ct);
-                if (!response.IsSuccessStatusCode)
-                {
-                    _logger.LogWarning("IMDb metadata request failed ({StatusCode}) for batch size {BatchSize}", response.StatusCode, batch.Length);
-                    continue;
-                }
-
-                await using var stream = await response.Content.ReadAsStreamAsync(ct);
-                using var doc = await JsonDocument.ParseAsync(stream, cancellationToken: ct);
-                if (!doc.RootElement.TryGetProperty("titles", out var titlesElement) || titlesElement.ValueKind != JsonValueKind.Array)
-                    continue;
-
-                foreach (var title in titlesElement.EnumerateArray())
-                {
-                    if (!title.TryGetProperty("id", out var idProp))
-                        continue;
-
-                    var id = idProp.GetString();
-                    if (string.IsNullOrWhiteSpace(id))
-                        continue;
-
-                    var kind = ResolveTitleKind(title);
-                    if (!string.IsNullOrWhiteSpace(kind))
-                        result[id] = kind;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "IMDb metadata parsing failed for one batch.");
-            }
-        }
-
-        return result;
-    }
-
-    private static string? ResolveTitleKind(JsonElement title)
-    {
-        if (title.TryGetProperty("titleType", out var titleType))
-        {
-            if (titleType.ValueKind == JsonValueKind.Object)
-            {
-                if (titleType.TryGetProperty("id", out var idProp) && idProp.ValueKind == JsonValueKind.String)
-                    return idProp.GetString();
-                if (titleType.TryGetProperty("text", out var textProp) && textProp.ValueKind == JsonValueKind.String)
-                    return textProp.GetString();
-            }
-            if (titleType.ValueKind == JsonValueKind.String)
-                return titleType.GetString();
-        }
-
-        if (title.TryGetProperty("type", out var typeProp) && typeProp.ValueKind == JsonValueKind.String)
-            return typeProp.GetString();
-
-        return null;
-    }
-
-    private static string GetKind(IReadOnlyDictionary<string, string> kinds, string titleId)
-        => kinds.TryGetValue(titleId, out var kind) ? kind : string.Empty;
-
+    /// <summary>
+    /// Retained for classification of a title kind string as a TV series when a source is
+    /// available in the future. Not currently invoked by <see cref="SyncAsync"/> since the
+    /// third-party classification API (api.imdbapi.dev) has been discontinued.
+    /// </summary>
     public static bool IsSeriesKind(string? kind)
     {
         if (string.IsNullOrWhiteSpace(kind))

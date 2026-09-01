@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useImdbData } from '@site/src/hooks/useImdbData';
 import { useLocale } from '@site/src/hooks';
 import MediaCard from './MediaCard';
 import Pagination from '../Pagination';
@@ -36,8 +35,6 @@ const MediaCardList = ({ items, category, itemsPerPage = 10 }) => {
     [filtered, currentPage, itemsPerPage]
   );
 
-  const enriched = useImdbData(paginated);
-
   if (!filtered.length) {
     return (
       <p style={{ textAlign: 'center', color: 'var(--ifm-font-color-secondary)' }}>
@@ -48,7 +45,7 @@ const MediaCardList = ({ items, category, itemsPerPage = 10 }) => {
 
   return (
     <div>
-      {enriched.map(item => (
+      {paginated.map(item => (
         <MediaCard key={item.titleId} {...item} locale={locale} />
       ))}
       <Pagination
