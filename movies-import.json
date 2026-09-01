@@ -140,9 +140,10 @@
     "category": "recently-watched",
     "myRating": 8,
     "review": {
-      "en": "¡Increíbles efectos visuales! La historia es perfecta incluso si no has visto la serie, aunque a veces se siente más como una compilación de episodios que como una película narrativa.",
-      "es": "The visual effects are stunning! It’s a great standalone story for newcomers, though it occasionally feels more like several episodes stitched together rather than a cohesive film.",
+      "en": "The visual effects are stunning! It’s a great standalone story for newcomers, though it occasionally feels more like several episodes stitched together rather than a cohesive film.",
+      "es": "¡Increíbles efectos visuales! La historia es perfecta incluso si no has visto la serie, aunque a veces se siente más como una compilación de episodios que como una película narrativa.",
       "pt": "Efeitos visuais incríveis! A história é perfeita mesmo para quem não viu a série, embora às vezes pareça mais uma compilação de episódios do que um filme único."
+    }
     },
     "order": 7,
     "id": "tt30825738",
