@@ -89,7 +89,8 @@ function LocalizedOrStringInput({ label, value, onChange }: { label: string; val
   );
 }
 
-function CoordsInput({ value, onChange }: { value: unknown; onChange: (v: unknown) => void }) {  const arr = Array.isArray(value) ? (value as unknown[]) : [];
+function CoordsInput({ value, onChange }: { value: unknown; onChange: (v: unknown) => void }) {
+  const arr = Array.isArray(value) ? (value as unknown[]) : [];
   const lat = (arr[0] ?? '') as number | string;
   const lng = (arr[1] ?? '') as number | string;
   const update = (la: number | string, lo: number | string) => {
