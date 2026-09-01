@@ -7,12 +7,11 @@ const getLocalizedReview = (review, locale) => {
   return review[locale] || review.en || '';
 };
 
-const MediaCard = ({ titleId, myRating, review, imdb, loading, error, locale = 'en' }) => {
-  const title = imdb?.primaryTitle || titleId;
-  const imageUrl = imdb?.primaryImage?.url;
-  const imdbRating = imdb?.rating?.aggregateRating;
-  const year = imdb?.startYear;
-  const genres = imdb?.genres;
+// Movie/series metadata (title, poster image, year, genres, IMDb rating) is
+// sourced directly from Cosmos DB — no live IMDb API call is made, so the
+// card renders correctly on the very first load with no cache required.
+const MediaCard = ({ titleId, title, imageUrl, year, genres, imdbRating, myRating, review, locale = 'en' }) => {
+  const displayTitle = title || titleId;
   const imdbUrl = `https://www.imdb.com/title/${titleId}/`;
   const localizedReview = getLocalizedReview(review, locale);
 
@@ -20,12 +19,10 @@ const MediaCard = ({ titleId, myRating, review, imdb, loading, error, locale = '
     <div className={styles.mediaCard}>
       <div className={styles.mediaCardContent}>
         <div className={styles.posterContainer}>
-          {loading ? (
-            <div className={styles.posterSkeleton} />
-          ) : imageUrl ? (
+          {imageUrl ? (
             <img
               src={imageUrl}
-              alt={title}
+              alt={displayTitle}
               className={styles.posterImage}
               loading="lazy"
               onError={(e) => { e.target.style.display = 'none'; }}
@@ -35,7 +32,7 @@ const MediaCard = ({ titleId, myRating, review, imdb, loading, error, locale = '
           )}
           <div className={styles.ratingBadges}>
             {imdbRating != null && (
-              <span className={styles.imdbBadge}>⭐ {imdbRating.toFixed(1)}</span>
+              <span className={styles.imdbBadge}>⭐ {Number(imdbRating).toFixed(1)}</span>
             )}
             {myRating != null && (
               <span className={styles.myRatingBadge}>My: {myRating}/10</span>
@@ -45,7 +42,7 @@ const MediaCard = ({ titleId, myRating, review, imdb, loading, error, locale = '
 
         <div className={styles.mediaInfo}>
           <h3 className={styles.mediaTitle}>
-            {loading ? 'Loading...' : title}{year ? ` (${year})` : ''}
+            {displayTitle}{year ? ` (${year})` : ''}
           </h3>
 
           {localizedReview && (
@@ -61,8 +58,6 @@ const MediaCard = ({ titleId, myRating, review, imdb, loading, error, locale = '
               ))}
             </div>
           )}
-
-          {error && <p className={styles.errorText}>{error}</p>}
         </div>
       </div>
     </div>

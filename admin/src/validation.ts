@@ -51,7 +51,14 @@ export function validate(type: ContentTypeDef, doc: Doc): string[] {
       }
       const r = doc.myRating;
       if (!isAbsent(r) && (typeof r !== 'number' || r < 0 || r > 10)) errors.push("Field 'myRating' must be between 0 and 10.");
+      const imdbR = doc.imdbRating;
+      if (!isAbsent(imdbR) && (typeof imdbR !== 'number' || imdbR < 0 || imdbR > 10)) errors.push("Field 'imdbRating' must be between 0 and 10.");
       int('order');
+      int('year');
+      const genres = doc.genres;
+      if (!isAbsent(genres) && (!Array.isArray(genres) || genres.some((g) => typeof g !== 'string'))) {
+        errors.push("Field 'genres' must be an array of strings.");
+      }
       localized('review', false);
       break;
     }

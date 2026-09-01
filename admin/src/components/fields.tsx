@@ -108,6 +108,24 @@ function CoordsInput({ value, onChange }: { value: unknown; onChange: (v: unknow
   );
 }
 
+function StringArrayInput({ label, value, onChange }: { label: string; value: unknown; onChange: (v: unknown) => void }) {
+  const text = Array.isArray(value) ? (value as unknown[]).filter((v) => typeof v === 'string').join(', ') : '';
+  const handleChange = (raw: string) => {
+    const items = raw.split(',').map((s) => s.trim()).filter((s) => s !== '');
+    onChange(items.length ? items : undefined);
+  };
+  return (
+    <input
+      type="text"
+      aria-label={label}
+      placeholder="Comma-separated (e.g. Drama, Thriller)"
+      defaultValue={text}
+      onBlur={(e) => handleChange(e.target.value)}
+      onChange={(e) => handleChange(e.target.value)}
+    />
+  );
+}
+
 interface FieldProps {
   field: FieldDef;
   value: unknown;
@@ -150,6 +168,8 @@ export function FieldInput({ field, value, isNew, onChange }: FieldProps) {
       return <LocalizedOrStringInput label={aria} value={value} onChange={onChange} />;
     case 'coords':
       return <CoordsInput value={value} onChange={onChange} />;
+    case 'stringArray':
+      return <StringArrayInput label={aria} value={value} onChange={onChange} />;
     case 'string':
     default:
       return (

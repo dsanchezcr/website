@@ -49,6 +49,21 @@ public class MovieDocument : ContentDocument
     [JsonPropertyName("category")]
     public string Category { get; set; } = string.Empty;
 
+    [JsonPropertyName("title")]
+    public string? Title { get; set; }
+
+    [JsonPropertyName("imageUrl")]
+    public string? ImageUrl { get; set; }
+
+    [JsonPropertyName("year")]
+    public int? Year { get; set; }
+
+    [JsonPropertyName("genres")]
+    public List<string>? Genres { get; set; }
+
+    [JsonPropertyName("imdbRating")]
+    public double? ImdbRating { get; set; }
+
     [JsonPropertyName("myRating")]
     public double? MyRating { get; set; }
 
@@ -70,6 +85,21 @@ public class SeriesDocument : ContentDocument
 
     [JsonPropertyName("category")]
     public string Category { get; set; } = string.Empty;
+
+    [JsonPropertyName("title")]
+    public string? Title { get; set; }
+
+    [JsonPropertyName("imageUrl")]
+    public string? ImageUrl { get; set; }
+
+    [JsonPropertyName("year")]
+    public int? Year { get; set; }
+
+    [JsonPropertyName("genres")]
+    public List<string>? Genres { get; set; }
+
+    [JsonPropertyName("imdbRating")]
+    public double? ImdbRating { get; set; }
 
     [JsonPropertyName("myRating")]
     public double? MyRating { get; set; }

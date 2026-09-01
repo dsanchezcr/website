@@ -1,0 +1,484 @@
+[
+  {
+    "titleId": "tt28650488",
+    "category": "recently-watched",
+    "myRating": 9.3,
+    "review": {
+      "en": "Excellent animated sequel that proves the critics don't always get it right. The film brilliantly brings the cosmic charm of the games to the screen with stunning visuals and genuine fan service.",
+      "es": "Excelente secuela animada que demuestra que los críticos no siempre tienen razón. La película lleva brillantemente el encanto cósmico de los juegos a la pantalla con visuales impresionantes y un verdadero servicio a los fans.",
+      "pt": "Excelente sequência animada que prova que os críticos nem sempre estão certos. O filme traz brilhantemente o charme cósmico dos jogos para a tela com visuais deslumbrantes e um verdadeiro serviço aos fãs."
+    },
+    "order": 12,
+    "id": "tt28650488",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt28650488.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt32612507",
+    "category": "recently-watched",
+    "myRating": 4.7,
+    "review": {
+      "en": "The trailer is 8/10 but the movie is really bad, very predictable, nothing scary, in fact it made many people laugh in the theater.",
+      "es": "El tráiler es 8/10 pero la película es muy mala, muy predecible, nada aterradora, de hecho hizo reír a mucha gente en el cine.",
+      "pt": "O trailer é 8/10 mas o filme é muito ruim, muito previsível, nada assustador, na verdade fez muita gente rir no cinema."
+    },
+    "order": 11,
+    "id": "tt32612507",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt32612507.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt11378946",
+    "category": "recently-watched",
+    "myRating": 6.7,
+    "review": {
+      "en": "Outstanding ensemble cast, particularly Jaafar Jackson and Colman Domingo, who deliver compelling performances. However, the film sometimes feels more like a concert spectacle than a true biography, overshadowing the deeper personal narrative with elaborate musical sequences that, while entertaining, come at the expense of meaningful character development and storytelling.",
+      "es": "Un elenco excepcional, particularmente Jaafar Jackson y Colman Domingo, quienes ofrecen actuaciones convincentes. Sin embargo, la película a menudo se siente más como un espectáculo de concierto que como una verdadera biografía, eclipsando la narrativa personal más profunda con secuencias musicales elaboradas que, aunque entretenidas, vienen a costa del desarrollo de personajes y la narrativa significativa.",
+      "pt": "Um elenco excepcional, particularmente Jaafar Jackson e Colman Domingo, que oferecem atuações convincentes. No entanto, o filme às vezes parece mais um espetáculo de concerto do que uma verdadeira biografia, ofuscando a narrativa pessoal mais profunda com sequências musicais elaboradas que, embora entretenedoras, prejudicam o desenvolvimento significativo de personagens e a narrativa."
+    },
+    "order": 10,
+    "id": "tt11378946",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt11378946.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt0111161",
+    "category": "top-movies",
+    "myRating": 10,
+    "review": {
+      "en": "A timeless masterpiece.",
+      "es": "Una obra maestra atemporal.",
+      "pt": "Uma obra-prima atemporal."
+    },
+    "order": 10,
+    "id": "tt0111161",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt0111161.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt35672862",
+    "category": "recently-watched",
+    "myRating": 8,
+    "review": {
+      "en": "Adam Scott’s performance is absolutely fantastic! The plot is excellent, though I wish it had more effective jumpscares to really amp up the intensity.",
+      "es": "¡La actuación de Adam Scott es increíble! La trama es excelente, aunque me hubiera gustado que tuviera mejores jumpscares para darle más intensidad.",
+      "pt": "A atuação de Adam Scott é sensacional! A trama é excelente, embora eu tivesse gostado de ver melhores jumpscares para aumentar a intensidade."
+    },
+    "order": 9,
+    "id": "tt35672862",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt35672862.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt0172495",
+    "category": "top-movies",
+    "myRating": 10,
+    "review": {
+      "en": "Epic filmmaking at its finest—action, a captivating lead performance, and a story that resonates and echoes in eternity.",
+      "es": "Cine épico en su máxima expresión—acción, una actuación protagónica cautivadora y una historia que resuena y perdura en la eternidad.",
+      "pt": "Cinema épico em sua máxima expressão—ação, uma atuação protagonista cativante e uma história que ressoa e ecoa na eternidade."
+    },
+    "order": 9,
+    "id": "tt0172495",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt0172495.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt17490712",
+    "category": "recently-watched",
+    "myRating": 6,
+    "review": {
+      "en": "It was entertaining, but I honestly prefer the story in the MK1 game. I feel like the Mortal Kombat movies still haven't quite captured that magic.",
+      "es": "Me entretuvo, pero la verdad es que prefiero mil veces la historia del videojuego MK1. Siento que las películas de Mortal Kombat aún no logran capturar esa esencia.",
+      "pt": "Divertido, mas, sendo sincero, prefiro muito mais a história do jogo MK1. Sinto que os filmes de Mortal Kombat ainda não conseguiram capturar aquela essência."
+    },
+    "order": 8,
+    "id": "tt17490712",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt17490712.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt0316465",
+    "category": "top-movies",
+    "myRating": 9,
+    "review": {
+      "en": "Amazing performance, inspiring real life story.",
+      "es": "Actuación increíble, historia real inspiradora.",
+      "pt": "Performance incrível, história real inspiradora."
+    },
+    "order": 8,
+    "id": "tt0316465",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt0316465.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt30825738",
+    "category": "recently-watched",
+    "myRating": 8,
+    "review": {
+      "en": "The visual effects are stunning! It’s a great standalone story for newcomers, though it occasionally feels more like several episodes stitched together rather than a cohesive film.",
+      "es": "¡Increíbles efectos visuales! La historia es perfecta incluso si no has visto la serie, aunque a veces se siente más como una compilación de episodios que como una película narrativa.",
+      "pt": "Efeitos visuais incríveis! A história é perfeita mesmo para quem não viu a série, embora às vezes pareça mais uma compilação de episódios do que um filme único."
+    }
+    },
+    "order": 7,
+    "id": "tt30825738",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt30825738.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt1130884",
+    "category": "top-movies",
+    "myRating": 9.5,
+    "review": {
+      "en": "Masterfully crafted psychological thriller that keeps you guessing until the very end, the twist lands with devastating impact.",
+      "es": "Magistralmente elaborado que te mantiene adivinando hasta el final, el giro tiene un impacto devastador.",
+      "pt": "Magistralmente elaborado que te mantém adivinhando até o final, a reviração tem um impacto devastador."
+    },
+    "order": 7,
+    "id": "tt1130884",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt1130884.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt37287335",
+    "category": "recently-watched",
+    "myRating": 8.5,
+    "review": {
+      "en": "One of the best suspense films I've watched this year and arguably Blumhouse's strongest horror release in recent memory. I would've loved more jump scares and terror moments—lesson learned: be careful what you wish for.",
+      "es": "Una de las mejores películas de suspenso que he visto este año y probablemente la mejor oferta de horror de Blumhouse en tiempos recientes. Me hubiera encantado más sustos y momentos aterradores—lección aprendida: ten cuidado con lo que deseas.",
+      "pt": "Um dos melhores filmes de suspense que assisti este ano e provavelmente a melhor oferta de horror da Blumhouse em tempos recentes. Eu teria adorado mais sustos e momentos aterradores—lição aprendida: cuidado com o que você deseja."
+    },
+    "order": 6,
+    "id": "tt37287335",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt37287335.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt0468569",
+    "category": "top-movies",
+    "myRating": 9.5,
+    "review": {
+      "en": "The definition of the perfect superhero movie. The Joker’s performance is unforgettable, and the dark tone makes this an absolute masterpiece.",
+      "es": "La definición de cine de superhéroes perfecto. La interpretación del Joker es inolvidable y el tono oscuro la hace una obra maestra total.",
+      "pt": "A definição de um filme de super-heróis perfeito. A atuação do Coringa é inesquecível e o tom sombrio faz deste um verdadeiro obra-prima."
+    },
+    "order": 6,
+    "id": "tt0468569",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt0468569.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt32093575",
+    "category": "recently-watched",
+    "myRating": 4,
+    "review": {
+      "en": "I think it could have been much better, but it was fun. It’s definitely a step up compared to the more recent Scary Movie entries.",
+      "es": "Creo que pudo haber sido mucho mejor, pero estuvo divertida. Definitivamente es una mejora frente a las Scary Movies más recientes.",
+      "pt": "Acho que poderia ter sido muito melhor, mas foi divertido. Definitivamente é uma melhoria em relação aos filmes mais recentes de Scary Movie."
+    },
+    "order": 5,
+    "id": "tt32093575",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt32093575.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt33763941",
+    "category": "recently-watched",
+    "myRating": 5,
+    "review": {
+      "en": "Honestly, I had much higher expectations for this one. The story had such a solid foundation, but I feel like it really needed better execution to reach its full potential.",
+      "es": "Sinceramente, tenía expectativas mucho más altas. La historia tenía una base excelente, pero siento que le faltó pulirla mucho más para aprovechar su potencial.",
+      "pt": "Sinceramente, eu tinha expectativas bem mais altas. A história tinha uma base excelente, mas sinto que ela precisava de muito mais refinamento para aproveitar todo o seu potencial."
+    },
+    "order": 5,
+    "id": "tt33763941",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt33763941.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt0499549",
+    "category": "top-movies",
+    "myRating": 9.5,
+    "review": {
+      "en": "A total game-changer for visual effects. It created a world so immersive and detailed that you just can't help but want to return to Pandora again and again.",
+      "es": "Un antes y un después en efectos visuales. Creó un mundo tan inmersivo y detallado que es imposible no querer volver a Pandora una y otra vez.",
+      "pt": "Um divisor de águas em efeitos visuais. Criou um mundo tão imersivo e detalhado que é impossível não querer voltar a Pandora repetidas vezes."
+    },
+    "order": 5,
+    "id": "tt0499549",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt0499549.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt26657236",
+    "category": "recently-watched",
+    "myRating": 6,
+    "review": {
+      "en": "Excellent camera work and visual effects. The plot is very engaging, but it left me with more questions than answers—I wish it had a bit more resolution.",
+      "es": "Los efectos y el manejo de cámara son excelentes. Me encantó la trama, pero me dejó con demasiadas dudas; sentí que le faltó un poco más de cierre.",
+      "pt": "Os efeitos e o trabalho de câmera são excelentes. Adorei a trama, mas o filme me deixou com muitas dúvidas; senti que faltou um pouco mais de conclusão."
+    },
+    "order": 4,
+    "id": "tt26657236",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt26657236.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt1375666",
+    "category": "top-movies",
+    "myRating": 9,
+    "review": {
+      "en": "A brilliant mind-bending puzzle. The premise of dreams within dreams is fascinating, and the technical execution is flawless from start to finish.",
+      "es": "Un rompecabezas mental brillante. La premisa de los sueños dentro de los sueños es fascinante y la ejecución técnica es impecable de principio a fin.",
+      "pt": "Um quebra-cabeça mental brilhante. A premissa de sonhos dentro de sonhos é fascinante e a execução técnica é impecável do início ao fim."
+    },
+    "order": 4,
+    "id": "tt1375666",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt1375666.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt1457767",
+    "category": "top-movies",
+    "myRating": 9,
+    "review": {
+      "en": "Likely the film that changed horror cinema and kicked off an entire new series. The way it handles suspense and atmosphere keeps you on the edge of your seat.",
+      "es": "Probablemente la película que cambió el cine de terror y dio inicio a una franquicia enorme. El manejo del suspenso y la atmósfera te mantienen al borde del asiento.",
+      "pt": "Provavelmente o filme que mudou o cinema de terror e deu início a uma nova série. O manejo do suspense e a atmosfera conseguem te manter na ponta da cadeira o tempo todo."
+    },
+    "order": 3,
+    "id": "tt1457767",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt1457767.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt29355505",
+    "category": "recently-watched",
+    "myRating": 10,
+    "review": {
+      "en": "A total gem! With its incredible animation and the way it explores technology, I’d easily rank this as the best or second-best in the entire franchise.",
+      "es": "¡Una joya! Gracias a su animación y a cómo aborda la tecnología, fácilmente la pondría como la mejor o la segunda mejor de toda la saga.",
+      "pt": "Uma joia! Graças à animação fantástica e à forma como aborda a tecnologia, eu a colocaria facilmente como o melhor ou segundo melhor filme de toda a saga."
+    },
+    "order": 3,
+    "id": "tt29355505",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt29355505.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt32890033",
+    "category": "recently-watched",
+    "myRating": 7,
+    "review": {
+      "en": "I thought it was good! The plot is fun and original, making it a perfect watch if you just want to have a good time and laugh.",
+      "es": "Me pareció buena. La trama es divertida y original, ideal para desconectar, pasar un rato muy entretenido.",
+      "pt": "Achei boa. A trama é divertida e original, ideal para relaxar, passar um ótimo momento e dar boas risadas."
+    },
+    "order": 2,
+    "id": "tt32890033",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt32890033.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt0816692",
+    "category": "top-movies",
+    "myRating": 9.5,
+    "review": {
+      "en": "An out-of-this-world visual and emotional experience. The blend of complex science with human connection makes this a timeless piece of art.",
+      "es": "Una experiencia visual y emocional fuera de este mundo. La combinación de ciencia compleja con la conexión humana la convierten en una pieza de arte atemporal.",
+      "pt": "Uma experiência visual e emocional fora deste mundo. A combinação de ciência complexa com a conexão humana torna este filme uma obra de arte atemporal."
+    },
+    "order": 2,
+    "id": "tt0816692",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt0816692.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt33764258",
+    "category": "recently-watched",
+    "myRating": 10,
+    "review": {
+      "en": "This is easily one of the best movies I’ve ever seen. The cast delivers outstanding performances, and the narrative is both compelling and beautifully executed. It’s a film that stays with you long after the credits roll.",
+      "es": "Fácilmente una de las mejores películas que he visto. El elenco ofrece actuaciones excepcionales y la narrativa es cautivadora y está magníficamente ejecutada. Es una película que se queda contigo mucho después de que terminan los créditos.",
+      "pt": "Facilmente um dos melhores filmes que já assisti. O elenco entrega atuações incríveis, e a narrativa é envolvente e muito bem executada. É um filme que permanece na sua mente muito depois dos créditos finais."
+    },
+    "order": 1,
+    "id": "tt33764258",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt33764258.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt12042730",
+    "category": "top-movies",
+    "myRating": 9.2,
+    "review": {
+      "en": "We definitely need a movie of this caliber at least once a decade! It has an excellent story, amazing visual effects, and top-notch acting.",
+      "es": "¡Definitivamente necesitamos una película de este nivel al menos una vez por década! Tiene una historia excelente, efectos visuales increíbles y actuaciones de primera.",
+      "pt": "Definitivamente precisamos de um filme desse nível pelo menos uma vez por década! Tem uma história excelente, efeitos visuais incríveis e atuações de primeira."
+    },
+    "order": 1,
+    "id": "tt12042730",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt12042730.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt27419420",
+    "category": "watchlist",
+    "myRating": null,
+    "review": null,
+    "order": null,
+    "id": "tt27419420",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt27419420.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt32328070",
+    "category": "watchlist",
+    "myRating": null,
+    "review": null,
+    "order": null,
+    "id": "tt32328070",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt32328070.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt32393988",
+    "category": "watchlist",
+    "myRating": null,
+    "review": null,
+    "order": null,
+    "id": "tt32393988",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt32393988.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt22084616",
+    "category": "recently-watched",
+    "myRating": 9,
+    "review": {
+      "en": "This is hands down one of the best Spider-Man movies I've ever seen. The cast is phenomenal, the story is gripping, and the animation is absolutely stunning. It's a true treat for fans of the web-slinger.",
+      "es": "Definitivamente, esta es una de las mejores películas de Spider-Man que he visto. El elenco es fenomenal, la historia atrapante y la animación es absolutamente impresionante. Un verdadero deleite para los fanáticos del trepamuros.",
+      "pt": "Sem dúvida, este é um dos melhores filmes do Homem-Aranha que já vi. O elenco é incrível, a história é envolvente e a animação é simplesmente deslumbrante. Um verdadeiro presente para os fãs do herói aracnídeo."
+    },
+    "order": null,
+    "id": "tt22084616",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt22084616.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt32557122",
+    "category": "watchlist",
+    "myRating": null,
+    "review": {
+      "en": "",
+      "es": "",
+      "pt": ""
+    },
+    "order": null,
+    "id": "tt32557122",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt32557122.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt22084616",
+    "category": "watchlist",
+    "myRating": null,
+    "review": {
+      "en": "",
+      "es": "",
+      "pt": ""
+    },
+    "order": null,
+    "id": "tt22084616",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt22084616.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  }
+]

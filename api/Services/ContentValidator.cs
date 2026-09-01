@@ -41,6 +41,11 @@ public static class ContentValidator
             case "movies":
             case "series":
                 RequireString(doc, "titleId", errors, required: true);
+                RequireString(doc, "title", errors, required: false);
+                RequireString(doc, "imageUrl", errors, required: false);
+                RequireInt(doc, "year", errors);
+                RequireStringArray(doc, "genres", errors);
+                RequireNumberInRange(doc, "imdbRating", 0, 10, errors);
                 RequireNumberInRange(doc, "myRating", 0, 10, errors);
                 RequireInt(doc, "order", errors);
                 RequireLocalized(doc, "review", errors, allowPlainString: false);
@@ -166,6 +171,14 @@ public static class ContentValidator
         if (IsAbsent(node)) return;
         if (node is not JsonArray arr || arr.Count != length || arr.Any(n => Kind(n) != JsonValueKind.Number))
             errors.Add($"Field '{field}' must be an array of {length} numbers.");
+    }
+
+    private static void RequireStringArray(JsonObject doc, string field, List<string> errors)
+    {
+        var node = doc[field];
+        if (IsAbsent(node)) return;
+        if (node is not JsonArray arr || arr.Any(n => Kind(n) != JsonValueKind.String))
+            errors.Add($"Field '{field}' must be an array of strings.");
     }
 
     /// <summary>

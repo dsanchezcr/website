@@ -58,24 +58,6 @@
   background: linear-gradient(135deg, var(--ifm-color-emphasis-100), var(--ifm-color-emphasis-200));
 }
 
-.posterSkeleton {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    var(--ifm-color-emphasis-100) 25%,
-    var(--ifm-color-emphasis-200) 50%,
-    var(--ifm-color-emphasis-100) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
 /* ---------- Rating Badges (overlaid on poster, like Co-Op/Online in GameCard) ---------- */
 .ratingBadges {
   position: absolute;
@@ -142,12 +124,6 @@
   border: 1px solid var(--ifm-color-emphasis-200);
   font-size: 0.72rem;
   color: var(--ifm-font-color-secondary);
-}
-
-.errorText {
-  margin: 0.5rem 0 0;
-  font-size: 0.8rem;
-  color: var(--ifm-color-danger);
 }
 
 /* ---------- Responsive ---------- */

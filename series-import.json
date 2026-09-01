@@ -1,0 +1,189 @@
+[
+  {
+    "titleId": "tt0903747",
+    "category": "completed",
+    "myRating": 10,
+    "review": {
+      "en": "One of the best TV series ever made.",
+      "es": "Una de las mejores series de televisión jamás creadas.",
+      "pt": "Uma das melhores séries de TV já feitas."
+    },
+    "order": 10,
+    "id": "tt0903747",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt0903747.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt10986410",
+    "category": "completed",
+    "myRating": 7.8,
+    "review": {
+      "en": "It's genuinely funny while exploring real emotional growth, and that's harder to pull off than it looks.",
+      "es": "Es genuinamente divertido mientras explora el crecimiento emocional real, y eso es más difícil de lograr de lo que parece.",
+      "pt": "Genuinamente engraçado enquanto explora o crescimento emocional real, e isso é mais difícil de conseguir do que parece."
+    },
+    "order": 9,
+    "id": "tt10986410",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt10986410.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt15435876",
+    "category": "completed",
+    "myRating": 9.5,
+    "review": {
+      "en": "Colin Farrell's transformation is mesmerizing, and the storytelling is relentlessly compelling.",
+      "es": "La transformación de Colin Farrell es hipnotizante, y la narrativa es implacablemente cautivadora.",
+      "pt": "A transformação de Colin Farrell é hipnotizante, e a narrativa é implacavelmente cativante."
+    },
+    "order": 8,
+    "id": "tt15435876",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt15435876.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt11280740",
+    "category": "completed",
+    "myRating": 7.5,
+    "review": {
+      "en": "It keeps you hooked with compelling characters and a premise that gets more unsettling the more you think about it.",
+      "es": "Te mantiene enganchado con personajes convincentes y una premisa que se vuelve más inquietante cuanto más lo piensas.",
+      "pt": "Te mantém preso com personagens convincentes e uma premissa que fica mais perturbadora quanto mais você pensa sobre isso."
+    },
+    "order": 7,
+    "id": "tt11280740",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt11280740.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt33035373",
+    "category": "completed",
+    "myRating": 7,
+    "review": {
+      "en": "A twisty mystery that keeps you hooked, even if sometimes feels slow.",
+      "es": "Un misterio lleno de giros que te mantiene enganchado, aunque a veces se sienta lento.",
+      "pt": "Um mistério cheio de reviravoltas que mantém você preso, mesmo que às vezes pareça lento."
+    },
+    "order": 6,
+    "id": "tt33035373",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt33035373.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt15677150",
+    "category": "completed",
+    "myRating": 8.5,
+    "review": {
+      "en": "It's a show that encourages self-reflection and discovery while making you laugh, a rare combination that actually lands.",
+      "es": "Es un programa que fomenta la autorreflexión y el descubrimiento mientras te hace reír, una combinación rara que realmente funciona.",
+      "pt": "É uma série que incentiva a autorreflexão e a descoberta enquanto te faz rir, uma combinação rara que realmente funciona."
+    },
+    "order": 5,
+    "id": "tt15677150",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt15677150.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt22202452",
+    "category": "completed",
+    "myRating": 9.1,
+    "review": {
+      "en": "Thought-provoking thriller that explores the fragility of human autonomy in a digitally connected world.",
+      "es": "Thriller que invita a la reflexión y explora la fragilidad de la autonomía humana en un mundo digitalmente conectado.",
+      "pt": "Um thriller instigante que explora a fragilidade da autonomia humana em um mundo digitalmente conectado."
+    },
+    "order": 4,
+    "id": "tt22202452",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt22202452.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt31938062",
+    "category": "completed",
+    "myRating": 9.5,
+    "review": {
+      "en": "Impressive narrative, really highlights the daily lives of healthcare professionals.",
+      "es": "Narrativa impresionante, realmente destaca la vida diaria de los profesionales de la salud.",
+      "pt": "Narrativa impressionante, realmente destaca a vida diária dos profissionais de saúde."
+    },
+    "order": 3,
+    "id": "tt31938062",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt31938062.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt34771210",
+    "category": "completed",
+    "myRating": 7,
+    "review": {
+      "en": "An incredibly captivating story. The pacing and intensity are excellent; it’s one of those shows that hooks you from the very first minute and never lets go.",
+      "es": "Una historia increíblemente cautivadora. El ritmo y la intensidad son excelentes; es de esas series que te enganchan desde el primer minuto y no te sueltan.",
+      "pt": "Uma história incrivelmente cativante. O ritmo e a intensidade são excelentes; é daquelas séries que te prendem desde o primeiro minuto e não te soltam mais."
+    },
+    "order": 2,
+    "id": "tt34771210",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt34771210.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt33332385",
+    "category": "completed",
+    "myRating": 10,
+    "review": {
+      "en": "It’s hilarious! Watching the mayor try to keep everything under control really reminded me of Michael Scott, but with a unique touch of suspense and mystery mixed in.",
+      "es": "Divertido ver al alcalde intentando que todo salga perfecto me recordó mucho a Michael Scott, pero con un toque extra de suspenso y misterio que la hace única.",
+      "pt": "É hilário! Ver o prefeito tentando fazer com que tudo dê certo me lembrou muito o Michael Scott, mas com um toque especial de suspense e mistério que a torna única."
+    },
+    "order": 1,
+    "id": "tt33332385",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt33332385.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  },
+  {
+    "titleId": "tt18923754",
+    "category": "currently-watching",
+    "myRating": 8,
+    "review": {
+      "en": "Born Again walks the line between honoring the original's legacy and fitting into the MCU's broader universe.",
+      "es": "Born Again camina la línea entre honrar el legado del original y encajar en el universo más amplio del MCU.",
+      "pt": "Born Again caminha na linha entre honrar o legado do original e se encaixar no universo mais amplo do MCU."
+    },
+    "order": null,
+    "id": "tt18923754",
+    "title": null,
+    "imageUrl": "https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt18923754.jpg",
+    "year": null,
+    "genres": [],
+    "imdbRating": null
+  }
+]

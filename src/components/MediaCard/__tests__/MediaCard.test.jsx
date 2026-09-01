@@ -6,18 +6,16 @@ import MediaCard from '../MediaCard';
 describe('MediaCard', () => {
   const defaultProps = {
     titleId: 'tt0111161',
+    title: 'The Shawshank Redemption',
+    imageUrl: 'https://imdb.com/poster.jpg',
+    year: 1994,
+    genres: ['Drama'],
+    imdbRating: 9.3,
     myRating: 10,
     review: {
       en: 'A timeless masterpiece.',
       es: 'Una obra maestra atemporal.',
       pt: 'Uma obra-prima atemporal.',
-    },
-    imdb: {
-      primaryTitle: 'The Shawshank Redemption',
-      primaryImage: { url: 'https://imdb.com/poster.jpg' },
-      rating: { aggregateRating: 9.3 },
-      startYear: 1994,
-      genres: ['Drama'],
     },
     locale: 'en',
   };
@@ -69,23 +67,21 @@ describe('MediaCard', () => {
     expect(link).toHaveAttribute('target', '_blank');
   });
 
-  it('shows loading state', () => {
-    render(<MediaCard titleId="tt0111161" loading={true} />);
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  it('falls back to titleId when no title is provided (first-time load, no cache)', () => {
+    render(<MediaCard titleId="tt0111161" />);
+    expect(screen.getByText('tt0111161')).toBeInTheDocument();
   });
 
-  it('shows error message', () => {
-    render(<MediaCard titleId="tt0111161" error="Failed to load" imdb={{}} />);
-    expect(screen.getByText('Failed to load')).toBeInTheDocument();
-  });
-
-  it('renders without year when startYear is missing', () => {
-    const props = {
-      ...defaultProps,
-      imdb: { ...defaultProps.imdb, startYear: undefined },
-    };
+  it('renders without year when year is missing', () => {
+    const props = { ...defaultProps, year: undefined };
     render(<MediaCard {...props} />);
     expect(screen.getByText('The Shawshank Redemption')).toBeInTheDocument();
+  });
+
+  it('renders without a poster image when imageUrl is missing', () => {
+    const props = { ...defaultProps, imageUrl: undefined };
+    const { container } = render(<MediaCard {...props} />);
+    expect(container.querySelector('img')).not.toBeInTheDocument();
   });
 
   it('handles string review (non-object)', () => {
