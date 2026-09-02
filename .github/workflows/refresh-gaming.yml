@@ -92,7 +92,7 @@ jobs:
                 local LU_EPOCH
                 LU_EPOCH=$(date -u -d "$LAST_UPDATED" +%s 2>/dev/null || true)
                 if [ -n "$LU_EPOCH" ]; then
-                  AGE_DAYS=$(( ( $(date -u +%s) - LU_EPOCH ) / 86400 ))
+                  AGE_DAYS=$(( ( ( $(date -u +%s) - LU_EPOCH ) + 86399 ) / 86400 ))
                 fi
               fi
               echo "::error::${PLATFORM}: live fetch failed — served STALE cached data (last updated ${LAST_UPDATED}, ~${AGE_DAYS} days old). Rotate the platform token / API key."
