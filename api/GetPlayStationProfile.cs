@@ -157,12 +157,13 @@ public class GetPlayStationProfile
             if (cachedProfile != null)
             {
                 var cacheAge = DateTimeOffset.UtcNow - cachedProfile.LastUpdated;
+                var cacheAgeDays = (int)Math.Ceiling(cacheAge.TotalDays);
                 if (cacheAge > StaleCacheThreshold)
                 {
                     _logger.LogError(
                         "Serving STALE PlayStation profile: cache is {Days} days old (last updated {LastUpdated}). " +
                         "PSN_NPSSO_TOKEN has almost certainly expired and must be rotated.",
-                        (int)cacheAge.TotalDays, cachedProfile.LastUpdated);
+                        cacheAgeDays, cachedProfile.LastUpdated);
                 }
                 else
                 {
