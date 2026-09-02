@@ -660,7 +660,8 @@ public class HealthCheck
             if (xboxProfile != null)
             {
                 var age = DateTimeOffset.UtcNow - xboxProfile.LastUpdated;
-                details.Add($"Xbox: cached ({xboxProfile.LastUpdated:u}, {(int)age.TotalDays}d old)");
+                var ageDays = (int)Math.Ceiling(age.TotalDays);
+                details.Add($"Xbox: cached ({xboxProfile.LastUpdated:u}, {ageDays}d old)");
                 if (age > staleThreshold) stalePlatforms.Add("Xbox");
             }
             else
