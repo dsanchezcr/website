@@ -654,20 +654,38 @@ public class HealthCheck
             var psnProfile = await _gamingCacheService.GetProfileAsync("playstation");
 
             var details = new List<string>();
+            var staleThreshold = TimeSpan.FromDays(3);
+            var stalePlatforms = new List<string>();
+
             if (xboxProfile != null)
-                details.Add($"Xbox: cached ({xboxProfile.LastUpdated:u})");
+            {
+                var age = DateTimeOffset.UtcNow - xboxProfile.LastUpdated;
+                details.Add($"Xbox: cached ({xboxProfile.LastUpdated:u}, {(int)age.TotalDays}d old)");
+                if (age > staleThreshold) stalePlatforms.Add("Xbox");
+            }
             else
                 details.Add("Xbox: no cached data");
 
             if (psnProfile != null)
-                details.Add($"PlayStation: cached ({psnProfile.LastUpdated:u})");
+            {
+                var age = DateTimeOffset.UtcNow - psnProfile.LastUpdated;
+                details.Add($"PlayStation: cached ({psnProfile.LastUpdated:u}, {(int)age.TotalDays}d old)");
+                if (age > staleThreshold) stalePlatforms.Add("PlayStation");
+            }
             else
                 details.Add("PlayStation: no cached data");
+
+            if (stalePlatforms.Count > 0)
+                details.Add($"STALE data for {string.Join(", ", stalePlatforms)} — rotate the platform token(s)");
 
             if (missingVars.Count > 0)
             {
                 health.Status = HealthStatus.Degraded;
                 health.MissingConfigurations = missingVars;
+            }
+            else if (stalePlatforms.Count > 0)
+            {
+                health.Status = HealthStatus.Degraded;
             }
             else
             {

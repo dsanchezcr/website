@@ -10,9 +10,9 @@ name: Refresh Gaming Profiles
 #   Each response includes an "isCached" flag. When a live fetch fails (e.g. the PSN
 #   NPSSO token has expired, or the Xbox API key is invalid) the endpoint falls back to
 #   the last cached copy and returns "isCached": true (or 503 if there is no cache at
-#   all). By default, this job marks stale cache as a warning (not a failed run) so the
-#   refresh schedule remains green while still surfacing token drift in the summary.
-#   Set FAIL_ON_STALE_CACHE=true to enforce strict mode and fail on stale cache.
+#   all). Stale cache FAILS this workflow so token expiry is surfaced immediately
+#   instead of silently serving months-old data. Set FAIL_ON_STALE_CACHE=false to
+#   downgrade this to a warning.
 #
 # Notes:
 #   - No secrets are required: the GET endpoints are public.
@@ -41,7 +41,7 @@ jobs:
     timeout-minutes: 10
     env:
       SITE_URL: https://dsanchezcr.com
-      FAIL_ON_STALE_CACHE: "false"
+      FAIL_ON_STALE_CACHE: "true"
     steps:
       - name: Refresh and verify gaming profiles
         run: |
@@ -76,7 +76,10 @@ jobs:
             fi
 
             local IS_CACHED LAST_UPDATED
-            IS_CACHED=$(printf '%s' "$BODY" | jq -r '.isCached // empty' 2>/dev/null || true)
+            # NOTE: use has()/tostring rather than `.isCached // empty` — jq's `//`
+            # treats `false` as empty, which would misreport a successful LIVE refresh
+            # (isCached=false) as an invalid response.
+            IS_CACHED=$(printf '%s' "$BODY" | jq -r 'if has("isCached") then (.isCached|tostring) else empty end' 2>/dev/null || true)
             LAST_UPDATED=$(printf '%s' "$BODY" | jq -r '.lastUpdated // "unknown"' 2>/dev/null || true)
 
             if [ -z "$IS_CACHED" ]; then
@@ -84,8 +87,16 @@ jobs:
               echo "| ${PLATFORM} | ${HTTP_CODE} | :x: invalid response | ${LAST_UPDATED} |" >> "$GITHUB_STEP_SUMMARY"
               OVERALL=1
             elif [ "$IS_CACHED" = "true" ]; then
-              echo "::warning::${PLATFORM}: live fetch failed — served STALE cached data (last updated ${LAST_UPDATED}). Check the platform token / API key."
-              echo "| ${PLATFORM} | ${HTTP_CODE} | :warning: stale cache | ${LAST_UPDATED} |" >> "$GITHUB_STEP_SUMMARY"
+              local AGE_DAYS="unknown"
+              if [ "$LAST_UPDATED" != "unknown" ] && [ -n "$LAST_UPDATED" ]; then
+                local LU_EPOCH
+                LU_EPOCH=$(date -u -d "$LAST_UPDATED" +%s 2>/dev/null || true)
+                if [ -n "$LU_EPOCH" ]; then
+                  AGE_DAYS=$(( ( $(date -u +%s) - LU_EPOCH ) / 86400 ))
+                fi
+              fi
+              echo "::error::${PLATFORM}: live fetch failed — served STALE cached data (last updated ${LAST_UPDATED}, ~${AGE_DAYS} days old). Rotate the platform token / API key."
+              echo "| ${PLATFORM} | ${HTTP_CODE} | :warning: stale cache (~${AGE_DAYS}d) | ${LAST_UPDATED} |" >> "$GITHUB_STEP_SUMMARY"
               if [ "${FAIL_ON_STALE_CACHE}" = "true" ]; then
                 OVERALL=1
               fi
