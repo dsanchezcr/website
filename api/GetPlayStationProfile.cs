@@ -46,6 +46,13 @@ public class GetPlayStationProfile
     };
 
     private const int MaxRequestsPerMinute = 10;
+
+    /// <summary>
+    /// Cached data older than this is considered stale and is logged as an error, since
+    /// it means the live PSN fetch has been failing (usually an expired NPSSO token).
+    /// </summary>
+    private static readonly TimeSpan StaleCacheThreshold = TimeSpan.FromDays(3);
+
     private static readonly string? NpssoToken = Environment.GetEnvironmentVariable("PSN_NPSSO_TOKEN");
 
     // PSN API endpoints
@@ -119,7 +126,11 @@ public class GetPlayStationProfile
                     if (accessToken != null)
                     {
                         var freshProfile = await FetchPlayStationProfile(accessToken);
-                        if (freshProfile != null)
+
+                        // Only trust (and persist) a fetch that actually returned data.
+                        // A partially-failed fetch would otherwise overwrite good cached
+                        // data with an empty profile.
+                        if (freshProfile != null && HasMeaningfulData(freshProfile))
                         {
                             await _cacheService.SaveProfileAsync("playstation", freshProfile);
 
@@ -129,11 +140,15 @@ public class GetPlayStationProfile
                             await okResponse.WriteStringAsync(JsonSerializer.Serialize(freshProfile, JsonOptions));
                             return okResponse;
                         }
+
+                        _logger.LogError(
+                            "PSN fetch returned no usable data; keeping existing cache. " +
+                            "Check PSN_NPSSO_TOKEN validity.");
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "PSN API call failed, falling back to cache. Token may have expired.");
+                    _logger.LogError(ex, "PSN API call failed, falling back to cache. Token may have expired.");
                 }
             }
 
@@ -141,8 +156,20 @@ public class GetPlayStationProfile
             var cachedProfile = await _cacheService.GetProfileAsync("playstation");
             if (cachedProfile != null)
             {
-                _logger.LogInformation("Returning cached PlayStation profile (last updated: {LastUpdated})",
-                    cachedProfile.LastUpdated);
+                var cacheAge = DateTimeOffset.UtcNow - cachedProfile.LastUpdated;
+                var cacheAgeDays = (int)Math.Ceiling(cacheAge.TotalDays);
+                if (cacheAge > StaleCacheThreshold)
+                {
+                    _logger.LogError(
+                        "Serving STALE PlayStation profile: cache is {Days} days old (last updated {LastUpdated}). " +
+                        "PSN_NPSSO_TOKEN has almost certainly expired and must be rotated.",
+                        cacheAgeDays, cachedProfile.LastUpdated);
+                }
+                else
+                {
+                    _logger.LogInformation("Returning cached PlayStation profile (last updated: {LastUpdated})",
+                        cachedProfile.LastUpdated);
+                }
 
                 var cachedResponse = req.CreateResponse(HttpStatusCode.OK);
                 cachedResponse.Headers.Add("Content-Type", "application/json");
@@ -209,10 +236,15 @@ public class GetPlayStationProfile
         _logger.LogInformation("Calling PSN auth endpoint");
         var authResponse = await authClient.GetAsync(authRequest.RequestUri);
 
-        if (authResponse.StatusCode != HttpStatusCode.Redirect &&
-            authResponse.StatusCode != HttpStatusCode.Found)
+        // PSN answers the authorize call with a 3xx to the app redirect URI. Accept any
+        // 3xx status rather than only Found/Redirect (302).
+        var authStatus = (int)authResponse.StatusCode;
+        if (authStatus is < 300 or > 399)
         {
-            _logger.LogWarning("PSN auth failed with status {StatusCode}. NPSSO token may be expired.",
+            _logger.LogError(
+                "PSN auth failed with status {StatusCode}. The NPSSO token is likely expired — " +
+                "obtain a new one from https://ca.account.sony.com/api/v1/ssocookie and update " +
+                "the PSN_NPSSO_TOKEN app setting.",
                 authResponse.StatusCode);
             return null;
         }
@@ -220,7 +252,8 @@ public class GetPlayStationProfile
         var redirectUri = authResponse.Headers.Location?.ToString();
         if (string.IsNullOrEmpty(redirectUri))
         {
-            _logger.LogWarning("PSN auth redirect had no Location header");
+            _logger.LogError("PSN auth redirect had no Location header (status {StatusCode})",
+                authResponse.StatusCode);
             return null;
         }
 
@@ -266,7 +299,14 @@ public class GetPlayStationProfile
 
         if (string.IsNullOrEmpty(code))
         {
-            _logger.LogWarning("PSN auth redirect had no code parameter");
+            // PSN redirects back with ?error=... instead of ?code=... when the NPSSO
+            // cookie is no longer valid.
+            queryParams.TryGetValue("error", out var authError);
+            queryParams.TryGetValue("error_description", out var authErrorDescription);
+            _logger.LogError(
+                "PSN auth redirect had no code parameter (error: {Error} - {ErrorDescription}). " +
+                "The NPSSO token is likely expired — refresh PSN_NPSSO_TOKEN.",
+                authError ?? "none", authErrorDescription ?? "none");
             return null;
         }
 
@@ -286,7 +326,9 @@ public class GetPlayStationProfile
         var tokenResponse = await client.PostAsync(TokenUrl, tokenRequest);
         if (!tokenResponse.IsSuccessStatusCode)
         {
-            _logger.LogWarning("PSN token exchange failed: {StatusCode}", tokenResponse.StatusCode);
+            var errorBody = await tokenResponse.Content.ReadAsStringAsync();
+            _logger.LogError("PSN token exchange failed: {StatusCode} - {Body}",
+                tokenResponse.StatusCode, errorBody);
             return null;
         }
 
@@ -450,6 +492,17 @@ public class GetPlayStationProfile
 
         return profile;
     }
+
+    /// <summary>
+    /// Returns true when a freshly fetched profile actually contains data worth caching.
+    /// Every individual PSN call is wrapped in its own try/catch, so a profile object can
+    /// come back fully empty if the access token was rejected — persisting that would
+    /// destroy the last known good cache.
+    /// </summary>
+    private static bool HasMeaningfulData(GamingProfile profile) =>
+        !string.IsNullOrEmpty(profile.OnlineId) ||
+        profile.TrophyLevel.HasValue ||
+        profile.RecentGames.Count > 0;
 
     /// <summary>
     /// Extracts the accountId from a PSN JWT access token.

@@ -259,6 +259,22 @@ PSN_NPSSO_TOKEN             # NPSSO token from https://ca.account.sony.com/api/v
 GAMING_REFRESH_KEY          # Secret key for admin refresh endpoint
 ```
 
+**Rotating the PSN NPSSO token (expires every ~60 days):**
+
+The PlayStation NPSSO token expires roughly every 60 days. When it does, the live PSN
+fetch fails and `/api/gaming/playstation` falls back to the last cached copy, returning
+`"isCached": true`. The daily **Refresh Gaming Profiles** workflow fails when it detects
+stale cache, which is the signal to rotate:
+
+1. Sign in at [playstation.com](https://www.playstation.com) in a browser.
+2. Visit `https://ca.account.sony.com/api/v1/ssocookie` and copy the `npsso` value.
+3. Update the `PSN_NPSSO_TOKEN` application setting on the Static Web App.
+4. Trigger a refresh: `POST /api/gaming/refresh` with header `X-Gaming-Refresh-Key: <GAMING_REFRESH_KEY>`
+   (or re-run the *Refresh Gaming Profiles* workflow) and confirm the response reports `"isCached": false`.
+
+`/api/health` also reports the cache age per platform and degrades when data is older
+than 3 days.
+
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/dsanchezcr/website/issues).
