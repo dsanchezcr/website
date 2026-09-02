@@ -236,7 +236,7 @@ public class GetPlayStationProfile
         var authResponse = await authClient.GetAsync(authRequest.RequestUri);
 
         // PSN answers the authorize call with a 3xx to the app redirect URI. Accept any
-        // redirect status (302/303/307) rather than only Found/Redirect.
+        // 3xx status rather than only Found/Redirect (302).
         var authStatus = (int)authResponse.StatusCode;
         if (authStatus is < 300 or > 399)
         {
