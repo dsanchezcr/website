@@ -279,10 +279,10 @@ stale cache, which is the signal to rotate:
    role authorizes the request. Automation can also call `POST /api/gaming/refresh`
    with `X-Gaming-Refresh-Key: <GAMING_REFRESH_KEY>`. Refresh fetches immediately;
    failures are reported per provider and keep the last working cached profile.
-5. Curated game cards now sort newest-added first automatically. Use the optional
+5. Confirm the admin reports the connection as refreshed, or re-run the *Refresh Gaming Profiles* workflow and confirm the public response reports `"isCached": false`.
+6. Curated game cards now sort newest-added first automatically. Use the optional
    **Manual rank** to pin entries, or clear it to restore automatic ordering.
    Top Games retains ascending **Order**. See [admin ordering details](admin/README.md#gaming-connections-and-ordering).
-   (or re-run the *Refresh Gaming Profiles* workflow) and confirm the response reports `"isCached": false`.
 
 `/api/health` also reports the cache age per platform and degrades when data is older
 than 3 days.
