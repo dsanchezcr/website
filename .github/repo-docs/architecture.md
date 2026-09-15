@@ -15,7 +15,7 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 │  │  - Blog (MDX)       │   │  /api/contact            │  │
 │  │  - Gaming (docs)    │   │  /api/verify             │  │
 │  │  - Movies-TV (docs) │   │  /api/weather            │  │
-│  │  - Disney (docs)    │   │  /api/online-users       │  │
+│  │  - Disney (docs)    │   │                          │  │
 │  │  - Universal (docs) │   │  /api/nlweb/ask (RAG)    │  │
 │  │  - Pages (React)    │   │  /api/health             │  │
 │  │  - i18n (en/es/pt)  │   │  /api/gaming/*           │  │
@@ -40,11 +40,11 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
          ▼                              ▼
   ┌──────────────┐    ┌─────────────────────────────────┐
   │  External     │    │  External APIs                  │
-  │  - Giscus     │    │  - Google Analytics Data API    │
+  │  - Giscus     │    │                                 │
   │  - reCAPTCHA  │    │  - OpenXBL (Xbox Live)          │
   │  - Open-Meteo │    │  - PSN API (PlayStation)        │
-  │  - IMDb       │    │  - GitHub API (Repos)           │
-  │  - Chess.com  │    │                                 │
+  │  - TMDB images│    │  - GitHub API (Repos)           │
+  │  - Chess.com  │    │  - TMDB (account + metadata)   │
   └──────────────┘    └─────────────────────────────────┘
 ```
 
@@ -69,15 +69,15 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 | SendEmail | `/api/contact` | Contact form with reCAPTCHA, rate limiting, spam detection, email verification |
 | VerifyEmail | `/api/verify` | Two-step email verification completion |
 | GetWeather | `/api/weather` | Weather data proxy |
-| GetOnlineUsers | `/api/online-users` | Google Analytics 24h visitor count |
 | ChatWithOpenAI | `/api/nlweb/ask` | RAG chatbot (Microsoft Foundry + AI Search) |
 | HealthCheck | `/api/health` | Service health monitoring |
 | ReindexContent | `/api/reindex` | Search index update (CI/CD triggered) |
 | GetXboxProfile | `/api/gaming/xbox` | Xbox Live profile with Table Storage cache |
 | GetPlayStationProfile | `/api/gaming/playstation` | PSN profile with JWT auth and cache |
-| RefreshGamingProfiles | `/api/gaming/refresh` | Admin trigger for gaming data refresh |
+| RefreshGamingProfiles | `/api/gaming/refresh` | Admin role or automation key; immediate provider refresh with safe cache retention |
 | GetMoviesContent | `/api/content/movies` | Movies from Cosmos DB |
 | GetSeriesContent | `/api/content/series` | TV series from Cosmos DB |
+| SyncTmdbContent | `/api/content-admin/tmdb/sync` | Admin/key-authorized non-destructive TMDB account sync; localized metadata stored in Cosmos |
 | GetGamingContent | `/api/content/gaming` | Gaming entries from Cosmos DB |
 | GetParksContent | `/api/content/parks` | Theme parks from Cosmos DB |
 | GetMonthlyUpdatesContent | `/api/content/monthly-updates` | Monthly gaming updates from Cosmos DB |
@@ -87,6 +87,20 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 | UpdatePreferences | `/api/newsletter/preferences` | Change frequency (weekly/monthly) |
 | GetSubscriptionStatus | `/api/newsletter/status` | Check subscription state |
 | DispatchNewsletter | `/api/newsletter/dispatch` | Send digest (GitHub Actions triggered) |
+
+### Data Flow: TMDB media
+
+TMDB account watchlists/ratings → authorized server sync → complete pagination
+and per-batch localized metadata validation → ETag-protected Cosmos writes → public content
+API → MediaCard (no browser metadata requests). The daily `tmdb-sync.yml` workflow
+uses a dedicated invocation key; application read token/session/account settings
+stay server-side. Top/manual documents and reviews survive; sync never deletes.
+Current refresh snapshots and source order show newest account additions first.
+Each request processes at most 20 documents in a 35-second budget; signed stateless
+continuations share the snapshot and cumulative counters across requests. Source
+changes require a safe restart; timeout/storage errors expose acknowledged progress
+and a retry cursor. Nothing runs in the background after the response.
+See [ADR-007](adr/007-tmdb-account-media-source.md) and [setup](tmdb-setup.md).
 
 ### Data Flow: RAG Pipeline
 
@@ -110,7 +124,7 @@ Push to main → GitHub Actions builds Docusaurus + .NET API
 - **Content translation**: Docusaurus i18n structure under `i18n/es/` and `i18n/pt/`
 - **Component translations**: Some pages embed translations inline (e.g., `3dprinting.js`, `volunteering.js`, `sponsors.js`)
 - **Backend localization**: `LocalizationHelper.cs` for email templates
-- **Movie/TV reviews**: Multilingual reviews stored in Cosmos DB (`content-movies`, `content-series` containers)
+- **Movie/TV metadata and reviews**: en/es/pt titles, overviews, genres and reviews stored in Cosmos DB (`content-movies`, `content-series`); English/original fallback when TMDB translations are missing
 
 ## Infrastructure
 

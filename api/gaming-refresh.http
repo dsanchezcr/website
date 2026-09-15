@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:4280
+
+### Sign in as an admin through the SWA emulator before running this request.
+POST {{baseUrl}}/api/gaming/refresh
+Content-Type: application/json
+
+{"platform":"all"}
+
+### Invalid platform; authenticated requests return 400 without contacting providers.
+POST {{baseUrl}}/api/gaming/refresh
+Content-Type: application/json
+
+{"platform":"invalid"}

@@ -46,13 +46,60 @@ export function validate(type: ContentTypeDef, doc: Doc): string[] {
     case 'movies':
     case 'series': {
       const titleId = doc.titleId;
-      if (typeof titleId !== 'string' || titleId.trim() === '') {
+      const hasTmdbId = !isAbsent(doc.tmdbId);
+      if (!hasTmdbId && (typeof titleId !== 'string' || titleId.trim() === '')) {
         errors.push("Field 'titleId' is required.");
       }
+      for (const field of ['titleId', 'title', 'imageUrl', 'syncSource']) {
+        if (!isAbsent(doc[field]) && typeof doc[field] !== 'string') errors.push(`Field '${field}' must be a string.`);
+      }
+      int('tmdbId');
+      if (hasTmdbId && (typeof doc.tmdbId !== 'number' || doc.tmdbId < 1 || doc.tmdbId > 2147483647)) {
+        errors.push("Field 'tmdbId' must be between 1 and 2147483647.");
+      }
+      const expectedMediaType = type.slug === 'movies' ? 'movie' : 'tv';
+      if ((hasTmdbId || !isAbsent(doc.mediaType)) && doc.mediaType !== expectedMediaType) {
+        errors.push(`Field 'mediaType' must be '${expectedMediaType}' for this container.`);
+      }
+      if (!isAbsent(doc.posterPath) && (typeof doc.posterPath !== 'string' || !/^\/[a-zA-Z0-9_-]+\.(jpg|png|webp)$/.test(doc.posterPath))) {
+        errors.push("Field 'posterPath' must be a TMDB image path, not a URL.");
+      }
+      for (const field of ['titleTranslations', 'overview']) {
+        localized(field, false);
+        const value = doc[field];
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+          const translations = value as Record<string, unknown>;
+          for (const locale of ['en', 'es', 'pt']) {
+            if (typeof translations[locale] !== 'string') errors.push(`Field '${field}.${locale}' must be a string.`);
+          }
+        }
+      }
+      if (!isAbsent(doc.genresTranslations)) {
+        const translations = doc.genresTranslations;
+        if (!translations || typeof translations !== 'object' || Array.isArray(translations)) {
+          errors.push("Field 'genresTranslations' must be an en/es/pt object of string arrays.");
+        } else {
+          for (const locale of ['en', 'es', 'pt']) {
+            const value = (translations as Record<string, unknown>)[locale];
+            if (!Array.isArray(value) || value.some(item => typeof item !== 'string')) {
+              errors.push(`Field 'genresTranslations.${locale}' must be an array of strings.`);
+            }
+          }
+        }
+      }
       const r = doc.myRating;
-      if (!isAbsent(r) && (typeof r !== 'number' || r < 0 || r > 10)) errors.push("Field 'myRating' must be between 0 and 10.");
-      const imdbR = doc.imdbRating;
-      if (!isAbsent(imdbR) && (typeof imdbR !== 'number' || imdbR < 0 || imdbR > 10)) errors.push("Field 'imdbRating' must be between 0 and 10.");
+      for (const field of ['myRating', 'imdbRating', 'tmdbRating']) {
+        const rating = doc[field];
+        if (!isAbsent(rating) && (typeof rating !== 'number' || !Number.isFinite(rating) || rating < 0 || rating > 10)) {
+          errors.push(`Field '${field}' must be between 0 and 10.`);
+        }
+      }
+      if (hasTmdbId && typeof r === 'number' && (r < 0.5 || !Number.isInteger(r * 2))) {
+        errors.push("TMDB 'myRating' must be 0.5–10 in half-point increments, or null for unrated.");
+      }
+      if (!isAbsent(doc.syncedAt) && (typeof doc.syncedAt !== 'string' || !Number.isFinite(Date.parse(doc.syncedAt)))) {
+        errors.push("Field 'syncedAt' must be an ISO-8601 timestamp.");
+      }
       int('order');
       int('year');
       const genres = doc.genres;
@@ -64,6 +111,14 @@ export function validate(type: ContentTypeDef, doc: Doc): string[] {
     }
     case 'gaming': {
       int('order');
+      int('manualOrder');
+      const rank = doc.manualOrder;
+      if (!isAbsent(rank) && (typeof rank !== 'number' || rank < 1 || rank > 2147483646)) {
+        errors.push("Field 'manualOrder' must be between 1 and 2147483646.");
+      }
+      if (!isAbsent(doc.createdAt) && (typeof doc.createdAt !== 'string' || !Number.isFinite(Date.parse(doc.createdAt)))) {
+        errors.push("Field 'createdAt' must be an ISO-8601 timestamp.");
+      }
       const s = doc.status;
       if (!isAbsent(s) && (typeof s !== 'string' || !GAMING_STATUSES.includes(s.toLowerCase()))) {
         errors.push("Field 'status' must be one of: completed, playing, backlog, dropped.");

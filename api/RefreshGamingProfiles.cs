@@ -1,146 +1,97 @@
-using System;
-using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
+using api.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using api.Services;
 
 namespace api;
-/// <summary>
-/// Admin endpoint to manually trigger a refresh of gaming profile data.
-/// Protected with a secret key (same pattern as ReindexContent).
-/// 
-/// Usage:
-///   POST /api/gaming/refresh
-///   Headers: X-Gaming-Refresh-Key: {GAMING_REFRESH_KEY}
-///   Body (optional): { "platform": "xbox" | "playstation" | "all" }
-/// 
-/// When the PSN token expires, the admin can:
-/// 1. Get a new NPSSO token from PlayStation
-/// 2. Update the PSN_NPSSO_TOKEN environment variable in Azure
-/// 3. Call this endpoint to refresh the cached data
-/// 
-/// Required environment variable:
-/// - GAMING_REFRESH_KEY: Secret key for authenticating refresh requests
-/// </summary>
-public class RefreshGamingProfiles
-{
-    private readonly ILogger<RefreshGamingProfiles> _logger;
-    private readonly IGamingCacheService _cacheService;
 
-    public RefreshGamingProfiles(
-        ILogger<RefreshGamingProfiles> logger,
-        IGamingCacheService cacheService)
-    {
-        _logger = logger;
-        _cacheService = cacheService;
-    }
+/// <summary>Refreshes gaming connections without discarding the last working profile.</summary>
+public class RefreshGamingProfiles(
+    ILogger<RefreshGamingProfiles> logger,
+    IEnumerable<IGamingProfileService> providers,
+    IRateLimitService rateLimits)
+{
+    // Leave time to return provider outcomes before SWA's 45-second API limit.
+    internal static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(35);
 
     [Function("RefreshGamingProfiles")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "gaming/refresh")] HttpRequestData req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "gaming/refresh")] HttpRequestData req,
+        CancellationToken ct)
     {
-        _logger.LogInformation("RefreshGamingProfiles triggered");
+        var principal = ClientPrincipal.FromRequest(req);
+        var secret = Environment.GetEnvironmentVariable("GAMING_REFRESH_KEY");
+        var provided = req.Headers.TryGetValues("X-Gaming-Refresh-Key", out var values) ? values.FirstOrDefault() : null;
+        var validKey = !string.IsNullOrWhiteSpace(secret) && !string.IsNullOrWhiteSpace(provided) &&
+            CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(secret), Encoding.UTF8.GetBytes(provided));
+        if (principal?.IsInRole("admin") != true && !validKey)
+            return await GamingProfileReader.Json(req,
+                principal == null ? HttpStatusCode.Unauthorized : HttpStatusCode.Forbidden,
+                new { error = "Admin role or a valid gaming refresh key is required." }, ct);
 
-        // Authenticate with secret key (constant-time comparison)
-        var secretKey = Environment.GetEnvironmentVariable("GAMING_REFRESH_KEY");
-        if (string.IsNullOrEmpty(secretKey))
-        {
-            _logger.LogError("GAMING_REFRESH_KEY not configured");
-            var serverError = req.CreateResponse(HttpStatusCode.InternalServerError);
-            serverError.Headers.Add("Content-Type", "application/json");
-            await serverError.WriteStringAsync(JsonSerializer.Serialize(new
-            {
-                error = "Refresh key not configured."
-            }));
-            return serverError;
-        }
-
-        if (!req.Headers.TryGetValues("X-Gaming-Refresh-Key", out var keyValues) ||
-            !CryptographicOperations.FixedTimeEquals(
-                System.Text.Encoding.UTF8.GetBytes(keyValues.First()),
-                System.Text.Encoding.UTF8.GetBytes(secretKey)))
-        {
-            _logger.LogWarning("Unauthorized refresh attempt");
-            var unauthorized = req.CreateResponse(HttpStatusCode.Unauthorized);
-            unauthorized.Headers.Add("Content-Type", "application/json");
-            await unauthorized.WriteStringAsync(JsonSerializer.Serialize(new
-            {
-                error = "Invalid or missing refresh key."
-            }));
-            return unauthorized;
-        }
-
+        RefreshRequest request;
         try
         {
-            // Parse request body for optional platform filter
-            var platform = "all";
+            using var reader = new StreamReader(req.Body);
+            var body = await reader.ReadToEndAsync(ct);
+            if (Encoding.UTF8.GetByteCount(body) > 1024)
+                return await GamingProfileReader.Json(req, HttpStatusCode.BadRequest, new { error = "Request body is too large." }, ct);
+            request = string.IsNullOrWhiteSpace(body) ? new() :
+                JsonSerializer.Deserialize<RefreshRequest>(body, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                ?? throw new JsonException();
+        }
+        catch (JsonException)
+        {
+            return await GamingProfileReader.Json(req, HttpStatusCode.BadRequest, new { error = "Invalid JSON request." }, ct);
+        }
+        var platform = request.Platform?.ToLowerInvariant();
+        if (platform is not ("all" or "xbox" or "playstation"))
+            return await GamingProfileReader.Json(req, HttpStatusCode.BadRequest, new { error = "Platform must be xbox, playstation, or all." }, ct);
+        if (rateLimits.IsRateLimited("gaming:admin-refresh", 5, TimeSpan.FromMinutes(1)))
+        {
+            var limited = await GamingProfileReader.Json(req, HttpStatusCode.TooManyRequests, new { error = "Too many refresh requests. Try again in a minute." }, ct);
+            limited.Headers.Add("Retry-After", "60");
+            return limited;
+        }
+
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        timeout.CancelAfter(RequestTimeout);
+        var results = new Dictionary<string, RefreshResult>();
+        var selected = platform == "all" ? new[] { "xbox", "playstation" } : new[] { platform };
+        foreach (var name in selected)
+        {
             try
             {
-                using var reader = new System.IO.StreamReader(req.Body);
-                var body = await reader.ReadToEndAsync();
-                if (!string.IsNullOrWhiteSpace(body))
-                {
-                    var request = JsonSerializer.Deserialize<RefreshRequest>(body,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                    if (request != null && !string.IsNullOrEmpty(request.Platform))
-                    {
-                        platform = request.Platform.ToLowerInvariant();
-                    }
-                }
+                var profile = await providers.Single(p => p.Platform == name).RefreshAsync(true, timeout.Token);
+                results[name] = new("refreshed", "Connection refreshed and profile saved.", profile.LastUpdated);
             }
-            catch { /* Use default "all" */ }
-
-            var results = new System.Collections.Generic.Dictionary<string, string>();
-
-            if (platform == "all" || platform == "xbox")
+            catch (Exception ex) when (!ct.IsCancellationRequested)
             {
-                var xboxProfile = await _cacheService.GetProfileAsync("xbox");
-                await _cacheService.ClearProfileAsync("xbox");
-                results["xbox"] = xboxProfile != null
-                    ? $"Cache cleared. Last data from {xboxProfile.LastUpdated:u}. Next request will fetch fresh data."
-                    : "No cached data found. Next request will attempt to fetch from API.";
+                logger.LogError(ex, "Admin refresh failed for {Platform}; existing cache retained.", name);
+                results[name] = new("failed",
+                    name == "playstation"
+                        ? "Refresh failed; cached profile retained. Check PSN_NPSSO_TOKEN in server settings and retry."
+                        : "Refresh failed; cached profile retained. Check XBOX_API_KEY and XBOX_GAMERTAG_XUID in server settings and retry.",
+                    null);
             }
-
-            if (platform == "all" || platform == "playstation")
-            {
-                var psnProfile = await _cacheService.GetProfileAsync("playstation");
-                await _cacheService.ClearProfileAsync("playstation");
-                results["playstation"] = psnProfile != null
-                    ? $"Cache cleared. Last data from {psnProfile.LastUpdated:u}. Next request will fetch fresh data."
-                    : "No cached data found. Next request will attempt to fetch from API.";
-            }
-
-            var ok = req.CreateResponse(HttpStatusCode.OK);
-            ok.Headers.Add("Content-Type", "application/json");
-            await ok.WriteStringAsync(JsonSerializer.Serialize(new
-            {
-                message = "Gaming profile refresh initiated.",
-                platform,
-                results,
-                timestamp = DateTimeOffset.UtcNow
-            }));
-            return ok;
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error refreshing gaming profiles");
-            var error = req.CreateResponse(HttpStatusCode.InternalServerError);
-            error.Headers.Add("Content-Type", "application/json");
-            await error.WriteStringAsync(JsonSerializer.Serialize(new
-            {
-                error = "An error occurred refreshing gaming profiles."
-            }));
-            return error;
-        }
+        var success = results.Values.All(r => r.Status == "refreshed");
+        var response = await GamingProfileReader.Json(req, success ? HttpStatusCode.OK : HttpStatusCode.BadGateway,
+            new { platform, results, timestamp = DateTimeOffset.UtcNow }, ct);
+        response.Headers.Add("Cache-Control", "no-store");
+        return response;
     }
 
-    private class RefreshRequest
+    /// <summary>Selects which gaming connection to refresh.</summary>
+    public sealed record RefreshRequest
     {
-        public string Platform { get; set; } = "all";
+        public string? Platform { get; init; } = "all";
     }
+
+    /// <summary>Outcome of refreshing a single gaming connection.</summary>
+    public sealed record RefreshResult(string Status, string Message, DateTimeOffset? LastUpdated);
 }

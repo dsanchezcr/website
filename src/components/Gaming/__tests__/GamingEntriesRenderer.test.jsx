@@ -149,6 +149,29 @@ describe('GamingEntriesRenderer', () => {
     expect(titles[1]).toBe('Rank 2 Game');
   });
 
+  it('places manual ranks before newest-added games and keeps legacy games last', () => {
+    render(<GamingEntriesRenderer items={[
+      { id: 'legacy', title: 'Legacy Game', order: 900 },
+      { id: 'old', title: 'Older Game', createdAt: '2026-09-01T00:00:00Z', order: 500 },
+      { id: 'new', title: 'Newest Game', createdAt: '2026-09-15T00:00:00Z' },
+      { id: 'pin2', title: 'Pinned Second', manualOrder: 2 },
+      { id: 'pin1', title: 'Pinned First', manualOrder: 1 },
+    ]} />);
+    expect(screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent)).toEqual([
+      'Pinned First', 'Pinned Second', 'Newest Game', 'Older Game', 'Legacy Game',
+    ]);
+  });
+
+  it('uses deterministic IDs for tied ranks and dates without changing the input', () => {
+    const entries = [
+      { id: 'b', title: 'Game B', createdAt: '2026-09-15T00:00:00Z' },
+      { id: 'a', title: 'Game A', createdAt: '2026-09-15T00:00:00Z' },
+    ];
+    render(<GamingEntriesRenderer items={entries} />);
+    expect(screen.getAllByRole('heading', { level: 3 }).map(h => h.textContent)).toEqual(['Game A', 'Game B']);
+    expect(entries[0].id).toBe('b');
+  });
+
   it('paginates items when count exceeds itemsPerPage', () => {
     const items = Array.from({ length: 15 }, (_, i) => ({
       type: 'card',

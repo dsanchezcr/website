@@ -2,7 +2,6 @@
 export const config = {
   // Feature flags - toggle features on/off
   features: {
-    recentVisits: true,     // OnlineStatusWidget - shows visitor count (last 24 hours)
     weather: true,          // WeatherWidget - shows weather on homepage
     aiChat: true,           // NLWebChat - AI assistant chat widget
   },
@@ -25,7 +24,6 @@ export const config = {
     contact: '/api/contact',
     verify: '/api/verify',
     weather: '/api/weather',
-    onlineUsers: '/api/online-users',
     chat: '/api/nlweb/ask',
     health: '/api/health',
     healthConfig: '/api/health/config',
@@ -49,8 +47,8 @@ export const config = {
     // Admin-only AI content generation (Foundry): POST expands a brief prompt into localized
     // (en/es/pt) text in the site's tone. Same role gate as the CRUD endpoints.
     adminGenerate: '/api/content-admin/ai/generate',
-    // Admin-only IMDb synchronization endpoint for watchlist/recently watched imports.
-    adminImdbSync: '/api/content-admin/imdb/sync',
+    // Server-configured TMDB account sync (admin role or automation key).
+    adminTmdbSync: '/api/content-admin/tmdb/sync',
   },
   
   // Production domains
@@ -93,4 +91,3 @@ export const config = {
     return '';
   }
 };
-

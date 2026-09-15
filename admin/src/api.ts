@@ -100,14 +100,16 @@ export interface LocalizedText {
   pt: string;
 }
 
-export interface ImdbSyncRequest {
-  watchlistUrl?: string;
-  ratingsUrl?: string;
+export interface TmdbSyncRequest {
   dryRun?: boolean;
   maxItems?: number;
+  continuationToken?: string | null;
 }
 
-export interface ImdbSyncResult {
+export interface TmdbSyncResult {
+  dryRun: boolean;
+  completed: boolean;
+  continuationToken: string | null;
   watchlistImported: number;
   recentlyImported: number;
   moviesUpdated: number;
@@ -117,6 +119,29 @@ export interface ImdbSyncResult {
   deleted: number;
   skipped: number;
   warnings: string[];
+}
+
+export class TmdbSyncError extends Error {
+  constructor(
+    message: string,
+    public readonly retryable: boolean,
+    public readonly partialResult?: TmdbSyncResult,
+  ) {
+    super(message);
+    this.name = 'TmdbSyncError';
+  }
+}
+
+function isTmdbSyncResult(value: unknown): value is TmdbSyncResult {
+  if (!value || typeof value !== 'object') return false;
+  const result = value as Record<string, unknown>;
+  return typeof result.dryRun === 'boolean' && typeof result.completed === 'boolean' &&
+    (result.continuationToken === null || typeof result.continuationToken === 'string') &&
+    (!result.completed || result.continuationToken === null) &&
+    ['watchlistImported', 'recentlyImported', 'moviesUpdated', 'seriesUpdated',
+      'created', 'replaced', 'deleted', 'skipped'].every(key =>
+      typeof result[key] === 'number' && Number.isSafeInteger(result[key]) && result[key] >= 0) &&
+    Array.isArray(result.warnings) && result.warnings.every(warning => typeof warning === 'string');
 }
 
 /**
@@ -140,15 +165,53 @@ export async function generateLocalizedText(
 }
 
 /**
- * Triggers admin-only IMDb sync for watchlist and recently watched/completed content.
- * URLs are optional when server-side IMDB_WATCHLIST_URL / IMDB_RATINGS_URL env vars are set.
+ * Uses only the TMDB account configured on the server. Credentials never enter the browser.
  */
-export async function syncImdbContent(payload: ImdbSyncRequest): Promise<ImdbSyncResult> {
-  const res = await fetch(`${BASE}/imdb/sync`, {
+export async function syncTmdbContent(payload: TmdbSyncRequest): Promise<TmdbSyncResult> {
+  const res = await fetch(`${BASE}/tmdb/sync`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
-  if (!res.ok) throw new Error(await parseError(res));
-  return (await res.json()) as ImdbSyncResult;
+  let body: unknown;
+  try {
+    body = await res.json();
+  } catch {
+    throw new Error(`Invalid TMDB sync response (HTTP ${res.status}).`);
+  }
+  if (!res.ok) {
+    const error = body && typeof body === 'object' ? body as Record<string, unknown> : {};
+    throw new TmdbSyncError(
+      typeof error.error === 'string' ? error.error : `TMDB sync failed (HTTP ${res.status}).`,
+      error.retryable === true && (res.status === 500 || res.status === 504),
+      isTmdbSyncResult(error.partialResult) ? error.partialResult : undefined,
+    );
+  }
+  if (!isTmdbSyncResult(body) || body.dryRun !== (payload.dryRun ?? true) || (!body.completed && !body.continuationToken)) {
+    throw new Error('Invalid TMDB sync progress response.');
+  }
+  return body;
+}
+
+export type GamingPlatform = 'xbox' | 'playstation';
+export interface GamingRefreshResult {
+  platform: GamingPlatform | 'all';
+  results: Partial<Record<GamingPlatform, {
+    status: 'refreshed' | 'failed';
+    message: string;
+    lastUpdated: string | null;
+  }>>;
+}
+
+export async function refreshGamingProfiles(platform: GamingPlatform | 'all'): Promise<GamingRefreshResult> {
+  const res = await fetch('/api/gaming/refresh', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ platform }),
+  });
+  // A provider failure includes per-connection outcomes so partial success stays visible.
+  if (!res.ok && res.status !== 502) throw new Error(await parseError(res));
+  const body = await res.json() as GamingRefreshResult;
+  if (!body.results || Object.keys(body.results).length === 0) throw new Error('Invalid gaming refresh response.');
+  return body;
 }

@@ -22,6 +22,20 @@ function safeHttpUrl(value: unknown): string | undefined {
   return /^https?:\/\//i.test(cleaned) ? cleaned : undefined;
 }
 
+/**
+ * Build a canonical TMDB URL only for valid trusted shape:
+ * - mediaType limited to movie/tv
+ * - tmdbId limited to positive safe integer
+ * - protocol/host fixed to https://www.themoviedb.org
+ */
+function safeTmdbUrl(mediaType: unknown, tmdbId: unknown): string | undefined {
+  if ((mediaType !== 'movie' && mediaType !== 'tv') || typeof tmdbId !== 'number' || !Number.isSafeInteger(tmdbId) || tmdbId <= 0) {
+    return undefined;
+  }
+  const url = new URL(`https://www.themoviedb.org/${mediaType}/${tmdbId}`);
+  return url.protocol === 'https:' && url.hostname === 'www.themoviedb.org' ? url.toString() : undefined;
+}
+
 /** Keep only characters valid for the id, neutralizing any injected URL/HTML syntax. */
 function sanitizeId(value: unknown, disallowed: RegExp): string {
   return typeof value === 'string' ? value.replace(disallowed, '') : '';
@@ -30,24 +44,25 @@ function sanitizeId(value: unknown, disallowed: RegExp): string {
 /**
  * Visual preview of a document's media. Uses only sources permitted by the site's CSP:
  * images (img-src https:), a YouTube embed (frame-src youtube-nocookie), and external links
- * for IMDb and OpenStreetMap (opened in a new tab — no iframe needed).
+ * for TMDB, IMDb and OpenStreetMap (opened in a new tab — no iframe needed).
  */
 export default function MediaPreview({ doc }: { doc: Doc }) {
   const image = safeHttpUrl(firstString(doc, IMAGE_KEYS));
   const youtubeId = sanitizeId(doc.youtubeVideoId, /[^A-Za-z0-9_-]/g);
   const titleId = sanitizeId(doc.titleId, /[^A-Za-z0-9]/g);
+  const tmdbUrl = safeTmdbUrl(doc.mediaType, doc.tmdbId);
   const mapCenter = Array.isArray(doc.mapCenter) ? (doc.mapCenter as unknown[]) : null;
   const hasMap = !!mapCenter && mapCenter.length === 2 && typeof mapCenter[0] === 'number' && typeof mapCenter[1] === 'number';
   const mapLat = hasMap ? Number(mapCenter![0]) : 0;
   const mapLng = hasMap ? Number(mapCenter![1]) : 0;
   const mapZoom = typeof doc.mapZoom === 'number' ? doc.mapZoom : 12;
 
-  const nothing = !image && !youtubeId && !titleId && !hasMap;
+  const nothing = !image && !youtubeId && !titleId && !tmdbUrl && !hasMap;
 
   return (
     <div className="admin-media">
       <h3>Preview</h3>
-      {nothing && <p className="admin-muted">No previewable media (image, YouTube, IMDb, or map).</p>}
+      {nothing && <p className="admin-muted">No previewable media (image, YouTube, TMDB, IMDb, or map).</p>}
 
       {image && (
         <div className="admin-media-block">
@@ -76,6 +91,13 @@ export default function MediaPreview({ doc }: { doc: Doc }) {
           <a className="admin-link" href={`https://www.youtube.com/watch?v=${encodeURIComponent(youtubeId)}`} target="_blank" rel="noreferrer">
             Open on YouTube ↗
           </a>
+        </div>
+      )}
+
+      {tmdbUrl && (
+        <div className="admin-media-block">
+          <div className="admin-media-label">TMDB</div>
+          <a className="admin-link" href={tmdbUrl} target="_blank" rel="noreferrer">Open on TMDB ↗</a>
         </div>
       )}
 

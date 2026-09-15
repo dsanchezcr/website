@@ -2,9 +2,12 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useLocale } from '@site/src/hooks';
 import MediaCard from './MediaCard';
 import Pagination from '../Pagination';
+import TmdbAttribution from './TmdbAttribution';
+import { mediaTranslations } from './mediaTranslations';
 
-const MediaCardList = ({ items, category, itemsPerPage = 10 }) => {
+const MediaCardList = ({ items = [], category, contentType, itemsPerPage = 10 }) => {
   const locale = useLocale();
+  const text = mediaTranslations[locale] || mediaTranslations.en;
   const [currentPage, setCurrentPage] = useState(1);
 
   const filtered = useMemo(
@@ -16,6 +19,13 @@ const MediaCardList = ({ items, category, itemsPerPage = 10 }) => {
           const aOrder = Number.isFinite(a.order) ? a.order : Number.POSITIVE_INFINITY;
           const bOrder = Number.isFinite(b.order) ? b.order : Number.POSITIVE_INFINITY;
           return aOrder - bOrder;
+        }
+        const aTmdb = a.syncSource === 'tmdb';
+        const bTmdb = b.syncSource === 'tmdb';
+        if (aTmdb !== bTmdb) return aTmdb ? -1 : 1;
+        if (aTmdb && bTmdb) {
+          const snapshot = (Date.parse(b.syncedAt) || 0) - (Date.parse(a.syncedAt) || 0);
+          if (snapshot) return snapshot;
         }
         const aOrder = Number.isFinite(a.order) ? a.order : Number.NEGATIVE_INFINITY;
         const bOrder = Number.isFinite(b.order) ? b.order : Number.NEGATIVE_INFINITY;
@@ -38,7 +48,7 @@ const MediaCardList = ({ items, category, itemsPerPage = 10 }) => {
   if (!filtered.length) {
     return (
       <p style={{ textAlign: 'center', color: 'var(--ifm-font-color-secondary)' }}>
-        No titles to display yet.
+        {text.empty}
       </p>
     );
   }
@@ -46,7 +56,12 @@ const MediaCardList = ({ items, category, itemsPerPage = 10 }) => {
   return (
     <div>
       {paginated.map(item => (
-        <MediaCard key={item.titleId} {...item} locale={locale} />
+        <MediaCard
+          key={`${item.category || category}:${item.id || `${item.mediaType || contentType}:${item.tmdbId || item.titleId}`}`}
+          {...item}
+          mediaType={item.mediaType || (contentType === 'series' ? 'tv' : 'movie')}
+          locale={locale}
+        />
       ))}
       <Pagination
         currentPage={currentPage}
@@ -54,6 +69,7 @@ const MediaCardList = ({ items, category, itemsPerPage = 10 }) => {
         onPageChange={setCurrentPage}
         locale={locale}
       />
+      {filtered.some(item => item.tmdbId) && <TmdbAttribution locale={locale} />}
     </div>
   );
 };

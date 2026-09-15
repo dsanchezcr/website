@@ -83,13 +83,6 @@ param azureOpenAIKey string = ''
 @description('Microsoft Foundry deployment name.')
 param azureOpenAIDeployment string = 'gpt-4'
 
-@description('Google Analytics Property ID for the online users widget.')
-param googleAnalyticsPropertyId string = ''
-
-@description('Google Analytics credentials JSON string.')
-@secure()
-param googleAnalyticsCredentialsJson string = ''
-
 @description('The public facing website URL.')
 param websiteUrl string = 'https://dsanchezcr.com'
 
@@ -248,10 +241,6 @@ resource staticWebAppSettings 'Microsoft.Web/staticSites/config@2024-04-01' = {
     // Reindex API authentication
     REINDEX_SECRET_KEY: reindexSecretKey
     
-    // Google Analytics
-    GOOGLE_ANALYTICS_PROPERTY_ID: googleAnalyticsPropertyId
-    GOOGLE_ANALYTICS_CREDENTIALS_JSON: googleAnalyticsCredentialsJson
-    
     // Website configuration
     WEBSITE_URL: websiteUrl
     API_URL: websiteUrl
@@ -313,7 +302,6 @@ output apiEndpoints object = {
   contact: 'https://${staticWebApp.properties.defaultHostname}/api/contact'
   verify: 'https://${staticWebApp.properties.defaultHostname}/api/verify'
   weather: 'https://${staticWebApp.properties.defaultHostname}/api/weather'
-  onlineUsers: 'https://${staticWebApp.properties.defaultHostname}/api/online-users'
   chat: 'https://${staticWebApp.properties.defaultHostname}/api/nlweb/ask'
   health: 'https://${staticWebApp.properties.defaultHostname}/api/health'
   reindex: 'https://${staticWebApp.properties.defaultHostname}/api/reindex'

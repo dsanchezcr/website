@@ -5,7 +5,7 @@
 ## Core Principles
 
 1. **User-first**: Every change must benefit the end user — readers, visitors, or collaborators
-2. **Static-first**: Pre-render content at build time; use API calls only for dynamic data (weather, gaming profiles, chat, analytics)
+2. **Static-first**: Pre-render content at build time; use API calls only for dynamic data (weather, gaming profiles, chat)
 3. **Explicit over implicit**: No hidden dependencies, magical abstractions, or undocumented conventions
 4. **Specification before implementation**: Non-trivial features must have a spec before code
 
@@ -18,7 +18,7 @@
 | Backend Runtime | .NET Isolated Worker | 9.0 | Azure Functions programming model |
 | Hosting | Azure Static Web Apps | Managed Functions | Single deployment unit |
 | Infrastructure | Bicep | Latest | No Terraform, no ARM templates |
-| Testing (Frontend) | Vitest | 3.x | Behavior-focused, deterministic |
+| Testing (Frontend) | Vitest | 5.x | Behavior-focused, deterministic |
 | Testing (Backend) | xUnit | Latest | .NET test runner |
 | Testing (E2E) | Playwright | Latest | Chromium, smoke tests |
 | CI/CD | GitHub Actions | Latest | Single workflow for deploy |
@@ -59,7 +59,7 @@
 - **Incompatible transitive dependencies**: If two packages conflict (e.g., AI SDK major version mismatch), remove the less critical package and replicate its functionality in code. Never keep incompatible packages together.
 - **Security vulnerabilities**: Fix immediately by updating the vulnerable package or its override. Use `npm audit` and `dotnet list package --vulnerable`.
 - **Overrides/resolutions**: Only use npm `overrides` to fix transitive dependency vulnerabilities. Use `^x.y.z` syntax (not `>=`) for deterministic installs.
-- **Pre-release packages**: Only acceptable when no stable version exists (e.g., `Google.Analytics.Data.V1Beta`).
+- **Pre-release packages**: Only acceptable when no stable version exists.
 
 ## Content Standards
 

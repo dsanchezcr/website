@@ -45,10 +45,12 @@
 
 ### Movies & TV Content
 - Data stored in Azure Cosmos DB (`content-movies` and `content-series` containers)
-- Each entry requires: `titleId` (IMDb), `myRating` (1-10), `review` object (`en`, `es`, `pt`), `category`
+- Identity is `tmdbId` (positive integer) plus `mediaType` (`movie`/`tv`), or legacy manual IMDb `titleId`. Preserve old manual documents.
+- TMDB sync stores localized `titleTranslations`, `overview`, `genresTranslations` in en/es/pt, poster path and community rating; public cards render stored metadata only.
+- Include `myRating` (TMDB 0.5–10 half steps, null if unrated), trilingual `review`, and `category`; sync preserves existing reviews/unknown fields using ETags and never deletes or changes manual top lists.
 - Use `ApiMediaCardList` component in MDX pages to fetch and render from the content API
 - Movie categories: `recently-watched`, `top-movies`, `watchlist`
-- TV categories: `currently-watching`, `completed`, `watchlist`
+- TV categories: `currently-watching`, `completed`, `watchlist`; `top-series`/`top-tv` remain manually ordered when present.
 
 ### i18n Patterns
 For Docusaurus content (MDX docs/blog):

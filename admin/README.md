@@ -13,7 +13,7 @@ shipped inside the existing Static Web App at `/admin`.
 
 ## Prerequisites
 
-- Node.js 22+
+- Node.js matching the root [`package.json`](../package.json) engine range (22.22.2+, 24.15.0+, or 26+).
 - .NET 9 SDK
 - [Azure Static Web Apps CLI](https://github.com/Azure/static-web-apps-cli): `npm i -g @azure/static-web-apps-cli`
 - [Azure Functions Core Tools v4](https://learn.microsoft.com/azure/azure-functions/functions-run-local) (for the API)
@@ -135,6 +135,60 @@ are what the admin API actually uses to read/write data.
    can't substitute env vars in `openIdIssuer`, and the build fails fast if the variable is unset.
 
 ## How it fits together
+
+### TMDB connection and media editing
+
+Open **Movies** or **Series** for the TMDB connection panel. First configure the
+server account using the [TMDB setup guide](../.github/repo-docs/tmdb-setup.md).
+Credentials stay in server settings; the panel uses your signed-in admin role.
+
+**Preview TMDB sync** is the default and makes no database writes. The panel
+automatically follows 20-document batches, displays cumulative counts, and only
+reports completion after the final batch. For explicit retryable failures,
+**Resume interrupted sync** continues from acknowledged progress. Earlier
+successful batches remain saved; they are not rolled back or deleted. Closing
+the panel stops requesting further batches. Changing options starts a new chain.
+Uncheck **Dry run** and start **Sync TMDB** after reviewing the preview.
+
+Imported entries can use a TMDB ID without an IMDb ID. The form supports TMDB
+ratings, en/es/pt titles and overviews, stored posters, and TMDB preview links.
+Legacy IMDb-only documents still work. Personal TMDB ratings use half-point
+increments; an empty rating means unrated. Unknown fields and localized genre
+arrays are preserved (edit nested arrays via **Raw JSON**).
+
+Non-top lists, including the admin grid, follow the TMDB newest-added snapshot
+order. **Top Movies / Top TV Shows** retain manually editable ascending **Order**.
+Imported non-top order and sync ownership fields are read-only in the typed form.
+Do not change ownership/snapshot fields through Raw JSON unless repairing data.
+Sync preserves manually curated top documents, reviews, and unrelated fields.
+Daily automation is configured in the setup guide; it runs only after deployment
+and server/GitHub configuration.
+
+### Gaming connections and ordering
+
+Open **Gaming** to refresh Xbox, PlayStation, or both connections. The action
+fetches fresh data immediately and reports each provider's result; it does not
+import library entries into curated game cards. Your signed-in `admin` role
+authorizes the request, so you do not need to paste a refresh key into the UI.
+Automation can still use `X-Gaming-Refresh-Key` with `GAMING_REFRESH_KEY`.
+
+If PlayStation authentication expires, obtain a new NPSSO token and update
+`PSN_NPSSO_TOKEN` in the server app settings before clicking **Refresh PlayStation**.
+Manual refresh bypasses the cached access token. Xbox uses `XBOX_API_KEY` and
+`XBOX_GAMERTAG_XUID`. Failed refreshes retain the last working profile rather
+than clearing it. Public widgets retain their normal browser cache lifetimes.
+
+New gaming cards automatically receive a server-side `createdAt` timestamp.
+Leave **Manual rank** empty for newest-added-first ordering; ordinary edits
+preserve the creation timestamp. Set a positive manual rank to pin an entry
+ahead of automatic entries (1 first), or choose **Use automatic ordering** to
+clear it. **Top Games** continues to use ascending **Order** instead. Older
+documents without a creation timestamp keep their existing descending `order`
+behind dated entries; historical creation dates are not guessed from Cosmos'
+last-modified timestamp.
+
+The API sorts each curated platform partition before pagination, including
+legacy entries with missing fields. No database migration or new index is needed.
 
 ```
 Browser ──/admin──► SWA (static)            build/admin/index.html  (this SPA)

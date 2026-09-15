@@ -218,3 +218,18 @@ body {
 .admin-modal-actions { display: flex; justify-content: flex-end; gap: 0.5rem; }
 .admin-error { background: #fef2f2; border: 1px solid #fecaca; color: var(--admin-danger); padding: 0.5rem 0.7rem; border-radius: var(--admin-radius); font-size: 0.82rem; margin-bottom: 0.75rem; }
 .admin-error-list { margin: 0 0 0.6rem; padding-left: 1.2rem; color: var(--admin-danger); font-size: 0.8rem; }
+.admin-sync-panel {
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.admin-sync-panel h3 { margin-top: 0; }
+.admin-sync-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.admin-sync-controls label { display: flex; align-items: center; gap: 0.5rem; }
+.admin-sync-controls input[type="number"] { width: 6rem; }

@@ -44,11 +44,13 @@ function asLocalizedObject(v: unknown): Record<string, string> {
   return {};
 }
 
-function LocalizedInput({ value, onChange }: { value: unknown; onChange: (v: unknown) => void }) {
+function LocalizedInput({ label, value, onChange, requireAllLocales = false }: {
+  label: string; value: unknown; onChange: (v: unknown) => void; requireAllLocales?: boolean;
+}) {
   const obj = asLocalizedObject(value);
   const set = (loc: string, text: string) => {
-    const next = { ...obj };
-    if (text === '') delete next[loc];
+    const next: Record<string, string> = requireAllLocales ? { en: '', es: '', pt: '', ...obj } : { ...obj };
+    if (text === '' && !requireAllLocales) delete next[loc];
     else next[loc] = text;
     onChange(Object.keys(next).length ? next : undefined);
   };
@@ -57,7 +59,7 @@ function LocalizedInput({ value, onChange }: { value: unknown; onChange: (v: unk
       {LOCALES.map((loc) => (
         <label key={loc} className="admin-localized-row">
           <span className="admin-localized-tag">{loc}</span>
-          <textarea rows={2} value={obj[loc] ?? ''} onChange={(e) => set(loc, e.target.value)} />
+          <textarea rows={2} aria-label={`${label} (${loc})`} value={obj[loc] ?? ''} onChange={(e) => set(loc, e.target.value)} />
         </label>
       ))}
     </div>
@@ -83,7 +85,7 @@ function LocalizedOrStringInput({ label, value, onChange }: { label: string; val
       {mode === 'string' ? (
         <textarea rows={2} aria-label={label} value={typeof value === 'string' ? value : ''} onChange={(e) => onChange(e.target.value)} />
       ) : (
-        <LocalizedInput value={value} onChange={onChange} />
+        <LocalizedInput label={label} value={value} onChange={onChange} />
       )}
     </div>
   );
@@ -163,7 +165,7 @@ export function FieldInput({ field, value, isNew, onChange }: FieldProps) {
         </select>
       );
     case 'localized':
-      return <LocalizedInput value={value} onChange={onChange} />;
+      return <LocalizedInput label={aria} value={value} onChange={onChange} requireAllLocales={field.requireAllLocales} />;
     case 'localizedOrString':
       return <LocalizedOrStringInput label={aria} value={value} onChange={onChange} />;
     case 'coords':
@@ -196,7 +198,7 @@ export function DynamicField({ ariaLabel, value, onChange }: { ariaLabel: string
     return <input type="text" aria-label={ariaLabel} value={value} onChange={(e) => onChange(e.target.value)} />;
   }
   if (isLocalizedLike(value)) {
-    return <LocalizedInput value={value} onChange={onChange} />;
+    return <LocalizedInput label={ariaLabel} value={value} onChange={onChange} />;
   }
   // Arrays / nested objects: shown read-only here; edit them via the Raw JSON tab.
   return <pre className="admin-readonly-json">{JSON.stringify(value, null, 2)}</pre>;
