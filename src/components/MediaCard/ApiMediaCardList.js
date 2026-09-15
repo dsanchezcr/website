@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import { config } from '@site/src/config/environment';
 import MediaCardList from './MediaCardList';
+import { useLocale } from '@site/src/hooks';
+import { mediaTranslations } from './mediaTranslations';
 
 const VALID_CONTENT_TYPES = ['movies', 'series'];
 
@@ -11,17 +13,19 @@ const VALID_CONTENT_TYPES = ['movies', 'series'];
  * replacing the previous pattern of importing static JSON at build time.
  */
 const ApiMediaCardList = ({ contentType, category }) => {
+  const locale = useLocale();
+  const text = mediaTranslations[locale] || mediaTranslations.en;
   if (!VALID_CONTENT_TYPES.includes(contentType)) {
-    return <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--ifm-color-danger)' }}>Error: Invalid content type &quot;{contentType}&quot;. Expected &quot;movies&quot; or &quot;series&quot;.</div>;
+    return <div role="alert">{text.invalidType}</div>;
   }
   return (
-    <BrowserOnly fallback={<div style={{ textAlign: 'center', padding: '2rem', color: 'var(--ifm-font-color-secondary)' }}>Loading content...</div>}>
-      {() => <ApiMediaCardListInner contentType={contentType} category={category} />}
+    <BrowserOnly fallback={<div role="status">{text.loading}</div>}>
+      {() => <ApiMediaCardListInner contentType={contentType} category={category} text={text} />}
     </BrowserOnly>
   );
 };
 
-const ApiMediaCardListInner = ({ contentType, category }) => {
+const ApiMediaCardListInner = ({ contentType, category, text }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -46,10 +50,11 @@ const ApiMediaCardListInner = ({ contentType, category }) => {
         }
 
         const data = await response.json();
-        setItems(data);
+        if (!Array.isArray(data)) throw new Error('Invalid content response');
+        if (!controller.signal.aborted) setItems(data);
       } catch (err) {
-        if (err.name !== 'AbortError') {
-          setError(err.message);
+        if (!controller.signal.aborted && err.name !== 'AbortError') {
+          setError(true);
         }
       } finally {
         if (!controller.signal.aborted) {
@@ -63,14 +68,14 @@ const ApiMediaCardListInner = ({ contentType, category }) => {
   }, [contentType, category]);
 
   if (loading) {
-    return <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--ifm-font-color-secondary)' }}>Loading content...</div>;
+    return <div role="status">{text.loading}</div>;
   }
 
   if (error) {
-    return <div style={{ textAlign: 'center', padding: '2rem', color: 'var(--ifm-color-danger)' }}>Error: {error}</div>;
+    return <div role="alert">{text.error}</div>;
   }
 
-  return <MediaCardList items={items} category={category} />;
+  return <MediaCardList items={items} category={category} contentType={contentType} />;
 };
 
 export default ApiMediaCardList;

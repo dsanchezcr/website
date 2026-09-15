@@ -284,18 +284,6 @@
     "message": "Marcadores",
     "description": "The title of the tag list page"
   },
-  "onlineStatus.usersOnline": {
-    "message": "{count} online",
-    "description": "Number of users currently online"
-  },
-  "onlineStatus.usersLastHour": {
-    "message": "{count} usuários na última hora",
-    "description": "Número de usuários que visitaram na última hora"
-  },
-  "onlineStatus.loading": {
-    "message": "Carregando...",
-    "description": "Loading text for online status widget"
-  },
   "exchangeRatesWidget.loading": {
     "message": "Carregando taxas de câmbio...",
     "description": "Loading message for exchange rates widget"
@@ -327,10 +315,6 @@
   "exchangeRatesWidget.dollars": {
     "message": "Dólares:",
     "description": "Dollars label"
-  },
-  "onlineStatus.usersLast24Hours": {
-    "message": "{count} visitantes em 24h",
-    "description": "Number of users who visited in the last 24 hours"
   },
   "theme.colorToggle.ariaLabel.mode.system": {
     "message": "modo do sistema",

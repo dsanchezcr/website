@@ -40,19 +40,62 @@ public static class ContentValidator
         {
             case "movies":
             case "series":
-                RequireString(doc, "titleId", errors, required: true);
+                // Keep legacy IMDb-only manual records valid; TMDB does not always
+                // have an IMDb external ID, so positive tmdbId is an alternative.
+                RequireString(doc, "titleId", errors, required: IsAbsent(doc["tmdbId"]));
+                RequireInt(doc, "tmdbId", errors);
+                RequireNumberInRange(doc, "tmdbId", 1, int.MaxValue, errors);
+                RequireString(doc, "mediaType", errors, required: !IsAbsent(doc["tmdbId"]));
+                if (!IsAbsent(doc["mediaType"]) &&
+                    AsString(doc["mediaType"]) != (type.Slug == "movies" ? "movie" : "tv"))
+                    errors.Add($"Field 'mediaType' must be '{(type.Slug == "movies" ? "movie" : "tv")}' for this container.");
+                RequireString(doc, "posterPath", errors, required: false);
+                if (!IsAbsent(doc["posterPath"]) && !Regex.IsMatch(AsString(doc["posterPath"]) ?? "", @"^/[a-zA-Z0-9_-]+\.(jpg|png|webp)$"))
+                    errors.Add("Field 'posterPath' must be a TMDB image path, not a URL.");
+                RequireLocalized(doc, "titleTranslations", errors, allowPlainString: false);
+                RequireLocalized(doc, "overview", errors, allowPlainString: false);
+                foreach (var field in new[] { "titleTranslations", "overview" })
+                    if (doc[field] is JsonObject localizedMedia)
+                        foreach (var locale in new[] { "en", "es", "pt" })
+                            if (Kind(localizedMedia[locale]) != JsonValueKind.String)
+                                errors.Add($"Field '{field}.{locale}' must be a string.");
+                if (!IsAbsent(doc["genresTranslations"]))
+                {
+                    if (doc["genresTranslations"] is not JsonObject genreTranslations)
+                        errors.Add("Field 'genresTranslations' must be an en/es/pt object of string arrays.");
+                    else
+                        foreach (var locale in new[] { "en", "es", "pt" })
+                        {
+                            if (IsAbsent(genreTranslations[locale]))
+                                errors.Add($"Field 'genresTranslations.{locale}' is required.");
+                            else RequireStringArray(genreTranslations, locale, errors);
+                        }
+                }
+                RequireNumberInRange(doc, "tmdbRating", 0, 10, errors);
                 RequireString(doc, "title", errors, required: false);
                 RequireString(doc, "imageUrl", errors, required: false);
                 RequireInt(doc, "year", errors);
                 RequireStringArray(doc, "genres", errors);
                 RequireNumberInRange(doc, "imdbRating", 0, 10, errors);
                 RequireNumberInRange(doc, "myRating", 0, 10, errors);
+                if (!IsAbsent(doc["tmdbId"]) && Kind(doc["myRating"]) == JsonValueKind.Number &&
+                    TryGetDouble(doc["myRating"]!, out var mediaRating) &&
+                    (mediaRating < 0.5 || mediaRating * 2 != Math.Truncate(mediaRating * 2)))
+                    errors.Add("TMDB 'myRating' must be 0.5–10 in half-point increments, or null for unrated.");
+                RequireString(doc, "syncSource", errors, required: false);
+                if (!IsAbsent(doc["syncedAt"]) && !DateTimeOffset.TryParse(AsString(doc["syncedAt"]), out _))
+                    errors.Add("Field 'syncedAt' must be an ISO-8601 timestamp.");
                 RequireInt(doc, "order", errors);
                 RequireLocalized(doc, "review", errors, allowPlainString: false);
                 break;
 
             case "gaming":
                 RequireInt(doc, "order", errors);
+                RequireInt(doc, "manualOrder", errors);
+                RequireNumberInRange(doc, "manualOrder", 1, int.MaxValue - 1, errors);
+                if (!IsAbsent(doc["createdAt"]) &&
+                    (!DateTimeOffset.TryParse(AsString(doc["createdAt"]), out _)))
+                    errors.Add("Field 'createdAt' must be an ISO-8601 timestamp.");
                 RequireGamingStatus(doc, errors);
                 RequireLocalized(doc, "title", errors, allowPlainString: true);
                 RequireLocalized(doc, "description", errors, allowPlainString: true);

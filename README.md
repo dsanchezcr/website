@@ -24,7 +24,7 @@ The site uses **Azure Static Web Apps** with a **managed API** architecture:
 │  │  • Blog posts       │    │  • /api/contact             │ │
 │  │  • Static pages     │    │  • /api/verify              │ │
 │  │  • i18n (en/es/pt)  │    │  • /api/weather             │ │
-│  │  • Volunteering     │    │  • /api/online-users        │ │
+│  │  • Volunteering     │    │                             │ │
 │  │  • Gaming           │    │  • /api/nlweb/ask           │ │
 │  │    (multi-platform) │    │                             │ │
 │  │                     │    │  • /api/health              │ │
@@ -65,7 +65,7 @@ Both frontend and backend are deployed together from a single repository, with t
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) v22 or later
+- [Node.js](https://nodejs.org/) matching `package.json` engines: 22.22.2+, 24.15.0+, or 26+
 - [.NET 9 SDK](https://dotnet.microsoft.com/download)
 - [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-functions/functions-run-local) v4
 - [SWA CLI](https://azure.github.io/static-web-apps-cli/) (optional, for full local emulation)
@@ -131,14 +131,13 @@ Build artifacts:
 | `/api/contact` | POST | Submit contact form (initiates email verification) |
 | `/api/verify` | GET | Complete email verification |
 | `/api/weather` | GET | Weather data for predefined locations |
-| `/api/online-users` | GET | Visitor analytics (24-hour count) |
 | `/api/nlweb/ask` | POST | AI chat assistant with RAG |
 | `/api/health` | GET | Health check for all services |
 | `/api/reindex` | POST | Update search index (called by GitHub Actions) |
 | `/api/gaming/xbox` | GET | Xbox Live profile, gamerscore, and recent games |
 | `/api/gaming/playstation` | GET | PSN profile, trophies, and recent games |
 | `/api/gaming/refresh` | POST | Admin: trigger gaming data refresh |
-| `/api/content-admin/imdb/sync` | POST | Admin/automation: sync IMDb watchlist + recently watched/completed |
+| `/api/content-admin/tmdb/sync` | POST | Admin/automation: non-destructive TMDB movie/TV watchlist and ratings sync |
 
 ## ☁️ Deployment
 
@@ -164,30 +163,38 @@ az deployment group create \
 
 See [infra/README.md](infra/README.md) for complete deployment instructions.
 
-## IMDb Sync Automation Configuration
+## TMDB Account Sync Configuration
 
-The daily IMDb sync job (`.github/workflows/imdb-sync.yml`) runs at **1:00 AM Eastern Time** and calls `/api/content-admin/imdb/sync` with a dedicated sync key.
+The daily TMDB sync job (`.github/workflows/tmdb-sync.yml`) runs at **1:00 AM Eastern Time** and calls `/api/content-admin/tmdb/sync`. Add/watchlist and rate movies/TV on your TMDB account; the site renders localized metadata stored in Cosmos, not a browser metadata API.
+
+Follow the [exact application token and account session setup](.github/repo-docs/tmdb-setup.md) before enabling sync. Preview with `{ "dryRun": true, "maxItems": 250 }`; use `dryRun: false` to persist. Manual/top entries and reviews are preserved, and sync never deletes removed/unrated titles.
+
+Each API call processes at most 20 documents within a 35-second budget. Follow
+`continuationToken` with unchanged options until `completed: true`; counters are
+cumulative. The workflow follows these batches automatically. Start a new chain
+without a token when switching from preview to persistence.
 
 ### GitHub configuration
 
 Set the following in your repository (or Environment: `Production`):
 
 **Secrets**
-- `IMDB_SYNC_KEY`: Shared secret used in `X-Imdb-Sync-Key` header.
+- `TMDB_SYNC_KEY`: Independent shared secret used in `X-Tmdb-Sync-Key`; no TMDB account credentials in GitHub.
 
 **Variables**
 - `WEBSITE_URL`: Public site URL (for example `https://dsanchezcr.com`).
-- `IMDB_SYNC_MAX_ITEMS`: Default max items per automated run (for example `250`).
+- `TMDB_SYNC_MAX_ITEMS`: Per-feed safety ceiling (default `250`, max `1000`); oversized feeds fail rather than truncate.
 
 ### Azure Static Web Apps app settings
 
 Set the following app settings in the SWA resource:
 
-- `IMDB_SYNC_KEY`: Must exactly match the GitHub secret `IMDB_SYNC_KEY`.
-- `IMDB_WATCHLIST_URL`: Public IMDb watchlist URL (for example `https://www.imdb.com/user/<id>/watchlist`).
-- `IMDB_RATINGS_URL`: Public IMDb ratings URL (for example `https://www.imdb.com/user/<id>/ratings`).
+- `TMDB_SYNC_KEY`: Must exactly match the GitHub secret `TMDB_SYNC_KEY` (admin-role calls do not require this key).
+- `TMDB_READ_ACCESS_TOKEN`: TMDB application API Read Access Token.
+- `TMDB_SESSION_ID`: Authorized v3 session for your TMDB account.
+- `TMDB_ACCOUNT_ID`: Numeric account ID verified with that token/session.
 
-If `IMDB_WATCHLIST_URL` and/or `IMDB_RATINGS_URL` are missing, the endpoint can still be run manually by passing URLs in the request body.
+All source settings are server-only; the request cannot override credentials, account or URLs. Existing Cosmos settings are required. See [API-003](specs/API-003-tmdb-sync.md) for counts, warnings, failure codes and safe retry behavior.
 
 ## 📁 Project Structure
 
@@ -196,11 +203,10 @@ If `IMDB_WATCHLIST_URL` and/or `IMDB_RATINGS_URL` are missing, the endpoint can 
 │   ├── SendEmail.cs        # Contact form endpoint
 │   ├── VerifyEmail.cs      # Email verification
 │   ├── GetWeather.cs       # Weather data
-│   ├── GetOnlineUsers.cs   # Analytics
 │   ├── ChatWithOpenAI.cs   # AI chat with RAG
 │   ├── HealthCheck.cs      # Health monitoring
 │   ├── ReindexContent.cs   # Search index updates
-│   ├── SyncImdbContent.cs  # IMDb sync endpoint for watchlist/recently watched
+│   ├── SyncTmdbContent.cs  # TMDB account sync with stored localized metadata
 │   ├── GetXboxProfile.cs   # Xbox Live profile data
 │   ├── GetPlayStationProfile.cs # PSN profile & trophies
 │   ├── RefreshGamingProfiles.cs # Admin refresh endpoint
@@ -256,7 +262,7 @@ The website includes a gaming section at `/gaming` with live profile integration
 XBOX_API_KEY                # API key from https://xbl.io
 XBOX_GAMERTAG_XUID          # Numeric Xbox User ID (XUID)
 PSN_NPSSO_TOKEN             # NPSSO token from https://ca.account.sony.com/api/v1/ssocookie
-GAMING_REFRESH_KEY          # Secret key for admin refresh endpoint
+GAMING_REFRESH_KEY          # Optional automation key; admin UI uses its signed-in role
 ```
 
 **Rotating the PSN NPSSO token (expires every ~60 days):**
@@ -269,7 +275,13 @@ stale cache, which is the signal to rotate:
 1. Sign in at [playstation.com](https://www.playstation.com) in a browser.
 2. Visit `https://ca.account.sony.com/api/v1/ssocookie` and copy the `npsso` value.
 3. Update the `PSN_NPSSO_TOKEN` application setting on the Static Web App.
-4. Trigger a refresh: `POST /api/gaming/refresh` with header `X-Gaming-Refresh-Key: <GAMING_REFRESH_KEY>`
+4. Open **Admin > Gaming > Refresh PlayStation** (or Xbox/both). The signed-in admin
+   role authorizes the request. Automation can also call `POST /api/gaming/refresh`
+   with `X-Gaming-Refresh-Key: <GAMING_REFRESH_KEY>`. Refresh fetches immediately;
+   failures are reported per provider and keep the last working cached profile.
+5. Curated game cards now sort newest-added first automatically. Use the optional
+   **Manual rank** to pin entries, or clear it to restore automatic ordering.
+   Top Games retains ascending **Order**. See [admin ordering details](admin/README.md#gaming-connections-and-ordering).
    (or re-run the *Refresh Gaming Profiles* workflow) and confirm the response reports `"isCached": false`.
 
 `/api/health` also reports the cache age per platform and degrades when data is older

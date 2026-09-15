@@ -27,6 +27,7 @@ export interface FieldDef {
   type: FieldType;
   partitionKey?: boolean;
   readOnlyOnEdit?: boolean;
+  requireAllLocales?: boolean;
   help?: string;
 }
 

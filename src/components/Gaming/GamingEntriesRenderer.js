@@ -3,6 +3,7 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import GameCard from './GameCard';
 import GameCardGroup from './GameCardGroup';
 import Pagination from '../Pagination';
+import { sortGamingEntries } from '../../utils/gamingOrder';
 
 const localizeValue = (value, localeKey) => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -43,17 +44,7 @@ const GamingEntriesRenderer = ({ items, section, itemsPerPage = 10 }) => {
   const sortedItems = useMemo(() => {
     if (!Array.isArray(items)) return [];
     const validItems = items.filter(item => item && typeof item === 'object');
-    const isTopList = section === 'topGames';
-    return validItems.slice().sort((a, b) => {
-      if (isTopList) {
-        const aOrder = Number.isFinite(a?.order) ? a.order : Number.POSITIVE_INFINITY;
-        const bOrder = Number.isFinite(b?.order) ? b.order : Number.POSITIVE_INFINITY;
-        return aOrder - bOrder;
-      }
-      const aOrder = Number.isFinite(a?.order) ? a.order : Number.NEGATIVE_INFINITY;
-      const bOrder = Number.isFinite(b?.order) ? b.order : Number.NEGATIVE_INFINITY;
-      return bOrder - aOrder;
-    });
+    return sortGamingEntries(validItems, section);
   }, [items, section]);
 
   if (!Array.isArray(sortedItems) || sortedItems.length === 0) {

@@ -2,6 +2,38 @@ import type { ContentTypeDef } from './types';
 
 export const GAMING_STATUSES = ['completed', 'playing', 'backlog', 'dropped'];
 
+const MEDIA_FIELDS: ContentTypeDef['fields'] = [
+  { key: 'id', label: 'ID', type: 'string', readOnlyOnEdit: true, help: 'Auto-generated if left blank.' },
+  { key: 'category', label: 'Category', type: 'string', partitionKey: true },
+  { key: 'tmdbId', label: 'TMDB ID', type: 'integer', help: 'Positive TMDB title ID. IMDb ID is optional when this is present.' },
+  { key: 'mediaType', label: 'Media type', type: 'string', help: 'movie for Movies, tv for Series.' },
+  { key: 'titleId', label: 'IMDb Title ID', type: 'string', help: 'e.g. tt0111161. Required only for legacy entries without a TMDB ID.' },
+  { key: 'title', label: 'Title', type: 'string', help: 'English fallback.' },
+  { key: 'titleTranslations', label: 'Localized title', type: 'localized', requireAllLocales: true },
+  { key: 'overview', label: 'Overview', type: 'localized', requireAllLocales: true },
+  { key: 'imageUrl', label: 'Poster Image URL', type: 'string' },
+  { key: 'posterPath', label: 'TMDB poster path', type: 'string', help: 'e.g. /poster.jpg, not a full URL.' },
+  { key: 'year', label: 'Year', type: 'integer' },
+  { key: 'genres', label: 'Genres', type: 'stringArray', help: 'English fallback. Localized genre arrays are preserved in Other fields.' },
+  { key: 'tmdbRating', label: 'TMDB Rating (0–10)', type: 'number' },
+  { key: 'imdbRating', label: 'IMDb Rating (0–10)', type: 'number', help: 'Legacy IMDb score, separate from TMDB.' },
+  { key: 'myRating', label: 'My Rating (0–10)', type: 'number', help: 'TMDB entries: 0.5–10 in half-point increments; empty means unrated.' },
+  { key: 'order', label: 'Order', type: 'integer', help: 'Top lists: 1 first. Other TMDB imports: managed by sync.' },
+  { key: 'review', label: 'Review', type: 'localized' },
+  { key: 'syncSource', label: 'Sync source', type: 'string', readOnlyOnEdit: true },
+  { key: 'syncAccountId', label: 'Sync account ID', type: 'integer', readOnlyOnEdit: true },
+  { key: 'syncedAt', label: 'Sync snapshot', type: 'string', readOnlyOnEdit: true, help: 'Refresh snapshot, not the date the title was added.' },
+];
+
+const MEDIA_COLUMNS: ContentTypeDef['listColumns'] = [
+  { key: 'title', label: 'Title' },
+  { key: 'tmdbId', label: 'TMDB ID' },
+  { key: 'titleId', label: 'IMDb Title' },
+  { key: 'category', label: 'Category' },
+  { key: 'myRating', label: 'Rating' },
+  { key: 'order', label: 'Order' },
+];
+
 // Field definitions per content type. These drive the typed editor; any document field NOT listed
 // here is still shown via the generic (dynamic) editor and preserved on save.
 export const CONTENT_TYPES: ContentTypeDef[] = [
@@ -10,52 +42,16 @@ export const CONTENT_TYPES: ContentTypeDef[] = [
     label: 'Movies',
     icon: '🎬',
     partitionKeyField: 'category',
-    fields: [
-      { key: 'id', label: 'ID', type: 'string', readOnlyOnEdit: true, help: 'Auto-generated if left blank.' },
-      { key: 'category', label: 'Category', type: 'string', partitionKey: true },
-      { key: 'titleId', label: 'IMDb Title ID', type: 'string', help: 'e.g. tt0111161' },
-      { key: 'title', label: 'Title', type: 'string' },
-      { key: 'imageUrl', label: 'Poster Image URL', type: 'string', help: 'Azure Blob Storage URL, e.g. https://dsanchezcrwebsite.blob.core.windows.net/images/movies/tt0111161.jpg' },
-      { key: 'year', label: 'Year', type: 'integer' },
-      { key: 'genres', label: 'Genres', type: 'stringArray' },
-      { key: 'imdbRating', label: 'IMDb Rating (0–10)', type: 'number' },
-      { key: 'myRating', label: 'My Rating (0–10)', type: 'number' },
-      { key: 'order', label: 'Order', type: 'integer' },
-      { key: 'review', label: 'Review', type: 'localized' },
-    ],
-    listColumns: [
-      { key: 'title', label: 'Title' },
-      { key: 'titleId', label: 'IMDb Title' },
-      { key: 'category', label: 'Category' },
-      { key: 'myRating', label: 'Rating' },
-      { key: 'order', label: 'Order' },
-    ],
+    fields: MEDIA_FIELDS,
+    listColumns: MEDIA_COLUMNS,
   },
   {
     slug: 'series',
     label: 'Series',
     icon: '📺',
     partitionKeyField: 'category',
-    fields: [
-      { key: 'id', label: 'ID', type: 'string', readOnlyOnEdit: true, help: 'Auto-generated if left blank.' },
-      { key: 'category', label: 'Category', type: 'string', partitionKey: true },
-      { key: 'titleId', label: 'IMDb Title ID', type: 'string', help: 'e.g. tt0903747' },
-      { key: 'title', label: 'Title', type: 'string' },
-      { key: 'imageUrl', label: 'Poster Image URL', type: 'string', help: 'Azure Blob Storage URL, e.g. https://dsanchezcrwebsite.blob.core.windows.net/images/series/tt0903747.jpg' },
-      { key: 'year', label: 'Year', type: 'integer' },
-      { key: 'genres', label: 'Genres', type: 'stringArray' },
-      { key: 'imdbRating', label: 'IMDb Rating (0–10)', type: 'number' },
-      { key: 'myRating', label: 'My Rating (0–10)', type: 'number' },
-      { key: 'order', label: 'Order', type: 'integer' },
-      { key: 'review', label: 'Review', type: 'localized' },
-    ],
-    listColumns: [
-      { key: 'title', label: 'Title' },
-      { key: 'titleId', label: 'IMDb Title' },
-      { key: 'category', label: 'Category' },
-      { key: 'myRating', label: 'Rating' },
-      { key: 'order', label: 'Order' },
-    ],
+    fields: MEDIA_FIELDS,
+    listColumns: MEDIA_COLUMNS,
   },
   {
     slug: 'gaming',
@@ -75,14 +71,18 @@ export const CONTENT_TYPES: ContentTypeDef[] = [
       { key: 'recommendation', label: 'Recommendation', type: 'localizedOrString' },
       { key: 'coOp', label: 'Co-Op', type: 'boolean' },
       { key: 'online', label: 'Online', type: 'boolean' },
-      { key: 'order', label: 'Order', type: 'integer' },
+      { key: 'manualOrder', label: 'Manual rank (optional)', type: 'integer', help: '1 first, then 2, etc., ahead of automatic entries. Leave empty for newest-added. Not used in Top Games.' },
+      { key: 'createdAt', label: 'Added at', type: 'string', readOnlyOnEdit: true, help: 'Set by the server on creation; preserved on edits. Legacy entries may have no date.' },
+      { key: 'order', label: 'Order (Top Games / legacy)', type: 'integer', help: 'Top Games: 1 first. Other lists: legacy fallback only; no need to set for new games.' },
     ],
     listColumns: [
       { key: 'title', label: 'Title' },
       { key: 'platform', label: 'Platform' },
       { key: 'section', label: 'Section' },
       { key: 'status', label: 'Status' },
-      { key: 'order', label: 'Order' },
+      { key: 'manualOrder', label: 'Manual rank' },
+      { key: 'createdAt', label: 'Added at' },
+      { key: 'order', label: 'Top / legacy rank' },
     ],
   },
   {

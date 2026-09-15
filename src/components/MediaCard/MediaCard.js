@@ -1,41 +1,48 @@
 import React from 'react';
 import styles from './styles.module.css';
+import { mediaTranslations, resolveMediaText } from './mediaTranslations';
 
-const getLocalizedReview = (review, locale) => {
-  if (!review) return '';
-  if (typeof review === 'string') return review;
-  return review[locale] || review.en || '';
-};
-
-// Movie/series metadata (title, poster image, year, genres, IMDb rating) is
-// sourced directly from Cosmos DB — no live IMDb API call is made, so the
-// card renders correctly on the very first load with no cache required.
-const MediaCard = ({ titleId, title, imageUrl, year, genres, imdbRating, myRating, review, locale = 'en' }) => {
-  const displayTitle = title || titleId;
-  const imdbUrl = `https://www.imdb.com/title/${titleId}/`;
-  const localizedReview = getLocalizedReview(review, locale);
+// Metadata comes only from stored Cosmos content. TMDB credentials and metadata
+// requests never reach the browser. IMDb-only manual cards remain compatible.
+const MediaCard = ({
+  titleId, tmdbId, mediaType, title, titleTranslations, imageUrl, posterPath,
+  year, genres, genresTranslations, overview, tmdbRating, imdbRating, myRating,
+  review, locale = 'en',
+}) => {
+  const text = mediaTranslations[locale] || mediaTranslations.en;
+  const isTmdb = Number.isInteger(tmdbId) && tmdbId > 0 && ['movie', 'tv'].includes(mediaType);
+  const displayTitle = resolveMediaText(titleTranslations, locale) || title || titleId || text.untitled;
+  const mediaUrl = isTmdb
+    ? `https://www.themoviedb.org/${mediaType}/${tmdbId}`
+    : (/^tt\d{6,12}$/.test(titleId || '') ? `https://www.imdb.com/title/${titleId}/` : null);
+  const poster = isTmdb && /^\/[a-zA-Z0-9_-]+\.(jpg|png|webp)$/.test(posterPath || '')
+    ? `https://image.tmdb.org/t/p/w500${posterPath}` : imageUrl;
+  const localizedReview = resolveMediaText(review, locale);
+  const localizedOverview = resolveMediaText(overview, locale);
+  const displayGenres = genresTranslations?.[locale] || genresTranslations?.en || genres || [];
+  const communityRating = isTmdb ? tmdbRating : imdbRating;
 
   const card = (
     <div className={styles.mediaCard}>
       <div className={styles.mediaCardContent}>
         <div className={styles.posterContainer}>
-          {imageUrl ? (
+          {poster ? (
             <img
-              src={imageUrl}
+              src={poster}
               alt={displayTitle}
               className={styles.posterImage}
               loading="lazy"
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           ) : (
-            <div className={styles.posterPlaceholder} />
+            <div className={styles.posterPlaceholder} role="img" aria-label={text.noPoster} />
           )}
           <div className={styles.ratingBadges}>
-            {imdbRating != null && (
-              <span className={styles.imdbBadge}>⭐ {Number(imdbRating).toFixed(1)}</span>
+            {communityRating != null && (
+              <span className={styles.communityBadge}>{isTmdb ? 'TMDB ' : 'IMDb '}⭐ {Number(communityRating).toFixed(1)}</span>
             )}
             {myRating != null && (
-              <span className={styles.myRatingBadge}>My: {myRating}/10</span>
+              <span className={styles.myRatingBadge}>{text.myRating}: {myRating}/10</span>
             )}
           </div>
         </div>
@@ -45,15 +52,17 @@ const MediaCard = ({ titleId, title, imageUrl, year, genres, imdbRating, myRatin
             {displayTitle}{year ? ` (${year})` : ''}
           </h3>
 
+          {localizedOverview && <p className={styles.overview}>{localizedOverview}</p>}
+
           {localizedReview && (
             <p className={styles.review}>
               💬 <em>{localizedReview}</em>
             </p>
           )}
 
-          {genres && genres.length > 0 && (
+          {displayGenres.length > 0 && (
             <div className={styles.genreChips}>
-              {genres.map(g => (
+              {displayGenres.map(g => (
                 <span key={g} className={styles.genreChip}>{g}</span>
               ))}
             </div>
@@ -63,11 +72,11 @@ const MediaCard = ({ titleId, title, imageUrl, year, genres, imdbRating, myRatin
     </div>
   );
 
-  return (
-    <a href={imdbUrl} target="_blank" rel="noopener noreferrer" className={styles.mediaCardLink}>
+  return mediaUrl ? (
+    <a href={mediaUrl} target="_blank" rel="noopener noreferrer" className={styles.mediaCardLink}>
       {card}
     </a>
-  );
+  ) : card;
 };
 
 export default MediaCard;

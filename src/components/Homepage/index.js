@@ -4,7 +4,6 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Link from '@docusaurus/Link';
 import logo from '@site/static/img/logo.png';
 import CompactWeatherWidget from '@site/src/components/WeatherWidget/CompactWeatherWidget';
-import OnlineStatusWidget from '@site/src/components/OnlineStatusWidget';
 import ErrorBoundary from '@site/src/components/ErrorBoundary';
 import { useTypewriter } from '@site/src/hooks';
 import styles from './Homepage.module.css';
@@ -45,11 +44,6 @@ export function HomepageHeader({greeting, subtitle, tagline}) {
   return (
     <header className={clsx('hero', styles.heroBanner)}>
       <div className="container">
-        <div className={styles.visitorWidgetContainer}>
-          <ErrorBoundary>
-            <OnlineStatusWidget />
-          </ErrorBoundary>
-        </div>
         <div className={styles.weatherWidgetContainer}>
           <ErrorBoundary>
             <CompactWeatherWidget />

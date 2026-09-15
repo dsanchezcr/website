@@ -3,7 +3,7 @@
   "version": "3.5.7",
   "private": true,
   "engines": {
-    "node": ">=22"
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
   "scripts": {
     "docusaurus": "docusaurus",
@@ -43,7 +43,8 @@
     "react-dom": "^19.2.8",
     "react-google-recaptcha-v3": "^1.11.0",
     "react-leaflet": "^5.0.0",
-    "react-markdown": "^10.1.0"
+    "react-markdown": "^10.1.0",
+    "image-size": "file:./scripts/image-size-compat"
   },
   "browserslist": {
     "production": [
@@ -66,12 +67,12 @@
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@tsconfig/docusaurus": "^2.0.9",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^5.0.0",
     "babel-plugin-module-resolver": "^5.0.3",
     "jsdom": "^30.0.1",
     "typescript": "^7.0.2",
     "vite": "^8.2.2",
-    "vitest": "^4.1.11"
+    "vitest": "^5.0.0"
   },
   "overrides": {
     "rolldown": "1.2.5",
@@ -81,9 +82,9 @@
     "serialize-javascript": "7.0.5",
     "@babel/core": "^7.29.7",
     "http-proxy-middleware": "^2.0.10",
-    "js-yaml": "^4.2.0",
+    "js-yaml": "^5.4.1",
     "gray-matter": {
-      "js-yaml": "3.15.0"
+      "js-yaml": "^3.15.2"
     },
     "webpack-dev-server": {
       ".": "^5.2.5",
@@ -102,6 +103,11 @@
     },
     "sockjs": {
       "uuid": "^14.0.0"
-    }
+    },
+    "undici": "^8.10.2",
+    "@11ty/gray-matter": {
+      "js-yaml": "^4.3.2"
+    },
+    "image-size": "$image-size"
   }
 }

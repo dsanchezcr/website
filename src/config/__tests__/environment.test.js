@@ -8,7 +8,6 @@ describe('environment config', () => {
         'contact',
         'verify',
         'weather',
-        'onlineUsers',
         'chat',
         'health',
         'healthConfig',
@@ -32,7 +31,6 @@ describe('environment config', () => {
 
   describe('config.features', () => {
     it('defines feature flags as booleans', () => {
-      expect(typeof config.features.recentVisits).toBe('boolean');
       expect(typeof config.features.weather).toBe('boolean');
       expect(typeof config.features.aiChat).toBe('boolean');
     });

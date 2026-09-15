@@ -3,7 +3,8 @@ import type { ContentTypeDef, Doc } from '../types';
 import { createDoc, deleteDoc, getDoc, getPartitions, listDocs, updateDoc } from '../api';
 import { cellValue } from './fields';
 import FormEditor from './FormEditor';
-import ImdbSyncPanel from './ImdbSyncPanel';
+import TmdbSyncPanel from './TmdbSyncPanel';
+import GamingConnections from './GamingConnections';
 
 export default function ContentManager({ type }: { type: ContentTypeDef }) {
   const [partitions, setPartitions] = useState<string[]>([]);
@@ -14,7 +15,9 @@ export default function ContentManager({ type }: { type: ContentTypeDef }) {
   const [editing, setEditing] = useState<{ doc: Doc; isNew: boolean; etag?: string | null } | null>(null);
 
   const refreshPartitions = useCallback(() => {
-    getPartitions(type.slug).then(setPartitions).catch(() => setPartitions([]));
+    getPartitions(type.slug).then(setPartitions).catch((e: unknown) => {
+      setError(e instanceof Error ? e.message : 'Unable to load partitions.');
+    });
   }, [type.slug]);
 
   const load = useCallback(async () => {
@@ -46,6 +49,7 @@ export default function ContentManager({ type }: { type: ContentTypeDef }) {
   const onNew = () => {
     const doc: Doc = {};
     if (partition) doc[type.partitionKeyField] = partition;
+    if (type.slug === 'movies' || type.slug === 'series') doc.mediaType = type.slug === 'movies' ? 'movie' : 'tv';
 
     if ((type.slug === 'movies' || type.slug === 'series') && partition) {
       const sameCategory = items.filter((item) => String(item[type.partitionKeyField] ?? '') === partition);
@@ -137,10 +141,18 @@ export default function ContentManager({ type }: { type: ContentTypeDef }) {
       {error && <div className="admin-error">{error}</div>}
 
       {(type.slug === 'movies' || type.slug === 'series') && (
-        <ImdbSyncPanel onSynced={async () => {
+        <TmdbSyncPanel onSynced={async () => {
           await load();
           refreshPartitions();
         }} />
+      )}
+      {type.slug === 'gaming' && <GamingConnections />}
+      {type.slug === 'gaming' && (
+        <p className="admin-muted">
+          New games sort newest-added first automatically. Set a manual rank to pin a game
+          ahead of automatic entries (1 first), or clear it to restore automatic ordering.
+          Top Games uses its existing Order rank instead.
+        </p>
       )}
 
       <div className="admin-table-wrap">
@@ -160,7 +172,7 @@ export default function ContentManager({ type }: { type: ContentTypeDef }) {
               </tr>
             )}
             {items.map((doc, index) => (
-              <tr key={String(doc.id ?? index)}>
+              <tr key={`${String(doc[type.partitionKeyField] ?? '')}:${String(doc.id ?? index)}`}>
                 {type.listColumns.map((c) => (
                   <td key={c.key}>{cellValue(doc[c.key])}</td>
                 ))}

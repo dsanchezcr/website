@@ -48,9 +48,7 @@ az deployment group create \
     azureCommunicationServicesConnectionString="<your-acs-connection-string>" \
     recaptchaSecretKey="<your-recaptcha-secret>" \
     azureOpenAIEndpoint="<your-openai-endpoint>" \
-    azureOpenAIKey="<your-openai-key>" \
-    googleAnalyticsPropertyId="<your-ga-property-id>" \
-    googleAnalyticsCredentialsJson="<your-ga-credentials-json>"
+    azureOpenAIKey="<your-openai-key>"
 ```
 
 ### Using What-If (Preview Changes)
@@ -73,16 +71,15 @@ The following environment variables are configured as app settings for the manag
 | `AZURE_OPENAI_ENDPOINT` | Azure OpenAI service endpoint | No* |
 | `AZURE_OPENAI_KEY` | Azure OpenAI API key | No* |
 | `AZURE_OPENAI_DEPLOYMENT` | Azure OpenAI model deployment name | No* |
-| `GOOGLE_ANALYTICS_PROPERTY_ID` | GA4 property ID | No* |
-| `GOOGLE_ANALYTICS_CREDENTIALS_JSON` | GA4 service account credentials JSON | No* |
 | `AZURE_SEARCH_ENDPOINT` | Azure AI Search service endpoint | No* |
 | `AZURE_SEARCH_API_KEY` | Azure AI Search admin API key | No* |
 | `AZURE_SEARCH_INDEX_NAME` | Azure AI Search index name | No* |
 | `AZURE_STORAGE_CONNECTION_STRING` | Azure Storage connection for Table Storage | No* |
 | `REINDEX_SECRET_KEY` | Secret key for authenticating reindex API calls | No* |
-| `IMDB_SYNC_KEY` | Secret key for authenticating automated IMDb sync calls | No* |
-| `IMDB_WATCHLIST_URL` | Public IMDb watchlist URL used by automated sync | No* |
-| `IMDB_RATINGS_URL` | Public IMDb ratings URL used by automated sync | No* |
+| `TMDB_SYNC_KEY` | Dedicated automation invocation key (admin-role calls need no key) | No* |
+| `TMDB_READ_ACCESS_TOKEN` | Server-only TMDB application API Read Access Token | No* |
+| `TMDB_SESSION_ID` | Server-only authorized TMDB v3 account session | No* |
+| `TMDB_ACCOUNT_ID` | Numeric TMDB account ID verified with the token/session | No* |
 | `WEBSITE_URL` | The public website URL | Yes |
 | `API_URL` | The API endpoint URL (auto-configured) | Auto |
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | App Insights connection (auto-configured) | Auto |
@@ -98,10 +95,10 @@ After deployment, the following API endpoints will be available:
 | `/api/contact` | POST | Submit contact form (initiates email verification) |
 | `/api/verify` | GET | Verify email address from contact form |
 | `/api/weather` | GET | Get weather data for predefined locations |
-| `/api/online-users` | GET | Get 24-hour visitor count |
 | `/api/nlweb/ask` | POST | Chat with AI assistant (uses RAG with Azure AI Search) |
 | `/api/health` | GET | Health check endpoint for monitoring |
 | `/api/reindex` | POST | Update search index (requires X-Reindex-Key header) |
+| `/api/content-admin/tmdb/sync` | POST | Non-destructive TMDB account import (admin role or X-Tmdb-Sync-Key) |
 
 ## Post-Deployment Steps
 
@@ -116,10 +113,11 @@ After deployment, the following API endpoints will be available:
 
 4. **Add the website URL** as a GitHub variable named `WEBSITE_URL` (e.g., `https://dsanchezcr.com`)
 
-5. **Add IMDb sync configuration**:
-   - GitHub secret: `IMDB_SYNC_KEY`
-   - GitHub variable: `IMDB_SYNC_MAX_ITEMS` (recommended: `250`)
-   - SWA app settings: `IMDB_SYNC_KEY`, `IMDB_WATCHLIST_URL`, `IMDB_RATINGS_URL`
+5. **Add TMDB sync configuration**:
+   - GitHub secret: `TMDB_SYNC_KEY` (dedicated invocation key only)
+   - GitHub variable: `TMDB_SYNC_MAX_ITEMS` (default `250`, max `1000` per feed)
+   - SWA app settings: `TMDB_SYNC_KEY`, `TMDB_READ_ACCESS_TOKEN`, `TMDB_SESSION_ID`, `TMDB_ACCOUNT_ID`
+   - Follow [exact authorization/setup steps](../.github/repo-docs/tmdb-setup.md); no read token/session in browser or GitHub. Preview before persisting. Oversized/partial feeds fail explicitly, and sync never deletes or modifies manual top lists.
 
 6. **Create the Azure AI Search index** in Azure Portal:
    - Go to Azure AI Search > Indexes > Add Index

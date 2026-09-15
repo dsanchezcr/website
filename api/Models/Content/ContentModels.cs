@@ -38,13 +38,40 @@ public abstract class ContentDocument
 }
 
 /// <summary>
-/// A movie entry stored in the content-movies container.
-/// Partition key: /category
+/// Stored media metadata shared by movies and series. Legacy IMDb-only documents
+/// remain valid; TMDB imports additionally carry localized metadata.
 /// </summary>
-public class MovieDocument : ContentDocument
+public abstract class MediaDocument : ContentDocument
 {
     [JsonPropertyName("titleId")]
-    public string TitleId { get; set; } = string.Empty;
+    public string? TitleId { get; set; }
+
+    [JsonPropertyName("tmdbId")]
+    public int? TmdbId { get; set; }
+
+    [JsonPropertyName("mediaType")]
+    public string? MediaType { get; set; }
+
+    [JsonPropertyName("posterPath")]
+    public string? PosterPath { get; set; }
+
+    [JsonPropertyName("titleTranslations")]
+    public LocalizedText? TitleTranslations { get; set; }
+
+    [JsonPropertyName("overview")]
+    public LocalizedText? Overview { get; set; }
+
+    [JsonPropertyName("genresTranslations")]
+    public Dictionary<string, List<string>>? GenresTranslations { get; set; }
+
+    [JsonPropertyName("tmdbRating")]
+    public double? TmdbRating { get; set; }
+
+    [JsonPropertyName("syncSource")]
+    public string? SyncSource { get; set; }
+
+    [JsonPropertyName("syncedAt")]
+    public DateTimeOffset? SyncedAt { get; set; }
 
     [JsonPropertyName("category")]
     public string Category { get; set; } = string.Empty;
@@ -75,41 +102,14 @@ public class MovieDocument : ContentDocument
 }
 
 /// <summary>
-/// A TV series entry stored in the content-series container.
-/// Partition key: /category
+/// A movie entry in content-movies, partition key /category.
 /// </summary>
-public class SeriesDocument : ContentDocument
-{
-    [JsonPropertyName("titleId")]
-    public string TitleId { get; set; } = string.Empty;
+public class MovieDocument : MediaDocument { }
 
-    [JsonPropertyName("category")]
-    public string Category { get; set; } = string.Empty;
-
-    [JsonPropertyName("title")]
-    public string? Title { get; set; }
-
-    [JsonPropertyName("imageUrl")]
-    public string? ImageUrl { get; set; }
-
-    [JsonPropertyName("year")]
-    public int? Year { get; set; }
-
-    [JsonPropertyName("genres")]
-    public List<string>? Genres { get; set; }
-
-    [JsonPropertyName("imdbRating")]
-    public double? ImdbRating { get; set; }
-
-    [JsonPropertyName("myRating")]
-    public double? MyRating { get; set; }
-
-    [JsonPropertyName("review")]
-    public LocalizedText? Review { get; set; }
-
-    [JsonPropertyName("order")]
-    public int? Order { get; set; }
-}
+/// <summary>
+/// A TV series entry in content-series, partition key /category.
+/// </summary>
+public class SeriesDocument : MediaDocument { }
 
 /// <summary>
 /// A gaming entry (card or group) stored in the content-gaming container.
@@ -152,6 +152,12 @@ public class GamingDocument : ContentDocument
 
     [JsonPropertyName("games")]
     public List<GamingChildEntry>? Games { get; set; }
+
+    [JsonPropertyName("createdAt")]
+    public DateTimeOffset? CreatedAt { get; set; }
+
+    [JsonPropertyName("manualOrder")]
+    public int? ManualOrder { get; set; }
 
     [JsonPropertyName("order")]
     public int Order { get; set; }

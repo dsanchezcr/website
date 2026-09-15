@@ -53,7 +53,7 @@ public class RecentGame
 public interface IGamingCacheService
 {
     Task<GamingProfile?> GetProfileAsync(string platform);
-    Task SaveProfileAsync(string platform, GamingProfile profile);
+    Task SaveProfileAsync(string platform, GamingProfile profile, CancellationToken ct = default);
     Task ClearProfileAsync(string platform);
     Task<(bool IsHealthy, string Message)> CheckHealthAsync();
 }
@@ -143,14 +143,12 @@ public class TableStorageGamingCacheService : IGamingCacheService
         return null;
     }
 
-    public async Task SaveProfileAsync(string platform, GamingProfile profile)
+    public async Task SaveProfileAsync(string platform, GamingProfile profile, CancellationToken ct = default)
     {
+        ct.ThrowIfCancellationRequested();
         var cacheKey = $"gaming:{platform}";
         profile.LastUpdated = DateTimeOffset.UtcNow;
         profile.IsCached = false;
-
-        // Save to memory cache
-        _memoryCache.Set(cacheKey, profile, MemoryCacheDuration);
 
         // Persist to Table Storage
         try
@@ -163,14 +161,16 @@ public class TableStorageGamingCacheService : IGamingCacheService
                 LastUpdated = DateTimeOffset.UtcNow
             };
 
-            await _tableClient.UpsertEntityAsync(entity);
+            await _tableClient.UpsertEntityAsync(entity, cancellationToken: ct);
             _logger.LogInformation("Saved {Platform} profile to Table Storage", platform);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (!ct.IsCancellationRequested)
         {
             _logger.LogError(ex, "Failed to save {Platform} profile to Table Storage", platform);
-            // Data is still in memory cache, so reads will work until next restart
         }
+
+        ct.ThrowIfCancellationRequested();
+        _memoryCache.Set(cacheKey, profile, MemoryCacheDuration);
     }
 
     public async Task<(bool IsHealthy, string Message)> CheckHealthAsync()
@@ -237,8 +237,9 @@ public class InMemoryGamingCacheService : IGamingCacheService
         return Task.FromResult<GamingProfile?>(null);
     }
 
-    public Task SaveProfileAsync(string platform, GamingProfile profile)
+    public Task SaveProfileAsync(string platform, GamingProfile profile, CancellationToken ct = default)
     {
+        ct.ThrowIfCancellationRequested();
         var cacheKey = $"gaming:{platform}";
         profile.LastUpdated = DateTimeOffset.UtcNow;
         profile.IsCached = false;

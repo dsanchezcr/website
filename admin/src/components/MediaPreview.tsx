@@ -30,24 +30,27 @@ function sanitizeId(value: unknown, disallowed: RegExp): string {
 /**
  * Visual preview of a document's media. Uses only sources permitted by the site's CSP:
  * images (img-src https:), a YouTube embed (frame-src youtube-nocookie), and external links
- * for IMDb and OpenStreetMap (opened in a new tab — no iframe needed).
+ * for TMDB, IMDb and OpenStreetMap (opened in a new tab — no iframe needed).
  */
 export default function MediaPreview({ doc }: { doc: Doc }) {
   const image = safeHttpUrl(firstString(doc, IMAGE_KEYS));
   const youtubeId = sanitizeId(doc.youtubeVideoId, /[^A-Za-z0-9_-]/g);
   const titleId = sanitizeId(doc.titleId, /[^A-Za-z0-9]/g);
+  const tmdbUrl = typeof doc.tmdbId === 'number' && Number.isSafeInteger(doc.tmdbId) && doc.tmdbId > 0 &&
+    (doc.mediaType === 'movie' || doc.mediaType === 'tv')
+    ? `https://www.themoviedb.org/${doc.mediaType}/${doc.tmdbId}` : undefined;
   const mapCenter = Array.isArray(doc.mapCenter) ? (doc.mapCenter as unknown[]) : null;
   const hasMap = !!mapCenter && mapCenter.length === 2 && typeof mapCenter[0] === 'number' && typeof mapCenter[1] === 'number';
   const mapLat = hasMap ? Number(mapCenter![0]) : 0;
   const mapLng = hasMap ? Number(mapCenter![1]) : 0;
   const mapZoom = typeof doc.mapZoom === 'number' ? doc.mapZoom : 12;
 
-  const nothing = !image && !youtubeId && !titleId && !hasMap;
+  const nothing = !image && !youtubeId && !titleId && !tmdbUrl && !hasMap;
 
   return (
     <div className="admin-media">
       <h3>Preview</h3>
-      {nothing && <p className="admin-muted">No previewable media (image, YouTube, IMDb, or map).</p>}
+      {nothing && <p className="admin-muted">No previewable media (image, YouTube, TMDB, IMDb, or map).</p>}
 
       {image && (
         <div className="admin-media-block">
@@ -76,6 +79,13 @@ export default function MediaPreview({ doc }: { doc: Doc }) {
           <a className="admin-link" href={`https://www.youtube.com/watch?v=${encodeURIComponent(youtubeId)}`} target="_blank" rel="noreferrer">
             Open on YouTube ↗
           </a>
+        </div>
+      )}
+
+      {tmdbUrl && (
+        <div className="admin-media-block">
+          <div className="admin-media-label">TMDB</div>
+          <a className="admin-link" href={tmdbUrl} target="_blank" rel="noreferrer">Open on TMDB ↗</a>
         </div>
       )}
 

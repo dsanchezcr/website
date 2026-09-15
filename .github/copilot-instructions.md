@@ -14,7 +14,7 @@ Both frontend and backend are hosted together on **Azure Static Web Apps**. The 
 - **Blog**: MDX files in `blog/` with frontmatter metadata
 - **Static Pages**: React components in `src/pages/` (e.g., `contact.js`, `weather.js`, `exchangerates.js`, `volunteering.js`)
   - **Volunteering**: Displays volunteering experience with card-based layout, category badges, organization links, and pre-populated contact form for volunteer project inquiries
-- **Custom Components**: Reusable widgets in `src/components/` (CareerTimeline, Comments, ErrorBoundary, ExchangeRatesWidget, Gaming, GitHubStats, Homepage, ImageCompareSlider, MediaCard, Movies, NewsletterSubscribe, NLWebChat, OnlineStatusWidget, WeatherWidget, YouTubeEmbed)
+- **Custom Components**: Reusable widgets in `src/components/` (CareerTimeline, Comments, ErrorBoundary, ExchangeRatesWidget, Gaming, GitHubStats, Homepage, ImageCompareSlider, MediaCard, Movies, NewsletterSubscribe, NLWebChat, WeatherWidget, YouTubeEmbed)
 - **Shared Homepage**: The `Homepage` component (`src/components/Homepage/`) is shared across all three locale index pages — editing one component updates all locales. Locale-specific text is passed as props.
 - **i18n**: Translations in `i18n/es/` and `i18n/pt/` directories following Docusaurus i18n structure
 - **Gaming**: Docs in `gaming/` fetch content from Cosmos DB at runtime via `ApiGamingSection`; images are in `static/img/gaming/<platform>/`; keep status values like `completed`, `playing`, `backlog`, `dropped`
@@ -25,13 +25,12 @@ Located in `api/` directory:
 - **SendEmail.cs**: Contact form endpoint (`/api/contact`) with reCAPTCHA v3, rate limiting, spam detection, honeypot field, and email verification flow using Azure Communication Services
 - **VerifyEmail.cs**: Email verification endpoint (`/api/verify`) that completes the contact form submission after user clicks verification link
 - **GetWeather.cs**: Weather data endpoint (`/api/weather`)
-- **GetOnlineUsers.cs**: Analytics endpoint (`/api/online-users`) with Google Analytics Data API (24-hour visitor count)
 - **ChatWithOpenAI.cs**: AI chat endpoint (`/api/nlweb/ask`) using Microsoft Foundry with RAG from Azure AI Search
 - **HealthCheck.cs**: Health monitoring endpoint (`/api/health`) that validates all service configurations and connectivity
 - **ReindexContent.cs**: Search index update endpoint (`/api/reindex`) with secret key authentication, hybrid content indexing
 - **GetXboxProfile.cs**: Xbox profile endpoint (`/api/gaming/xbox`) using OpenXBL API with Table Storage caching
 - **GetPlayStationProfile.cs**: PlayStation profile endpoint (`/api/gaming/playstation`) using PSN internal API with JWT auth and Table Storage caching
-- **RefreshGamingProfiles.cs**: Admin endpoint (`/api/gaming/refresh`) to trigger gaming data refresh, protected with secret key
+- **RefreshGamingProfiles.cs**: Immediate Xbox/PlayStation refresh (`/api/gaming/refresh`), authorized by SWA admin role or secret key; failed refreshes preserve cached profiles
 - **GetMoviesContent.cs**: Content endpoint (`/api/content/movies`) for movies from Cosmos DB
 - **GetSeriesContent.cs**: Content endpoint (`/api/content/series`) for TV series from Cosmos DB
 - **GetGamingContent.cs**: Content endpoint (`/api/content/gaming`) for gaming entries from Cosmos DB
@@ -42,7 +41,7 @@ Located in `api/` directory:
 - **UpdatePreferences.cs**: Newsletter frequency update (`/api/newsletter/preferences`) with token authentication
 - **GetSubscriptionStatus.cs**: Newsletter status check (`/api/newsletter/status`) with token authentication
 - **DispatchNewsletter.cs**: Newsletter sending endpoint (`/api/newsletter/dispatch`) called by GitHub Actions cron
-- **SyncImdbContent.cs**: Admin/automation endpoint (`/api/content-admin/imdb/sync`) for syncing IMDb watchlist and ratings into movies/series content containers
+- **SyncTmdbContent.cs**: Admin/automation endpoint (`/api/content-admin/tmdb/sync`) for non-destructive TMDB account watchlist/ratings imports with stored localized metadata; see `Services/TmdbSyncService.cs`, API-003 and `.github/repo-docs/tmdb-setup.md`
 - **AdminContent.cs**: Authenticated content CRUD (`/api/content-admin/{type}` and `/api/content-admin/{type}/{id}`) for the `/admin` SPA; raw-JSON read/write that preserves unknown fields, with server-side validation and an in-function `admin` role check (`admin` is a reserved Functions route prefix, hence `content-admin`)
 - **AdminContentGeneration.cs**: Admin-only AI content generation (`/api/content-admin/ai/generate`) using Microsoft Foundry; expands a brief prompt into localized (`en`/`es`/`pt`) text in the site's tone for the admin editor. Same `admin` role gate as the CRUD endpoints; stateless (nothing persisted)
 - **GetRoles.cs**: SWA `rolesSource` (`/api/auth/roles`); maps allow-listed accounts (`ADMIN_ALLOWED_EMAILS`) to the `admin` role
@@ -189,13 +188,12 @@ API Routes (defined in `config.routes`):
 contact: '/api/contact'
 verify: '/api/verify'
 weather: '/api/weather'
-onlineUsers: '/api/online-users'
 chat: '/api/nlweb/ask'
 health: '/api/health'
 healthConfig: '/api/health/config'
 xboxProfile: '/api/gaming/xbox'
 playstationProfile: '/api/gaming/playstation'
-gamingRefresh: '/api/gaming/refresh'  // POST, requires X-Gaming-Refresh-Key header
+gamingRefresh: '/api/gaming/refresh'  // POST, SWA admin role or X-Gaming-Refresh-Key header
 contentMovies: '/api/content/movies'
 contentSeries: '/api/content/series'
 contentGaming: '/api/content/gaming'
@@ -210,9 +208,9 @@ newsletterStatus: '/api/newsletter/status'
 
 Additional API endpoints (not used by the public UI — backend/CI/admin only):
 - `/api/reindex` — Called by GitHub Actions, requires `X-Reindex-Key` header
-- `/api/gaming/refresh` — Admin-only manual trigger, requires `X-Gaming-Refresh-Key` header
+- `/api/gaming/refresh` — Admin panel/manual trigger; SWA `admin` role or `X-Gaming-Refresh-Key`. Fetches immediately and returns per-provider failures without discarding cached profiles
 - `/api/newsletter/dispatch` — Called by GitHub Actions cron, requires `X-Newsletter-Key` header
-- `/api/content-admin/imdb/sync` — Called by GitHub Actions cron at 1:00 AM Eastern; authenticates with `X-Imdb-Sync-Key` (matches `IMDB_SYNC_KEY`) or admin role. Uses `IMDB_WATCHLIST_URL` / `IMDB_RATINGS_URL` app settings when request body omits URLs
+- `/api/content-admin/tmdb/sync` — Called by GitHub Actions cron at 1:00 AM Eastern; SWA admin role or constant-time `X-Tmdb-Sync-Key` matching `TMDB_SYNC_KEY`. Body `{ dryRun, maxItems, continuationToken? }` defaults to preview; 20-document batches/35-second budget. Follow the signed cursor until `completed: true` (cumulative counters); timeout/storage failures return explicit partial progress. Source credentials/account are server-only. No deletes/manual/top writes; ETags preserve reviews and unknown fields
 - `/api/content-admin/{type}` and `/api/content-admin/{type}/{id}` — Authenticated content CRUD for the `/admin` SPA (Entra ID + `admin` role). Types: movies, series, gaming, parks, monthly-updates
 - `/api/content-admin/ai/generate` — Admin-only AI content generation (Entra ID + `admin` role); POST a brief prompt, returns localized `{ en, es, pt }` text (Foundry)
 - `/api/auth/roles` — SWA `rolesSource`; maps allow-listed accounts (`ADMIN_ALLOWED_EMAILS`) to the `admin` role
@@ -223,7 +221,7 @@ Single GitHub Actions workflow deploys both frontend and managed API together:
 - SWA handles deploying both app and API from the same repository
 
 Additional scheduled automation workflows:
-- **imdb-sync.yml**: Runs daily at 1:00 AM Eastern (DST-safe UTC gating) and calls `/api/content-admin/imdb/sync` with `X-Imdb-Sync-Key`
+- **tmdb-sync.yml**: Runs daily at 1:00 AM Eastern (DST-safe UTC gating) and calls `/api/content-admin/tmdb/sync` with `X-Tmdb-Sync-Key`; manual dispatch defaults dry run
 
 ## Dependencies & Integration Points
 
@@ -234,7 +232,7 @@ Additional scheduled automation workflows:
 - **Azure Cosmos DB**: Read-only content store for movies, series, gaming, and parks data; also stores newsletter subscribers
 - **Azure Table Storage**: Persistent storage for email verification tokens (connection string)
 - **Google reCAPTCHA v3**: Site key `6LcGaAIsAAAAALzUAxzGFx5R1uJ2Wgxn4RmNsy2I` (client-side) + secret key (server-side)
-- **Google Analytics**: Via `@docusaurus/plugin-google-gtag` (tracking ID: `G-18J431S7WG`) and Data API for visitor count
+- **Google Analytics**: Client-side tracking via `@docusaurus/plugin-google-gtag` (tracking ID: `G-18J431S7WG`)
 - **Giscus**: GitHub-based comments via `@giscus/react`
 - **Custom Package**: `@dsanchezcr/colonesexchangerate` (Costa Rican currency exchange rates)
 
@@ -262,14 +260,11 @@ AZURE_STORAGE_CONNECTION_STRING
 # Search Index Update (Called by GitHub Actions)
 REINDEX_SECRET_KEY
 
-# IMDb Sync (Called by GitHub Actions)
-IMDB_SYNC_KEY
-IMDB_WATCHLIST_URL
-IMDB_RATINGS_URL
-
-# Google Analytics
-GOOGLE_ANALYTICS_PROPERTY_ID
-GOOGLE_ANALYTICS_CREDENTIALS_JSON
+# TMDB account sync (server-only credentials; GitHub receives only TMDB_SYNC_KEY)
+TMDB_SYNC_KEY
+TMDB_READ_ACCESS_TOKEN
+TMDB_SESSION_ID
+TMDB_ACCOUNT_ID
 
 # Gaming APIs
 XBOX_API_KEY
@@ -449,7 +444,7 @@ All user-facing content **must** support English (default), Spanish, and Portugu
 
 ### New Movie/TV Entry
 1. Add entry directly in Azure Cosmos DB (`content-movies` or `content-series` container) via Data Explorer
-2. Include `titleId` (IMDb), `myRating` (1-10), `review` with `en`/`es`/`pt` keys, and `category`
+2. Prefer TMDB account sync for watchlist/rated entries. Synced documents include `tmdbId`, `mediaType`, stored en/es/pt metadata, `myRating` (0.5–10 half steps, null if unrated), trilingual `review`, and `category`. Legacy manual IMDb `titleId` documents and manual top order remain supported; never mass-convert them or call a public metadata API
 
 ### New Azure Function
 1. Create spec using `specs/templates/api-endpoint-spec.md`
@@ -461,7 +456,7 @@ All user-facing content **must** support English (default), Spanish, and Portugu
 7. Add route to `config.routes` in `src/config/environment.js`
 
 ### New React Component
-Place in `src/components/ComponentName/` with index file. Import in pages using `@site/src/components/ComponentName`. Follow existing patterns (see `WeatherWidget/` or `OnlineStatusWidget/`).
+Place in `src/components/ComponentName/` with index file. Import in pages using `@site/src/components/ComponentName`. Follow existing patterns (see `WeatherWidget/`).
 
 ### Infrastructure Changes
 1. Update `infra/main.bicep` with new resources or settings

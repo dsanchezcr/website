@@ -27,7 +27,7 @@ describe('MediaCard', () => {
 
   it('renders the IMDb rating', () => {
     render(<MediaCard {...defaultProps} />);
-    expect(screen.getByText('⭐ 9.3')).toBeInTheDocument();
+    expect(screen.getByText('IMDb ⭐ 9.3')).toBeInTheDocument();
   });
 
   it('renders personal rating', () => {

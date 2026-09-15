@@ -101,7 +101,12 @@ public class CosmosAdminService : ICosmosAdminService
 
         var items = await QueryAsync<JsonObject>(container, query, pk, ct);
         foreach (var item in items) StripSystemProperties(item);
-        return items;
+        return type.Slug switch
+        {
+            "gaming" => GamingOrdering.SortDocuments(items),
+            "movies" or "series" => MediaOrdering.SortDocuments(items),
+            _ => items
+        };
     }
 
     public async Task<(JsonObject? Doc, string? ETag)> GetAsync(AdminContentType type, string id, string partitionValue, CancellationToken ct = default)
@@ -141,6 +146,7 @@ public class CosmosAdminService : ICosmosAdminService
     {
         var container = _client.GetContainer(_databaseName, type.Container);
         StripSystemProperties(doc);
+        if (type.Slug == "gaming") GamingOrdering.StampCreation(doc, DateTimeOffset.UtcNow);
 
         var id = TryGetString(doc["id"]);
         if (string.IsNullOrWhiteSpace(id))
@@ -160,6 +166,14 @@ public class CosmosAdminService : ICosmosAdminService
     public async Task<(JsonObject Doc, string? ETag)> ReplaceAsync(AdminContentType type, string id, JsonObject doc, string? ifMatchEtag, CancellationToken ct = default)
     {
         var container = _client.GetContainer(_databaseName, type.Container);
+        if (type.Slug == "gaming")
+        {
+            var (existing, etag) = await GetAsync(type, id, TryGetString(doc[type.PartitionKeyField]) ?? string.Empty, ct);
+            if (existing == null)
+                throw new CosmosException("Document not found.", HttpStatusCode.NotFound, 0, string.Empty, 0);
+            GamingOrdering.PreserveCreation(doc, existing);
+            ifMatchEtag ??= etag;
+        }
         StripSystemProperties(doc);
         doc["id"] = id; // route id is authoritative
 

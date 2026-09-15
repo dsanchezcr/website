@@ -118,7 +118,11 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
                       {f.label}
                       {f.partitionKey && <span className="admin-pk-badge">partition key</span>}
                     </label>
-                    <FieldInput field={f} value={doc[f.key]} isNew={isNew} onChange={(v) => setField(f.key, v)} />
+                    <FieldInput field={f.key === 'order' && doc.syncSource === 'tmdb' &&
+                      (type.slug === 'movies' || type.slug === 'series') &&
+                      !['top-movies', 'top-series', 'top-tv'].includes(String(doc.category))
+                      ? { ...f, readOnlyOnEdit: true } : f}
+                      value={doc[f.key]} isNew={isNew} onChange={(v) => setField(f.key, v)} />
                     {(f.type === 'localized' || f.type === 'localizedOrString') &&
                       ['review', 'description', 'recommendation', 'name', 'title', 'introText'].includes(f.key) && (
                       <AiGenerate
@@ -129,6 +133,13 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
                       />
                     )}
                     {f.help && <div className="admin-field-help">{f.help}</div>}
+                    {type.slug === 'gaming' && f.key === 'manualOrder' && (
+                      <button className="admin-btn admin-btn-xs" type="button"
+                        disabled={doc.manualOrder == null}
+                        onClick={() => setField('manualOrder', undefined)}>
+                        Use automatic ordering
+                      </button>
+                    )}
                   </div>
                 ))}
 

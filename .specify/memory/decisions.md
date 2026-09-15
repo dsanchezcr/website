@@ -57,3 +57,9 @@
 **Context**: Needed scroll-triggered animations for homepage and content sections.
 **Decision**: Adopted AOS (Animate on Scroll) library via Docusaurus clientModules with debounced MutationObserver for SPA route refreshes.
 **Rationale**: Lightweight (~6KB), declarative (`data-aos` attributes), works in MDX without React wrappers. Respects `prefers-reduced-motion`.
+
+### [2026-09-15] Remove the Public Visitor Count
+**Context**: The last-24-hours visitor display and its dedicated backend integration are no longer wanted.
+**Decision**: Remove the shared widget, dormant navbar injector, dedicated endpoint, backend analytics health check, credentials, deployment configuration, and exclusive NuGet dependency. Keep ordinary client-side GA4/gtag tracking and all privacy disclosures.
+**Rationale**: Complete removal avoids retaining unused polling, service-account dependencies, and misleading configuration requirements.
+**Spec**: `specs/FEAT-024-remove-visitor-count.md`

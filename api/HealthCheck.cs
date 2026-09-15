@@ -7,8 +7,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Azure.Communication.Email;
 using Azure.AI.OpenAI;
 using Azure;
-using Google.Analytics.Data.V1Beta;
-using Google.Apis.Auth.OAuth2;
 using api.Services;
 
 namespace api;
@@ -128,10 +126,6 @@ public class HealthCheck
         { "AZURE_OPENAI_KEY", ("Microsoft Foundry API key", true) },
         { "AZURE_OPENAI_DEPLOYMENT", ("Microsoft Foundry deployment/model name", true) },
         
-        // Google Analytics (optional - health check degrades gracefully if missing)
-        { "GOOGLE_ANALYTICS_PROPERTY_ID", ("GA4 property ID for analytics", false) },
-        { "GOOGLE_ANALYTICS_CREDENTIALS_JSON", ("Google service account credentials JSON for analytics", false) },
-        
         // URLs
         { "WEBSITE_URL", ("Website base URL for verification links (fallback)", false) },
         { "API_URL", ("API base URL for verification links (preferred)", false) },
@@ -149,9 +143,10 @@ public class HealthCheck
         
         // Reindex endpoint security
         { "REINDEX_SECRET_KEY", ("Secret key for authenticating reindex API calls from GitHub Actions", false) },
-        { "IMDB_SYNC_KEY", ("Secret key for authenticating automated IMDb sync calls from GitHub Actions", false) },
-        { "IMDB_WATCHLIST_URL", ("IMDb watchlist URL used by automated sync when request body omits URLs", false) },
-        { "IMDB_RATINGS_URL", ("IMDb ratings URL used by automated sync when request body omits URLs", false) },
+        { "TMDB_SYNC_KEY", ("Dedicated secret for automated TMDB sync invocation", false) },
+        { "TMDB_READ_ACCESS_TOKEN", ("Server-only TMDB application read token", false) },
+        { "TMDB_SESSION_ID", ("Server-only authorized TMDB account session", false) },
+        { "TMDB_ACCOUNT_ID", ("TMDB account ID bound to the authorized session", false) },
         
         // Gaming APIs
         { "XBOX_API_KEY", ("OpenXBL API key for Xbox profile data (https://xbl.io)", false) },
@@ -226,7 +221,6 @@ public class HealthCheck
             CheckAzureCommunicationServicesAsync(cancellationToken),
             CheckRecaptchaAsync(cancellationToken),
             CheckAzureOpenAIAsync(cancellationToken),
-            CheckGoogleAnalyticsAsync(cancellationToken),
             CheckOpenMeteoApiAsync(cancellationToken),
             CheckMemoryCacheAsync(),
             CheckTokenStorageAsync(),
@@ -427,62 +421,6 @@ public class HealthCheck
             health.Status = HealthStatus.Unhealthy;
             health.Message = $"Configuration error: {ex.Message}";
             _logger.LogError(ex, "Microsoft Foundry health check failed");
-        }
-
-        return Task.FromResult(health);
-    }
-
-    private Task<ServiceHealth> CheckGoogleAnalyticsAsync(CancellationToken cancellationToken)
-    {
-        var health = new ServiceHealth
-        {
-            Name = "Google Analytics"
-        };
-
-        var propertyId = Environment.GetEnvironmentVariable("GOOGLE_ANALYTICS_PROPERTY_ID");
-        var credentialsJson = Environment.GetEnvironmentVariable("GOOGLE_ANALYTICS_CREDENTIALS_JSON");
-
-        if (string.IsNullOrWhiteSpace(propertyId))
-        {
-            health.MissingConfigurations.Add("GOOGLE_ANALYTICS_PROPERTY_ID");
-        }
-        if (string.IsNullOrWhiteSpace(credentialsJson))
-        {
-            health.MissingConfigurations.Add("GOOGLE_ANALYTICS_CREDENTIALS_JSON");
-        }
-
-        if (health.MissingConfigurations.Count > 0)
-        {
-            health.Status = HealthStatus.Degraded;
-            health.Message = $"Missing configuration (will use fallback): {string.Join(", ", health.MissingConfigurations)}";
-            return Task.FromResult(health);
-        }
-
-        try
-        {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
-            
-            // Validate credentials JSON can be parsed
-            var credential = CredentialFactory
-                .FromJson<ServiceAccountCredential>(credentialsJson)
-                .ToGoogleCredential()
-                .CreateScoped(BetaAnalyticsDataClient.DefaultScopes);
-            _ = new BetaAnalyticsDataClientBuilder
-            {
-                Credential = credential
-            }.Build();
-
-            sw.Stop();
-
-            health.Status = HealthStatus.Healthy;
-            health.Message = "Configuration valid";
-            health.ResponseTimeMs = sw.ElapsedMilliseconds;
-        }
-        catch (Exception ex)
-        {
-            health.Status = HealthStatus.Degraded;
-            health.Message = $"Configuration error (will use fallback): {ex.Message}";
-            _logger.LogWarning(ex, "Google Analytics health check failed - will use fallback");
         }
 
         return Task.FromResult(health);
