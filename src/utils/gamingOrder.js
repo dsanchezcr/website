@@ -7,7 +7,7 @@ export function sortGamingEntries(items, section) {
   const compare = (a, b) => a < b ? -1 : a > b ? 1 : 0;
   return items.slice().sort((a, b) => {
     if (section?.toLowerCase() === 'topgames') {
-      return compare(number(a.order, 0), number(b.order, 0)) ||
+      return compare(number(a.order, Infinity), number(b.order, Infinity)) ||
         compare(a.id || '', b.id || '');
     }
     return compare(number(a.manualOrder, Infinity), number(b.manualOrder, Infinity)) ||
