@@ -44,10 +44,13 @@ jobs:
           node -e '
           (async () => {
             const manual = process.env.EVENT_NAME === "workflow_dispatch";
-            const hour = new Intl.DateTimeFormat("en-US", {
+            const formatter = new Intl.DateTimeFormat("en-US", {
               timeZone: "America/New_York", hour: "2-digit", hourCycle: "h23"
-            }).format(new Date());
-            if (!manual && hour !== "01") {
+            });
+            const now = new Date();
+            const hour = formatter.format(now);
+            const previousHour = formatter.format(new Date(now.getTime() - 60 * 60 * 1000));
+            if (!manual && (hour !== "01" || previousHour === "01")) {
               console.log("Not 1 AM Eastern; skipping this UTC slot.");
               return;
             }
