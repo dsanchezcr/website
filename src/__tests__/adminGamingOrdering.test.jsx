@@ -15,7 +15,7 @@ vi.mock('../../admin/src/api', () => ({
   updateDoc: vi.fn(),
   generateLocalizedText: vi.fn(),
   refreshGamingProfiles: vi.fn(),
-  syncTmdbContent: vi.fn(),
+  fetchOmdbMetadata: vi.fn(),
 }));
 
 beforeEach(() => {

@@ -50,7 +50,7 @@ export function validate(type: ContentTypeDef, doc: Doc): string[] {
       if (!hasTmdbId && (typeof titleId !== 'string' || titleId.trim() === '')) {
         errors.push("Field 'titleId' is required.");
       }
-      for (const field of ['titleId', 'title', 'imageUrl', 'syncSource']) {
+      for (const field of ['titleId', 'title', 'plot', 'director', 'imageUrl', 'syncSource']) {
         if (!isAbsent(doc[field]) && typeof doc[field] !== 'string') errors.push(`Field '${field}' must be a string.`);
       }
       int('tmdbId');

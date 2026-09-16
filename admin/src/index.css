@@ -135,7 +135,10 @@ body {
 .admin-modal-close { border: none; background: none; font-size: 1.5rem; cursor: pointer; line-height: 1; color: var(--admin-muted); }
 
 .admin-modal-body { display: flex; gap: 1rem; padding: 1rem; overflow: auto; }
-.admin-editor { flex: 2; min-width: 0; }
+.admin-editor { flex: 2; min-width: 0; border: 0; padding: 0; margin: 0; }
+.admin-imdb-lookup { display: flex; align-items: center; gap: 0.5rem; }
+.admin-imdb-lookup input { flex: 1; min-width: 0; }
+.admin-imdb-lookup button { flex-shrink: 0; }
 .admin-side { flex: 1; min-width: 240px; border-left: 1px solid var(--admin-border); padding-left: 1rem; }
 
 .admin-field { margin-bottom: 0.85rem; }

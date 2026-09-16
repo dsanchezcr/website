@@ -79,6 +79,12 @@ public abstract class MediaDocument : ContentDocument
     [JsonPropertyName("title")]
     public string? Title { get; set; }
 
+    [JsonPropertyName("plot")]
+    public string? Plot { get; set; }
+
+    [JsonPropertyName("director")]
+    public string? Director { get; set; }
+
     [JsonPropertyName("imageUrl")]
     public string? ImageUrl { get; set; }
 

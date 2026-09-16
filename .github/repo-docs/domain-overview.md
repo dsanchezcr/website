@@ -20,7 +20,17 @@ Technical articles about software engineering, cloud development, AI agents, and
 Multi-platform gaming portfolio organized by platform: Xbox & PC, PlayStation, Nintendo Switch, Meta Quest (VR), Phone/Mobile, Board Games, Chess. Features live profile widgets (Xbox Gamerscore, PSN Trophies), per-game status tracking (Completed, Playing, Backlog, Dropped), and data-driven game catalogs in `src/data/gaming/*.json` rendered by platform docs.
 
 ### Movies & TV
-Personal movie and TV series reviews with TMDB account integration. Cosmos stores movie/TV watchlists, half-step account ratings (0.5–10), and en/es/pt metadata and reviews. Public cards never fetch live metadata APIs. Categories: recently watched, top movies, watchlist, currently watching, completed; top movies/series remain manual. Legacy IMDb-only manual documents are retained. See [TMDB setup](tmdb-setup.md).
+Personal movie and TV series reviews curated in the admin app and stored in Cosmos.
+The 2026-09-16 replacement changes TMDB account sync to **OMDb per-title auto-fill**:
+an admin enters an IMDb ID, clicks **Fetch Data**, reviews metadata, then explicitly
+clicks **Save**. Lookup does not import lists, change personal reviews/ratings/category/order,
+or write to Cosmos. Public cards never fetch live metadata APIs.
+Categories: recently watched, top movies, watchlist, currently watching, completed;
+top movies/series remain manual. Existing TMDB imports (including half-step ratings,
+localized metadata, snapshot ordering and attribution) and IMDb-only records remain
+supported without migration. OMDb supplies English fallback, not es/pt translations;
+existing translations survive. Posters remain external URL references, so availability
+depends on the image host. See [OMDb setup and rollout](tmdb-setup.md).
 
 ### 3D Printing
 Portfolio of 3D printed objects with printer specifications (Bambu Lab P1S, Flashforge Adventurer Pro 3), materials used, and links to maker platforms (Makerworld, Thingiverse, Printables).
@@ -36,11 +46,11 @@ Volunteering experience with organizations (Nemours, MicroMentor, Guatemala Vill
 
 ## Key Business Rules
 
-1. **i18n is mandatory**: All user-facing content must support English, Spanish, and Portuguese
+1. **i18n is mandatory**: All public user-facing content must support English, Spanish, and Portuguese; the internal admin UI is English-only (ADR-006)
 2. **Static-first**: Content should be pre-rendered at build time; API calls only for dynamic data (weather, gaming profiles, chat)
 3. **Blog post format**: MDX files with required frontmatter (`title`, `description`, `tags`, `authors`)
 4. **Image naming**: Platform-specific folders under `static/img/` (e.g., `gaming/xbox/`, `gaming/playstation/`)
 5. **Game statuses**: Must use the established status values: `completed`, `playing`, `backlog`, `dropped`
-6. **Movie/TV data**: Cosmos-driven with TMDB identity and stored localized metadata, personal ratings, and trilingual reviews; legacy manual IMDb IDs remain valid
+6. **Movie/TV data**: Cosmos-driven with explicit admin saves; OMDb auto-fill uses IMDb `titleId` and preserves curated fields, unknown fields and translations. Legacy TMDB identity/metadata/order remain valid; no automatic account sync or mass conversion
 7. **Contact form security**: reCAPTCHA v3 + honeypot + rate limiting + spam detection + email verification
 8. **RAG chatbot**: Content automatically indexed to Azure AI Search after each deployment

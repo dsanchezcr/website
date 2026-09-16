@@ -73,6 +73,8 @@ public static class ContentValidator
                 }
                 RequireNumberInRange(doc, "tmdbRating", 0, 10, errors);
                 RequireString(doc, "title", errors, required: false);
+                RequireString(doc, "plot", errors, required: false);
+                RequireString(doc, "director", errors, required: false);
                 RequireString(doc, "imageUrl", errors, required: false);
                 RequireInt(doc, "year", errors);
                 RequireStringArray(doc, "genres", errors);

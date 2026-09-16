@@ -1,4 +1,50 @@
-# Feature Specification: TMDB account sync and stored media metadata
+# Feature Specification: OMDb media auto-fill (replaces TMDB sync)
+
+## Replacement contract — 2026-09-16
+
+The current implementation replaces account synchronization with explicit, admin-only
+IMDb lookup while adding or editing a movie/series. The TMDB specification below is
+historical; existing imported documents, localized metadata, attribution and ordering
+remain supported without further automatic imports or database migration.
+
+### Acceptance criteria
+
+- An authenticated admin enters an IMDb ID (`tt` plus 6–12 ASCII digits) and clicks
+  **Fetch Data**. Invalid input does not contact OMDb.
+- The browser calls only `GET /api/content-admin/omdb?imdbId=...`. A .NET managed
+  function validates identity and input, rate-limits requests, and uses a fixed HTTPS
+  OMDb host with redirects disabled and bounded timeout/response size.
+- `OMDB_API_KEY` comes only from server configuration (local ignored `api/.env`,
+  environment/Functions settings, or deployed SWA settings). Never include credentials,
+  upstream URLs, raw provider errors or response bodies in browser responses or logs.
+- Populate Title, Year (first year for series), Plot, Director, Type, genres, IMDb
+  rating and Poster Image URL. Unsupported episodes and movie/series mismatches
+  produce an actionable error without modifying the form.
+- Store the returned poster URL string in `imageUrl`; never fetch or store binary
+  images. Missing/N/A optional values do not overwrite existing form data.
+- Preserve identity, category, order, personal ratings/reviews, unknown fields and
+  existing translations. Imported English metadata uses English fallback; never
+  present it as Spanish/Portuguese translation. No writes until the admin saves.
+- Successful lookup marks `metadataSource: omdb`, so IMDb links/ratings and the
+  saved hotlinked poster take precedence without deleting historical TMDB fields.
+- Disable editing/saving during lookup, show accessible loading/success/error feedback,
+  cancel on close and ignore stale responses. Failures retain all entered values.
+- Admin remains English-only under its existing internal-tool exemption. Public
+  en/es/pt UI and legacy cards remain compatible.
+- Remove active TMDB endpoint/service, sync panel/client and scheduled workflow;
+  retain only compatibility code/tests and historical documentation.
+- Deterministic mocked API/form tests cover auth, validation, errors, quotas/timeouts,
+  metadata normalization, secrets, URL-only posters, safe merging and legacy records.
+
+### Affected files and verification
+
+API endpoint/service/registration, server environment configuration and health checks;
+admin API client/editor/media field definitions and tests; media metadata model and
+public card fallback if needed; TMDB-specific automation/routes/tests; existing setup,
+architecture and API-003 documentation. Use existing xUnit, Vitest, admin typecheck/build,
+and public site build; no live API keys or cloud writes are required.
+
+## Historical TMDB specification (superseded)
 
 | Field | Value |
 |---|---|

@@ -43,8 +43,8 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
   │  - Giscus     │    │                                 │
   │  - reCAPTCHA  │    │  - OpenXBL (Xbox Live)          │
   │  - Open-Meteo │    │  - PSN API (PlayStation)        │
-  │  - TMDB images│    │  - GitHub API (Repos)           │
-  │  - Chess.com  │    │  - TMDB (account + metadata)   │
+  │  - Poster URLs│    │  - GitHub API (Repos)           │
+  │  - Chess.com  │    │  - OMDb (admin lookup)         │
   └──────────────┘    └─────────────────────────────────┘
 ```
 
@@ -77,7 +77,7 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 | RefreshGamingProfiles | `/api/gaming/refresh` | Admin role or automation key; immediate provider refresh with safe cache retention |
 | GetMoviesContent | `/api/content/movies` | Movies from Cosmos DB |
 | GetSeriesContent | `/api/content/series` | TV series from Cosmos DB |
-| SyncTmdbContent | `/api/content-admin/tmdb/sync` | Admin/key-authorized non-destructive TMDB account sync; localized metadata stored in Cosmos |
+| GetOmdbMetadata | `GET /api/content-admin/omdb?imdbId=tt0111161` | SWA admin-only per-title metadata auto-fill; no automation key or persistence |
 | GetGamingContent | `/api/content/gaming` | Gaming entries from Cosmos DB |
 | GetParksContent | `/api/content/parks` | Theme parks from Cosmos DB |
 | GetMonthlyUpdatesContent | `/api/content/monthly-updates` | Monthly gaming updates from Cosmos DB |
@@ -88,19 +88,35 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 | GetSubscriptionStatus | `/api/newsletter/status` | Check subscription state |
 | DispatchNewsletter | `/api/newsletter/dispatch` | Send digest (GitHub Actions triggered) |
 
-### Data Flow: TMDB media
+### Data Flow: OMDb media auto-fill (2026-09-16 replacement)
 
-TMDB account watchlists/ratings → authorized server sync → complete pagination
-and per-batch localized metadata validation → ETag-protected Cosmos writes → public content
-API → MediaCard (no browser metadata requests). The daily `tmdb-sync.yml` workflow
-uses a dedicated invocation key; application read token/session/account settings
-stay server-side. Top/manual documents and reviews survive; sync never deletes.
-Current refresh snapshots and source order show newest account additions first.
-Each request processes at most 20 documents in a 35-second budget; signed stateless
-continuations share the snapshot and cumulative counters across requests. Source
-changes require a safe restart; timeout/storage errors expose acknowledged progress
-and a retry cursor. Nothing runs in the background after the response.
-See [ADR-007](adr/007-tmdb-account-media-source.md) and [setup](tmdb-setup.md).
+Admin `FormEditor` **Fetch Data** (`admin/src/api.ts`, validation/merge in
+`admin/src/omdb.ts`) → same-origin
+`GET /api/content-admin/omdb?imdbId=...` → SWA admin authorization plus in-function
+role/input checks → fixed `https://www.omdbapi.com/` → normalized metadata → draft.
+Only explicit **Save** uses existing raw-JSON/ETag-protected admin CRUD to write
+Cosmos → public content API → `ApiMediaCardList` / `MediaCard`.
+
+Lookup is independent of Cosmos. `OMDB_API_KEY` remains server-only; there is no
+automation key, browser OMDb request, image proxy or binary image storage.
+`OmdbLookupService` disables redirects, bounds the provider request/body read to
+10 seconds and the response to 128 KiB; `GetOmdbMetadata` allows 20 valid
+requests/admin/minute/instance. `OmdbSettings` reads the environment first, with
+local-only API-project `.env` fallback through DotNetEnv; see [setup](tmdb-setup.md).
+The admin's Vite/React/TypeScript editor fills title, first release year, plot,
+director, media type, `imageUrl`, genres and IMDb rating. Missing/`N/A` metadata
+does not clear existing draft fields. Curated reviews, personal ratings, category,
+order, unknown fields and existing es/pt translations survive lookup.
+
+The rollout removes `SyncTmdbContent`, `TmdbSyncService`, `TmdbSyncPanel` and
+`tmdb-sync.yml`, not their stored documents. Legacy TMDB metadata, posters/links,
+community ratings, `TmdbAttribution` and `MediaOrdering` remain compatible:
+non-top imports sort by stored snapshot then descending order, manual entries follow;
+top-movies/top-series/top-tv retain manual ascending order. There is no replacement
+account importer, scheduled job, automatic cleanup or database migration.
+Operators remove/revoke unused TMDB server/GitHub settings after rollout.
+See [ADR-007](adr/007-tmdb-account-media-source.md), [setup](tmdb-setup.md),
+and the replacement sections of FEAT-022/API-003.
 
 ### Data Flow: RAG Pipeline
 
@@ -124,7 +140,8 @@ Push to main → GitHub Actions builds Docusaurus + .NET API
 - **Content translation**: Docusaurus i18n structure under `i18n/es/` and `i18n/pt/`
 - **Component translations**: Some pages embed translations inline (e.g., `3dprinting.js`, `volunteering.js`, `sponsors.js`)
 - **Backend localization**: `LocalizationHelper.cs` for email templates
-- **Movie/TV metadata and reviews**: en/es/pt titles, overviews, genres and reviews stored in Cosmos DB (`content-movies`, `content-series`); English/original fallback when TMDB translations are missing
+- **Movie/TV metadata and reviews**: Stored en/es/pt titles, overviews, genres and reviews remain in Cosmos DB (`content-movies`, `content-series`). OMDb supplies English title/plot fallback, not Spanish/Portuguese translations; preserve existing localized fields and curate translations separately
+- **Admin UI**: English-only internal-tool exemption (ADR-006); public en/es/pt UI and legacy TMDB attribution remain localized
 
 ## Infrastructure
 

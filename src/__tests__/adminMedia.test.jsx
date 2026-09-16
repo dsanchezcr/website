@@ -16,7 +16,7 @@ const doc = {
   order: 10, custom: { preserved: true },
 };
 
-describe('admin TMDB media schema', () => {
+describe('admin legacy media compatibility', () => {
   it.each([['movies', 'movie'], ['series', 'tv']])('supports TMDB and legacy IMDb identity in %s', (slug, mediaType) => {
     const type = getContentType(slug);
     expect(validate(type, { ...doc, mediaType })).toEqual([]);
@@ -54,8 +54,8 @@ describe('admin TMDB media schema', () => {
   it('preserves ownership, unknown fields and empty locale strings when editing', async () => {
     const onSave = vi.fn().mockResolvedValue(undefined);
     render(<FormEditor type={getContentType('movies')} initialDoc={doc} isNew={false} onSave={onSave} onClose={vi.fn()} />);
-    expect(screen.getByRole('spinbutton', { name: 'Order', exact: true })).toHaveAttribute('readonly');
-    expect(screen.getByRole('spinbutton', { name: 'Sync account ID' })).toHaveAttribute('readonly');
+    expect(screen.getByRole('spinbutton', { name: 'Order', exact: true })).not.toHaveAttribute('readonly');
+    expect(screen.getByRole('spinbutton', { name: 'syncAccountId' })).not.toHaveAttribute('readonly');
     fireEvent.change(screen.getByRole('textbox', { name: 'Overview (en)' }), { target: { value: 'Overview' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save', exact: true }));
     await waitFor(() => expect(onSave).toHaveBeenCalledWith({ ...doc, overview: { en: 'Overview', es: '', pt: '' } }));

@@ -1,4 +1,5 @@
 import type { ClientPrincipal, Doc } from './types';
+import { normalizeImdbId, OmdbLookupError, parseOmdbMetadata, type OmdbMetadata } from './omdb';
 
 const BASE = '/api/content-admin';
 
@@ -100,50 +101,6 @@ export interface LocalizedText {
   pt: string;
 }
 
-export interface TmdbSyncRequest {
-  dryRun?: boolean;
-  maxItems?: number;
-  continuationToken?: string | null;
-}
-
-export interface TmdbSyncResult {
-  dryRun: boolean;
-  completed: boolean;
-  continuationToken: string | null;
-  watchlistImported: number;
-  recentlyImported: number;
-  moviesUpdated: number;
-  seriesUpdated: number;
-  created: number;
-  replaced: number;
-  deleted: number;
-  skipped: number;
-  warnings: string[];
-}
-
-export class TmdbSyncError extends Error {
-  constructor(
-    message: string,
-    public readonly retryable: boolean,
-    public readonly partialResult?: TmdbSyncResult,
-  ) {
-    super(message);
-    this.name = 'TmdbSyncError';
-  }
-}
-
-function isTmdbSyncResult(value: unknown): value is TmdbSyncResult {
-  if (!value || typeof value !== 'object') return false;
-  const result = value as Record<string, unknown>;
-  return typeof result.dryRun === 'boolean' && typeof result.completed === 'boolean' &&
-    (result.continuationToken === null || typeof result.continuationToken === 'string') &&
-    (!result.completed || result.continuationToken === null) &&
-    ['watchlistImported', 'recentlyImported', 'moviesUpdated', 'seriesUpdated',
-      'created', 'replaced', 'deleted', 'skipped'].every(key =>
-      typeof result[key] === 'number' && Number.isSafeInteger(result[key]) && result[key] >= 0) &&
-    Array.isArray(result.warnings) && result.warnings.every(warning => typeof warning === 'string');
-}
-
 /**
  * Expand a brief prompt into localized (en/es/pt) content for a field, using the admin-only
  * Foundry endpoint. `type` is the content-type slug; `field` is the logical field name
@@ -164,33 +121,47 @@ export async function generateLocalizedText(
   return (await res.json()) as LocalizedText;
 }
 
-/**
- * Uses only the TMDB account configured on the server. Credentials never enter the browser.
- */
-export async function syncTmdbContent(payload: TmdbSyncRequest): Promise<TmdbSyncResult> {
-  const res = await fetch(`${BASE}/tmdb/sync`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  let body: unknown;
+/** Same-origin, read-only lookup. No provider URLs, credentials or raw errors reach the UI. */
+export async function fetchOmdbMetadata(imdbId: string, signal?: AbortSignal): Promise<OmdbMetadata> {
+  const titleId = normalizeImdbId(imdbId);
+  if (!titleId) throw new OmdbLookupError('Enter a valid IMDb ID: tt followed by 6–12 digits.');
+  signal?.throwIfAborted();
   try {
-    body = await res.json();
-  } catch {
-    throw new Error(`Invalid TMDB sync response (HTTP ${res.status}).`);
+    const res = await fetch(`${BASE}/omdb?imdbId=${encodeURIComponent(titleId)}`, {
+      method: 'GET',
+      headers: { accept: 'application/json' },
+      cache: 'no-store',
+      credentials: 'same-origin',
+      redirect: 'error',
+      signal,
+    });
+    if (!res.ok) {
+      const messages: Record<number, string> = {
+        400: 'Check the IMDb ID and use a movie or series, not an episode.',
+        401: 'Sign in again to fetch metadata.',
+        403: 'An admin role is required to fetch metadata.',
+        404: 'Title not found. Check the IMDb ID.',
+        429: 'Metadata request limit reached. Please wait and try again.',
+        502: 'Metadata provider is temporarily unavailable. Please try again.',
+        503: 'Metadata lookup is not configured or is unavailable. Contact the administrator.',
+        504: 'Metadata lookup timed out. Please try again.',
+      };
+      throw new OmdbLookupError(messages[res.status] || 'Unable to fetch metadata. Please try again.');
+    }
+    let body: unknown;
+    try {
+      body = await res.json();
+    } catch {
+      throw new OmdbLookupError('Invalid metadata response. Please try again.');
+    }
+    signal?.throwIfAborted();
+    return parseOmdbMetadata(body, titleId);
+  } catch (error) {
+    // Preserve cancellation, but never expose fetch/parser/provider exception messages.
+    signal?.throwIfAborted();
+    if (error instanceof OmdbLookupError) throw error;
+    throw new OmdbLookupError('Unable to fetch metadata. Check your connection and try again.');
   }
-  if (!res.ok) {
-    const error = body && typeof body === 'object' ? body as Record<string, unknown> : {};
-    throw new TmdbSyncError(
-      typeof error.error === 'string' ? error.error : `TMDB sync failed (HTTP ${res.status}).`,
-      error.retryable === true && (res.status === 500 || res.status === 504),
-      isTmdbSyncResult(error.partialResult) ? error.partialResult : undefined,
-    );
-  }
-  if (!isTmdbSyncResult(body) || body.dryRun !== (payload.dryRun ?? true) || (!body.completed && !body.continuationToken)) {
-    throw new Error('Invalid TMDB sync progress response.');
-  }
-  return body;
 }
 
 export type GamingPlatform = 'xbox' | 'playstation';

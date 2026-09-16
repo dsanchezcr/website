@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ContentTypeDef, Doc } from '../types';
 import { DynamicField, FieldInput, localizedToText } from './fields';
 import MediaPreview from './MediaPreview';
 import AiGenerate from './AiGenerate';
 import { validate } from '../validation';
-import { getSample, type LocalizedText } from '../api';
+import { fetchOmdbMetadata, getSample, type LocalizedText } from '../api';
+import { mergeOmdbMetadata, normalizeImdbId, OmdbLookupError } from '../omdb';
 
 interface Props {
   type: ContentTypeDef;
@@ -22,11 +23,79 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
   const [sample, setSample] = useState<Doc | null>(null);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+  const [fetching, setFetching] = useState(false);
+  const [lookupError, setLookupError] = useState<string | null>(null);
+  const [lookupStatus, setLookupStatus] = useState('');
+  const lookup = useRef<AbortController | null>(null);
+  const isMedia = type.slug === 'movies' || type.slug === 'series';
+
+  useEffect(() => {
+    setDoc({ ...initialDoc });
+    setTab('form');
+    setJsonError(null);
+    setErrors([]);
+    setLookupError(null);
+    setLookupStatus('');
+    setFetching(false);
+    return () => {
+      lookup.current?.abort();
+      lookup.current = null;
+    };
+  }, [initialDoc, type.slug]);
+
+  const handleClose = () => {
+    lookup.current?.abort();
+    lookup.current = null;
+    setFetching(false);
+    onClose();
+  };
+
+  const fetchMetadata = async () => {
+    if (!isMedia || lookup.current || saving) return;
+    const titleId = normalizeImdbId(doc.titleId);
+    setLookupError(null);
+    setLookupStatus('');
+    if (!titleId) {
+      setLookupError('Enter a valid IMDb ID: tt followed by 6–12 digits.');
+      return;
+    }
+    const controller = new AbortController();
+    lookup.current = controller;
+    setFetching(true);
+    setLookupStatus('Fetching metadata…');
+    try {
+      const metadata = await fetchOmdbMetadata(titleId, controller.signal);
+      if (lookup.current !== controller || controller.signal.aborted) return;
+      const expectedType = type.slug === 'movies' ? 'movie' : 'series';
+      if (metadata.type !== expectedType) {
+        throw new OmdbLookupError(
+          `This IMDb ID belongs to a ${metadata.type === 'series' ? 'TV series' : 'movie'}. ` +
+          `Use the ${metadata.type === 'series' ? 'Series' : 'Movies'} section or enter a different IMDb ID.`,
+        );
+      }
+      setDoc(previous => mergeOmdbMetadata(previous, metadata));
+      setLookupStatus('Metadata fetched. Review the English fields, then Save to store changes.');
+    } catch (error) {
+      if (lookup.current !== controller || controller.signal.aborted) return;
+      setLookupStatus('');
+      setLookupError(error instanceof OmdbLookupError ? error.message : 'Unable to fetch metadata. Please try again.');
+    } finally {
+      if (lookup.current === controller) {
+        lookup.current = null;
+        setFetching(false);
+      }
+    }
+  };
 
   const knownKeys = useMemo(() => new Set(type.fields.map((f) => f.key)), [type]);
   const dynamicKeys = useMemo(() => Object.keys(doc).filter((k) => !knownKeys.has(k)), [doc, knownKeys]);
 
   const setField = (key: string, value: unknown) => {
+    if (lookup.current || saving) return;
+    if (key === 'titleId') {
+      setLookupError(null);
+      setLookupStatus('');
+    }
     setDoc((prev) => {
       const next = { ...prev };
       if (value === undefined) delete next[key];
@@ -44,6 +113,7 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
   // Merge AI-generated localized text into a field. `localizedOrString` fields become a
   // localized object; `localized` fields merge over any existing locale values.
   const applyGenerated = (key: string, loc: LocalizedText) => {
+    if (lookup.current || saving) return;
     setDoc((prev) => {
       const existing = prev[key];
       const base = existing && typeof existing === 'object' && !Array.isArray(existing)
@@ -54,12 +124,14 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
   };
 
   const switchToJson = () => {
+    if (lookup.current || saving) return;
     setJsonText(JSON.stringify(doc, null, 2));
     setJsonError(null);
     setTab('json');
   };
 
   const onJsonChange = (text: string) => {
+    if (lookup.current || saving) return;
     setJsonText(text);
     try {
       const parsed = JSON.parse(text);
@@ -83,6 +155,7 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
   };
 
   const handleSave = async () => {
+    if (lookup.current || saving) return;
     const v = validate(type, doc);
     setErrors(v);
     if (v.length > 0 || jsonError) return;
@@ -97,19 +170,19 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
   };
 
   return (
-    <div className="admin-modal-backdrop" onClick={onClose}>
+    <div className="admin-modal-backdrop" onClick={handleClose}>
       <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
         <header className="admin-modal-header">
           <h2>{isNew ? `New ${type.label}` : `Edit ${type.label}`}</h2>
           <div className="admin-tabs">
-            <button className={tab === 'form' ? 'active' : ''} onClick={() => setTab('form')}>Form</button>
-            <button className={tab === 'json' ? 'active' : ''} onClick={switchToJson}>Raw JSON</button>
+            <button className={tab === 'form' ? 'active' : ''} disabled={fetching || saving} onClick={() => setTab('form')}>Form</button>
+            <button className={tab === 'json' ? 'active' : ''} disabled={fetching || saving} onClick={switchToJson}>Raw JSON</button>
           </div>
-          <button className="admin-modal-close" onClick={onClose} aria-label="Close">×</button>
+          <button className="admin-modal-close" onClick={handleClose} aria-label="Close">×</button>
         </header>
 
         <div className="admin-modal-body">
-          <div className="admin-editor">
+          <fieldset className="admin-editor" aria-label="Content fields" disabled={fetching || saving}>
             {tab === 'form' ? (
               <>
                 {type.fields.map((f) => (
@@ -118,11 +191,20 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
                       {f.label}
                       {f.partitionKey && <span className="admin-pk-badge">partition key</span>}
                     </label>
-                    <FieldInput field={f.key === 'order' && doc.syncSource === 'tmdb' &&
-                      (type.slug === 'movies' || type.slug === 'series') &&
-                      !['top-movies', 'top-series', 'top-tv'].includes(String(doc.category))
-                      ? { ...f, readOnlyOnEdit: true } : f}
-                      value={doc[f.key]} isNew={isNew} onChange={(v) => setField(f.key, v)} />
+                    <div className={isMedia && f.key === 'titleId' ? 'admin-imdb-lookup' : undefined}>
+                      <FieldInput field={f} value={doc[f.key]} isNew={isNew} onChange={(v) => setField(f.key, v)} />
+                      {isMedia && f.key === 'titleId' && (
+                        <button type="button" className="admin-btn" onClick={fetchMetadata} disabled={fetching || saving}>
+                          Fetch Data
+                        </button>
+                      )}
+                    </div>
+                    {isMedia && f.key === 'titleId' && (
+                      <>
+                        <div role="status" aria-live="polite">{lookupStatus}</div>
+                        {lookupError && <div className="admin-error" role="alert">{lookupError}</div>}
+                      </>
+                    )}
                     {(f.type === 'localized' || f.type === 'localizedOrString') &&
                       ['review', 'description', 'recommendation', 'name', 'title', 'introText'].includes(f.key) && (
                       <AiGenerate
@@ -146,11 +228,17 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
                 {dynamicKeys.length > 0 && (
                   <div className="admin-dynamic">
                     <h3>Other fields</h3>
+                    {isMedia && (
+                      <p className="admin-field-help">
+                        Legacy TMDB metadata and other stored fields remain editable and are preserved.
+                        Use Raw JSON for nested objects or arrays. Fetch Data does not remove these values.
+                      </p>
+                    )}
                     {dynamicKeys.map((k) => (
                       <div className="admin-field" key={k}>
                         <label className="admin-field-label">{k}</label>
                         <DynamicField ariaLabel={k} value={doc[k]} onChange={(v) => setField(k, v)} />
-                      </div>
+                      </fieldset>
                     ))}
                   </div>
                 )}
@@ -193,8 +281,8 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
             </ul>
           )}
           <div className="admin-modal-actions">
-            <button className="admin-btn" onClick={onClose} disabled={saving}>Cancel</button>
-            <button className="admin-btn admin-btn-primary" onClick={handleSave} disabled={saving || !!jsonError}>
+            <button className="admin-btn" onClick={handleClose} disabled={saving}>Cancel</button>
+            <button className="admin-btn admin-btn-primary" onClick={handleSave} disabled={fetching || saving || !!jsonError}>
               {saving ? 'Saving…' : 'Save'}
             </button>
           </div>

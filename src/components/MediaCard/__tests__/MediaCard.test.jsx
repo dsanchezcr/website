@@ -1,9 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import MediaCard from '../MediaCard';
 
 describe('MediaCard', () => {
+  afterEach(() => vi.unstubAllGlobals());
   const defaultProps = {
     titleId: 'tt0111161',
     title: 'The Shawshank Redemption',
@@ -87,5 +88,32 @@ describe('MediaCard', () => {
   it('handles string review (non-object)', () => {
     render(<MediaCard {...defaultProps} review="Simple review" />);
     expect(screen.getByText('Simple review')).toBeInTheDocument();
+  });
+
+  it.each(['en', 'es', 'pt'])('renders saved OMDb plot fallback and hotlinked poster in %s without fetching metadata', (locale) => {
+    const fetch = vi.fn();
+    vi.stubGlobal('fetch', fetch);
+    render(<MediaCard {...defaultProps} locale={locale} plot="Stored English plot." />);
+    expect(screen.getByText('Stored English plot.')).toBeInTheDocument();
+    expect(screen.getByRole('img')).toHaveAttribute('src', defaultProps.imageUrl);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it('keeps localized overviews ahead of the English plot fallback', () => {
+    render(<MediaCard {...defaultProps} locale="es" overview={{ es: 'Descripción guardada.' }} plot="English plot." />);
+    expect(screen.getByText('Descripción guardada.')).toBeInTheDocument();
+    expect(screen.queryByText('English plot.')).not.toBeInTheDocument();
+  });
+
+  it('uses an explicitly saved external poster instead of a legacy TMDB poster path', () => {
+    render(<MediaCard {...defaultProps} tmdbId={278} mediaType="movie" posterPath="/old-poster.jpg" />);
+    expect(screen.getByRole('img')).toHaveAttribute('src', defaultProps.imageUrl);
+  });
+
+  it('uses IMDb links and ratings after auto-fill without deleting legacy metadata', () => {
+    render(<MediaCard {...defaultProps} tmdbId={278} mediaType="movie" tmdbRating={8.7} metadataSource="omdb" />);
+    expect(screen.getByRole('link')).toHaveAttribute('href', 'https://www.imdb.com/title/tt0111161/');
+    expect(screen.getByText('IMDb ⭐ 9.3')).toBeInTheDocument();
+    expect(screen.queryByText(/TMDB ⭐/)).not.toBeInTheDocument();
   });
 });

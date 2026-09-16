@@ -2,25 +2,26 @@ import React from 'react';
 import styles from './styles.module.css';
 import { mediaTranslations, resolveMediaText } from './mediaTranslations';
 
-// Metadata comes only from stored Cosmos content. TMDB credentials and metadata
-// requests never reach the browser. IMDb-only manual cards remain compatible.
+// Metadata comes only from stored Cosmos content; provider keys and metadata
+// requests never reach the browser. Existing TMDB cards remain compatible.
 const MediaCard = ({
   titleId, tmdbId, mediaType, title, titleTranslations, imageUrl, posterPath,
-  year, genres, genresTranslations, overview, tmdbRating, imdbRating, myRating,
-  review, locale = 'en',
+  year, genres, genresTranslations, overview, plot, tmdbRating, imdbRating, myRating,
+  review, metadataSource, locale = 'en',
 }) => {
   const text = mediaTranslations[locale] || mediaTranslations.en;
   const isTmdb = Number.isInteger(tmdbId) && tmdbId > 0 && ['movie', 'tv'].includes(mediaType);
+  const useTmdb = isTmdb && metadataSource !== 'omdb';
   const displayTitle = resolveMediaText(titleTranslations, locale) || title || titleId || text.untitled;
-  const mediaUrl = isTmdb
+  const mediaUrl = useTmdb
     ? `https://www.themoviedb.org/${mediaType}/${tmdbId}`
     : (/^tt\d{6,12}$/.test(titleId || '') ? `https://www.imdb.com/title/${titleId}/` : null);
-  const poster = isTmdb && /^\/[a-zA-Z0-9_-]+\.(jpg|png|webp)$/.test(posterPath || '')
-    ? `https://image.tmdb.org/t/p/w500${posterPath}` : imageUrl;
+  const poster = imageUrl || (isTmdb && /^\/[a-zA-Z0-9_-]+\.(jpg|png|webp)$/.test(posterPath || '')
+    ? `https://image.tmdb.org/t/p/w500${posterPath}` : null);
   const localizedReview = resolveMediaText(review, locale);
-  const localizedOverview = resolveMediaText(overview, locale);
+  const localizedOverview = resolveMediaText(overview, locale) || plot;
   const displayGenres = genresTranslations?.[locale] || genresTranslations?.en || genres || [];
-  const communityRating = isTmdb ? tmdbRating : imdbRating;
+  const communityRating = useTmdb ? tmdbRating : imdbRating;
 
   const card = (
     <div className={styles.mediaCard}>
@@ -39,7 +40,7 @@ const MediaCard = ({
           )}
           <div className={styles.ratingBadges}>
             {communityRating != null && (
-              <span className={styles.communityBadge}>{isTmdb ? 'TMDB ' : 'IMDb '}⭐ {Number(communityRating).toFixed(1)}</span>
+              <span className={styles.communityBadge}>{useTmdb ? 'TMDB ' : 'IMDb '}⭐ {Number(communityRating).toFixed(1)}</span>
             )}
             {myRating != null && (
               <span className={styles.myRatingBadge}>{text.myRating}: {myRating}/10</span>
