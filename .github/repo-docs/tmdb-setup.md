@@ -30,7 +30,10 @@ or `api/api.csproj`, then reads only that API project's `.env`, not root/admin f
 An existing environment value wins even when empty. Local fallback is disabled
 when `WEBSITE_INSTANCE_ID` is set or `AZURE_FUNCTIONS_ENVIRONMENT=Production`.
 Missing/unreadable/malformed local configuration leaves lookup unconfigured (503).
-The project excludes `.env` files from build/publish output.
+The project excludes `.env` and `.env.*` files from build/publish output.
+`/api/health` reports `environmentVariables.OMDB_API_KEY` using the same settings
+instance, including local fallback. This is presence only, not provider-key
+validation or a quota check; `true` does not rule out a rejected key (503).
 
 From the repository root, the direct-host local workflow is:
 
@@ -68,6 +71,8 @@ live data if the configured database is production; use a scratch database for t
    Missing/`N/A` optional values normalize to null (genres to an empty array) and
    do **not** erase existing form values. Episodes, malformed results and
    movie/series mismatches are rejected without changing the draft.
+   Successful lookup also sets `metadataSource: "omdb"` in the draft; the marker
+   is persisted only with **Save** and does not delete legacy TMDB fields.
 4. Curate your `review`, `myRating`, category and order separately. Lookup preserves
    these, identity, unknown fields, legacy metadata and existing es/pt translations.
    It supplies English title/plot fallback and updates existing English
@@ -117,10 +122,11 @@ Public pages read saved Cosmos metadata, never live OMDb/TMDB metadata.
 
 ## 4. Rollout and retirement of TMDB automation
 
-The replacement removes the TMDB sync service and endpoint
+The replacement has removed the TMDB sync service and endpoint
 (`/api/content-admin/tmdb/sync`), admin connection panel/client, and
-`.github/workflows/tmdb-sync.yml`. There is no OMDb cron, batch import, dry-run
-chain or continuation workflow. Do not recreate the old deployment configuration.
+`.github/workflows/tmdb-sync.yml`, including the old anonymous SWA route exception.
+OMDb uses the existing admin-only wildcard route. There is no OMDb cron, batch
+import, dry-run chain or continuation workflow. Do not recreate the old deployment configuration.
 
 After rollout, the operator must:
 
@@ -144,6 +150,12 @@ also remain valid. No account removals/unratings are mirrored automatically.
 Non-top TMDB records retain stored snapshot/descending ordering ahead of manual
 entries; top-movies/top-series/top-tv retain manual ascending order. Never invent
 creation dates from sync timestamps.
+
+Public cards marked `metadataSource: "omdb"` use IMDb links and `imdbRating`,
+even when legacy TMDB fields remain. Unmarked TMDB records retain TMDB links and
+community ratings. Cards prefer `imageUrl` over a legacy TMDB `posterPath`;
+resolved localized `overview` takes precedence over the plain English `plot` fallback.
+The marker does not remove legacy fields or change snapshot ordering.
 
 Public TMDB posters/links, community ratings and localized credits remain supported.
 `TmdbAttribution` retains the approved logo and required notice:

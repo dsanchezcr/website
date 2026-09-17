@@ -50,6 +50,7 @@
 - Preserve identity, `review`, `myRating`, `category`, `order`, unknown fields, legacy sync ownership/snapshots and existing es/pt translations. Apply English title/plot fallback rather than inventing translations; update existing `titleTranslations.en` / `overview.en` while retaining other locale values and `genresTranslations`.
 - Lookup is stateless: no Cosmos write until explicit **Save** through existing raw-JSON CRUD with ETags. Store only the poster URL string in `imageUrl`; never download/store binary images. Image rendering still depends on the external host.
 - Public cards render stored metadata only. Preserve legacy TMDB links/posters/community ratings, localized attribution and snapshot ordering. Personal TMDB ratings remain 0.5–10 half steps, null if unrated; review stays trilingual.
+- Successful lookup sets `metadataSource: "omdb"` in the draft, persisted only on **Save**. This selects IMDb links/`imdbRating` even when TMDB identity fields remain. Do not erase those fields to switch providers. Public cards prefer `imageUrl` to legacy `posterPath` and resolved localized `overview` to English `plot`; unmarked TMDB records retain their existing link/rating behavior.
 - During lookup, disable editing/saving, cancel on close and ignore stale responses; failures must leave the draft intact. Do not reintroduce the removed account-sync panel/client/workflow.
 - Use `ApiMediaCardList` component in MDX pages to fetch and render from the content API
 - Movie categories: `recently-watched`, `top-movies`, `watchlist`

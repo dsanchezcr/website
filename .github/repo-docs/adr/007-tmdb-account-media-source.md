@@ -24,6 +24,11 @@ identity/order and existing es/pt translations; use English title/plot fallback
 rather than fabricated translations. Persist only on explicit **Save**, using
 existing admin CRUD/ETags; `imageUrl` stores a URL string, never binary data.
 
+Use `metadataSource: "omdb"` to select IMDb links/ratings without removing legacy
+TMDB fields. Public rendering prefers `imageUrl` over legacy `posterPath` and
+resolved localized `overview` over plain English `plot`. Unmarked TMDB records
+retain their TMDB links/ratings, attribution and snapshot ordering.
+
 Remove the TMDB sync endpoint/service, admin sync panel/client and scheduled
 workflow rather than migrating them to OMDb. Retain stored TMDB metadata,
 compatibility ordering, links/posters and attribution. Keep this ADR and

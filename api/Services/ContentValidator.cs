@@ -75,6 +75,7 @@ public static class ContentValidator
                 RequireString(doc, "title", errors, required: false);
                 RequireString(doc, "plot", errors, required: false);
                 RequireString(doc, "director", errors, required: false);
+                RequireString(doc, "metadataSource", errors, required: false);
                 RequireString(doc, "imageUrl", errors, required: false);
                 RequireInt(doc, "year", errors);
                 RequireStringArray(doc, "genres", errors);

@@ -69,9 +69,16 @@ review title/year/plot/director/media type/poster URL/genres/IMDb rating, then e
 **Save**. Lookup only changes the draft; it preserves curated review, `myRating`,
 category, order, unknown fields and existing es/pt translations. Missing/`N/A`
 values do not clear existing fields; series year ranges use the first year.
+Successful lookup marks the draft `metadataSource: "omdb"`; the marker is saved
+only with the rest of the document on explicit **Save**.
 OMDb supplies English fallback, updating existing English title/overview values
 but not generating translations. The TMDB connection panel and scheduled account
 sync are removed, not migrated to OMDb.
+
+Public `MediaCard` uses IMDb links/ratings for saved `metadataSource: "omdb"`
+records without removing legacy TMDB fields. `imageUrl` takes precedence over
+legacy `posterPath`; resolved localized `overview` takes precedence over `plot`.
+Unmarked TMDB records keep TMDB links/ratings, attribution and stored ordering.
 
 ### Infrastructure (Bicep)
 Located in `infra/` directory:
@@ -178,6 +185,10 @@ The `/api/health` endpoint provides comprehensive health monitoring:
 
 **Rate Limiting:** 10 requests/minute per IP to prevent abuse
 
+**OMDb configuration:** `environmentVariables.OMDB_API_KEY` uses the same
+`OmdbSettings` instance as lookup, including local `.env` fallback. This boolean
+reports presence only; health does not validate the provider key or remaining quota.
+
 ### Token Storage
 Email verification tokens can be persisted to Azure Table Storage for reliability:
 - **Fallback**: Uses in-memory cache if `AZURE_STORAGE_CONNECTION_STRING` not configured
@@ -233,8 +244,9 @@ Single GitHub Actions workflow deploys both frontend and managed API together:
 - **azure-static-web-app.yml**: Builds Docusaurus site and .NET 9 API, deploys to SWA
 - SWA handles deploying both app and API from the same repository
 
-Media enrichment has no scheduled replacement workflow. The OMDb rollout removes
-`tmdb-sync.yml` along with the TMDB sync endpoint/service and admin panel.
+Media enrichment has no scheduled replacement workflow. `tmdb-sync.yml`, the TMDB
+sync endpoint/service, admin panel and anonymous SWA route exception are removed;
+OMDb remains under the admin-only `/api/content-admin/*` route.
 After rollout, operators must remove/revoke unused SWA `TMDB_READ_ACCESS_TOKEN`,
 `TMDB_SESSION_ID`, `TMDB_ACCOUNT_ID`, `TMDB_SYNC_KEY` and GitHub secret
 `TMDB_SYNC_KEY` / variable `TMDB_SYNC_MAX_ITEMS`. Keep shared `WEBSITE_URL` settings.

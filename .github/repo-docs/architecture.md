@@ -107,13 +107,21 @@ The admin's Vite/React/TypeScript editor fills title, first release year, plot,
 director, media type, `imageUrl`, genres and IMDb rating. Missing/`N/A` metadata
 does not clear existing draft fields. Curated reviews, personal ratings, category,
 order, unknown fields and existing es/pt translations survive lookup.
+Successful lookup sets `metadataSource: "omdb"` in the draft; only **Save**
+persists it. Health reports OMDb key presence from the same `OmdbSettings` instance,
+not a live provider/key/quota check.
 
-The rollout removes `SyncTmdbContent`, `TmdbSyncService`, `TmdbSyncPanel` and
-`tmdb-sync.yml`, not their stored documents. Legacy TMDB metadata, posters/links,
+`SyncTmdbContent`, `TmdbSyncService`, `TmdbSyncPanel`, `tmdb-sync.yml` and the
+anonymous TMDB route exception are removed, not their stored documents. OMDb uses
+the admin-only `/api/content-admin/*` route. Legacy TMDB metadata, posters/links,
 community ratings, `TmdbAttribution` and `MediaOrdering` remain compatible:
 non-top imports sort by stored snapshot then descending order, manual entries follow;
 top-movies/top-series/top-tv retain manual ascending order. There is no replacement
 account importer, scheduled job, automatic cleanup or database migration.
+For saved `metadataSource: "omdb"` records, `MediaCard` selects IMDb links and
+`imdbRating` without deleting TMDB fields. It prefers `imageUrl` over legacy
+`posterPath`, and resolved localized `overview` over English `plot`.
+Unmarked TMDB records retain their TMDB link/rating behavior.
 Operators remove/revoke unused TMDB server/GitHub settings after rollout.
 See [ADR-007](adr/007-tmdb-account-media-source.md), [setup](tmdb-setup.md),
 and the replacement sections of FEAT-022/API-003.

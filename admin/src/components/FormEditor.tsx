@@ -238,7 +238,7 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
                       <div className="admin-field" key={k}>
                         <label className="admin-field-label">{k}</label>
                         <DynamicField ariaLabel={k} value={doc[k]} onChange={(v) => setField(k, v)} />
-                      </fieldset>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -265,7 +265,7 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
                 {jsonError && <div className="admin-error">Invalid JSON: {jsonError}</div>}
               </div>
             )}
-          </div>
+          </fieldset>
 
           <aside className="admin-side">
             <MediaPreview doc={doc} />

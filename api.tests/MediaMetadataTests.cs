@@ -17,6 +17,7 @@ public class MediaMetadataTests
         {
             ["titleId"] = "tt0111161", ["category"] = "watchlist", ["plot"] = "English plot",
             ["director"] = "Director", ["custom"] = new JsonObject { ["keep"] = true },
+            ["metadataSource"] = "omdb",
             ["review"] = new JsonObject { ["en"] = "Review", ["es"] = "Reseña", ["pt"] = "Resenha" }, ["order"] = 3
         };
         var original = doc.ToJsonString();
@@ -27,8 +28,10 @@ public class MediaMetadataTests
             : JsonSerializer.Deserialize<SeriesDocument>(original)!;
         Assert.Equal("English plot", media.Plot);
         Assert.Equal("Director", media.Director);
+        Assert.Equal("omdb", media.MetadataSource);
+        Assert.Contains("\"metadataSource\":\"omdb\"", JsonSerializer.Serialize(media));
         Assert.Contains("\"plot\":\"English plot\"", JsonSerializer.Serialize(media));
-        foreach (var field in new[] { "plot", "director" })
+        foreach (var field in new[] { "plot", "director", "metadataSource" })
         {
             doc[field] = null;
             Assert.Empty(ContentValidator.Validate(AdminContentTypes.All[slug], doc));

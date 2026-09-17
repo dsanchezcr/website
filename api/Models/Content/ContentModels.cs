@@ -85,6 +85,9 @@ public abstract class MediaDocument : ContentDocument
     [JsonPropertyName("director")]
     public string? Director { get; set; }
 
+    [JsonPropertyName("metadataSource")]
+    public string? MetadataSource { get; set; }
+
     [JsonPropertyName("imageUrl")]
     public string? ImageUrl { get; set; }
 

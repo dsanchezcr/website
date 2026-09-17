@@ -44,6 +44,18 @@ public card fallback if needed; TMDB-specific automation/routes/tests; existing 
 architecture and API-003 documentation. Use existing xUnit, Vitest, admin typecheck/build,
 and public site build; no live API keys or cloud writes are required.
 
+### Replacement verification
+
+- Existing xUnit suite and focused media-model tests pass with mocked provider calls.
+  Release API build/publish passes; published Functions metadata includes the OMDb
+  route and excludes the retired TMDB endpoint and dotenv files.
+- Root Vitest suite, admin TypeScript check and production build pass. Public media
+  regression tests cover hotlinked posters, English plot fallback, preserved localized
+  overviews and IMDb links/ratings after auto-fill on legacy TMDB records.
+- Docusaurus production build succeeds for English, Spanish and Portuguese.
+- No live OMDb requests, database migrations or cloud configuration changes performed.
+  Operators must configure the server key and retire unused TMDB credentials after rollout.
+
 ## Historical TMDB specification (superseded)
 
 | Field | Value |

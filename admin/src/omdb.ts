@@ -74,7 +74,13 @@ export function parseOmdbMetadata(value: unknown, requestedId: string): OmdbMeta
 
 /** Update English metadata only. Curated fields, translations and legacy TMDB values survive. */
 export function mergeOmdbMetadata(doc: Doc, metadata: OmdbMetadata): Doc {
-  const next: Doc = { ...doc, mediaType: metadata.type === 'movie' ? 'movie' : 'tv' };
+  const next: Doc = {
+    ...doc,
+    titleId: metadata.titleId,
+    mediaType: metadata.type === 'movie' ? 'movie' : 'tv',
+    // Prefer the fetched IMDb link/rating without deleting legacy TMDB metadata or attribution.
+    metadataSource: 'omdb',
+  };
   for (const key of ['title', 'year', 'plot', 'director', 'imageUrl', 'imdbRating'] as const) {
     const value = metadata[key];
     if (value !== null && (typeof value !== 'string' || availableText(value))) next[key] = value;
