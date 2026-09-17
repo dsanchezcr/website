@@ -84,4 +84,24 @@ public class MediaMetadataTests
         Assert.Contains(errors, e => e.Contains("titleTranslations.pt"));
         Assert.Contains(errors, e => e.Contains("posterPath"));
     }
+
+    [Theory]
+    [InlineData("https://images.example.test/poster.jpg", false)]
+    [InlineData("http://images.example.test/poster.jpg", true)]
+    [InlineData("javascript:alert(1)", true)]
+    [InlineData("data:image/png;base64,test", true)]
+    [InlineData("/poster.jpg", true)]
+    [InlineData("https://localhost/poster.jpg", true)]
+    [InlineData("https://internal.local/poster.jpg", true)]
+    [InlineData("******images.example.test/poster.jpg", true)]
+    [InlineData("https://images.example.test/<script>", true)]
+    public void MediaValidationRequiresExternalHttpsImageUrls(string imageUrl, bool hasError)
+    {
+        var doc = new JsonObject
+        {
+            ["category"] = "watchlist", ["titleId"] = "tt0111161", ["imageUrl"] = imageUrl
+        };
+        var errors = ContentValidator.Validate(AdminContentTypes.All["movies"], doc);
+        Assert.Equal(hasError, errors.Any(error => error.Contains("imageUrl")));
+    }
 }

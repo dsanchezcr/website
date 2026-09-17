@@ -76,7 +76,7 @@ public static class ContentValidator
                 RequireString(doc, "plot", errors, required: false);
                 RequireString(doc, "director", errors, required: false);
                 RequireString(doc, "metadataSource", errors, required: false);
-                RequireString(doc, "imageUrl", errors, required: false);
+                RequireExternalHttpsUrl(doc, "imageUrl", errors);
                 RequireInt(doc, "year", errors);
                 RequireStringArray(doc, "genres", errors);
                 RequireNumberInRange(doc, "imdbRating", 0, 10, errors);
@@ -156,6 +156,26 @@ public static class ContentValidator
         if (IsAbsent(node)) return;
         if (Kind(node) is not (JsonValueKind.True or JsonValueKind.False))
             errors.Add($"Field '{field}' must be a boolean.");
+    }
+
+    private static void RequireExternalHttpsUrl(JsonObject doc, string field, List<string> errors)
+    {
+        var node = doc[field];
+        if (IsAbsent(node)) return;
+        if (Kind(node) != JsonValueKind.String)
+        {
+            errors.Add($"Field '{field}' must be a string.");
+            return;
+        }
+        var value = AsString(node);
+        if (string.IsNullOrWhiteSpace(value)) return;
+        if (value.Length > 4096 || value.Any(char.IsWhiteSpace) || value.IndexOfAny(['<', '>', '"', '\'', '`', '\\']) >= 0 ||
+            !Uri.TryCreate(value, UriKind.Absolute, out var uri) ||
+            uri.Scheme != Uri.UriSchemeHttps || !string.IsNullOrEmpty(uri.UserInfo) ||
+            uri.HostNameType != UriHostNameType.Dns || uri.IsLoopback || !uri.Host.Contains('.') ||
+            uri.Host.EndsWith(".local", StringComparison.OrdinalIgnoreCase) ||
+            uri.Host.EndsWith(".localhost", StringComparison.OrdinalIgnoreCase))
+            errors.Add($"Field '{field}' must be an absolute external HTTPS URL.");
     }
 
     private static void RequireNumber(JsonObject doc, string field, List<string> errors)

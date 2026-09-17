@@ -160,7 +160,7 @@ public sealed partial class OmdbLookupService(IHttpClientFactory factory, OmdbSe
     {
         if (poster == null || poster.Length > 4096 || poster.Any(char.IsControl) || poster.Contains('\\') ||
             !Uri.TryCreate(poster, UriKind.Absolute, out var uri) ||
-            uri.Scheme is not ("https" or "http") || !string.IsNullOrEmpty(uri.UserInfo) ||
+            uri.Scheme is not "https" || !string.IsNullOrEmpty(uri.UserInfo) ||
             uri.HostNameType != UriHostNameType.Dns || uri.IsLoopback || !uri.Host.Contains('.') ||
             uri.Host.EndsWith(".local", StringComparison.OrdinalIgnoreCase) ||
             uri.Host.EndsWith(".localhost", StringComparison.OrdinalIgnoreCase))

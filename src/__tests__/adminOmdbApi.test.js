@@ -58,7 +58,7 @@ describe('admin OMDb client', () => {
     { year: 0 }, { year: 10000 }, { plot: { en: 'Plot' } }, { director: [] }, { genres: 'Drama' },
     { genres: [1] }, { imdbRating: '8.7' }, { imdbRating: 11 }, { imdbRating: -1 },
     { imageUrl: 'javascript:alert(1)' }, { imageUrl: 'data:image/png;base64,test' },
-    { imageUrl: '/poster.jpg' }, { imageUrl: '//example.org/poster.jpg' },
+    { imageUrl: 'http://example.org/poster.jpg' }, { imageUrl: '/poster.jpg' }, { imageUrl: '//example.org/poster.jpg' },
     { imageUrl: '******example.org/poster.jpg' },
     { imageUrl: 'https://example.org/<script>' },
   ])('rejects malformed metadata %j', async changes => {

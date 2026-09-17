@@ -34,6 +34,8 @@ describe('admin legacy media compatibility', () => {
     [{ overview: { ...translations, pt: null } }, 'overview.pt'],
     [{ genresTranslations: { en: ['Drama'], es: 'Drama', pt: [] } }, 'genresTranslations.es'],
     [{ posterPath: 'https://example.com/image.jpg' }, 'posterPath'],
+    [{ imageUrl: 'http://example.com/image.jpg' }, 'imageUrl'],
+    [{ imageUrl: 'javascript:alert(1)' }, 'imageUrl'],
     [{ myRating: 0 }, 'half-point'],
     [{ myRating: 7.2 }, 'half-point'],
     [{ tmdbRating: 11 }, 'tmdbRating'],

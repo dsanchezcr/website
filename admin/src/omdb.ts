@@ -52,7 +52,7 @@ export function parseOmdbMetadata(value: unknown, requestedId: string): OmdbMeta
   if (imageUrl) {
     try {
       const url = new URL(imageUrl);
-      if (!/^https?:\/\//i.test(imageUrl) || !['https:', 'http:'].includes(url.protocol) ||
+      if (!/^https:\/\//i.test(imageUrl) || url.protocol !== 'https:' ||
           url.username || url.password || /[\s<>"'`\\]/.test(imageUrl)) throw invalid();
     } catch {
       throw invalid();
