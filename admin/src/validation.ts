@@ -5,6 +5,8 @@ const isAbsent = (v: unknown) => v === undefined || v === null;
 const isLocalizedObject = (v: unknown) =>
   typeof v === 'object' && v !== null && !Array.isArray(v) &&
   Object.values(v as Record<string, unknown>).every((x) => x === null || typeof x === 'string');
+const isIpLiteral = (hostname: string) =>
+  /^\d{1,3}(?:\.\d{1,3}){3}$/.test(hostname) || hostname.startsWith('[') || hostname.includes(':');
 const isExternalHttpsUrl = (value: string) => {
   if (!value.trim()) return true;
   try {
@@ -13,6 +15,7 @@ const isExternalHttpsUrl = (value: string) => {
       url.protocol === 'https:' && !url.username && !url.password &&
       url.hostname.includes('.') && !url.hostname.toLowerCase().endsWith('.local') &&
       !url.hostname.toLowerCase().endsWith('.localhost') && !/^localhost$/i.test(url.hostname) &&
+      !isIpLiteral(url.hostname) &&
       !/^(127\.|10\.|169\.254\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|192\.168\.|0\.0\.0\.0$)/.test(url.hostname);
   } catch {
     return false;
