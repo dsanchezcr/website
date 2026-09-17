@@ -60,7 +60,9 @@ describe('admin OMDb client', () => {
     { imageUrl: 'javascript:alert(1)' }, { imageUrl: 'data:image/png;base64,test' },
     { imageUrl: 'http://example.org/poster.jpg' }, { imageUrl: '/poster.jpg' }, { imageUrl: '//example.org/poster.jpg' },
     { imageUrl: '******example.org/poster.jpg' },
-    { imageUrl: 'https://example.org/<script>' },
+    { imageUrl: 'https://example.org/<script>' }, { imageUrl: 'https://93.184.216.34/poster.jpg' },
+    { imageUrl: 'https://[::1]/poster.jpg' }, { imageUrl: 'https://localhost/poster.jpg' },
+    { imageUrl: 'https://internal.local/poster.jpg' },
   ])('rejects malformed metadata %j', async changes => {
     respond({ ...metadata, ...changes });
     await expect(fetchOmdbMetadata(metadata.titleId)).rejects.toThrow('Invalid metadata response');

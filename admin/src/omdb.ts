@@ -1,4 +1,5 @@
 import type { Doc } from './types';
+import { isExternalHttpsUrl } from './validation';
 
 export interface OmdbMetadata {
   titleId: string;
@@ -50,13 +51,7 @@ export function parseOmdbMetadata(value: unknown, requestedId: string): OmdbMeta
   }
   const imageUrl = availableText(data.imageUrl as string | null);
   if (imageUrl) {
-    try {
-      const url = new URL(imageUrl);
-      if (!/^https:\/\//i.test(imageUrl) || url.protocol !== 'https:' ||
-          url.username || url.password || /[\s<>"'`\\]/.test(imageUrl)) throw invalid();
-    } catch {
-      throw invalid();
-    }
+    if (!isExternalHttpsUrl(imageUrl)) throw invalid();
   }
   // Select only contract fields; never return arbitrary provider/response properties.
   return {
