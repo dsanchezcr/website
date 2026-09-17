@@ -158,12 +158,7 @@ public sealed partial class OmdbLookupService(IHttpClientFactory factory, OmdbSe
 
     private static string? SafePoster(string? poster)
     {
-        if (poster == null || poster.Length > 4096 || poster.Any(char.IsControl) || poster.Contains('\\') ||
-            !Uri.TryCreate(poster, UriKind.Absolute, out var uri) ||
-            uri.Scheme is not "https" || !string.IsNullOrEmpty(uri.UserInfo) ||
-            uri.HostNameType != UriHostNameType.Dns || uri.IsLoopback || !uri.Host.Contains('.') ||
-            uri.Host.EndsWith(".local", StringComparison.OrdinalIgnoreCase) ||
-            uri.Host.EndsWith(".localhost", StringComparison.OrdinalIgnoreCase))
+        if (poster == null || !ExternalHttpsUrl.IsValid(poster))
             return null;
         return poster;
     }

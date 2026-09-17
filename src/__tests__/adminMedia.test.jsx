@@ -38,6 +38,7 @@ describe('admin legacy media compatibility', () => {
     [{ imageUrl: 'javascript:alert(1)' }, 'imageUrl'],
     [{ imageUrl: 'https://93.184.216.34/image.jpg' }, 'imageUrl'],
     [{ imageUrl: 'https://[::1]/image.jpg' }, 'imageUrl'],
+    [{ imageUrl: '   ' }, 'imageUrl'],
     [{ myRating: 0 }, 'half-point'],
     [{ myRating: 7.2 }, 'half-point'],
     [{ tmdbRating: 11 }, 'tmdbRating'],

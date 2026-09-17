@@ -366,6 +366,7 @@ public class OmdbLookupTests
     [InlineData("https://images.example.test\\@localhost/a.jpg", null)]
     [InlineData("https://images.example.test/a.jpg", "https://images.example.test/a.jpg")]
     [InlineData("http://images.example.test/a.jpg", null)]
+    [InlineData("   ", null)]
     public async Task PosterIsOnlyASafeExternalUrlAndIsNeverFetched(string poster, string? expected)
     {
         var payload = ValidPayload();

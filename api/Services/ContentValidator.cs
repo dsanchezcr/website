@@ -168,13 +168,8 @@ public static class ContentValidator
             return;
         }
         var value = AsString(node);
-        if (string.IsNullOrWhiteSpace(value)) return;
-        if (value.Length > 4096 || value.Any(char.IsWhiteSpace) || value.IndexOfAny(['<', '>', '"', '\'', '`', '\\']) >= 0 ||
-            !Uri.TryCreate(value, UriKind.Absolute, out var uri) ||
-            uri.Scheme != Uri.UriSchemeHttps || !string.IsNullOrEmpty(uri.UserInfo) ||
-            uri.HostNameType != UriHostNameType.Dns || uri.IsLoopback || !uri.Host.Contains('.') ||
-            uri.Host.EndsWith(".local", StringComparison.OrdinalIgnoreCase) ||
-            uri.Host.EndsWith(".localhost", StringComparison.OrdinalIgnoreCase))
+        if (value == "") return;
+        if (!ExternalHttpsUrl.IsValid(value!))
             errors.Add($"Field '{field}' must be an absolute external HTTPS URL.");
     }
 

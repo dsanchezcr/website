@@ -95,6 +95,7 @@ public class MediaMetadataTests
     [InlineData("https://internal.local/poster.jpg", true)]
     [InlineData("******images.example.test/poster.jpg", true)]
     [InlineData("https://images.example.test/<script>", true)]
+    [InlineData("   ", true)]
     public void MediaValidationRequiresExternalHttpsImageUrls(string imageUrl, bool hasError)
     {
         var doc = new JsonObject

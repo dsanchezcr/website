@@ -6,9 +6,11 @@ const isLocalizedObject = (v: unknown) =>
   typeof v === 'object' && v !== null && !Array.isArray(v) &&
   Object.values(v as Record<string, unknown>).every((x) => x === null || typeof x === 'string');
 export const isIpLiteral = (hostname: string) =>
-  /^\d{1,3}(?:\.\d{1,3}){3}$/.test(hostname) || hostname.startsWith('[') || hostname.includes(':');
+  /^\d{1,3}(?:\.\d{1,3}){3}$/.test(hostname) || /^\d+(?:\.\d+)*$/.test(hostname) ||
+  hostname.startsWith('[') || hostname.includes(':');
 export const isExternalHttpsUrl = (value: string) => {
-  if (!value.trim()) return true;
+  if (value.length === 0) return true;
+  if (!value.trim()) return false;
   try {
     const url = new URL(value);
     return value.length <= 4096 && !/[\s<>"'`\\]/.test(value) && /^https:\/\//i.test(value) &&
