@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { config } from '../../config/environment';
+import swa from '../../../static/staticwebapp.config.json';
 
 describe('environment config', () => {
   describe('config.routes', () => {
@@ -14,6 +15,7 @@ describe('environment config', () => {
         'xboxProfile',
         'playstationProfile',
         'gamingRefresh',
+        'adminOmdb',
       ];
 
       for (const route of requiredRoutes) {
@@ -26,6 +28,15 @@ describe('environment config', () => {
       for (const [key, route] of Object.entries(config.routes)) {
         expect(route, `Route "${key}" should start with /api/`).toMatch(/^\/api\//);
       }
+    });
+
+    it('protects OMDb with the admin rule rather than the anonymous API fallback', () => {
+      const route = swa.routes.find(rule =>
+        rule.route === config.routes.adminOmdb ||
+        (rule.route.endsWith('*') && config.routes.adminOmdb.startsWith(rule.route.slice(0, -1))));
+      expect(route.allowedRoles).toEqual(['admin']);
+      expect(swa.routes.some(rule => rule.route.includes('/tmdb/'))).toBe(false);
+      expect(config.routes).not.toHaveProperty('adminTmdbSync');
     });
   });
 

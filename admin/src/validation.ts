@@ -5,6 +5,23 @@ const isAbsent = (v: unknown) => v === undefined || v === null;
 const isLocalizedObject = (v: unknown) =>
   typeof v === 'object' && v !== null && !Array.isArray(v) &&
   Object.values(v as Record<string, unknown>).every((x) => x === null || typeof x === 'string');
+export const isIpLiteral = (hostname: string) =>
+  /^\d{1,3}(?:\.\d{1,3}){3}$/.test(hostname) || /^\d+(?:\.\d+)*$/.test(hostname) ||
+  hostname.startsWith('[') || hostname.includes(':');
+export const isExternalHttpsUrl = (value: string) => {
+  if (value.length === 0) return true;
+  if (!value.trim()) return false;
+  try {
+    const url = new URL(value);
+    return value.length <= 4096 && !/[\s<>"'`\\]/.test(value) && /^https:\/\//i.test(value) &&
+      url.protocol === 'https:' && !url.username && !url.password &&
+      url.hostname.includes('.') && !url.hostname.toLowerCase().endsWith('.local') &&
+      !url.hostname.toLowerCase().endsWith('.localhost') && !/^localhost$/i.test(url.hostname) &&
+      !isIpLiteral(url.hostname);
+  } catch {
+    return false;
+  }
+};
 
 /**
  * Client-side mirror of the server ContentValidator. Used for fast feedback before saving; the
@@ -50,8 +67,11 @@ export function validate(type: ContentTypeDef, doc: Doc): string[] {
       if (!hasTmdbId && (typeof titleId !== 'string' || titleId.trim() === '')) {
         errors.push("Field 'titleId' is required.");
       }
-      for (const field of ['titleId', 'title', 'imageUrl', 'syncSource']) {
+      for (const field of ['titleId', 'title', 'plot', 'director', 'imageUrl', 'syncSource']) {
         if (!isAbsent(doc[field]) && typeof doc[field] !== 'string') errors.push(`Field '${field}' must be a string.`);
+      }
+      if (typeof doc.imageUrl === 'string' && !isExternalHttpsUrl(doc.imageUrl)) {
+        errors.push("Field 'imageUrl' must be an absolute external HTTPS URL.");
       }
       int('tmdbId');
       if (hasTmdbId && (typeof doc.tmdbId !== 'number' || doc.tmdbId < 1 || doc.tmdbId > 2147483647)) {

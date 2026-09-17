@@ -27,16 +27,7 @@ var host = new HostBuilder()
         services.AddSingleton<IGamingProfileService, XboxProfileService>();
         services.AddSingleton<IGamingProfileService, PlayStationProfileService>();
         services.AddSingleton<GamingProfileReader>();
-        services.AddHttpClient("tmdb", client =>
-            {
-                client.Timeout = TimeSpan.FromSeconds(10);
-                client.MaxResponseContentBufferSize = 2 * 1024 * 1024;
-            })
-            // Account sessions travel in the v3 query string: never log request URLs.
-            .RemoveAllLoggers()
-            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false });
-        services.AddSingleton(_ => TmdbSettings.FromEnvironment());
-        services.AddSingleton<ITmdbSyncService, TmdbSyncService>();
+        services.AddOmdbLookup();
         
         // Register Rate Limit Service (thread-safe atomic operations)
         services.AddSingleton<IRateLimitService, MemoryCacheRateLimitService>();

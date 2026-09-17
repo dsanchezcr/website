@@ -73,7 +73,10 @@ public static class ContentValidator
                 }
                 RequireNumberInRange(doc, "tmdbRating", 0, 10, errors);
                 RequireString(doc, "title", errors, required: false);
-                RequireString(doc, "imageUrl", errors, required: false);
+                RequireString(doc, "plot", errors, required: false);
+                RequireString(doc, "director", errors, required: false);
+                RequireString(doc, "metadataSource", errors, required: false);
+                RequireExternalHttpsUrl(doc, "imageUrl", errors);
                 RequireInt(doc, "year", errors);
                 RequireStringArray(doc, "genres", errors);
                 RequireNumberInRange(doc, "imdbRating", 0, 10, errors);
@@ -153,6 +156,21 @@ public static class ContentValidator
         if (IsAbsent(node)) return;
         if (Kind(node) is not (JsonValueKind.True or JsonValueKind.False))
             errors.Add($"Field '{field}' must be a boolean.");
+    }
+
+    private static void RequireExternalHttpsUrl(JsonObject doc, string field, List<string> errors)
+    {
+        var node = doc[field];
+        if (IsAbsent(node)) return;
+        if (Kind(node) != JsonValueKind.String)
+        {
+            errors.Add($"Field '{field}' must be a string.");
+            return;
+        }
+        var value = AsString(node);
+        if (value == "") return;
+        if (!ExternalHttpsUrl.IsValid(value!))
+            errors.Add($"Field '{field}' must be an absolute external HTTPS URL.");
     }
 
     private static void RequireNumber(JsonObject doc, string field, List<string> errors)

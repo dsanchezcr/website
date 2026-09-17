@@ -76,10 +76,7 @@ The following environment variables are configured as app settings for the manag
 | `AZURE_SEARCH_INDEX_NAME` | Azure AI Search index name | No* |
 | `AZURE_STORAGE_CONNECTION_STRING` | Azure Storage connection for Table Storage | No* |
 | `REINDEX_SECRET_KEY` | Secret key for authenticating reindex API calls | No* |
-| `TMDB_SYNC_KEY` | Dedicated automation invocation key (admin-role calls need no key) | No* |
-| `TMDB_READ_ACCESS_TOKEN` | Server-only TMDB application API Read Access Token | No* |
-| `TMDB_SESSION_ID` | Server-only authorized TMDB v3 account session | No* |
-| `TMDB_ACCOUNT_ID` | Numeric TMDB account ID verified with the token/session | No* |
+| `OMDB_API_KEY` | Server-only OMDb key for admin movie/series auto-fill | No* |
 | `WEBSITE_URL` | The public website URL | Yes |
 | `API_URL` | The API endpoint URL (auto-configured) | Auto |
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | App Insights connection (auto-configured) | Auto |
@@ -98,7 +95,7 @@ After deployment, the following API endpoints will be available:
 | `/api/nlweb/ask` | POST | Chat with AI assistant (uses RAG with Azure AI Search) |
 | `/api/health` | GET | Health check endpoint for monitoring |
 | `/api/reindex` | POST | Update search index (requires X-Reindex-Key header) |
-| `/api/content-admin/tmdb/sync` | POST | Non-destructive TMDB account import (admin role or X-Tmdb-Sync-Key) |
+| `/api/content-admin/omdb?imdbId=tt0111161` | GET | OMDb metadata lookup (SWA admin role required; no writes) |
 
 ## Post-Deployment Steps
 
@@ -113,11 +110,13 @@ After deployment, the following API endpoints will be available:
 
 4. **Add the website URL** as a GitHub variable named `WEBSITE_URL` (e.g., `https://dsanchezcr.com`)
 
-5. **Add TMDB sync configuration**:
-   - GitHub secret: `TMDB_SYNC_KEY` (dedicated invocation key only)
-   - GitHub variable: `TMDB_SYNC_MAX_ITEMS` (default `250`, max `1000` per feed)
-   - SWA app settings: `TMDB_SYNC_KEY`, `TMDB_READ_ACCESS_TOKEN`, `TMDB_SESSION_ID`, `TMDB_ACCOUNT_ID`
-   - Follow [exact authorization/setup steps](../.github/repo-docs/tmdb-setup.md); no read token/session in browser or GitHub. Preview before persisting. Oversized/partial feeds fail explicitly, and sync never deletes or modifies manual top lists.
+5. **Configure OMDb auto-fill**:
+   - Add `OMDB_API_KEY` to the SWA managed API application settings, never frontend build variables.
+   - No GitHub key, scheduled workflow or new Azure resource is needed.
+   - Sign into `/admin`, fetch by IMDb ID, review, then Save. Only the poster URL is persisted, never image binaries.
+   - Follow the [OMDb setup and retirement guide](../.github/repo-docs/tmdb-setup.md).
+     After rollout, remove unused TMDB server credentials, GitHub `TMDB_SYNC_KEY` and
+     `TMDB_SYNC_MAX_ITEMS`, and disable external sync callers. Existing documents remain unchanged.
 
 6. **Create the Azure AI Search index** in Azure Portal:
    - Go to Azure AI Search > Indexes > Add Index

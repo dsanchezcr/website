@@ -1,202 +1,175 @@
-# TMDB account sync setup and operations
+# OMDb media auto-fill setup and operations
 
-The owner manages watchlist additions and movie/TV ratings **on TMDB**, not on
-IMDb. The website reads the authorized account and stores metadata in Cosmos.
-It never writes ratings or watchlist changes back to TMDB. No admin/browser
-credential fields or browser metadata API calls are needed.
+This guide replaces TMDB account-sync instructions on **2026-09-16**. Its filename
+remains `tmdb-setup.md` to preserve links. OMDb is an **admin-only, per-title lookup**,
+not an account importer or scheduled refresh. Existing TMDB documents are retained.
+See the replacement sections of [FEAT-022](../../specs/FEAT-022-tmdb-account-sync.md)
+and [API-003](../../specs/API-003-tmdb-sync.md).
 
-## 1. Obtain application authentication
+Deploy the API and admin editor together before using this flow. Configuration and
+limits below reflect `OmdbSettings`, `OmdbLookupService` and `GetOmdbMetadata`;
+deployment and live-provider verification are separate operator tasks.
 
-1. Sign in to your own [TMDB account](https://www.themoviedb.org).
-2. Open [Settings → API](https://www.themoviedb.org/settings/api), request developer
-   API access and accept the applicable terms. Supply the website details TMDB requests.
-3. Copy **API Read Access Token** (the bearer token), **not** the v3 API key.
-   Store it securely as `TMDB_READ_ACCESS_TOKEN` in the server's app settings.
-   Do not prefix the value with `Bearer`.
+## 1. Configure the server
 
-## 2. Authorize that account for the application
+Use your OMDb API key as **`OMDB_API_KEY`**. It belongs only in the Functions
+server configuration, never an admin credential field, `VITE_*` variable,
+Docusaurus/Vite build setting, public JSON, browser OMDb request or GitHub sync secret.
 
-Do these steps on a trusted workstation using a private API client/terminal.
-Do not use a browser-based third-party API explorer, commit credentials, enable
-PowerShell transcripts, or paste tokens into support tickets. All API requests
+| Environment | Configuration |
+|---|---|
+| Local Functions | `OMDB_API_KEY` in ignored `api/local.settings.json` → `Values`, or the Functions process environment |
+| Local `.env` fallback | `OMDB_API_KEY` in ignored `api/.env`; existing environment/Functions settings take precedence |
+| Production | `OMDB_API_KEY` as an Azure Static Web Apps **application setting** for the managed API |
+
+Keep real values untracked and restart the local Functions host after changes.
+Use a simple `OMDB_API_KEY=<your-key>` assignment. `OmdbSettings` uses DotNetEnv
+without exporting other settings into the process. It searches from the working
+directory and application base directory, walking ancestors to locate `api.csproj`
+or `api/api.csproj`, then reads only that API project's `.env`, not root/admin files.
+An existing environment value wins even when empty. Local fallback is disabled
+when `WEBSITE_INSTANCE_ID` is set or `AZURE_FUNCTIONS_ENVIRONMENT=Production`.
+Missing/unreadable/malformed local configuration leaves lookup unconfigured (503).
+The project excludes `.env` and `.env.*` files from build/publish output.
+`/api/health` reports `environmentVariables.OMDB_API_KEY` using the same settings
+instance, including local fallback. This is presence only, not provider-key
+validation or a quota check; `true` does not rule out a rejected key (503).
+
+From the repository root, the direct-host local workflow is:
+
+```sh
+cd api
+dotnet build
+func start
+```
+
+Start the admin dev server separately using the existing
+[admin development instructions](../../admin/README.md). Local mock auth is for
+development only; production requires SWA sign-in and the `admin` role.
+
+Lookup does not need Cosmos. **Saving** still uses the existing admin CRUD and
+`AZURE_COSMOS_ENDPOINT`, `AZURE_COSMOS_KEY`, `AZURE_COSMOS_DATABASE_NAME` settings.
+No new Azure resources or database migration are required. Local Save can affect
+live data if the configured database is production; use a scratch database for trials.
+
+## 2. Fetch, review, then Save
+
+1. Sign into `/admin` as an admin and open **Movies** or **Series**. Add or edit a title.
+2. Enter one IMDb ID (`tt` plus 6–12 ASCII digits, for example `tt0111161`),
+   not a title URL, and click **Fetch Data**.
+3. Review the draft fields populated from OMDb:
+
+   | Field | Normalization |
+   |---|---|
+   | `title` | English title fallback |
+   | `year` | Integer; first year of a series range |
+   | `plot`, `director` | Optional text; full plot requested |
+   | `mediaType` | OMDb `movie` → `movie`; `series` → `tv` |
+   | `imageUrl` | Poster URL string only; no binary image download/storage |
+   | `genres`, `imdbRating` | Genre list and community score, not your personal rating |
+
+   Missing/`N/A` optional values normalize to null (genres to an empty array) and
+   do **not** erase existing form values. Episodes, malformed results and
+   movie/series mismatches are rejected without changing the draft.
+   Successful lookup also sets `metadataSource: "omdb"` in the draft; the marker
+   is persisted only with **Save** and does not delete legacy TMDB fields.
+4. Curate your `review`, `myRating`, category and order separately. Lookup preserves
+   these, identity, unknown fields, legacy metadata and existing es/pt translations.
+   It supplies English title/plot fallback and updates existing English
+   `titleTranslations.en` / `overview.en` values, not Spanish/Portuguese text.
+   Review or add translations separately; **Fetch Data** is not **Generate with AI**.
+5. Click **Save** explicitly to persist through the existing Cosmos admin API.
+   Fetching, previewing or closing the editor does not save. Editing/saving is
+   disabled during lookup; closing cancels it and stale responses are ignored.
+   Failures retain entered values.
+
+The internal admin UI remains **English-only** (ADR-006 exemption). Public
+en/es/pt UI remains supported, using stored translations or English fallback.
+
+## 3. API safety and troubleshooting
+
+The browser calls only `GET /api/content-admin/omdb?imdbId=tt0111161` on the site's
+API. SWA protects `/api/content-admin/*`, and the function independently checks the
+`admin` role. There is **no automation key**, anonymous metadata access, client API
+key or configurable provider URL.
+
+The backend uses fixed **`https://www.omdbapi.com/`**, not HTTP, with redirects
+disabled. Current limits are **20 valid lookups per admin per minute per instance**
+(in-memory), a **10-second** provider request/body-read budget and **128 KiB**
+maximum response. The query must contain only one `imdbId` and be at most 256
+characters. These are code limits, not a guarantee of provider quota availability.
+OMDb query credentials must not appear in URI logs, telemetry, browser responses or support reports;
+never enable query-string/body capture. Responses are `Cache-Control: no-store`;
+errors use `{ "error": "safe message" }`, not raw upstream errors or payloads.
+HTTP client registration removes factory URI logging; the lookup service suppresses
+OpenTelemetry instrumentation for the credential-bearing provider call.
+
+| Status | Meaning / operator action |
+|---|---|
+| 400 | Invalid IMDb ID or unsupported title type. Use a movie/series IMDb ID in the correct editor; do not submit a URL or episode |
+| 401 | Not authenticated. Sign in again |
+| 403 | Authenticated without `admin`. Check the SWA role/allow-list; a provider key cannot grant access |
+| 404 | No matching title. Verify the IMDb ID; this is not a missing API-key error |
+| 429 | Local rate limit or OMDb quota exhausted. Wait before retrying; check the provider account quota if persistent. Do not repeatedly click Fetch Data |
+| 502 | Provider/network failure or invalid/mismatched payload. Retry later; investigate persistent failures without logging provider bodies or credentials |
+| 503 | Missing or rejected **server** `OMDB_API_KEY`. Configure/correct the key and restart the local host; in production check the SWA application setting. Do not put a key in the browser |
+| 504 | Bounded lookup timeout. Retry later; the draft and database remain unchanged |
+
+Successful metadata lookup does not guarantee a working poster. `imageUrl` points
+to an external host; availability, hotlink restrictions and browser HTTPS/CSP rules
+can prevent display. There is no image archive/proxy or binary asset migration.
+Public pages read saved Cosmos metadata, never live OMDb/TMDB metadata.
+
+## 4. Rollout and retirement of TMDB automation
+
+The replacement has removed the TMDB sync service and endpoint
+(`/api/content-admin/tmdb/sync`), admin connection panel/client, and
+`.github/workflows/tmdb-sync.yml`, including the old anonymous SWA route exception.
+OMDb uses the existing admin-only wildcard route. There is no OMDb cron, batch
+import, dry-run chain or continuation workflow. Do not recreate the old deployment configuration.
+
+After rollout, the operator must:
+
+- Remove unused SWA `TMDB_READ_ACCESS_TOKEN`, `TMDB_SESSION_ID`, `TMDB_ACCOUNT_ID`
+  and `TMDB_SYNC_KEY`; revoke unused TMDB application/session credentials at the provider.
+- Remove GitHub secret `TMDB_SYNC_KEY` and variable `TMDB_SYNC_MAX_ITEMS`, including
+  copies in the `Production` environment. Keep shared `WEBSITE_URL` used by other jobs.
+- Disable any external callers of the removed sync endpoint.
+- Check movie/series editing and public en/es/pt legacy cards without mass-writing
+  or converting existing documents.
+
+These are **operator actions**, not cloud writes or migrations performed by this
+documentation change or by lookup.
+
+## Legacy metadata, ordering and attribution
+
+Retain imported `tmdbId`, `mediaType`, `posterPath`, `tmdbRating`,
+`titleTranslations`, `overview`, `genresTranslations`, `syncSource`,
+`syncAccountId`, `syncedAt` and other unknown fields. Existing IMDb-only records
+also remain valid. No account removals/unratings are mirrored automatically.
+Non-top TMDB records retain stored snapshot/descending ordering ahead of manual
+entries; top-movies/top-series/top-tv retain manual ascending order. Never invent
+creation dates from sync timestamps.
+
+Public cards marked `metadataSource: "omdb"` use IMDb links and `imdbRating`,
+even when legacy TMDB fields remain. Unmarked TMDB records retain TMDB links and
+community ratings. Cards prefer `imageUrl` over a legacy TMDB `posterPath`;
+resolved localized `overview` takes precedence over the plain English `plot` fallback.
+The marker does not remove legacy fields or change snapshot ordering.
+
+Public TMDB posters/links, community ratings and localized credits remain supported.
+`TmdbAttribution` retains the approved logo and required notice:
+“This product uses the TMDB API but is not endorsed or certified by TMDB.”
+Review the provider's terms when changing use; image/attribution availability is external.
+Historical design details remain in [ADR-007](adr/007-tmdb-account-media-source.md)
+and the superseded spec sections, not operational sync instructions.
+
+## Historical references (not OMDb setup)
+
+The retired TMDB API examples linked
 below use `Authorization: Bearer <API Read Access Token>`.
 
-1. `GET https://api.themoviedb.org/3/authentication/token/new`.
-   Require `success: true`; hold the returned `request_token` privately.
-2. In your browser, while signed in to **the intended TMDB account**, open
-   `https://www.themoviedb.org/authenticate/<request_token>` and approve the request.
-   This temporary request token is the only authorization value that needs to
-   visit the browser; never send the read token or final session ID to the browser.
-   Request tokens expire after 60 minutes if unused.
-3. `POST https://api.themoviedb.org/3/authentication/session/new` with
-   `Content-Type: application/json` and `{ "request_token": "<approved request token>" }`.
-   Require `success: true`; keep the returned `session_id` secret as `TMDB_SESSION_ID`.
-   Use a normal authorized session, **not** a guest session.
-4. `GET https://api.themoviedb.org/3/account?session_id=<session_id>` using the same
-   bearer application token. Verify the returned username is yours. Save its
-   numeric `id` as `TMDB_ACCOUNT_ID` (not the username or a v4 account identifier).
-   Do not copy the full response or URL into logs.
-5. The sync repeats this account lookup each run. TMDB validates the application
-   token/session pair, and the endpoint rejects any account ID mismatch **before
-   reading or writing content**. Changing `TMDB_ACCOUNT_ID` alone does not authorize
-   a different user. Reauthorize the intended account if credentials are rotated.
-
-You can also follow TMDB's official
-[session guide](https://developer.themoviedb.org/reference/authentication-how-do-i-generate-a-session-id).
-To revoke access, delete the session through TMDB's
-`DELETE /3/authentication/session` with `{ "session_id": "..." }`, or revoke the
-application in account settings, and remove/rotate server credentials.
-
-## 3. Configure the server
-
-These are **Azure Static Web Apps application settings**, not Vite/Docusaurus
-build variables. For local development use the untracked `api/local.settings.json`
-`Values` object; never commit actual values. Existing Cosmos containers must exist.
-The sync creates no Azure resources.
-
-| Setting | Value / purpose |
-|---|---|
-| `TMDB_READ_ACCESS_TOKEN` | Application API Read Access Token |
-| `TMDB_SESSION_ID` | Authorized v3 session for the owner |
-| `TMDB_ACCOUNT_ID` | Positive numeric v3 account ID verified above |
-| `TMDB_SYNC_KEY` | Independent random automation secret (recommend 32 random bytes, base64); optional for admin-only use |
-| `AZURE_COSMOS_ENDPOINT` | Existing Cosmos account endpoint |
-| `AZURE_COSMOS_KEY` | Existing Cosmos content access key |
-| `AZURE_COSMOS_DATABASE_NAME` | Existing database, default `dsanchezcr-website` |
-
-Keep the application token/session in one server configuration; do not put them
-in GitHub variables, `VITE_*`, public environment.js, content JSON or admin SPA.
-The sync's named HttpClient disables URI logging and redirects. Do not enable
-HTTP query-string/body capture in telemetry: TMDB v3 uses `session_id` in URLs.
-.NET 9's default HTTP tracing query redaction must remain enabled.
-
-## 4. Populate and preview
-
-1. Add a few movies and TV series to your account's watchlist on TMDB.
-2. Rate movies/TV on TMDB. Its API uses **0.5–10 in 0.5 increments**, even if
-   a TMDB UI presents a percentage. The website stores these values unchanged.
-3. Sign into the site's admin app with the SWA `admin` role, then request a preview:
-   `POST /api/content-admin/tmdb/sync` with `{ "dryRun": true, "maxItems": 250 }`.
-   Automation can use `X-Tmdb-Sync-Key` instead of an interactive admin session.
-4. Each request processes at most **20 documents**. If HTTP 200 returns
-   `completed: false`, repeat with its `continuationToken` and unchanged
-   `dryRun`/`maxItems` until `completed: true`. Counts are cumulative; warnings
-   are per response. Review the complete preview, then start a **new chain**
-   with `dryRun: false` and no token to persist. Preview tokens cannot be used
-   for writes. An omitted `dryRun` defaults true. Account settings or source URLs
-   are not accepted in the request. See [API-003](../../specs/API-003-tmdb-sync.md).
-5. Open the movies/series pages in English, Spanish and Portuguese to verify
-   posters, titles, reviews and ordering. The public content API supplies all
-   metadata; the browser only fetches poster/logo images from the provider CDN.
-
-No live TMDB/Cosmos calls or configuration writes were performed as part of the
-code migration. These setup steps are an operator task, not an automatic migration.
-
-## 5. Daily automation
-
-`.github/workflows/tmdb-sync.yml` runs at 1 AM America/New_York using two UTC
-slots plus a timezone gate. GitHub schedules can be delayed; this is not a strict
-real-time scheduler. Its job uses the `Production` GitHub environment:
-
-- Secret `TMDB_SYNC_KEY`: exactly the same independent key as the server setting.
-- Variable `WEBSITE_URL`: HTTPS origin, default `https://dsanchezcr.com`.
-- Optional variable `TMDB_SYNC_MAX_ITEMS`: 1–1000, default 250 **per feed**.
-- No TMDB read token/session in GitHub; the job only invokes the configured server.
-
-Scheduled runs explicitly persist; manual workflow dispatch defaults to preview.
-The workflow follows continuations automatically, with concurrency protection,
-redirect refusal, a 20-minute job limit and bounded retries for explicit retryable
-500/504 responses. It uses the returned partial-progress cursor when available.
-Unrecoverable HTTP/source changes fail the job without echoing credentials.
-Opaque signed cursors contain no credentials and grant no authorization; the
-last cursor in job output can be used for an authorized manual resume within an hour.
-After deploying the migration separately, remove obsolete `IMDB_*` settings/secrets
-and disable any externally configured calls to the removed IMDb endpoint.
-
-## Sync rules and metadata
-
-| TMDB endpoint suffix (`/3/account/{account_id}/…`) | Container / category |
-|---|---|
-| `watchlist/movies` | content-movies / watchlist |
-| `rated/movies` | content-movies / recently-watched |
-| `watchlist/tv` | content-series / watchlist |
-| `rated/tv` | content-series / completed |
-
-All use `session_id`, `page`, `language=en-US`, and `sort_by=created_at.desc`.
-`page`, `total_pages`, `total_results`, duplicate IDs and rated values are validated.
-TMDB list responses do not provide a reliable per-item addition timestamp;
-**never fabricate `createdAt` from the sync time**. Store descending `order` from
-the returned sequence and `syncedAt` for the refresh snapshot. Current snapshots
-sort before retained old ones; manual non-top entries follow in their existing
-descending order. Top-movies/top-series/top-tv always keep manual ascending order.
-All batches share one snapshot timestamp. An older continuation skips a document
-already refreshed by a newer snapshot instead of demoting it.
-TV ratings map to completed; episode progress/currently-watching is not inferred.
-
-Details are fetched for `en-US`, `es-ES`, `pt-BR`. A synced document contains:
-
-- `id`: `tmdb-movie-watch-<id>`, `tmdb-movie-rated-<id>`,
-  `tmdb-tv-watch-<id>` or `tmdb-tv-rated-<id>`.
-- `tmdbId`, `mediaType` (`movie` or `tv`), optional `titleId` (IMDb external ID).
-- `titleTranslations: { en, es, pt }`, `overview: { en, es, pt }`,
-  `genresTranslations: { en: [], es: [], pt: [] }`.
-- `posterPath` or null, `tmdbRating`; English fallback `title`, `imageUrl`,
-  `year`, `genres`. The public image size is TMDB `w500`.
-- `myRating`: account rating for rated entries and matching watchlist entries;
-  null for watchlist entries with no account rating.
-- `review: { en: "", es: "", pt: "" }` on creation (never invented reviews).
-- `syncSource: "tmdb"`, `syncAccountId`, `syncedAt`, `category`, `order`.
-
-Missing translations use English/original fallback with warnings; missing posters
-render placeholders. Existing raw JSON is cloned and ETag-replaced; reviews and
-unknown fields survive. Existing manual/IMDb records are neither adopted nor
-converted. Same-category matching manual IDs win and are reported as skipped.
-Their stored title/poster data continues to render, or falls back to the IMDb ID
-when metadata is missing; there is no live IMDb enrichment.
-
-## Non-destructive safety and limits
-
-- **No deletes**, including empty lists, removals, unratings, account switches,
-  maxItems limits or failures. Clean up retained entries explicitly in admin.
-- No top-category queries/writes; `currently-watching` also stays manual.
-- All four feeds are fully validated on **every** continuation request. Only the
-  next 20 documents are hydrated; all metadata/merges in that selected batch
-  validate before its first Cosmos write. Prior batches are retained if a later
-  batch fails. Oversized feeds fail explicitly rather than silently truncating.
-  Four independent feed readers run in parallel; each feed's pages remain sequential.
-- 10-second HTTP request timeout; **35-second overall budget**; four concurrent
-  metadata items maximum; **20-document batches**. This leaves response headroom
-  below [SWA's 45-second API limit](https://learn.microsoft.com/azure/static-web-apps/apis-overview).
-  No background processing continues after return. Hundreds of localized details
-  are not fetched in a single initial request.
-- Continuations are stateless, HMAC-signed and bound to account/session/application
-  settings, source order/ratings, maxItems, dryRun and snapshot timestamp. They
-  expire after an hour and work across server instances without new Azure resources.
-  Changing options/configuration invalidates a token; changed source feeds return
-  409. Restart without the token in either case; no previous imports are deleted.
-- A 504 timeout or storage failure returns `retryable: true`, a `phase` and
-  `partialResult` containing cumulative acknowledged counts and a resume cursor.
-  If the cursor is null, source validation had not completed; retry the original
-  request. Bound retries and inspect persistent provider errors. Account-feed
-  collection itself can still exceed the budget on an unusually slow provider;
-  it fails explicitly without writing incomplete source data.
-- Repeat runs use stable IDs. Create collisions or ETag conflicts are skipped
-  with warnings, never unconditional upserts.
-- Cross-partition storage writes are not transactional. A failed write may have
-  committed without acknowledgement. Resume from the returned cursor; stable IDs
-  and ETags make retrying that entry safe. There is no deletion or rollback that
-  could erase an editor's work. Do not sum cumulative counters across batches.
-- The instance semaphore blocks overlapping local runs; workflow concurrency and
-  Cosmos ETags protect other callers. There is no distributed sync lease.
-
-## Attribution and official references
-
-Public media credits show an approved, unmodified TMDB logo and the required notice:
-“This product uses the TMDB API but is not endorsed or certified by TMDB.”
-Spanish and Portuguese explanations accompany the exact English notice. The
-approved external logo was verified reachable (HTTP 200, 2,065 bytes); no new
-local images or game assets are needed. API commercial use may require separate
-licensing; review TMDB's current terms before changing the site's use.
+These references describe the superseded integration, not deployment steps for OMDb.
 
 Official documentation researched on 2026-09-15:
 

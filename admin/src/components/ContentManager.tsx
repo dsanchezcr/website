@@ -3,7 +3,6 @@ import type { ContentTypeDef, Doc } from '../types';
 import { createDoc, deleteDoc, getDoc, getPartitions, listDocs, updateDoc } from '../api';
 import { cellValue } from './fields';
 import FormEditor from './FormEditor';
-import TmdbSyncPanel from './TmdbSyncPanel';
 import GamingConnections from './GamingConnections';
 
 export default function ContentManager({ type }: { type: ContentTypeDef }) {
@@ -140,12 +139,6 @@ export default function ContentManager({ type }: { type: ContentTypeDef }) {
 
       {error && <div className="admin-error">{error}</div>}
 
-      {(type.slug === 'movies' || type.slug === 'series') && (
-        <TmdbSyncPanel onSynced={async () => {
-          await load();
-          refreshPartitions();
-        }} />
-      )}
       {type.slug === 'gaming' && <GamingConnections />}
       {type.slug === 'gaming' && (
         <p className="admin-muted">

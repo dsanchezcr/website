@@ -103,8 +103,10 @@ npm --prefix admin run typecheck
 
 ## Configuration — where settings go
 
-The admin's backend settings live in **`api/local.settings.json`** (the `Values` object) — the
-same file the rest of the API uses. **There is no `.env.local` for the API.**
+The admin's backend settings live in **`api/local.settings.json`** (the `Values` object) —
+the same file the rest of the API uses. OMDb also supports ignored **`api/.env`** locally:
+`OMDB_API_KEY=<your-key>`. Environment/Functions settings take precedence; production
+uses only SWA application settings. Never put this key in `admin/.env` or `VITE_*`.
 
 | Setting | Needed locally? | Where it's used |
 |---------|-----------------|-----------------|
@@ -114,6 +116,7 @@ same file the rest of the API uses. **There is no `.env.local` for the API.**
 | `AZURE_COSMOS_ENDPOINT` | ✅ Yes | Cosmos connection (already present). |
 | `AZURE_COSMOS_KEY` | ✅ Yes | Cosmos connection (already present). |
 | `AZURE_COSMOS_DATABASE_NAME` | ✅ Yes | Cosmos database (already present). |
+| `OMDB_API_KEY` | For Fetch Data | Server-only OMDb key; lookup works without Cosmos, but Save still requires Cosmos. |
 
 Set the two `AZURE_CLIENT_*` vars to any dummy value in the terminal before `swa start`
 (the SWA CLI only checks they exist). The Cosmos settings already in `api/local.settings.json`
@@ -136,33 +139,33 @@ are what the admin API actually uses to read/write data.
 
 ## How it fits together
 
-### TMDB connection and media editing
+### OMDb auto-fill and media editing
 
-Open **Movies** or **Series** for the TMDB connection panel. First configure the
-server account using the [TMDB setup guide](../.github/repo-docs/tmdb-setup.md).
-Credentials stay in server settings; the panel uses your signed-in admin role.
+Open **Movies** or **Series**, add/edit a document, enter an IMDb ID such as
+`tt0111161`, and click **Fetch Data**. The admin-only proxy fetches title, year,
+plot, director, type, genres, IMDb rating and poster URL over HTTPS using the
+server key. Configure it with the [OMDb setup guide](../.github/repo-docs/tmdb-setup.md).
 
-**Preview TMDB sync** is the default and makes no database writes. The panel
-automatically follows 20-document batches, displays cumulative counts, and only
-reports completion after the final batch. For explicit retryable failures,
-**Resume interrupted sync** continues from acknowledged progress. Earlier
-successful batches remain saved; they are not rolled back or deleted. Closing
-the panel stops requesting further batches. Changing options starts a new chain.
-Uncheck **Dry run** and start **Sync TMDB** after reviewing the preview.
+Review the populated fields and explicitly **Save**. Fetch Data only changes the
+draft; it never saves the document or downloads/stores poster binaries. Missing
+optional provider values leave existing fields intact. The external poster URL
+is rendered directly and persisted as `imageUrl`.
 
-Imported entries can use a TMDB ID without an IMDb ID. The form supports TMDB
-ratings, en/es/pt titles and overviews, stored posters, and TMDB preview links.
-Legacy IMDb-only documents still work. Personal TMDB ratings use half-point
-increments; an empty rating means unrated. Unknown fields and localized genre
-arrays are preserved (edit nested arrays via **Raw JSON**).
+Editing/saving is disabled while fetching; closing cancels the lookup. Invalid IDs,
+wrong movie/series types, unavailable titles, quota limits and provider errors show
+safe messages without changing the draft. No provider key enters the browser.
 
-Non-top lists, including the admin grid, follow the TMDB newest-added snapshot
-order. **Top Movies / Top TV Shows** retain manually editable ascending **Order**.
-Imported non-top order and sync ownership fields are read-only in the typed form.
-Do not change ownership/snapshot fields through Raw JSON unless repairing data.
-Sync preserves manually curated top documents, reviews, and unrelated fields.
-Daily automation is configured in the setup guide; it runs only after deployment
-and server/GitHub configuration.
+Lookup preserves personal ratings/reviews, category, order, unknown fields and
+existing translations. OMDb supplies English metadata, not Spanish/Portuguese
+translations; add translations separately. Existing English title/overview values
+are updated when present. `metadataSource: "omdb"` selects IMDb links/ratings on
+public cards without deleting legacy TMDB data.
+
+The TMDB sync panel, endpoint and daily workflow are removed. Existing imported
+documents, stored ordering and attribution remain supported; legacy fields are
+available under **Other fields** / **Raw JSON**. **Order** is now editable for
+imported entries too, but lookup does not change it. Legacy TMDB personal ratings
+still use 0.5–10 half-point increments or null. No database migration is required.
 
 ### Gaming connections and ordering
 

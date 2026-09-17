@@ -12,6 +12,8 @@ export type Doc = Record<string, unknown>;
 
 export type FieldType =
   | 'string'
+  | 'text'
+  | 'mediaType'
   | 'number'
   | 'integer'
   | 'boolean'

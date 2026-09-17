@@ -47,8 +47,8 @@ export const config = {
     // Admin-only AI content generation (Foundry): POST expands a brief prompt into localized
     // (en/es/pt) text in the site's tone. Same role gate as the CRUD endpoints.
     adminGenerate: '/api/content-admin/ai/generate',
-    // Server-configured TMDB account sync (admin role or automation key).
-    adminTmdbSync: '/api/content-admin/tmdb/sync',
+    // Admin-only IMDb metadata lookup; the OMDb key stays on the server.
+    adminOmdb: '/api/content-admin/omdb',
   },
   
   // Production domains
