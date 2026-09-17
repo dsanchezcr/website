@@ -5,6 +5,8 @@
 - **Route:** `GET /api/content-admin/omdb?imdbId=tt0111161`
 - **Auth:** SWA `admin` role, independently checked in the function. No automation
   key, client-supplied API key, upstream URL or anonymous metadata access.
+- The generic admin collection route constrains its content-type segment to
+  registered containers, so it cannot intercept the literal OMDb endpoint.
 - **Input:** one trimmed IMDb ID matching `^tt[0-9]{6,12}$`.
 - **Output:** camelCase JSON containing `titleId`, `title`, nullable integer `year`,
   nullable strings `plot`, `director`, `imageUrl`, `type` (`movie` or `series`),
