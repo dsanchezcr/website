@@ -88,6 +88,14 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 | GetSubscriptionStatus | `/api/newsletter/status` | Check subscription state |
 | DispatchNewsletter | `/api/newsletter/dispatch` | Send digest (GitHub Actions triggered) |
 
+PlayStation refresh resolves the numeric account ID from the authenticated
+`users/me/trophySummary` response, not from access-token JWT claims. Its in-memory
+access-token cache is tied to a fingerprint of the current `PSN_NPSSO_TOKEN`;
+credential rotation invalidates reuse, and manual refresh always exchanges again.
+Public refresh retries an HTTP 401 once with renewed credentials. Profile data is
+saved only after all provider requests succeed, preserving the last working
+profile on authentication, partial-response, or cancellation failures.
+
 ### Data Flow: TMDB media
 
 TMDB account watchlists/ratings → authorized server sync → complete pagination

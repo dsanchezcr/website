@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker;
@@ -26,8 +29,8 @@ namespace api.Services;
 /// - PSN_NPSSO_TOKEN: NPSSO token from https://ca.account.sony.com/api/v1/ssocookie
 /// 
 /// Flow:
-/// 1. Exchange NPSSO token for access token (cached in memory for 1 hour)
-/// 2. Fetch profile + trophies + recently played
+/// 1. Exchange NPSSO token for access token (cached by credential fingerprint for 55 minutes)
+/// 2. Fetch trophies + account ID, then profile + recently played
 /// 3. Cache everything in Table Storage
 /// Public reads can fall back to cached data; manual refresh failures are explicit.
 /// </summary>
@@ -39,7 +42,8 @@ public class PlayStationProfileService : IGamingProfileService
     private readonly IMemoryCache _memoryCache;
 
     public string Platform => "playstation";
-    private string? NpssoToken => Environment.GetEnvironmentVariable("PSN_NPSSO_TOKEN");
+    private const string AccessTokenCacheKey = "psn:access_token";
+    private sealed record CachedAccessToken(string CredentialFingerprint, string Token);
 
     // PSN API endpoints
     private const string AuthUrl = "https://ca.account.sony.com/api/authz/v3/oauth/authorize";
@@ -70,14 +74,25 @@ public class PlayStationProfileService : IGamingProfileService
 
     public async Task<GamingProfile> RefreshAsync(bool renewCredentials, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(NpssoToken))
+        var npssoToken = Environment.GetEnvironmentVariable("PSN_NPSSO_TOKEN")?.Trim();
+        if (string.IsNullOrWhiteSpace(npssoToken))
             throw new InvalidOperationException("Configure PSN_NPSSO_TOKEN in the server app settings.");
-        if (renewCredentials) _memoryCache.Remove("psn:access_token");
-        var token = await GetOrRefreshAccessToken(ct)
+        if (renewCredentials) _memoryCache.Remove(AccessTokenCacheKey);
+        var token = await GetOrRefreshAccessToken(npssoToken, ct)
             ?? throw new HttpRequestException("PlayStation authentication failed. Rotate PSN_NPSSO_TOKEN in the server app settings.");
-        var profile = await FetchPlayStationProfile(token, renewCredentials, ct);
-        if (profile == null || !HasMeaningfulData(profile))
-            throw new HttpRequestException("PlayStation did not return a usable profile.");
+        GamingProfile profile;
+        try
+        {
+            profile = await FetchPlayStationProfile(token, ct);
+        }
+        catch (HttpRequestException ex) when (!renewCredentials && ex.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            // A revoked access token must not keep public reads stuck on the stored profile.
+            _memoryCache.Remove(AccessTokenCacheKey);
+            token = await GetOrRefreshAccessToken(npssoToken, ct)
+                ?? throw new HttpRequestException("PlayStation authentication failed. Rotate PSN_NPSSO_TOKEN in the server app settings.");
+            profile = await FetchPlayStationProfile(token, ct);
+        }
         ct.ThrowIfCancellationRequested();
         await _cacheService.SaveProfileAsync(Platform, profile, ct);
         return profile;
@@ -87,13 +102,14 @@ public class PlayStationProfileService : IGamingProfileService
     /// Gets a cached access token or exchanges the NPSSO token for a new one.
     /// Access tokens are cached for 55 minutes (they expire in 60 minutes).
     /// </summary>
-    private async Task<string?> GetOrRefreshAccessToken(CancellationToken ct)
+    private async Task<string?> GetOrRefreshAccessToken(string npssoToken, CancellationToken ct)
     {
-        const string cacheKey = "psn:access_token";
+        var fingerprint = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(npssoToken)));
 
-        if (_memoryCache.TryGetValue(cacheKey, out string? cachedToken) && !string.IsNullOrEmpty(cachedToken))
+        if (_memoryCache.TryGetValue(AccessTokenCacheKey, out CachedAccessToken? cachedToken) &&
+            cachedToken?.CredentialFingerprint == fingerprint)
         {
-            return cachedToken;
+            return cachedToken.Token;
         }
 
         _logger.LogInformation("Exchanging NPSSO token for PSN access token");
@@ -104,12 +120,12 @@ public class PlayStationProfileService : IGamingProfileService
         // Step 1: Exchange NPSSO for authorization code
         using var authRequest = new HttpRequestMessage(HttpMethod.Get, 
             $"{AuthUrl}?access_type=offline&client_id={PsnClientId}&response_type=code&scope=psn:mobile.v2.core psn:clientapp&redirect_uri=com.scee.psxandroid.scecompcall://redirect");
-        authRequest.Headers.Add("Cookie", $"npsso={NpssoToken}");
+        authRequest.Headers.Add("Cookie", $"npsso={npssoToken}");
 
         // Don't follow redirects - we need the code from the redirect URL
         using var authClient = _httpClientFactory.CreateClient("psn-auth");
         authClient.Timeout = TimeSpan.FromSeconds(20);
-        authClient.DefaultRequestHeaders.Add("Cookie", $"npsso={NpssoToken}");
+        authClient.DefaultRequestHeaders.Add("Cookie", $"npsso={npssoToken}");
         authClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Linux; Android 11; SDK) AppleWebKit/537.36 Chrome/124.0 Mobile Safari/537.36");
         authClient.DefaultRequestHeaders.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
         authClient.DefaultRequestHeaders.Add("Accept-Language", "en-US,en;q=0.9");
@@ -220,7 +236,7 @@ public class PlayStationProfileService : IGamingProfileService
             if (!string.IsNullOrEmpty(accessToken))
             {
                 // Cache for 55 minutes (tokens last 60 minutes)
-                _memoryCache.Set(cacheKey, accessToken, TimeSpan.FromMinutes(55));
+                _memoryCache.Set(AccessTokenCacheKey, new CachedAccessToken(fingerprint, accessToken), TimeSpan.FromMinutes(55));
                 _logger.LogInformation("Successfully obtained PSN access token");
                 return accessToken;
             }
@@ -229,7 +245,7 @@ public class PlayStationProfileService : IGamingProfileService
         return null;
     }
 
-    private async Task<GamingProfile?> FetchPlayStationProfile(string accessToken, bool strict, CancellationToken ct)
+    private async Task<GamingProfile> FetchPlayStationProfile(string accessToken, CancellationToken ct)
     {
         using var client = _httpClientFactory.CreateClient();
         client.Timeout = TimeSpan.FromSeconds(20);
@@ -242,200 +258,113 @@ public class PlayStationProfileService : IGamingProfileService
             IsCached = false
         };
 
-        // Fetch user profile - extract accountId from JWT token to get profile
-        try
+        // The authenticated trophy summary supplies the account ID; access-token claims
+        // are not a stable identity contract and may not contain an account ID at all.
+        string accountId;
+        using (var trophyResponse = await client.GetAsync(TrophySummaryUrl, ct))
         {
-            // The access token is a JWT - extract accountId from payload
-            var accountId = ExtractAccountIdFromJwt(accessToken);
-            if (!string.IsNullOrEmpty(accountId))
-            {
-                var profileUrl = $"https://m.np.playstation.com/api/userProfile/v1/internal/users/{accountId}/profiles";
-                using var profileResponse = await client.GetAsync(profileUrl, ct);
-                if (strict) profileResponse.EnsureSuccessStatusCode();
-                    
-                if (profileResponse.IsSuccessStatusCode)
-                {
-                    var profileJson = await profileResponse.Content.ReadAsStringAsync(ct);
-                    using var doc = JsonDocument.Parse(profileJson);
-                    var root = doc.RootElement;
+            trophyResponse.EnsureSuccessStatusCode();
+            var json = await trophyResponse.Content.ReadAsStringAsync(ct);
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            if (!root.TryGetProperty("accountId", out var accountIdValue) ||
+                accountIdValue.ValueKind != JsonValueKind.String ||
+                string.IsNullOrEmpty(accountId = accountIdValue.GetString()!) ||
+                accountId.Any(c => c is < '0' or > '9') ||
+                !root.TryGetProperty("earnedTrophies", out var earned) ||
+                earned.ValueKind != JsonValueKind.Object)
+                throw new HttpRequestException("PlayStation trophy response was incomplete.");
 
-                    if (root.TryGetProperty("onlineId", out var onlineId))
-                        profile.OnlineId = onlineId.GetString();
-                    if (strict && string.IsNullOrWhiteSpace(profile.OnlineId))
-                        throw new HttpRequestException("PlayStation profile response was incomplete.");
-                    if (root.TryGetProperty("personalDetail", out var personalDetail))
-                    {
-                        if (personalDetail.TryGetProperty("profilePicUrl", out var profilePicUrl))
-                            profile.AvatarUrl = profilePicUrl.GetString();
-                    }
-                    if (root.TryGetProperty("avatarUrl", out var avatar))
-                        profile.AvatarUrl = avatar.GetString();
-                    // Try alternative avatar fields
-                    if (string.IsNullOrEmpty(profile.AvatarUrl) &&
-                        root.TryGetProperty("avatars", out var avatars) &&
-                        avatars.GetArrayLength() > 0)
-                    {
-                        profile.AvatarUrl = avatars[0].TryGetProperty("url", out var url)
-                            ? url.GetString() : null;
-                    }
-                    if (string.IsNullOrEmpty(profile.AvatarUrl) &&
-                        root.TryGetProperty("avatarUrls", out var avatarUrls) &&
-                        avatarUrls.GetArrayLength() > 0)
-                    {
-                        profile.AvatarUrl = avatarUrls[0].TryGetProperty("avatarUrl", out var aUrl)
-                            ? aUrl.GetString() : null;
-                    }
-                }
-            }
-            else
+            profile.TrophySummary = new TrophySummary();
+            if (root.TryGetProperty("trophyLevel", out var level))
             {
-                _logger.LogWarning("Could not extract accountId from PSN access token");
-                if (strict) throw new HttpRequestException("PlayStation access token did not identify an account.");
+                if (!int.TryParse(level.ToString(), NumberStyles.None, CultureInfo.InvariantCulture, out var trophyLevel))
+                    throw new HttpRequestException("PlayStation trophy level was invalid.");
+                profile.TrophyLevel = trophyLevel;
             }
-        }
-        catch (Exception ex) when (!strict && ex is not OperationCanceledException)
-        {
-            _logger.LogWarning(ex, "Failed to fetch PSN user profile");
+
+            if (earned.TryGetProperty("platinum", out var p)) profile.TrophySummary.Platinum = p.GetInt32();
+            if (earned.TryGetProperty("gold", out var g)) profile.TrophySummary.Gold = g.GetInt32();
+            if (earned.TryGetProperty("silver", out var s)) profile.TrophySummary.Silver = s.GetInt32();
+            if (earned.TryGetProperty("bronze", out var b)) profile.TrophySummary.Bronze = b.GetInt32();
         }
 
-        // Fetch trophy summary
-        try
+        // Fetch user profile
+        var profileUrl = $"https://m.np.playstation.com/api/userProfile/v1/internal/users/{accountId}/profiles";
+        using (var profileResponse = await client.GetAsync(profileUrl, ct))
         {
-            using var trophyResponse = await client.GetAsync(TrophySummaryUrl, ct);
-            if (strict) trophyResponse.EnsureSuccessStatusCode();
-            if (trophyResponse.IsSuccessStatusCode)
+            profileResponse.EnsureSuccessStatusCode();
+            var profileJson = await profileResponse.Content.ReadAsStringAsync(ct);
+            using var doc = JsonDocument.Parse(profileJson);
+            var root = doc.RootElement;
+
+            if (root.TryGetProperty("onlineId", out var onlineId))
+                profile.OnlineId = onlineId.GetString();
+            if (string.IsNullOrWhiteSpace(profile.OnlineId))
+                throw new HttpRequestException("PlayStation profile response was incomplete.");
+            if (root.TryGetProperty("personalDetail", out var personalDetail))
             {
-                var json = await trophyResponse.Content.ReadAsStringAsync(ct);
-                using var doc = JsonDocument.Parse(json);
-                var root = doc.RootElement;
-                if (strict && !root.TryGetProperty("earnedTrophies", out _))
-                    throw new HttpRequestException("PlayStation trophy response was incomplete.");
-
-                profile.TrophySummary = new TrophySummary();
-
-                if (root.TryGetProperty("trophyLevel", out var level))
-                    profile.TrophyLevel = level.GetInt32();
-
-                if (root.TryGetProperty("earnedTrophies", out var earned))
-                {
-                    if (earned.TryGetProperty("platinum", out var p)) profile.TrophySummary.Platinum = p.GetInt32();
-                    if (earned.TryGetProperty("gold", out var g)) profile.TrophySummary.Gold = g.GetInt32();
-                    if (earned.TryGetProperty("silver", out var s)) profile.TrophySummary.Silver = s.GetInt32();
-                    if (earned.TryGetProperty("bronze", out var b)) profile.TrophySummary.Bronze = b.GetInt32();
-                }
+                if (personalDetail.TryGetProperty("profilePicUrl", out var profilePicUrl))
+                    profile.AvatarUrl = profilePicUrl.GetString();
             }
-        }
-        catch (Exception ex) when (!strict && ex is not OperationCanceledException)
-        {
-            _logger.LogWarning(ex, "Failed to fetch PSN trophy summary");
+            if (root.TryGetProperty("avatarUrl", out var avatar))
+                profile.AvatarUrl = avatar.GetString();
+            // Try alternative avatar fields
+            if (string.IsNullOrEmpty(profile.AvatarUrl) &&
+                root.TryGetProperty("avatars", out var avatars) &&
+                avatars.GetArrayLength() > 0)
+            {
+                profile.AvatarUrl = avatars[0].TryGetProperty("url", out var url)
+                    ? url.GetString() : null;
+            }
+            if (string.IsNullOrEmpty(profile.AvatarUrl) &&
+                root.TryGetProperty("avatarUrls", out var avatarUrls) &&
+                avatarUrls.GetArrayLength() > 0)
+            {
+                profile.AvatarUrl = avatarUrls[0].TryGetProperty("avatarUrl", out var aUrl)
+                    ? aUrl.GetString() : null;
+            }
         }
 
         // Fetch recently played games (via trophy titles - lists games with trophy data)
-        try
+        using (var titlesResponse = await client.GetAsync($"{TitleListUrl}?limit=8", ct))
         {
-            using var titlesResponse = await client.GetAsync($"{TitleListUrl}?limit=8", ct);
-            if (strict) titlesResponse.EnsureSuccessStatusCode();
-            if (titlesResponse.IsSuccessStatusCode)
+            titlesResponse.EnsureSuccessStatusCode();
+            var json = await titlesResponse.Content.ReadAsStringAsync(ct);
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
+            if (!root.TryGetProperty("trophyTitles", out var titles) || titles.ValueKind != JsonValueKind.Array)
+                throw new HttpRequestException("PlayStation games response was incomplete.");
+
+            if (root.TryGetProperty("totalItemCount", out var totalCount))
+                profile.GamesPlayed = totalCount.GetInt32();
+
+            foreach (var title in titles.EnumerateArray())
             {
-                var json = await titlesResponse.Content.ReadAsStringAsync(ct);
-                using var doc = JsonDocument.Parse(json);
-                var root = doc.RootElement;
-                if (strict && !root.TryGetProperty("trophyTitles", out _))
-                    throw new HttpRequestException("PlayStation games response was incomplete.");
+                if (profile.RecentGames.Count >= 8) break;
 
-                if (root.TryGetProperty("totalItemCount", out var totalCount))
-                    profile.GamesPlayed = totalCount.GetInt32();
-
-                if (root.TryGetProperty("trophyTitles", out var titles))
+                var game = new RecentGame
                 {
-                    foreach (var title in titles.EnumerateArray())
-                    {
-                        if (profile.RecentGames.Count >= 8) break;
+                    Name = title.TryGetProperty("trophyTitleName", out var name)
+                        ? name.GetString() ?? "Unknown"
+                        : "Unknown",
+                    Platform = "playstation"
+                };
 
-                        var game = new RecentGame
-                        {
-                            Name = title.TryGetProperty("trophyTitleName", out var name)
-                                ? name.GetString() ?? "Unknown"
-                                : "Unknown",
-                            Platform = "playstation"
-                        };
+                if (title.TryGetProperty("trophyTitleIconUrl", out var icon))
+                    game.ImageUrl = icon.GetString();
 
-                        if (title.TryGetProperty("trophyTitleIconUrl", out var icon))
-                            game.ImageUrl = icon.GetString();
+                if (title.TryGetProperty("lastUpdatedDateTime", out var lastPlayed))
+                    game.LastPlayed = lastPlayed.GetString();
 
-                        if (title.TryGetProperty("lastUpdatedDateTime", out var lastPlayed))
-                            game.LastPlayed = lastPlayed.GetString();
+                // Capture npCommunicationId for PSN Store links
+                if (title.TryGetProperty("npCommunicationId", out var npId))
+                    game.TitleId = npId.GetString();
 
-                        // Capture npCommunicationId for PSN Store links
-                        if (title.TryGetProperty("npCommunicationId", out var npId))
-                            game.TitleId = npId.GetString();
-
-                        profile.RecentGames.Add(game);
-                    }
-                }
+                profile.RecentGames.Add(game);
             }
-        }
-        catch (Exception ex) when (!strict && ex is not OperationCanceledException)
-        {
-            _logger.LogWarning(ex, "Failed to fetch PSN recently played games");
         }
 
         return profile;
-    }
-
-    /// <summary>
-    /// Returns true when a freshly fetched profile actually contains data worth caching.
-    /// Every individual PSN call is wrapped in its own try/catch, so a profile object can
-    /// come back fully empty if the access token was rejected — persisting that would
-    /// destroy the last known good cache.
-    /// </summary>
-    private static bool HasMeaningfulData(GamingProfile profile) =>
-        !string.IsNullOrEmpty(profile.OnlineId) ||
-        profile.TrophyLevel.HasValue ||
-        profile.RecentGames.Count > 0;
-
-    /// <summary>
-    /// Extracts the accountId from a PSN JWT access token.
-    /// The JWT payload contains an "account_id" claim.
-    /// </summary>
-    private string? ExtractAccountIdFromJwt(string jwt)
-    {
-        try
-        {
-            var parts = jwt.Split('.');
-            if (parts.Length < 2) return null;
-
-            // Add padding if needed
-            var payload = parts[1];
-            switch (payload.Length % 4)
-            {
-                case 2: payload += "=="; break;
-                case 3: payload += "="; break;
-            }
-
-            var jsonBytes = Convert.FromBase64String(payload.Replace('-', '+').Replace('_', '/'));
-            var json = System.Text.Encoding.UTF8.GetString(jsonBytes);
-            
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-
-            // Try common claim names for account ID
-            if (root.TryGetProperty("account_id", out var accountId))
-                return accountId.GetString();
-            if (root.TryGetProperty("sub", out var sub))
-                return sub.GetString();
-            if (root.TryGetProperty("user_id", out var userId))
-                return userId.GetString();
-                
-            _logger.LogInformation("JWT payload keys: {Keys}", 
-                string.Join(", ", root.EnumerateObject().Select(p => p.Name)));
-                
-            return null;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Failed to extract accountId from JWT");
-            return null;
-        }
     }
 }
