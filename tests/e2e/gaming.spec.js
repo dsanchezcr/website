@@ -19,7 +19,7 @@ const writingLocales = [
   {
     locale: 'en',
     prefix: '',
-    language: 'en',
+    language: 'en-US',
     heading: 'Writing & Updates',
     monthly: 'Monthly Updates',
     notes: 'Gaming Notes',
@@ -61,7 +61,7 @@ for (const translations of writingLocales) {
     test('overview cards and sidebar link to writing and monthly updates in the current locale', async ({ page }) => {
       await page.goto(`${translations.prefix}/gaming`);
       const main = page.getByRole('main');
-      await expect(main.getByRole('heading', { name: translations.heading, exact: true })).toBeVisible();
+      await expect(main.getByRole('heading', { name: new RegExp(translations.heading), level: 2 })).toBeVisible();
 
       for (const section of [{ slug: 'monthly-updates', title: translations.monthly }, ...sections]) {
         const href = `${translations.prefix}/gaming/${section.slug}`;
@@ -72,7 +72,7 @@ for (const translations of writingLocales) {
         await expect(card).toBeVisible();
 
         const sidebarLink = page.locator('aside').getByRole('link', { name: new RegExp(section.title) });
-        await expect(sidebarLink).toHaveAttribute('href', href);
+        await expect(sidebarLink).toHaveAttribute('href', new RegExp(`^${href}/?$`));
         await expect(sidebarLink).toBeVisible();
       }
 

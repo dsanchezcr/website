@@ -3,6 +3,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import { compile, run } from '@mdx-js/mdx';
 import * as jsxRuntime from 'react/jsx-runtime';
 import matter from '@11ty/gray-matter';
@@ -10,7 +12,7 @@ import matter from '@11ty/gray-matter';
 const require = createRequire(import.meta.url);
 const { DefaultSidebarItemsGenerator } = require('@docusaurus/plugin-content-docs/lib/sidebars/generator.js');
 const { postProcessSidebars } = require('@docusaurus/plugin-content-docs/lib/sidebars/postProcessor.js');
-const root = new URL('../../', import.meta.url);
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 afterEach(cleanup);
 
@@ -88,8 +90,8 @@ function generateSidebar(section, metadata, frontMatter, children = []) {
 for (const translations of locales) {
   for (const [index, section] of ['gaming-notes', 'game-development'].entries()) {
     const directory = `${translations.directory}/${section}`;
-    const { data: frontMatter, content } = matter(readFileSync(new URL(`${directory}/index.mdx`, root), 'utf8'));
-    const metadata = JSON.parse(readFileSync(new URL(`${directory}/_category_.json`, root), 'utf8'));
+    const { data: frontMatter, content } = matter(readFileSync(path.join(root, directory, 'index.mdx'), 'utf8'));
+    const metadata = JSON.parse(readFileSync(path.join(root, directory, '_category_.json'), 'utf8'));
     const title = translations.titles[index];
     const emptyState = translations.emptyStates[index];
 
