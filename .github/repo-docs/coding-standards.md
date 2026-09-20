@@ -43,6 +43,18 @@
 - User-facing text fields (`recommendation`, `description`) are localized objects: `{ en: "...", es: "...", pt: "..." }`
 - Status token values are canonical and must not be translated: `completed`, `playing`, `backlog`, `dropped`
 
+### Gaming Writing
+- **Gaming Notes** (`gaming/gaming-notes/`): extended reviews, games of the year, and general gaming reflections
+- **Game Development** (`gaming/game-development/`): development journals, tools, experiments, and games in progress
+- These are static MDX subsections of the gaming docs, like Monthly Updates, not additional instances of the main blog. They do not publish separate blog feeds or archives, and do not require Cosmos DB entries.
+- Add each entry as a separate `YYYY-MM-DD-short-title.mdx` file in the appropriate folder. Keep `index.mdx` as the section landing page.
+- Include `title`, `description`, `sidebar_label`, and `sidebar_position` in frontmatter. Set an explicit `slug` of `/gaming-notes/<entry-slug>` or `/game-development/<entry-slug>` for a stable URL under `/gaming/`.
+- Start entry ordering at `sidebar_position: 999` and decrease it for each newer entry, matching Monthly Updates. Keep the slug and position identical across translations.
+- Include a localized publication date in the article body; these docs do not automatically display blog publication metadata.
+- Add matching entries in both `i18n/es/docusaurus-plugin-content-docs-gaming/current/` and `i18n/pt/docusaurus-plugin-content-docs-gaming/current/`, preserving the section and filename. Translate the title, summary, sidebar label, and full article.
+- Entries are discovered by the gaming sidebar automatically. Keep each section's `_category_.json` linked to its `index` document.
+- Reuse the existing `Comments` and `YouTubeEmbed` components when appropriate. Do not add placeholder reviews or fictional project updates to populate an empty section.
+
 ### Movies & TV Content
 - Data stored in Azure Cosmos DB (`content-movies` and `content-series` containers)
 - Identity is `tmdbId` (positive integer) plus `mediaType` (`movie`/`tv`), or legacy manual IMDb `titleId`. Preserve old manual documents.
