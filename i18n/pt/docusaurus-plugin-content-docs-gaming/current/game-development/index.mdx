@@ -1,0 +1,20 @@
+---
+title: Desenvolvimento de Jogos
+sidebar_label: Desenvolvimento de Jogos
+description: Um espaço para ferramentas de desenvolvimento de jogos, jogos em andamento e diários de desenvolvimento.
+hide_table_of_contents: true
+---
+
+import DocCardList from '@theme/DocCardList';
+import { useSidebarBreadcrumbs } from '@docusaurus/plugin-content-docs/client';
+
+# 🛠️ Desenvolvimento de Jogos
+
+Um espaço para escrever sobre ferramentas de desenvolvimento de jogos, jogos em andamento, experimentos e diários de desenvolvimento.
+
+{/* Empty categories become sidebar links, so only render cards when child entries exist. */}
+{useSidebarBreadcrumbs()?.at(-1)?.items?.length ? (
+  <DocCardList />
+) : (
+  <p>Nenhum artigo de desenvolvimento de jogos foi publicado ainda.</p>
+)}

@@ -52,7 +52,7 @@
 - Start entry ordering at `sidebar_position: 999` and decrease it for each newer entry, matching Monthly Updates. Keep the slug and position identical across translations.
 - Include a localized publication date in the article body; these docs do not automatically display blog publication metadata.
 - Add matching entries in both `i18n/es/docusaurus-plugin-content-docs-gaming/current/` and `i18n/pt/docusaurus-plugin-content-docs-gaming/current/`, preserving the section and filename. Translate the title, summary, sidebar label, and full article.
-- Entries are discovered by the gaming sidebar automatically. Keep each section's `_category_.json` linked to its `index` document.
+- Entries are discovered by the gaming sidebar and landing-page cards automatically. Until an entry is published, the landing page shows a localized empty state. Keep each section's `_category_.json` linked to its `index` document.
 - Reuse the existing `Comments` and `YouTubeEmbed` components when appropriate. Do not add placeholder reviews or fictional project updates to populate an empty section.
 
 ### Movies & TV Content
