@@ -12,6 +12,7 @@ import matter from '@11ty/gray-matter';
 const require = createRequire(import.meta.url);
 const { DefaultSidebarItemsGenerator } = require('@docusaurus/plugin-content-docs/lib/sidebars/generator.js');
 const { postProcessSidebars } = require('@docusaurus/plugin-content-docs/lib/sidebars/postProcessor.js');
+const { translateLoadedContent } = require('@docusaurus/plugin-content-docs/lib/translations.js');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 afterEach(cleanup);
@@ -122,8 +123,20 @@ for (const translations of locales) {
           sidebarPosition: position,
           frontMatter: { sidebar_label: `Test entry ${position}` },
         }));
-        const [category] = generateSidebar(section, metadata, frontMatter, entries);
+        // Docusaurus reads category metadata from the source directory, then
+        // translates populated category labels through the locale's current.json.
+        const sourceMetadata = JSON.parse(readFileSync(path.join(root, 'gaming', section, '_category_.json'), 'utf8'));
+        const sidebar = generateSidebar(section, sourceMetadata, frontMatter, entries);
+        const sidebarTranslations = translations.locale === 'en' ? {} : JSON.parse(readFileSync(
+          path.join(root, 'i18n', translations.locale, 'docusaurus-plugin-content-docs-gaming', 'current.json'),
+          'utf8',
+        ));
+        const { loadedVersions: [version] } = translateLoadedContent({
+          loadedVersions: [{ versionName: 'current', sidebars: { defaultSidebar: sidebar }, docs: [] }],
+        }, [{ path: 'current', content: sidebarTranslations }]);
+        const [category] = version.sidebars.defaultSidebar;
         expect(category.type).toBe('category');
+        expect(category.label).toBe(metadata.label);
         expect(category.link).toEqual({ type: 'doc', id: `${section}/index` });
         expect(category.items.map(item => item.id)).toEqual([
           `${section}/entry-998`,
