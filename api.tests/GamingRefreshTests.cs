@@ -454,7 +454,7 @@ public class GamingRefreshTests
         using var key = new Env("GAMING_REFRESH_KEY", null);
         using var psn = new PlayStationFixture();
         await psn.Service.RefreshAsync(false, default);
-        psn.ProfileJson = """{"onlineId":"Admin refreshed"}""";
+        psn.ProfileJson = """{"onlineId":"Admin refreshed","avatarUrl":"https://example.test/refreshed-avatar.png"}""";
 
         var response = await Endpoint(psn.Service).Run(new Request("""{"platform":"playstation"}""", "admin"), default);
 
@@ -463,6 +463,14 @@ public class GamingRefreshTests
         using var body = await Read(response);
         Assert.Equal("refreshed", body.RootElement.GetProperty("results").GetProperty("playstation").GetProperty("status").GetString());
         Assert.Equal("Admin refreshed", psn.Cache.Profile.OnlineId);
+        Assert.Equal("https://example.test/refreshed-avatar.png", psn.Cache.Profile.AvatarUrl);
+        Assert.Equal(1, psn.Cache.Profile.GamesPlayed);
+        var game = Assert.Single(psn.Cache.Profile.RecentGames);
+        Assert.Equal("Saved game", game.Name);
+        Assert.Equal("TEST-0001", game.TitleId);
+        Assert.Equal("playstation", game.Platform);
+        Assert.Equal("https://example.test/game.png", game.ImageUrl);
+        Assert.Equal("2026-01-01T00:00:00Z", game.LastPlayed);
         Assert.Equal(2, psn.Cache.Saves);
         Assert.Equal(2, psn.AuthorizeCalls);
         Assert.Equal(2, psn.TokenCalls);
