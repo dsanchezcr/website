@@ -105,6 +105,66 @@ HTTP client registration removes factory URI logging; the lookup service suppres
 OpenTelemetry instrumentation for the credential-bearing provider call.
 
 | Status | Meaning / operator action |
+| `TMDB_READ_ACCESS_TOKEN` | Application API Read Access Token |
+| `TMDB_SESSION_ID` | Authorized v3 session for the owner |
+| `TMDB_ACCOUNT_ID` | Positive numeric v3 account ID verified above |
+| `TMDB_SYNC_KEY` | Independent random automation secret (recommend 32 random bytes, base64); optional for admin-only use |
+| `AZURE_COSMOS_ENDPOINT` | Existing Cosmos account endpoint |
+| `AZURE_COSMOS_KEY` | Existing Cosmos content access key |
+| `AZURE_COSMOS_DATABASE_NAME` | Existing database, default `dsanchezcr-website` |
+
+Keep the application token/session in one server configuration; do not put them
+in GitHub variables, `VITE_*`, public environment.js, content JSON or admin SPA.
+The sync's named HttpClient disables URI logging and redirects. Do not enable
+HTTP query-string/body capture in telemetry: TMDB v3 uses `session_id` in URLs.
+Default HTTP tracing query redaction must remain enabled.
+
+## 4. Populate and preview
+
+1. Add a few movies and TV series to your account's watchlist on TMDB.
+2. Rate movies/TV on TMDB. Its API uses **0.5–10 in 0.5 increments**, even if
+   a TMDB UI presents a percentage. The website stores these values unchanged.
+3. Sign into the site's admin app with the SWA `admin` role, then request a preview:
+   `POST /api/content-admin/tmdb/sync` with `{ "dryRun": true, "maxItems": 250 }`.
+   Automation can use `X-Tmdb-Sync-Key` instead of an interactive admin session.
+4. Each request processes at most **20 documents**. If HTTP 200 returns
+   `completed: false`, repeat with its `continuationToken` and unchanged
+   `dryRun`/`maxItems` until `completed: true`. Counts are cumulative; warnings
+   are per response. Review the complete preview, then start a **new chain**
+   with `dryRun: false` and no token to persist. Preview tokens cannot be used
+   for writes. An omitted `dryRun` defaults true. Account settings or source URLs
+   are not accepted in the request. See [API-003](../../specs/API-003-tmdb-sync.md).
+5. Open the movies/series pages in English, Spanish and Portuguese to verify
+   posters, titles, reviews and ordering. The public content API supplies all
+   metadata; the browser only fetches poster/logo images from the provider CDN.
+
+No live TMDB/Cosmos calls or configuration writes were performed as part of the
+code migration. These setup steps are an operator task, not an automatic migration.
+
+## 5. Daily automation
+
+`.github/workflows/tmdb-sync.yml` runs at 1 AM America/New_York using two UTC
+slots plus a timezone gate. GitHub schedules can be delayed; this is not a strict
+real-time scheduler. Its job uses the `Production` GitHub environment:
+
+- Secret `TMDB_SYNC_KEY`: exactly the same independent key as the server setting.
+- Variable `WEBSITE_URL`: HTTPS origin, default `https://dsanchezcr.com`.
+- Optional variable `TMDB_SYNC_MAX_ITEMS`: 1–1000, default 250 **per feed**.
+- No TMDB read token/session in GitHub; the job only invokes the configured server.
+
+Scheduled runs explicitly persist; manual workflow dispatch defaults to preview.
+The workflow follows continuations automatically, with concurrency protection,
+redirect refusal, a 20-minute job limit and bounded retries for explicit retryable
+500/504 responses. It uses the returned partial-progress cursor when available.
+Unrecoverable HTTP/source changes fail the job without echoing credentials.
+Opaque signed cursors contain no credentials and grant no authorization; the
+last cursor in job output can be used for an authorized manual resume within an hour.
+After deploying the migration separately, remove obsolete `IMDB_*` settings/secrets
+and disable any externally configured calls to the removed IMDb endpoint.
+
+## Sync rules and metadata
+
+| TMDB endpoint suffix (`/3/account/{account_id}/…`) | Container / category |
 |---|---|
 | 400 | Invalid IMDb ID or unsupported title type. Use a movie/series IMDb ID in the correct editor; do not submit a URL or episode |
 | 401 | Not authenticated. Sign in again |

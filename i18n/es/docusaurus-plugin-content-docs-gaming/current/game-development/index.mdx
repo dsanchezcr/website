@@ -1,0 +1,20 @@
+---
+title: Desarrollo de Videojuegos
+sidebar_label: Desarrollo de Videojuegos
+description: Un espacio para herramientas de desarrollo de videojuegos, juegos en progreso y diarios de desarrollo.
+hide_table_of_contents: true
+---
+
+import DocCardList from '@theme/DocCardList';
+import { useSidebarBreadcrumbs } from '@docusaurus/plugin-content-docs/client';
+
+# 🛠️ Desarrollo de Videojuegos
+
+Un espacio para escribir sobre herramientas de desarrollo de videojuegos, juegos en progreso, experimentos y diarios de desarrollo.
+
+{/* Empty categories become sidebar links, so only render cards when child entries exist. */}
+{useSidebarBreadcrumbs()?.at(-1)?.items?.length ? (
+  <DocCardList />
+) : (
+  <p>Aún no se han publicado artículos de desarrollo de videojuegos.</p>
+)}

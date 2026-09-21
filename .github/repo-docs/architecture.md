@@ -2,14 +2,14 @@
 
 ## System Design
 
-dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static frontend** and a **.NET 9 Azure Functions API backend**, hosted together on **Azure Static Web Apps (SWA)** as a managed functions deployment.
+dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static frontend** and a **.NET 8 Azure Functions API backend**, hosted together on **Azure Static Web Apps (SWA)** as a managed functions deployment.
 
 ```
 ┌──────────────────────────────────────────────────────────┐
 │                 Azure Static Web Apps                     │
 │                                                          │
 │  ┌─────────────────────┐   ┌──────────────────────────┐  │
-│  │  Docusaurus v3 SSG  │   │  .NET 9 Azure Functions  │  │
+│  │  Docusaurus v3 SSG  │   │  .NET 8 Azure Functions  │  │
 │  │  (React/MDX)        │   │  (Isolated Worker)       │  │
 │  │                     │   │                          │  │
 │  │  - Blog (MDX)       │   │  /api/contact            │  │
@@ -125,6 +125,27 @@ Unmarked TMDB records retain their TMDB link/rating behavior.
 Operators remove/revoke unused TMDB server/GitHub settings after rollout.
 See [ADR-007](adr/007-tmdb-account-media-source.md), [setup](tmdb-setup.md),
 and the replacement sections of FEAT-022/API-003.
+PlayStation refresh resolves the numeric account ID from the authenticated
+`users/me/trophySummary` response, not from access-token JWT claims. Its in-memory
+access-token cache is tied to a fingerprint of the current `PSN_NPSSO_TOKEN`;
+credential rotation invalidates reuse, and manual refresh always exchanges again.
+Public refresh retries an HTTP 401 once with renewed credentials. Profile data is
+saved only after all provider requests succeed, preserving the last working
+profile on authentication, partial-response, or cancellation failures.
+
+### Data Flow: TMDB media
+
+TMDB account watchlists/ratings → authorized server sync → complete pagination
+and per-batch localized metadata validation → ETag-protected Cosmos writes → public content
+API → MediaCard (no browser metadata requests). The daily `tmdb-sync.yml` workflow
+uses a dedicated invocation key; application read token/session/account settings
+stay server-side. Top/manual documents and reviews survive; sync never deletes.
+Current refresh snapshots and source order show newest account additions first.
+Each request processes at most 20 documents in a 35-second budget; signed stateless
+continuations share the snapshot and cumulative counters across requests. Source
+changes require a safe restart; timeout/storage errors expose acknowledged progress
+and a retry cursor. Nothing runs in the background after the response.
+See [ADR-007](adr/007-tmdb-account-media-source.md) and [setup](tmdb-setup.md).
 
 ### Data Flow: RAG Pipeline
 
@@ -175,7 +196,7 @@ disney/                 ← Disney docs (Docusaurus plugin)
 universal/              ← Universal docs (Docusaurus plugin)
 projects/               ← Projects docs (Docusaurus plugin)
 src/                    ← React components, pages, hooks, data, CSS
-api/                    ← .NET 9 Azure Functions backend
+api/                    ← .NET 8 Azure Functions backend
 infra/                  ← Bicep infrastructure templates
 i18n/                   ← Translations (es, pt)
 static/                 ← Static assets (images, robots.txt)

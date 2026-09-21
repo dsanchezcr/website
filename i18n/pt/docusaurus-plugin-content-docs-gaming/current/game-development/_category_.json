@@ -1,0 +1,9 @@
+{
+  "label": "🛠️ Desenvolvimento de Jogos",
+  "position": 11,
+  "collapsed": false,
+  "link": {
+    "type": "doc",
+    "id": "game-development/index"
+  }
+}
