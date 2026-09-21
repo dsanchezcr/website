@@ -65,10 +65,6 @@ jobs:
       - name: Run Backend Tests
         run: dotnet test api.tests/api.tests.csproj --configuration Release
 
-      - name: Publish .NET API
-        run: dotnet publish --configuration Release --output ../api-publish
-        working-directory: api
-
       - name: Build Docusaurus Website
         run: npm run build
 
@@ -142,7 +138,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: 'upload'
           app_location: 'build'
-          api_location: 'api-publish'
+          api_location: 'api'
           skip_app_build: true
 
       - name: Update Search Index
