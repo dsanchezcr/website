@@ -71,7 +71,7 @@
 			"type": "func",
 			"dependsOn": "build (functions)",
 			"options": {
-				"cwd": "${workspaceFolder}/api/bin/Debug/net9.0"
+				"cwd": "${workspaceFolder}/api/bin/Debug/net8.0"
 			},
 			"command": "host start",
 			"isBackground": true,
@@ -80,7 +80,7 @@
 		{
 			"label": "Start Functions Host",
 			"type": "shell",
-			"command": "cd d:\\dsanchezcr\\website\\api && Copy-Item local.settings.json bin\\Debug\\net9.0\\ -Force && cd bin\\Debug\\net9.0 && func host start",
+			"command": "cd d:\\dsanchezcr\\website\\api && Copy-Item local.settings.json bin\\Debug\\net8.0\\ -Force && cd bin\\Debug\\net8.0 && func host start",
 			"isBackground": true
 		}
 	]

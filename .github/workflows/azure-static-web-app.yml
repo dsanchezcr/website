@@ -50,7 +50,7 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '8.0.x'
 
       - name: Install Dependencies
         run: npm ci
@@ -144,7 +144,6 @@ jobs:
           app_location: 'build'
           api_location: 'api-publish'
           skip_app_build: true
-          skip_api_build: true
 
       - name: Update Search Index
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
