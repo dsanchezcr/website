@@ -1,0 +1,20 @@
+---
+title: Game Development
+sidebar_label: Game Development
+description: A space for game development tools, games in progress, and development journals.
+hide_table_of_contents: true
+---
+
+import DocCardList from '@theme/DocCardList';
+import { useSidebarBreadcrumbs } from '@docusaurus/plugin-content-docs/client';
+
+# 🛠️ Game Development
+
+A space for writing about game development tools, games in progress, experiments, and devlogs.
+
+{/* Empty categories become sidebar links, so only render cards when child entries exist. */}
+{useSidebarBreadcrumbs()?.at(-1)?.items?.length ? (
+  <DocCardList />
+) : (
+  <p>No game development entries have been published yet.</p>
+)}

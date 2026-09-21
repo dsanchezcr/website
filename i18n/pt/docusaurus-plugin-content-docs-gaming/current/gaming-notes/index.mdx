@@ -1,0 +1,20 @@
+---
+title: Notas de Gaming
+sidebar_label: Notas de Gaming
+description: Um espaço para análises detalhadas, jogos favoritos do ano e reflexões sobre videogames.
+hide_table_of_contents: true
+---
+
+import DocCardList from '@theme/DocCardList';
+import { useSidebarBreadcrumbs } from '@docusaurus/plugin-content-docs/client';
+
+# 📝 Notas de Gaming
+
+Um espaço para análises mais extensas, jogos favoritos do ano e reflexões sobre videogames além das coleções por plataforma.
+
+{/* Empty categories become sidebar links, so only render cards when child entries exist. */}
+{useSidebarBreadcrumbs()?.at(-1)?.items?.length ? (
+  <DocCardList />
+) : (
+  <p>Nenhuma nota de gaming foi publicada ainda.</p>
+)}

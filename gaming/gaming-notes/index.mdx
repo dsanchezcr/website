@@ -1,0 +1,20 @@
+---
+title: Gaming Notes
+sidebar_label: Gaming Notes
+description: A space for extended game reviews, favorite games of the year, and general gaming writing.
+hide_table_of_contents: true
+---
+
+import DocCardList from '@theme/DocCardList';
+import { useSidebarBreadcrumbs } from '@docusaurus/plugin-content-docs/client';
+
+# 📝 Gaming Notes
+
+A space for longer reviews, favorite games of the year, and thoughts on gaming beyond the platform collections.
+
+{/* Empty categories become sidebar links, so only render cards when child entries exist. */}
+{useSidebarBreadcrumbs()?.at(-1)?.items?.length ? (
+  <DocCardList />
+) : (
+  <p>No gaming notes have been published yet.</p>
+)}
