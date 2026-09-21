@@ -33,7 +33,7 @@ public class AdminContent
     /// (<c>?meta=sample</c> / <c>?meta=partitions</c>) for a content type.</summary>
     [Function("AdminCollection")]
     public async Task<HttpResponseData> Collection(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "content-admin/{type}")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "content-admin/{type:regex(^(movies|series|gaming|parks|monthly-updates)$)}")] HttpRequestData req,
         string type,
         CancellationToken ct)
     {

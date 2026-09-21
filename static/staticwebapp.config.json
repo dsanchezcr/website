@@ -51,10 +51,6 @@
       "allowedRoles": ["authenticated"]
     },
     {
-      "route": "/api/content-admin/tmdb/sync",
-      "allowedRoles": ["anonymous"]
-    },
-    {
       "route": "/api/content-admin/*",
       "allowedRoles": ["admin"]
     },

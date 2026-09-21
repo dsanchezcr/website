@@ -1,4 +1,30 @@
-# API Specification: TMDB account synchronization
+# API Specification: OMDb IMDb lookup (replaces TMDB synchronization)
+
+## Current contract — 2026-09-16
+
+- **Route:** `GET /api/content-admin/omdb?imdbId=tt0111161`
+- **Auth:** SWA `admin` role, independently checked in the function. No automation
+  key, client-supplied API key, upstream URL or anonymous metadata access.
+- The generic admin collection route constrains its content-type segment to
+  registered containers, so it cannot intercept the literal OMDb endpoint.
+- **Input:** one trimmed IMDb ID matching `^tt[0-9]{6,12}$`.
+- **Output:** camelCase JSON containing `titleId`, `title`, nullable integer `year`,
+  nullable strings `plot`, `director`, `imageUrl`, `type` (`movie` or `series`),
+  nullable numeric `imdbRating` and a string-array `genres`.
+- `imageUrl` is an external HTTP(S) poster URL or null, never binary data.
+- OMDb `N/A`/missing optional values normalize to null (genres to an empty array).
+  Verify returned IMDb ID matches the request; reject malformed/unsupported results.
+- Fixed `https://www.omdbapi.com/` upstream, `plot=full`, redirects disabled,
+  bounded requests. Local server-only `.env` support must not override deployed
+  environment settings. No dependency on Cosmos for lookup and no persistence.
+- Responses use `Cache-Control: no-store`. Errors use `{ "error": "safe message" }`.
+- Status codes: 400 invalid input/unsupported type; 401 missing authentication;
+  403 non-admin; 404 title missing; 429 local/provider quota; 502 upstream/invalid
+  payload; 503 missing/rejected server key; 504 timeout.
+- Tests mock HTTP and identity and cover all statuses, no upstream call on invalid
+  auth/input, and redaction of credentials/provider errors.
+
+## Historical TMDB contract (removed)
 
 | Field | Value |
 |---|---|

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { FieldDef } from '../types';
 import { GAMING_STATUSES } from '../contentTypes';
 
@@ -112,8 +113,11 @@ function CoordsInput({ value, onChange }: { value: unknown; onChange: (v: unknow
 
 function StringArrayInput({ label, value, onChange }: { label: string; value: unknown; onChange: (v: unknown) => void }) {
   const text = Array.isArray(value) ? (value as unknown[]).filter((v) => typeof v === 'string').join(', ') : '';
+  const [draft, setDraft] = useState({ source: text, text });
+  // Keep separators while typing, but show external metadata updates immediately.
   const handleChange = (raw: string) => {
     const items = raw.split(',').map((s) => s.trim()).filter((s) => s !== '');
+    setDraft({ source: items.join(', '), text: raw });
     onChange(items.length ? items : undefined);
   };
   return (
@@ -121,7 +125,7 @@ function StringArrayInput({ label, value, onChange }: { label: string; value: un
       type="text"
       aria-label={label}
       placeholder="Comma-separated (e.g. Drama, Thriller)"
-      defaultValue={text}
+      value={draft.source === text ? draft.text : text}
       onBlur={(e) => handleChange(e.target.value)}
       onChange={(e) => handleChange(e.target.value)}
     />
@@ -141,6 +145,19 @@ export function FieldInput({ field, value, isNew, onChange }: FieldProps) {
   const aria = field.label;
 
   switch (field.type) {
+    case 'text':
+      return <textarea rows={5} aria-label={aria} readOnly={readOnly}
+        value={typeof value === 'string' ? value : ''}
+        onChange={(e) => onChange(e.target.value === '' ? undefined : e.target.value)} />;
+    case 'mediaType':
+      return (
+        <select aria-label={aria} value={typeof value === 'string' ? value : ''} disabled={readOnly}
+          onChange={(e) => onChange(e.target.value === '' ? undefined : e.target.value)}>
+          <option value="">(none)</option>
+          <option value="movie">Movie</option>
+          <option value="tv">TV series</option>
+        </select>
+      );
     case 'boolean':
       return <input type="checkbox" aria-label={aria} checked={value === true} disabled={readOnly} onChange={(e) => onChange(e.target.checked)} />;
     case 'number':

@@ -137,7 +137,7 @@ Build artifacts:
 | `/api/gaming/xbox` | GET | Xbox Live profile, gamerscore, and recent games |
 | `/api/gaming/playstation` | GET | PSN profile, trophies, and recent games |
 | `/api/gaming/refresh` | POST | Admin: trigger gaming data refresh |
-| `/api/content-admin/tmdb/sync` | POST | Admin/automation: non-destructive TMDB movie/TV watchlist and ratings sync |
+| `/api/content-admin/omdb?imdbId=tt0111161` | GET | Admin-only: movie/series metadata auto-fill; server-side OMDb key |
 
 ## ☁️ Deployment
 
@@ -163,38 +163,27 @@ az deployment group create \
 
 See [infra/README.md](infra/README.md) for complete deployment instructions.
 
-## TMDB Account Sync Configuration
+## OMDb Media Auto-fill Configuration
 
-The daily TMDB sync job (`.github/workflows/tmdb-sync.yml`) runs at **1:00 AM Eastern Time** and calls `/api/content-admin/tmdb/sync`. Add/watchlist and rate movies/TV on your TMDB account; the site renders localized metadata stored in Cosmos, not a browser metadata API.
+Set `OMDB_API_KEY` in the managed API's **Azure Static Web Apps application settings**.
+Locally, put `OMDB_API_KEY=<your-key>` in ignored `api/.env`, or use
+`api/local.settings.json` → `Values`. Existing environment settings take precedence;
+production never loads `.env`. Never use `VITE_*` or client-side keys.
 
-Follow the [exact application token and account session setup](.github/repo-docs/tmdb-setup.md) before enabling sync. Preview with `{ "dryRun": true, "maxItems": 250 }`; use `dryRun: false` to persist. Manual/top entries and reviews are preserved, and sync never deletes removed/unrated titles.
+In `/admin`, add/edit a **Movie** or **Series**, enter its IMDb ID, and click
+**Fetch Data**. Review the title, year, plot, director, type, genres, IMDb rating and
+poster URL, then **Save**. Lookup makes no database writes and stores no image files:
+only the external poster URL is saved. Reviews, personal ratings, categories,
+ordering, translations and unknown fields are preserved.
 
-Each API call processes at most 20 documents within a 35-second budget. Follow
-`continuationToken` with unchanged options until `completed: true`; counters are
-cumulative. The workflow follows these batches automatically. Start a new chain
-without a token when switching from preview to persistence.
+The authenticated proxy uses HTTPS, bounded requests and safe errors. See the
+[OMDb setup guide](.github/repo-docs/tmdb-setup.md) for configuration, quotas,
+troubleshooting and the [API contract](specs/API-003-tmdb-sync.md).
 
-### GitHub configuration
-
-Set the following in your repository (or Environment: `Production`):
-
-**Secrets**
-- `TMDB_SYNC_KEY`: Independent shared secret used in `X-Tmdb-Sync-Key`; no TMDB account credentials in GitHub.
-
-**Variables**
-- `WEBSITE_URL`: Public site URL (for example `https://dsanchezcr.com`).
-- `TMDB_SYNC_MAX_ITEMS`: Per-feed safety ceiling (default `250`, max `1000`); oversized feeds fail rather than truncate.
-
-### Azure Static Web Apps app settings
-
-Set the following app settings in the SWA resource:
-
-- `TMDB_SYNC_KEY`: Must exactly match the GitHub secret `TMDB_SYNC_KEY` (admin-role calls do not require this key).
-- `TMDB_READ_ACCESS_TOKEN`: TMDB application API Read Access Token.
-- `TMDB_SESSION_ID`: Authorized v3 session for your TMDB account.
-- `TMDB_ACCOUNT_ID`: Numeric account ID verified with that token/session.
-
-All source settings are server-only; the request cannot override credentials, account or URLs. Existing Cosmos settings are required. See [API-003](specs/API-003-tmdb-sync.md) for counts, warnings, failure codes and safe retry behavior.
+TMDB account syncing and its scheduled workflow are removed. Existing imported
+records and attribution remain compatible, with no migration. After rollout,
+remove unused TMDB server/GitHub credentials and disable external sync callers
+as described in the setup guide. No GitHub secret or scheduled job is needed for OMDb.
 
 ## 📁 Project Structure
 
@@ -206,7 +195,7 @@ All source settings are server-only; the request cannot override credentials, ac
 │   ├── ChatWithOpenAI.cs   # AI chat with RAG
 │   ├── HealthCheck.cs      # Health monitoring
 │   ├── ReindexContent.cs   # Search index updates
-│   ├── SyncTmdbContent.cs  # TMDB account sync with stored localized metadata
+│   ├── GetOmdbMetadata.cs # Admin-only IMDb metadata lookup via OMDb
 │   ├── GetXboxProfile.cs   # Xbox Live profile data
 │   ├── GetPlayStationProfile.cs # PSN profile & trophies
 │   ├── RefreshGamingProfiles.cs # Admin refresh endpoint
