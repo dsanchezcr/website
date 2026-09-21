@@ -68,7 +68,7 @@ Keep the application token/session in one server configuration; do not put them
 in GitHub variables, `VITE_*`, public environment.js, content JSON or admin SPA.
 The sync's named HttpClient disables URI logging and redirects. Do not enable
 HTTP query-string/body capture in telemetry: TMDB v3 uses `session_id` in URLs.
-.NET 9's default HTTP tracing query redaction must remain enabled.
+Default HTTP tracing query redaction must remain enabled.
 
 ## 4. Populate and preview
 

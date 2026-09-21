@@ -16,7 +16,7 @@ Needed a hosting solution that:
 - Integrates with GitHub Actions for CI/CD
 
 ## Decision
-Use **Azure Static Web Apps** with **managed Azure Functions** (.NET 9 isolated worker):
+Use **Azure Static Web Apps** with **managed Azure Functions** (.NET 8 isolated worker):
 - Frontend and API deployed together from the same repository
 - API served under `/api` path on the same domain (no CORS complexity)
 - Single GitHub Actions workflow handles both builds
