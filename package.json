@@ -22,7 +22,7 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
-    "@docsearch/react": "^5.0.5",
+    "@docsearch/react": "^5.1.0",
     "@docusaurus/core": "^3.10.2",
     "@docusaurus/faster": "^3.10.2",
     "@docusaurus/plugin-google-analytics": "^3.10.2",
@@ -40,7 +40,7 @@
     "leaflet": "^1.9.4",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8",
+    "react-dom": "^19.3.0",
     "react-google-recaptcha-v3": "^1.11.0",
     "react-leaflet": "^5.0.0",
     "react-markdown": "^10.1.0",
@@ -59,7 +59,7 @@
     ]
   },
   "devDependencies": {
-    "@azure/cosmos": "^4.10.0",
+    "@azure/cosmos": "^4.10.1",
     "@azure/storage-blob": "^12.33.0",
     "@docusaurus/module-type-aliases": "^3.10.2",
     "@docusaurus/types": "^3.10.2",
@@ -71,7 +71,7 @@
     "babel-plugin-module-resolver": "^5.0.3",
     "jsdom": "^30.0.1",
     "typescript": "^7.0.2",
-    "vite": "^8.2.2",
+    "vite": "^8.3.0",
     "vitest": "^5.0.0"
   },
   "overrides": {
