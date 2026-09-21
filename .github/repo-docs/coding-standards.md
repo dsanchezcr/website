@@ -75,7 +75,7 @@ For React pages with inline translations:
 - Use translation object pattern: `const translations = { en: {...}, es: {...}, pt: {...} }`
 - Detect locale via `useDocusaurusContext()` and `i18n.currentLocale`
 
-## Backend (.NET 9 Azure Functions)
+## Backend (.NET 8 Azure Functions)
 
 ### Function Conventions
 - One function per `.cs` file in `api/` directory

@@ -2,14 +2,14 @@
 
 ## System Design
 
-dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static frontend** and a **.NET 9 Azure Functions API backend**, hosted together on **Azure Static Web Apps (SWA)** as a managed functions deployment.
+dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static frontend** and a **.NET 8 Azure Functions API backend**, hosted together on **Azure Static Web Apps (SWA)** as a managed functions deployment.
 
 ```
 ┌──────────────────────────────────────────────────────────┐
 │                 Azure Static Web Apps                     │
 │                                                          │
 │  ┌─────────────────────┐   ┌──────────────────────────┐  │
-│  │  Docusaurus v3 SSG  │   │  .NET 9 Azure Functions  │  │
+│  │  Docusaurus v3 SSG  │   │  .NET 8 Azure Functions  │  │
 │  │  (React/MDX)        │   │  (Isolated Worker)       │  │
 │  │                     │   │                          │  │
 │  │  - Blog (MDX)       │   │  /api/contact            │  │
@@ -88,6 +88,14 @@ dsanchezcr.com is a personal website/blog built with a **Docusaurus v3 static fr
 | GetSubscriptionStatus | `/api/newsletter/status` | Check subscription state |
 | DispatchNewsletter | `/api/newsletter/dispatch` | Send digest (GitHub Actions triggered) |
 
+PlayStation refresh resolves the numeric account ID from the authenticated
+`users/me/trophySummary` response, not from access-token JWT claims. Its in-memory
+access-token cache is tied to a fingerprint of the current `PSN_NPSSO_TOKEN`;
+credential rotation invalidates reuse, and manual refresh always exchanges again.
+Public refresh retries an HTTP 401 once with renewed credentials. Profile data is
+saved only after all provider requests succeed, preserving the last working
+profile on authentication, partial-response, or cancellation failures.
+
 ### Data Flow: TMDB media
 
 TMDB account watchlists/ratings → authorized server sync → complete pagination
@@ -150,7 +158,7 @@ disney/                 ← Disney docs (Docusaurus plugin)
 universal/              ← Universal docs (Docusaurus plugin)
 projects/               ← Projects docs (Docusaurus plugin)
 src/                    ← React components, pages, hooks, data, CSS
-api/                    ← .NET 9 Azure Functions backend
+api/                    ← .NET 8 Azure Functions backend
 infra/                  ← Bicep infrastructure templates
 i18n/                   ← Translations (es, pt)
 static/                 ← Static assets (images, robots.txt)

@@ -14,7 +14,7 @@ shipped inside the existing Static Web App at `/admin`.
 ## Prerequisites
 
 - Node.js matching the root [`package.json`](../package.json) engine range (22.22.2+, 24.15.0+, or 26+).
-- .NET 9 SDK
+- .NET 8 SDK
 - [Azure Static Web Apps CLI](https://github.com/Azure/static-web-apps-cli): `npm i -g @azure/static-web-apps-cli`
 - [Azure Functions Core Tools v4](https://learn.microsoft.com/azure/azure-functions/functions-run-local) (for the API)
 
