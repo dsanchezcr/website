@@ -29,14 +29,6 @@ Welcome to my open source project showcase! All projects are available on [GitHu
     tags={["Work in progress", "Node.js", "Docker", "Azure"]}
   />
   <ProjectCard
-    title="Secret Santa"
-    description="Azure-powered multilingual gift exchange application for teams, friends, and family."
-    link="/projects/secret-santa"
-    repo="dsanchezcr/secretsanta"
-    image="https://dsanchezcrwebsite.blob.core.windows.net/images/projects/secret-santa.jpg"
-    tags={["Azure", "React", ".NET"]}
-  />
-  <ProjectCard
     title="Issue Importer Action"
     description="GitHub Action for bulk importing issues from CSV/JSON — perfect for Copilot Agent Mode."
     link="/projects/issue-importer"
@@ -60,7 +52,7 @@ Stay tuned for more projects. Follow me on [GitHub](https://github.com/dsanchezc
 
 ## Archived Projects
 
-<details>
+<details open>
 <summary>Explore archived projects</summary>
 
 These projects are no longer actively maintained and are kept here for reference and learning.
@@ -68,6 +60,15 @@ These projects are no longer actively maintained and are kept here for reference
 ### Personal Projects
 
 <ProjectCardGrid>
+  <ProjectCard
+    title="Secret Santa"
+    description="Azure-powered multilingual gift exchange application for teams, friends, and family."
+    link="/projects/secret-santa"
+    repo="dsanchezcr/secretsanta"
+    image="https://dsanchezcrwebsite.blob.core.windows.net/images/projects/secret-santa.jpg"
+    tags={["Azure", "React", ".NET"]}
+    archived={true}
+  />
   <ProjectCard
     title="Contact Form with Azure"
     description="Contact form using Azure Communication Services, Azure Functions & GitHub Actions."

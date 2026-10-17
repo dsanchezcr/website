@@ -29,14 +29,6 @@ Bem-vindo ao meu portfólio de projetos de código aberto! Todos os projetos est
     tags={["Em desenvolvimento", "Node.js", "Docker", "Azure"]}
   />
   <ProjectCard
-    title="Secret Santa"
-    description="Aplicativo de troca de presentes multilíngue com tecnologia Azure para equipes, amigos e família."
-    link="/projects/secret-santa"
-    repo="dsanchezcr/secretsanta"
-    image="https://dsanchezcrwebsite.blob.core.windows.net/images/projects/secret-santa.jpg"
-    tags={["Azure", "React", ".NET"]}
-  />
-  <ProjectCard
     title="Issue Importer Action"
     description="GitHub Action para importar issues em massa de CSV/JSON — perfeito para o modo Agente do Copilot."
     link="/projects/issue-importer"
@@ -60,7 +52,7 @@ Fique atento para mais projetos! Siga-me no [GitHub](https://github.com/dsanchez
 
 ## Projetos Arquivados
 
-<details>
+<details open>
 <summary>Explorar projetos arquivados</summary>
 
 Estes projetos não recebem mais manutenção ativa e são mantidos como referência e material de aprendizado.
@@ -68,6 +60,15 @@ Estes projetos não recebem mais manutenção ativa e são mantidos como referê
 ### Projetos Pessoais
 
 <ProjectCardGrid>
+  <ProjectCard
+    title="Secret Santa"
+    description="Aplicativo de troca de presentes multilíngue com tecnologia Azure para equipes, amigos e família."
+    link="/projects/secret-santa"
+    repo="dsanchezcr/secretsanta"
+    image="https://dsanchezcrwebsite.blob.core.windows.net/images/projects/secret-santa.jpg"
+    tags={["Azure", "React", ".NET"]}
+    archived={true}
+  />
   <ProjectCard
     title="Formulário de Contato com Azure"
     description="Formulário de contato usando Azure Communication Services, Azure Functions e GitHub Actions."

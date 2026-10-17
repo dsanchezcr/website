@@ -58,11 +58,12 @@ test.describe('Projects Section', () => {
       await expect(processor).toContainText(locale.useCase);
     });
 
-    test(`archived projects are grouped and expandable (${locale.prefix || 'en'})`, async ({ page }) => {
+    test(`archived projects are grouped and expanded by default (${locale.prefix || 'en'})`, async ({ page }) => {
       await page.goto(`${locale.prefix}/projects`);
       const archive = page.getByRole('main').locator('details').filter({ hasText: locale.archiveSummary });
       const summary = archive.locator('summary');
       const projectPaths = [
+        'secret-santa',
         'contact-form',
         'load-testing',
         'previous-roles/sample-delivery-service',
@@ -73,24 +74,28 @@ test.describe('Projects Section', () => {
       ];
 
       await expect(summary).toBeVisible();
-      await expect(archive).toHaveJSProperty('open', false);
-      await expect(archive.locator('a[href*="/projects/"]')).toHaveCount(projectPaths.length);
-      for (const path of projectPaths) {
-        await expect(archive.locator(`a[href="${locale.prefix}/projects/${path}"]`)).toBeHidden();
-      }
-
-      await summary.focus();
-      await page.keyboard.press('Enter');
       await expect(archive).toHaveJSProperty('open', true);
+      await expect(archive.locator('a[href*="/projects/"]')).toHaveCount(projectPaths.length);
       await expect(archive.getByRole('heading', { name: locale.personalProjects, exact: true })).toBeVisible();
       await expect(archive.getByRole('heading', { name: locale.previousRoles, exact: true })).toBeVisible();
+      const personalProjects = archive.getByRole('heading', { name: locale.personalProjects, exact: true }).locator('+ div');
+      await expect(personalProjects.getByRole('link', { name: /Secret Santa/i })).toContainText('Archived');
       for (const path of projectPaths) {
         await expect(archive.locator(`a[href="${locale.prefix}/projects/${path}"]`)).toBeVisible();
       }
 
-      await summary.click();
+      await summary.focus();
+      await page.keyboard.press('Enter');
       await expect(archive).toHaveJSProperty('open', false);
-      await expect(archive.getByRole('heading', { name: locale.previousRoles, exact: true })).toBeHidden();
+      for (const path of projectPaths) {
+        await expect(archive.locator(`a[href="${locale.prefix}/projects/${path}"]`)).toBeHidden();
+      }
+
+      await summary.click();
+      await expect(archive).toHaveJSProperty('open', true);
+      for (const path of projectPaths) {
+        await expect(archive.locator(`a[href="${locale.prefix}/projects/${path}"]`)).toBeVisible();
+      }
     });
   }
 

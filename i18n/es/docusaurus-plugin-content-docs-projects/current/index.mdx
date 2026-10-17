@@ -29,14 +29,6 @@ import ProjectCard, { ProjectCardGrid } from '@site/src/components/ProjectCard';
     tags={["En desarrollo", "Node.js", "Docker", "Azure"]}
   />
   <ProjectCard
-    title="Secret Santa"
-    description="Aplicación de intercambio de regalos multilingüe impulsada por Azure para equipos, amigos y familia."
-    link="/projects/secret-santa"
-    repo="dsanchezcr/secretsanta"
-    image="https://dsanchezcrwebsite.blob.core.windows.net/images/projects/secret-santa.jpg"
-    tags={["Azure", "React", ".NET"]}
-  />
-  <ProjectCard
     title="Issue Importer Action"
     description="GitHub Action para importar issues en masa desde CSV/JSON — perfecto para el modo Agente de Copilot."
     link="/projects/issue-importer"
@@ -60,7 +52,7 @@ import ProjectCard, { ProjectCardGrid } from '@site/src/components/ProjectCard';
 
 ## Proyectos Archivados
 
-<details>
+<details open>
 <summary>Explorar proyectos archivados</summary>
 
 Estos proyectos ya no se mantienen activamente y se conservan como referencia y material de aprendizaje.
@@ -68,6 +60,15 @@ Estos proyectos ya no se mantienen activamente y se conservan como referencia y 
 ### Proyectos Personales
 
 <ProjectCardGrid>
+  <ProjectCard
+    title="Secret Santa"
+    description="Aplicación de intercambio de regalos multilingüe impulsada por Azure para equipos, amigos y familia."
+    link="/projects/secret-santa"
+    repo="dsanchezcr/secretsanta"
+    image="https://dsanchezcrwebsite.blob.core.windows.net/images/projects/secret-santa.jpg"
+    tags={["Azure", "React", ".NET"]}
+    archived={true}
+  />
   <ProjectCard
     title="Formulario de Contacto con Azure"
     description="Formulario de contacto usando Azure Communication Services, Azure Functions y GitHub Actions."
