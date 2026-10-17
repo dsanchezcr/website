@@ -1,0 +1,45 @@
+[
+  {
+    "id": "meta-2026-11",
+    "month": "2026-11",
+    "category": "meta",
+    "order": 0,
+    "introText": {
+      "en": "More November releases are still to come; for now, these are my two main picks, including one clearly labeled unconfirmed watchlist entry.",
+      "es": "Aún quedan más lanzamientos de noviembre por llegar; por ahora, estas son mis dos selecciones principales, incluida una entrada claramente marcada como no confirmada.",
+      "pt": "Ainda há mais lançamentos de novembro por chegar; por enquanto, estas são minhas duas principais escolhas, incluindo uma entrada claramente marcada como não confirmada."
+    }
+  },
+  {
+    "id": "november-2026-grand-theft-auto-vi",
+    "month": "2026-11",
+    "title": {
+      "en": "Grand Theft Auto VI",
+      "es": "Grand Theft Auto VI",
+      "pt": "Grand Theft Auto VI"
+    },
+    "description": {
+      "en": "Grand Theft Auto VI is one of my main picks. I could not verify that it releases in November 2026, its platforms, or an official trailer during preparation, so those details are left unspecified.",
+      "es": "Grand Theft Auto VI es una de mis principales selecciones. No pude verificar que salga en noviembre de 2026, sus plataformas ni un tráiler oficial durante la preparación, así que esos datos quedan sin especificar.",
+      "pt": "Grand Theft Auto VI é uma das minhas principais escolhas. Não consegui verificar se será lançado em novembro de 2026, suas plataformas ou um trailer oficial durante a preparação, então esses detalhes ficam sem especificação."
+    },
+    "category": "watchlist",
+    "order": 1
+  },
+  {
+    "id": "november-2026-the-legend-of-zelda-ocarina-of-time-remake-watchlist",
+    "month": "2026-11",
+    "title": {
+      "en": "The Legend of Zelda: Ocarina of Time Remake",
+      "es": "The Legend of Zelda: Ocarina of Time Remake",
+      "pt": "The Legend of Zelda: Ocarina of Time Remake"
+    },
+    "description": {
+      "en": "I could not verify an official confirmation of a remake of The Legend of Zelda: Ocarina of Time. This is only a personal, unconfirmed watchlist pick—not an announcement or a confirmed November release—and no date, platform, or trailer is claimed.",
+      "es": "No pude verificar una confirmación oficial de un remake de The Legend of Zelda: Ocarina of Time. Es solo una selección personal y no confirmada para tener en el radar; no es un anuncio ni un lanzamiento confirmado para noviembre, y no se afirma ninguna fecha, plataforma ni tráiler.",
+      "pt": "Não consegui verificar uma confirmação oficial de um remake de The Legend of Zelda: Ocarina of Time. Esta é apenas uma escolha pessoal e não confirmada para acompanhar — não é um anúncio nem um lançamento confirmado para novembro — e nenhuma data, plataforma ou trailer é informado."
+    },
+    "category": "watchlist",
+    "order": 2
+  }
+]

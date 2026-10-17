@@ -152,6 +152,7 @@ const ApiMonthlyReleasesInner = ({ month, category }) => {
   const upcomingItems = sortByReleaseDateAscending(filteredItems.filter(item => item.category === 'upcoming'), month);
   const eventItems = sortByReleaseDateAscending(filteredItems.filter(item => item.category === 'event'), month);
   const playingItems = filteredItems.filter(item => item.category === 'playing');
+  const watchlistItems = filteredItems.filter(item => item.category === 'watchlist');
 
   return (
     <div>
@@ -227,6 +228,19 @@ const ApiMonthlyReleasesInner = ({ month, category }) => {
             })}
           </ul>
         </>
+      )}
+      {watchlistItems.length > 0 && (
+        <ul>
+          {watchlistItems.map((item) => {
+            const title = localizeValue(item.title, localeKey);
+            const description = localizeValue(item.description, localeKey);
+            return (
+              <li key={item.id}>
+                <strong>{title}</strong>{description ? ` — ${description}` : ''}
+              </li>
+            );
+          })}
+        </ul>
       )}
     </div>
   );
