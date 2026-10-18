@@ -1,0 +1,157 @@
+---
+title: "Assuma a responsabilidade pela verificação: Uma nova mentalidade de execução para a era agêntica"
+description: "Agentes de IA mudam como o trabalho é feito, não quem responde pelo resultado. Um guia prático sobre delegação delimitada, verificação independente e julgamento profissional."
+slug: own-the-verification-agentic-era
+authors: [dsanchezcr]
+tags: [AI, Agentic AI, Software Engineering, DevOps, Critical Thinking, Engineering Leadership, Career]
+enableComments: true
+hide_table_of_contents: true
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-10-18-own-the-verification/own-the-verification.jpg
+date: 2026-10-18T10:00
+---
+
+Imagine um engenheiro revisando um pull request gerado por um agente. Ele altera o cliente de pagamentos, a configuração de novas tentativas, os testes e a documentação de implantação. O engenheiro aprendeu a trabalhar de outra forma: acompanhar a solicitação que falhou pelos logs, reproduzir o problema, editar cada arquivo e construir confiança um passo deliberado de cada vez. Agora a solução proposta já está na tela.
+
+A primeira reação não é necessariamente entusiasmo nem desconfiança. Pode ser simplesmente: "Não era assim que eu costumava fazer essa tarefa". Nesta cena ilustrativa, o desconforto não tem a ver com a capacidade do engenheiro de ler o código. Tem a ver com não ter vivido a experiência de construí-lo. Um caminho conhecido até a compreensão foi encurtado, mas compreender continua sendo necessário.
+
+Essa tensão vai muito além do software. Quando uma ferramenta produz o trabalho que antes demonstrava nossa competência, precisamos separar o método da responsabilidade. A mudança útil não é "faça tudo você mesmo" nem "deixe o agente cuidar de tudo". É um princípio mais exigente e duradouro: **aproveite o ganho de capacidade, assuma a responsabilidade pela verificação.**
+
+{/* truncate */}
+
+![Um fluxo de trabalho sob responsabilidade humana que conecta intenção, execução de agentes, evidências e verificação](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-10-18-own-the-verification/own-the-verification.jpg)
+
+## Quando a memória muscular vira uma medida de valor
+
+A execução manual ensinou hábitos valiosos. Depurar uma condição de corrida desenvolve a intuição sobre temporização. Escrever configurações de implantação ensina como os ambientes diferem. Implementar uma API revela a distância entre um contrato organizado e uma rede pouco confiável. Essas lições não ficam obsoletas porque um modelo pode produzir a próxima implementação.
+
+Mas um hábito útil pode virar uma regra desnecessária: se eu não escrevi cada linha, não fiz de verdade o trabalho de engenharia. O esforço passa a representar a qualidade, e a familiaridade passa a representar a segurança. Nenhum dos dois é um indicador confiável. Uma alteração escrita manualmente pode ser mal compreendida; uma alteração assistida por um agente pode ser cuidadosamente especificada e verificada a fundo.
+
+Isso tem a ver com identidade, não com idade. Alguém no início da carreira pode proteger as habilidades de programação que trabalhou tanto para adquirir. Um engenheiro experiente pode receber bem a automação porque já passou noites suficientes corrigindo erros repetitivos. A divisão não é entre gerações. É entre conseguir ou não atualizar nossos métodos sem abandonar nossos padrões.
+
+A cautela legítima merece uma resposta diferente da resistência. "Não podemos expor registros de clientes a essa ferramenta" identifica um limite. "Não temos como testar essa migração com segurança" identifica uma capacidade que falta. "Engenheiros de verdade fazem isso à mão" identifica o apego a um método. As duas primeiras situações pedem um projeto mais seguro ou a decisão de não delegar. A terceira pede uma análise do que o trabalho realmente pretende alcançar.
+
+O objetivo não é reprimir o desconforto. Use-o para fazer uma pergunta melhor: que evidências me permitiriam confiar nesse resultado, independentemente de quem ou do que o produziu?
+
+## Um modelo de execução diferente exige controles diferentes
+
+Um fluxo de trabalho agêntico faz mais do que completar uma frase. Dependendo das permissões, um agente pode inspecionar arquivos, escolher ferramentas, propor um plano, modificar código, executar comandos e rever sua abordagem. Estamos delegando partes do caminho, não apenas pedindo que alguém digite mais rápido.
+
+Modelos de linguagem são probabilísticos. Seus resultados podem variar, e um fluxo de trabalho pode seguir caminhos diferentes conforme mudam o contexto, as respostas das ferramentas ou as configurações do modelo. Isso não significa que todo programa que incorpora IA seja sempre não determinístico. Configurações restritas podem melhorar a repetibilidade, e o código gerado pode executar de forma determinística. O ponto importante é que uma execução bem-sucedida não demonstra que a próxima execução do agente tomará as mesmas decisões.
+
+Os erros também chegam com aparência convincente. Um modelo pode inventar um método de um SDK, citar um requisito desatualizado ou preservar o caminho de sucesso enquanto altera sutilmente a autorização. Durante uma tarefa longa, a deriva de contexto pode fazer com que uma restrição anterior deixe de receber atenção efetiva. Um agente encarregado de melhorar a confiabilidade pode acabar se concentrando em fazer os testes passarem, mesmo que isso signifique enfraquecer o teste.
+
+Pessoas também cometem erros. A questão não é que a saída de uma máquina mereça suspeita automática enquanto a de uma pessoa mereça confiança automática. É que uma produção barata e fluente pode multiplicar erros plausíveis mais rápido do que nossos controles atuais conseguem examiná-los.
+
+Delegar 100% de um fluxo de trabalho sem salvaguardas é, portanto, um antipadrão: um objetivo aberto, credenciais com privilégios amplos, nenhuma verificação independente e permissão para colocar a mudança em produção. Autonomia delimitada é diferente. Um agente pode concluir uma tarefa bem definida dentro de limites efetivamente aplicados, com requisitos de evidências e pontos de escalonamento. A pergunta relevante não é quantos passos ele executa sozinho. É se sua autoridade corresponde à incerteza e às consequências.
+
+## Redistribua o esforço, não elimine o julgamento
+
+A mudança lembra transições anteriores nos níveis de abstração. Passar de assembly para linguagens de mais alto nível reduziu a necessidade de gerenciar instruções individuais. Passar da configuração manual de servidores para infraestrutura como código tornou o estado declarado revisável e repetível. Nenhuma das duas transições eliminou a necessidade de entender memória, redes, controle de acesso ou falhas.
+
+A analogia tem um limite. Um compilador traduz dentro das regras de uma linguagem. Ferramentas de infraestrutura aplicam operações declaradas por mecanismos especificados, embora sistemas externos ainda possam falhar ou se desviar do estado esperado. Um agente pode escolher quais operações executar e reinterpretar uma solicitação insuficientemente especificada. Essa margem adicional de decisão exige limites sobre as decisões, não apenas validação da sintaxe.
+
+O engenheiro assume mais funções de orquestração e verificação, mas não se torna apenas alguém que distribui prompts. O trabalho se desloca para definir a intenção, resolver escolhas arquiteturais e suas concessões, selecionar contexto confiável e decidir quais evidências são suficientes. Às vezes, a decisão correta de orquestração é escrever você mesmo a parte difícil.
+
+Isso pode parecer mais lento no começo. Uma especificação clara exige reflexão antes de surgirem resultados visíveis. Um teste realista de falha custa mais do que aceitar uma marca verde. Mas esses investimentos atacam a incerteza cara: se o sistema fará a coisa certa quando as condições deixarem de ser convenientes.
+
+A medida prática não é o quanto você deixou de tocar no teclado. É se reduziu o esforço total, incluindo revisão, operação e correção, sem perder o controle do resultado.
+
+## Uma mudança, da delegação à implantação
+
+Voltemos ao pull request de pagamentos. Considere um serviço ilustrativo em que um tempo limite excedido leva os usuários a tentar novamente. Um agente poderia adicionar novas tentativas rapidamente em vários arquivos. Isso só é útil se a mudança não cobrar alguém duas vezes.
+
+### Especifique a invariante antes da implementação
+
+"Torne os pagamentos mais confiáveis" não basta. A pessoa responsável define a invariante: novas tentativas para o mesmo pagamento lógico não podem criar cobranças adicionais. A especificação distingue um pagamento recusado de uma solicitação cujo resultado é desconhecido porque a resposta se perdeu. Um tempo limite excedido não prova que o provedor não fez nada.
+
+Antes de autorizar novas tentativas, o engenheiro verifica o contrato real de idempotência do provedor de pagamentos: escopo das chaves, janela de retenção, comportamento concorrente e como recuperar um resultado existente. Se o provedor não consegue oferecer a garantia necessária, uma nova tentativa automática pode ser o projeto errado. A equipe precisa resolver essa incerteza, não pedir ao agente que invente uma garantia.
+
+Para este exemplo, suponha que um contrato documentado do provedor suporte o comportamento necessário. O plano exige uma chave de idempotência persistente por pagamento lógico, reutilizada entre tentativas e reinicializações, novas tentativas limitadas apenas para falhas elegíveis e conciliação de resultados não resolvidos. Exclui explicitamente alterar a autenticação, adicionar um novo provedor ou redesenhar o registro contábil de pagamentos.
+
+### Delegue uma parte delimitada
+
+O agente recebe o contrato aprovado, as convenções relevantes do repositório e uma tarefa restrita. Ele pode modificar o cliente de pagamentos, sua política de novas tentativas, os testes específicos e as notas operacionais. Não pode acessar credenciais de produção, alterar permissões de implantação nem implantar. Esses limites devem estar nas permissões das ferramentas e em controles efetivos do fluxo de trabalho, não apenas em uma instrução educada.
+
+O resultado solicitado inclui um diff, premissas, verificações executadas e questões não resolvidas. Se uma alteração de esquema se tornar necessária para preservar a chave, o agente deve parar e sinalizar isso. Esse é um escalonamento produtivo, não uma falha de execução. A pessoa mantém a responsabilidade pela decisão arquitetural e pode autorizar uma migração separada com seus próprios controles.
+
+### Detecte problemas antes de pedir aprovação
+
+O pipeline compila o código alterado, executa os testes de regressão existentes e verifica a presença de segredos, mudanças de dependências e edições fora do escopo aprovado. Os testes de novas tentativas exercitam o esgotamento de tentativas, o cancelamento e um tempo limite de resultado ambíguo. A política impede que o agente altere esses controles para tornar seu próprio trabalho aceitável.
+
+Essas verificações podem detectar problemas, não estabelecer a correção completa. Um linter aprovado diz pouco sobre cobranças duplicadas. Um teste que simula o provedor sob a premissa de que "tempo limite excedido significa que não houve cobrança" pode passar enquanto valida exatamente a suposição errada. A detecção precisa se concentrar nos modos de falha, não apenas produzir uma coleção tranquilizadora de ícones verdes.
+
+### Revise as decisões e depois verifique com evidências independentes
+
+Quem revisa acompanha a identidade do pagamento pelo cliente, pela fronteira de persistência, pela configuração e pelos testes. A chave sobrevive a uma reinicialização do processo? Dois processos de trabalho podem criar chaves diferentes para o mesmo pagamento? Um limite de tentativas é aplicado em uma camada, mas multiplicado por outra? Os logs são úteis sem expor dados de pagamento sensíveis?
+
+Essa revisão trata da semântica e das fronteiras do sistema. Merece uma leitura cuidadosa dos caminhos críticos e dos contratos afetados, não apenas do resumo do agente. Se o resumo afirma que cobranças duplicadas são impossíveis, quem revisa pergunta qual garantia documentada e qual mecanismo de implementação sustentam essa afirmação.
+
+A verificação então busca além das premissas do autor. Em um ambiente de integração controlado, introduz-se uma falha depois que o provedor aceita o pagamento, mas antes que o serviço receba a resposta. O serviço tenta novamente com a mesma identidade. A equipe examina os registros do provedor e o registro contábil interno, verificando se há uma única cobrança lógica e uma conciliação consistente. Os cenários de reinicialização e solicitações concorrentes testam a mesma invariante.
+
+Um ambiente de testes do provedor pode não reproduzir todo o comportamento de produção, então seus limites precisam ser registrados. Os testes de contrato existentes, a documentação oficial e um cenário de falha projetado de forma independente oferecem, em conjunto, evidências mais fortes do que uma implementação e uma suíte de testes coerentes apenas entre si. Pedir que outro agente concorde pode ajudar a encontrar lacunas, mas não cria, por si só, evidências independentes.
+
+### Implante com um plano de recuperação
+
+Uma pessoa responsável aprova a implantação delimitada. A equipe monitora sinais de pagamentos duplicados, resultados não resolvidos, volume de novas tentativas e latência, com limites definidos para desativar o novo comportamento. As equipes de suporte e operações sabem como investigar um pagamento ambíguo.
+
+Reverter o código não desfaz uma cobrança. A recuperação inclui, portanto, conciliação e um processo aprovado para corrigir os efeitos financeiros, não apenas um botão de implantação. A tarefa termina quando o comportamento e suas consequências operacionais são compreendidos, não quando o pull request é integrado.
+
+## A responsabilidade precisa caber na capacidade humana
+
+Seria fácil transformar "assuma a responsabilidade pela verificação" em "uma pessoa precisa ler cada linha de cada ação". Isso não escala e pode transformar a revisão em uma cerimônia. Alguém aprovando mais mudanças do que consegue compreender é um ponto de controle nominal, não um controle eficaz.
+
+A [fadiga de quem revisa](/blog/reviewer-fatigue-human-in-the-loop-bottleneck) é um problema de capacidade tanto quanto de atenção. Mantenha as mudanças coerentes e pequenas o suficiente para ser possível raciocinar sobre elas. Exija evidências úteis antes da revisão. Limite o trabalho em andamento quando a fila de revisões crescer. Produzir mais dez branches não é progresso se a equipe não consegue avaliar as três primeiras.
+
+Use controles baseados em risco. Uma mudança restrita de formatação pode passar por verificações determinísticas e por uma integração automática controlada por políticas. Uma mudança nas novas tentativas de pagamento precisa de revisão de domínio e testes de falhas. Alterações no controle de acesso ou na infraestrutura que envolvam operações destrutivas podem exigir uma segunda pessoa autorizada a aprovar. A própria classificação de risco precisa de regras aplicáveis e escalonamento; o agente que produz a mudança não deve poder declarar seu próprio trabalho inofensivo.
+
+A responsabilidade humana existe em vários níveis: a pessoa que responde pela mudança, quem é responsável pelo serviço e responde pelo comportamento operacional, e os líderes que respondem pela política de delegação. Os [padrões de colaboração entre pessoas e agentes](/blog/humans-and-agents-collaboration-patterns) ajudam a tornar essas responsabilidades explícitas. "A IA fez isso" não é uma explicação útil para um incidente nem substitui uma pessoa responsável.
+
+Os líderes também precisam financiar o trabalho que esperam. Tempo de revisão, ambientes de teste, observabilidade e treinamento fazem parte da adoção de agentes, não são despesas opcionais. Avalie a entrega junto com o retrabalho, os defeitos que escaparam aos controles, a recuperação e a capacidade de explicar decisões. Reconheça um engenheiro por interromper uma mudança insegura, não apenas por fazer mais uma tarefa sair da fila.
+
+Uma boa política torna a autonomia ajustável. Amplie-a onde as evidências a sustentarem; reduza-a quando falhas revelarem controles fracos. A responsabilidade não exige uma pessoa em cada tecla pressionada. Exige pessoas que entendam e mantenham o sistema de permissões, evidências e intervenção.
+
+## A mesma mudança alcança quase todas as disciplinas
+
+O software torna o mecanismo visível porque podemos inspecionar um diff e executar testes. Mas quase todas as disciplinas incluem pesquisa, síntese, redação, planejamento ou decisões que a IA pode acelerar. O princípio transferível é o mesmo. As evidências aceitáveis, as obrigações de privacidade e as consequências não são.
+
+### Finanças: Audite a previsão, não apenas a planilha
+
+Imagine um analista pedindo a um agente que prepare uma previsão de fluxo de caixa. A planilha fecha, os gráficos parecem sensatos e o texto explica o déficit esperado. Nada disso prova que a previsão reflete o negócio.
+
+O analista rastreia os dados até os sistemas financeiros aprovados, confere períodos e moedas e distingue a receita contabilizada do dinheiro que se espera efetivamente receber. Examina premissas sobre atrasos nos recebimentos, taxas de renovação e despesas extraordinárias. Uma previsão plausível pode conter um erro material porque uma fórmula inclui uma transferência interna como dinheiro novo.
+
+A verificação independente pode incluir conciliar os saldos iniciais com o livro-razão, recalcular fórmulas críticas fora da planilha gerada e comparar cenários com resultados históricos reais. A pessoa responsável pela decisão também pergunta se as premissas continuam válidas nas condições atuais. Deixe o agente reunir e explorar; não permita que uma narrativa atraente escolha silenciosamente as premissas financeiras da organização.
+
+### Trabalho clínico: Verifique o resumo contra o prontuário
+
+Considere um profissional clínico usando um sistema aprovado para redigir um resumo diagnóstico a partir do prontuário de um paciente. Este é um fluxo de trabalho ilustrativo, não uma orientação médica. Informações identificáveis precisam permanecer em um ambiente autorizado com controles adequados de privacidade, acesso e retenção.
+
+O profissional confere o resumo com as anotações originais, os resultados laboratoriais, o histórico de medicamentos e as datas relevantes. Uma condição suspeita foi apresentada como confirmada? Um medicamento antigo foi descrito como atual? O resumo omitiu uma alergia ou transformou observações conflitantes em uma afirmação categórica?
+
+O valor está na preparação mais rápida, não na permissão para terceirizar o julgamento clínico. O profissional precisa avaliar o paciente e a relevância das evidências, resolver a incerteza e seguir os requisitos profissionais e institucionais. Um resumo fluente não é um diagnóstico, e o aval de outro modelo não é uma validação clínica.
+
+### Trabalho jurídico: Abra as fontes
+
+Um advogado pode usar um agente para organizar um argumento ou redigir um relatório de pesquisa jurídica. Verificar exige abrir as fontes jurídicas reais, confirmar que os casos citados existem e conferir se as citações textuais e as decisões sustentam a afirmação. A jurisdição, o contexto processual e a aplicabilidade atual da fonte importam.
+
+Uma referência que parece autêntica é apenas uma pista até ser conferida. A confidencialidade e as políticas de ferramentas aprovadas também se aplicam antes de fornecer material ao sistema. O advogado continua responsável pela orientação e pela peça apresentada, incluindo omissões que tornam enganoso um parágrafo que, de resto, é correto.
+
+### Trabalho criativo e operacional: Verifique a intenção e as consequências
+
+Um designer pode explorar mais direções com conceitos gerados, mas ainda precisa avaliar originalidade, direitos de uso, acessibilidade e adequação ao briefing. Uma campanha refinada pode repetir uma alegação não comprovada sobre o produto ou comunicar algo que a organização nunca pretendeu prometer.
+
+Uma pessoa encarregada do planejamento de operações pode delegar um rascunho de escala de pessoal enquanto verifica restrições trabalhistas, disponibilidade real e cobertura durante as passagens de turno. Antes de as mudanças chegarem aos funcionários, ela verifica os dados de origem e os efeitos sobre pessoas cujas circunstâncias talvez não estejam representadas na planilha.
+
+Esses riscos não são equivalentes. Um conceito visual fraco, uma informação financeira incorreta e uma decisão clínica insegura exigem salvaguardas diferentes. O que se transfere é a separação entre produzir e aceitar: **aproveite o ganho de capacidade, assuma a responsabilidade pela verificação.**
+
+## Preserve os fundamentos, mude como mede o ofício
+
+A verificação sem conhecimento de domínio rapidamente vira um ritual. Engenheiros ainda precisam depurar, ler código desconhecido, raciocinar sobre sistemas distribuídos e entender fronteiras de segurança. Como explica [a importância dos fundamentos antes da IA](/blog/fundamentals-before-ai), compreender é o que torna possível avaliar o resultado em primeiro lugar.
+
+Preserve essa capacidade deliberadamente. Reproduza falhas difíceis, implemente pequenos experimentos e, de vez em quando, resolva um problema delimitado sem assistência. Use agentes para propor explicações alternativas e depois teste essas explicações. Para quem está aprendendo, alterne o trabalho assistido com explicar e reconstruir as partes críticas. O objetivo é preservar a competência, não a pureza manual.
+
+"Orquestrador" também não deve virar uma elevação de status que deixe o trabalho prático como problema de outra pessoa. Se você não consegue investigar um resultado que falhou, não consegue supervisioná-lo com responsabilidade. Às vezes, abrir o depurador é o caminho mais curto até a evidência. Outras vezes, é uma delegação bem delimitada. Uma prática madura pode usar os dois.
+
+Volte ao engenheiro olhando aquele pull request com vários arquivos. "Não era assim que eu costumava fazer essa tarefa" pode continuar sendo verdade sem virar uma objeção. As próximas perguntas são mais úteis: o que autorizamos, o que pode estar errado e quais evidências sustentam a implantação?
+
+O engenheiro pode aceitar a mudança, pedir uma menor ou rejeitar a abordagem. As três opções podem ser boa engenharia. A conquista não é um agente ter feito o trabalho nem uma pessoa ter recusado sua ajuda. É alguém continuar responsável por decidir se o trabalho merece confiança.
