@@ -1,0 +1,45 @@
+---
+title: "Uma pequena mensagem, um momento significativo: um cartão digital para a Ronald McDonald House"
+description: "Conheça o projeto de código aberto Words of Encouragement eCard, criado para a campanha interna Give Campaign da Microsoft em outubro e para ajudar voluntários a compartilhar mensagens de apoio com famílias da Ronald McDonald House."
+slug: words-of-encouragement-ecard
+authors: [dsanchezcr]
+tags: [Open Source, Microsoft, Volunteering, Azure, Accessibility]
+enableComments: true
+hide_table_of_contents: true
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-10-17-ronald-mcdonald-house/words-of-encouragement-ecard.jpg
+date: 2026-10-17T10:00
+---
+
+# Uma pequena mensagem, um momento significativo: um cartão digital para a Ronald McDonald House
+
+Para a campanha interna Give Campaign da Microsoft neste mês de outubro, criei um projeto de código aberto para ajudar voluntários a preparar cartões digitais de incentivo para famílias ligadas à Ronald McDonald House. A ideia é simples: oferecer uma forma atenciosa de compartilhar algumas palavras de apoio durante uma campanha movimentada, sem tornar a criação do cartão complicada.
+
+O projeto se chama [Words of Encouragement eCard](https://github.com/dsanchezcr/RonaldMcDonaldHouse). Ele transforma a atividade de escrever cartões em uma experiência web acessível e multilíngue.
+
+{/* truncate */}
+
+![Cartão digital de felicitações abstrato e acolhedor exibido em um laptop e um celular, com cores suaves e formas esperançosas](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-10-17-ronald-mcdonald-house/words-of-encouragement-ecard.jpg)
+
+## De uma atividade voluntária a um cartão digital
+
+Os voluntários podem escolher entre artes aprovadas ou, quando habilitado, criar um plano de fundo opcional com IA. Eles escrevem uma mensagem curta, podem adicionar o primeiro nome e têm a opção de pedir que o aplicativo revise o texto. O cartão pronto é renderizado como JPEG no navegador, onde pode ser baixado ou enviado.
+
+Esse fluxo mantém o foco no aspecto humano: escolher um design e encontrar palavras gentis e pessoais. A experiência oferece vários idiomas e não exige que os voluntários passem por um cadastro longo ou processo de publicação.
+
+## Criado para uma entrega cuidadosa
+
+Uma mensagem de incentivo merece um caminho atencioso entre a criação e a entrega. Quando um voluntário envia um cartão, o aplicativo o armazena de forma privada para revisão dos organizadores. Ele não envia cartões diretamente às famílias. Essa etapa de revisão permite que os organizadores controlem o que será distribuído e como chegará às pessoas que pretende apoiar.
+
+O projeto também trata a IA opcional como uma ferramenta, não como uma exigência. Configurações no servidor controlam se a revisão de texto e a geração de planos de fundo com IA estão disponíveis. Os arquivos de imagem enviados são recodificados antes do armazenamento, e o aplicativo evita registrar o conteúdo das mensagens. Esses detalhes importam quando as pessoas escrevem mensagens pessoais para um contexto delicado.
+
+## Código aberto, com limites bem definidos
+
+O projeto combina uma interface frontend com React e TypeScript com uma API do Azure Functions. A infraestrutura é descrita em Bicep, e o GitHub Actions valida as alterações. Quis que o código e a abordagem de implantação fossem úteis para outras pessoas que desejem aprender com o projeto ou adaptar o fluxo.
+
+O código do aplicativo tem licença MIT, mas a marca e as artes da Ronald McDonald House no repositório estão explicitamente excluídas dessa licença. Consulte o [README do projeto](https://github.com/dsanchezcr/RonaldMcDonaldHouse/blob/main/README.md) antes de reutilizar qualquer recurso.
+
+## Uma pequena contribuição para um esforço maior
+
+Este projeto é uma forma de apoiar uma campanha de voluntariado em outubro: facilitar a criação de uma mensagem, deixando a revisão e a distribuição nas mãos de pessoas. Um cartão é um pequeno gesto, mas um processo claro e respeitoso ajuda a mensagem a chegar com cuidado.
+
+Explore o [repositório do Words of Encouragement eCard](https://github.com/dsanchezcr/RonaldMcDonaldHouse) para ver como funciona.

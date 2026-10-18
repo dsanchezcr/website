@@ -1,0 +1,30 @@
+---
+title: Cartões digitais para Ronald McDonald House
+sidebar_position: 2
+description: Criação de cartões digitais multilíngues para uma campanha interna do Microsoft Give em apoio à Ronald McDonald House.
+hide_table_of_contents: true
+keywords: [Ronald McDonald House, cartões digitais, Microsoft Give, voluntariado, Azure]
+---
+
+# 💌 Cartões digitais para Ronald McDonald House
+
+Criei esta experiência de cartões digitais para uma **campanha interna do Microsoft Give** em apoio à Ronald McDonald House. Ela permite que voluntários criem cartões personalizados com palavras de incentivo por meio de uma interface acessível e multilíngue.
+
+- 💻 [Código-fonte no GitHub](https://github.com/dsanchezcr/RonaldMcDonaldHouse)
+
+## Caso de uso
+
+O aplicativo apoia uma atividade de voluntariado para escrever cartões: os participantes escolhem artes aprovadas, escrevem uma mensagem de apoio e visualizam o cartão antes de baixá-lo ou enviá-lo. Os organizadores podem configurar informações do evento e um link opcional para registrar a participação dos voluntários.
+
+## Criar um cartão
+
+- Escolher um design e escrever uma mensagem em um idioma compatível.
+- Usar IA opcionalmente para ajudar a revisar a mensagem ou gerar um fundo; o catálogo de designs aprovados pode ser usado sem IA.
+- Visualizar o cartão e exportá-lo como um JPG gerado no navegador.
+- Enviar o cartão finalizado para o processo de revisão humana aprovado pelo organizador antes da distribuição.
+
+## Tecnologias utilizadas
+
+A interface utiliza **React, TypeScript, Vite e Canvas** no Azure Static Web Apps. Uma API dedicada de **Azure Functions com Node.js** gerencia os envios para o Azure Blob Storage privado, com integrações opcionais do Azure OpenAI e do Azure AI Content Safety.
+
+O repositório inclui orientações de configuração e implantação. O código-fonte é aberto, mas os recursos gráficos de marca têm permissões separadas e não são cobertos pela licença MIT do código.

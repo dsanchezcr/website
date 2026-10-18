@@ -1,0 +1,45 @@
+---
+title: "Un pequeño mensaje, un momento significativo: una tarjeta electrónica para Ronald McDonald House"
+description: "Conoce el proyecto de código abierto Words of Encouragement eCard, creado para la campaña interna Give Campaign de Microsoft en octubre y para que los voluntarios compartan mensajes de apoyo con las familias de Ronald McDonald House."
+slug: words-of-encouragement-ecard
+authors: [dsanchezcr]
+tags: [Open Source, Microsoft, Volunteering, Azure, Accessibility]
+enableComments: true
+hide_table_of_contents: true
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-10-17-ronald-mcdonald-house/words-of-encouragement-ecard.jpg
+date: 2026-10-17T10:00
+---
+
+# Un pequeño mensaje, un momento significativo: una tarjeta electrónica para Ronald McDonald House
+
+Para la campaña interna Give Campaign de Microsoft este octubre, creé un proyecto de código abierto que ayuda a los voluntarios a preparar tarjetas digitales de ánimo para familias vinculadas con Ronald McDonald House. La idea es sencilla: ofrecer una forma considerada de compartir unas palabras de apoyo durante una campaña activa, sin que crear una tarjeta sea complicado.
+
+El proyecto se llama [Words of Encouragement eCard](https://github.com/dsanchezcr/RonaldMcDonaldHouse). Convierte la actividad de escribir tarjetas en una experiencia web accesible y multilingüe.
+
+{/* truncate */}
+
+![Tarjeta digital de saludo abstracta y cálida en una computadora portátil y un teléfono, con colores suaves y formas esperanzadoras](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-10-17-ronald-mcdonald-house/words-of-encouragement-ecard.jpg)
+
+## De una actividad voluntaria a una tarjeta electrónica
+
+Los voluntarios pueden elegir entre diseños aprobados o, cuando está habilitada, crear un fondo opcional con IA. Escriben un mensaje breve, pueden agregar su nombre y tienen la opción de pedirle a la aplicación que revise el texto. La tarjeta final se genera como un archivo JPEG en el navegador, donde puede descargarse o enviarse.
+
+Este flujo mantiene la atención en el aspecto humano: elegir un diseño y encontrar palabras amables y personales. La experiencia admite varios idiomas y no obliga a los voluntarios a completar un registro largo ni un proceso de publicación.
+
+## Diseñada para una entrega cuidadosa
+
+Un mensaje de ánimo merece un recorrido considerado desde su creación hasta su entrega. Cuando una persona voluntaria envía una tarjeta, la aplicación la almacena de forma privada para que la revisen los organizadores. No envía tarjetas directamente a las familias. Ese paso de revisión permite que los organizadores decidan qué se distribuye y cómo llega a quienes debe apoyar.
+
+El diseño también trata la IA opcional como una herramienta, no como un requisito. La configuración del servidor controla si están disponibles la revisión de texto y la generación de fondos con IA. Los archivos de imagen enviados se vuelven a codificar antes de almacenarse y la aplicación evita registrar el contenido de los mensajes. Estos detalles importan cuando las personas redactan mensajes personales para un contexto delicado.
+
+## Código abierto con límites claros
+
+El proyecto combina una interfaz frontend con React y TypeScript con una API de Azure Functions. La infraestructura se describe en Bicep y GitHub Actions valida los cambios. Quería que el código y el enfoque de implementación fueran útiles para otras personas interesadas en aprender del proyecto o adaptar el flujo.
+
+El código de la aplicación cuenta con licencia MIT, pero la marca y las ilustraciones de Ronald McDonald House incluidas en el repositorio están excluidas explícitamente de esa licencia. Consulta el [README del proyecto](https://github.com/dsanchezcr/RonaldMcDonaldHouse/blob/main/README.md) antes de reutilizar cualquier recurso.
+
+## Una pequeña contribución a un esfuerzo mayor
+
+Este proyecto es una forma de apoyar una campaña de voluntariado en octubre: facilitar la creación de un mensaje, dejando la revisión y la distribución en manos de personas. Una tarjeta es un pequeño gesto, pero un proceso claro y respetuoso ayuda a que llegue con cuidado.
+
+Explora el [repositorio de Words of Encouragement eCard](https://github.com/dsanchezcr/RonaldMcDonaldHouse) para ver cómo funciona.
