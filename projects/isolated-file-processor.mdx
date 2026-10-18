@@ -1,0 +1,34 @@
+---
+title: Isolated File Processor
+sidebar_position: 5
+description: SupportShield, a work-in-progress project for isolated processing of untrusted attachments in support workflows.
+hide_table_of_contents: true
+keywords: [SupportShield, file processing, Docker, Node.js, Azure]
+---
+
+# 🛠️ SupportShield — Isolated File Processor
+
+**Work in progress — not production-ready.**
+
+I am working on SupportShield to explore asynchronous processing of untrusted attachments without running file parsers inside the public-facing application.
+
+- 💻 [Source code on GitHub](https://github.com/dsanchezcr/isolated-file-processor)
+
+## Use case
+
+The intended use case is **support workflows** that accept customer attachments. Rather than opening an uploaded file directly in a downstream tool, the pipeline quarantines it, attempts to rebuild and validate its contents in isolation, and makes only validated output available for further processing.
+
+## How it works
+
+- An authenticated gateway accepts uploads into private quarantine storage and queues processing jobs.
+- A worker on a dedicated execution host starts disposable Docker containers with networking disabled and resource limits.
+- Parsers run inside those containers; only rebuilt, validated output can reach clean storage.
+- Failed processing is rejected rather than falling back to the original file.
+
+The project uses **Node.js, Docker, BullMQ, Redis, and Azure storage and infrastructure**.
+
+## Current limitations
+
+This is an experimental project, not a ready-to-deploy file-processing service. Azure Container Apps can host the gateway but cannot run the current Docker sandbox; that requires a dedicated execution host. Deployment, dependency-image, and licensing requirements still need to be resolved before production use.
+
+Isolation reduces risk, but it is **not antivirus and does not guarantee harmless output**. See the repository's architecture, threat model, and deployment documentation for the current boundaries.
