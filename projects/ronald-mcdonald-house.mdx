@@ -1,0 +1,30 @@
+---
+title: Ronald McDonald House eCards
+sidebar_position: 2
+description: Multilingual eCard creation for an internal Microsoft Give campaign supporting Ronald McDonald House.
+hide_table_of_contents: true
+keywords: [Ronald McDonald House, eCards, Microsoft Give, volunteering, Azure]
+---
+
+# 💌 Ronald McDonald House eCards
+
+I built this eCard experience for an **internal Microsoft Give campaign** supporting Ronald McDonald House. It gives volunteers a way to create personalized cards with words of encouragement through an accessible, multilingual interface.
+
+- 💻 [Source code on GitHub](https://github.com/dsanchezcr/RonaldMcDonaldHouse)
+
+## Use case
+
+The app supports a volunteer card-writing activity: participants choose approved artwork, compose a supportive message, and preview their card before downloading or submitting it. Organizers can configure event information and an optional volunteer-tracking link.
+
+## Creating a card
+
+- Choose a design and write a message in a supported language.
+- Optionally use AI to help review the message or generate a background; the approved design catalog remains usable without AI.
+- Preview the card and export it as a JPG rendered in the browser.
+- Submit the finished card for the organizer's approved human review process before distribution.
+
+## Built with
+
+The frontend uses **React, TypeScript, Vite, and Canvas** on Azure Static Web Apps. A dedicated **Node.js Azure Functions** API handles submissions to private Azure Blob Storage, with optional Azure OpenAI and Azure AI Content Safety integrations.
+
+The repository includes setup and deployment guidance. Its source code is open source, but branded artwork has separate permissions and is not covered by the code's MIT license.
