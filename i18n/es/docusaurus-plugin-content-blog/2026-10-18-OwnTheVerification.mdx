@@ -17,7 +17,7 @@ La primera reacción no es necesariamente entusiasmo ni desconfianza. Puede ser 
 
 Esa tensión va mucho más allá del software. Cuando una herramienta produce el trabajo que antes demostraba nuestra experiencia, tenemos que separar el método de la responsabilidad. El cambio útil no es "hazlo todo tú mismo" ni "deja que el agente se encargue de todo". Es un principio más exigente y duradero: **aprovecha la capacidad que te ofrece, hazte cargo de la verificación.**
 
-{/* truncate */}
+<!-- truncate -->
 
 ![Un flujo de trabajo bajo responsabilidad humana que conecta intención, ejecución de agentes, evidencia y verificación](https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2026-10-18-own-the-verification/own-the-verification.svg)
 
@@ -87,7 +87,7 @@ Quien revisa sigue la identidad del pago a través del cliente, el límite de pe
 
 Esta revisión trata de la semántica y los límites del sistema. Merece una lectura cuidadosa de las rutas críticas y los contratos afectados, no solo del resumen del agente. Si el resumen afirma que los cargos duplicados son imposibles, quien revisa pregunta qué garantía documentada y qué mecanismo de implementación respaldan esa afirmación.
 
-La verificación busca entonces más allá de los supuestos del autor. En un entorno de integración controlado, se introduce un fallo después de que el proveedor acepta el pago, pero antes de que el servicio recibe la respuesta. El servicio reintenta con la misma identidad. El equipo examina los registros del proveedor y el registro contable interno, comprobando que haya un único cargo lógico y una conciliación coherente. Los escenarios de reinicio y solicitudes concurrentes ponen a prueba la misma condición invariable.
+La verificación busca entonces más allá de los supuestos del autor. En un entorno de integración controlado, se introduce un fallo después de que el proveedor acepta el pago, pero antes de que el servicio reciba la respuesta. El servicio reintenta con la misma identidad. El equipo examina los registros del proveedor y el registro contable interno, comprobando que haya un único cargo lógico y una conciliación coherente. Los escenarios de reinicio y solicitudes concurrentes ponen a prueba la misma condición invariable.
 
 Un entorno de pruebas del proveedor puede no reproducir todo el comportamiento de producción, por lo que sus límites deben quedar registrados. Las pruebas de contrato existentes, la documentación autorizada y un escenario de fallo diseñado de manera independiente aportan, en conjunto, evidencia más sólida que una implementación y una batería de pruebas coherentes solo entre sí. Pedir a otro agente que confirme puede ayudar a encontrar lagunas, pero no crea por sí solo evidencia independiente.
 
