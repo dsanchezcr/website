@@ -1,0 +1,44 @@
+---
+title: "A Small Message, A Meaningful Moment: Building a Ronald McDonald House eCard"
+description: "Meet the open-source Words of Encouragement eCard project, created for Microsoft's October Give Campaign to help volunteers share supportive messages with Ronald McDonald House families."
+slug: words-of-encouragement-ecard
+authors: [dsanchezcr]
+tags: [Open Source, Microsoft, Volunteering, Azure, Accessibility]
+enableComments: true
+hide_table_of_contents: true
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-10-17-ronald-mcdonald-house/words-of-encouragement-ecard.jpg
+---
+
+# A Small Message, A Meaningful Moment: Building a Ronald McDonald House eCard
+
+For Microsoft's internal Give Campaign this October, I built an open-source project to help volunteers create digital cards of encouragement for families connected to Ronald McDonald House. The idea is simple: give people a thoughtful way to share a few supportive words during a busy campaign, without making card creation a complicated process.
+
+The project is called [Words of Encouragement eCard](https://github.com/dsanchezcr/RonaldMcDonaldHouse). It brings the card-writing activity into an accessible, multilingual web experience.
+
+{/* truncate */}
+
+![Warm, abstract digital greeting card displayed on a laptop and phone, with gentle colors and hopeful shapes](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-10-17-ronald-mcdonald-house/words-of-encouragement-ecard.jpg)
+
+## From a volunteer activity to a usable eCard
+
+Volunteers can choose from approved card artwork or, when enabled, create an optional AI-generated background. They write a short message, can add a first name, and may ask the app to review the text. The finished card is rendered as a JPEG in the browser, where it can be downloaded or submitted.
+
+That flow keeps the activity focused on the human part: choosing a design and finding words that feel kind and personal. The experience supports multiple languages, and it avoids forcing volunteers through a long registration or publishing process.
+
+## Built for a careful handoff
+
+An encouraging message deserves a thoughtful path from creation to delivery. When a volunteer submits a card, the application stores it privately for organizers to review. It does not send cards directly to families. That review step gives organizers control over what is distributed and how it reaches the people it is meant to support.
+
+The design also treats optional AI as a tool, not a requirement. Server-side settings control whether AI text review and background generation are available. Submitted image files are re-encoded before storage, and the application avoids logging message content. These details matter when people are creating personal messages for a sensitive setting.
+
+## Open source, with clear boundaries
+
+The project combines a React and TypeScript frontend with an Azure Functions API. Its infrastructure is described in Bicep, and GitHub Actions validates changes. I wanted the source and deployment approach to be useful to others who might want to learn from the project or adapt the workflow.
+
+The application code is MIT-licensed, but the Ronald McDonald House branding and artwork in the repository are explicitly excluded from that license. Check the [project README](https://github.com/dsanchezcr/RonaldMcDonaldHouse/blob/main/README.md) before reusing any assets.
+
+## A small contribution to a bigger effort
+
+This project is one way to support an October volunteering campaign: make it easier to create a message, while leaving review and distribution in human hands. A card is a small gesture, but a clear and respectful process helps that gesture reach people with care.
+
+Explore the [Words of Encouragement eCard repository](https://github.com/dsanchezcr/RonaldMcDonaldHouse) to see how it works.
