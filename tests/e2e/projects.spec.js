@@ -18,8 +18,6 @@ test.describe('Projects Section', () => {
     {
       prefix: '',
       campaign: 'internal Microsoft Give campaign',
-      workInProgress: 'Work in progress',
-      useCase: 'support workflows',
       archiveSummary: 'Explore archived projects',
       personalProjects: 'Personal Projects',
       previousRoles: 'Projects from Previous Roles',
@@ -27,8 +25,6 @@ test.describe('Projects Section', () => {
     {
       prefix: '/es',
       campaign: 'campaña interna de Microsoft Give',
-      workInProgress: 'En desarrollo',
-      useCase: 'flujos de soporte',
       archiveSummary: 'Explorar proyectos archivados',
       personalProjects: 'Proyectos Personales',
       previousRoles: 'Proyectos de Roles Anteriores',
@@ -36,14 +32,12 @@ test.describe('Projects Section', () => {
     {
       prefix: '/pt',
       campaign: 'campanha interna do Microsoft Give',
-      workInProgress: 'Em desenvolvimento',
-      useCase: 'fluxos de suporte',
       archiveSummary: 'Explorar projetos arquivados',
       personalProjects: 'Projetos Pessoais',
       previousRoles: 'Projetos de Funções Anteriores',
     },
   ]) {
-    test(`new projects show campaign and work-in-progress context (${locale.prefix || 'en'})`, async ({ page }) => {
+    test(`projects show campaign context without the discontinued project (${locale.prefix || 'en'})`, async ({ page }) => {
       await page.goto(`${locale.prefix}/projects`);
       const main = page.getByRole('main');
       const ecards = main.getByRole('link', { name: /Ronald McDonald House/ });
@@ -51,11 +45,8 @@ test.describe('Projects Section', () => {
       await expect(ecards).toHaveAttribute('href', `${locale.prefix}/projects/ronald-mcdonald-house`);
       await expect(ecards).toContainText(locale.campaign);
 
-      const processor = main.getByRole('link', { name: /SupportShield/ });
-      await expect(processor).toBeVisible();
-      await expect(processor).toHaveAttribute('href', `${locale.prefix}/projects/isolated-file-processor`);
-      await expect(processor).toContainText(locale.workInProgress);
-      await expect(processor).toContainText(locale.useCase);
+      await expect(main).not.toContainText('SupportShield');
+      await expect(page.locator('a[href*="isolated-file-processor"]')).toHaveCount(0);
     });
 
     test(`project detail pages and sidebar navigation work (${locale.prefix || 'en'})`, async ({ page }) => {
@@ -69,17 +60,15 @@ test.describe('Projects Section', () => {
       await expect(main.locator('a[href="https://github.com/dsanchezcr/RonaldMcDonaldHouse"]')).toBeVisible();
 
       const sidebar = page.locator('.theme-doc-sidebar-container');
-      const processorLink = sidebar.locator(`a[href="${locale.prefix}/projects/isolated-file-processor"]`);
-      await expect(processorLink).toBeVisible();
-      for (const removedPage of ['secret-santa', 'load-testing', 'contact-form']) {
+      const importerLink = sidebar.locator(`a[href="${locale.prefix}/projects/issue-importer"]`);
+      await expect(importerLink).toBeVisible();
+      for (const removedPage of ['secret-santa', 'load-testing', 'contact-form', 'isolated-file-processor']) {
         await expect(page.locator(`a[href="${locale.prefix}/projects/${removedPage}"]`)).toHaveCount(0);
       }
-      await processorLink.click();
-      await expect(page).toHaveURL(new RegExp(`${locale.prefix}/projects/isolated-file-processor$`));
-      await expect(main.getByRole('heading', { level: 1 })).toContainText('SupportShield');
-      await expect(main).toContainText(locale.workInProgress);
-      await expect(main).toContainText(locale.useCase);
-      await expect(main.locator('a[href="https://github.com/dsanchezcr/isolated-file-processor"]')).toBeVisible();
+      await importerLink.click();
+      await expect(page).toHaveURL(new RegExp(`${locale.prefix}/projects/issue-importer$`));
+      await expect(main.getByRole('heading', { level: 1 })).toContainText('Issue Importer');
+      await expect(main.locator('a[href="https://github.com/dsanchezcr/issue-importer-action"]')).toBeVisible();
     });
 
     test(`archived projects are grouped and expanded by default (${locale.prefix || 'en'})`, async ({ page }) => {
