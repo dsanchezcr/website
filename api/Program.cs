@@ -27,7 +27,7 @@ var host = new HostBuilder()
         services.AddSingleton<IGamingProfileService, XboxProfileService>();
         services.AddSingleton<IGamingProfileService, PlayStationProfileService>();
         services.AddSingleton<GamingProfileReader>();
-        services.AddOmdbLookup();
+        services.AddTmdbLookup();
         
         // Register Rate Limit Service (thread-safe atomic operations)
         services.AddSingleton<IRateLimitService, MemoryCacheRateLimitService>();

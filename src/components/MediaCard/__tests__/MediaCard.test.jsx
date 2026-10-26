@@ -90,7 +90,7 @@ describe('MediaCard', () => {
     expect(screen.getByText('Simple review')).toBeInTheDocument();
   });
 
-  it.each(['en', 'es', 'pt'])('renders saved OMDb plot fallback and hotlinked poster in %s without fetching metadata', (locale) => {
+  it.each(['en', 'es', 'pt'])('renders legacy plot fallback and hotlinked poster in %s without fetching metadata', (locale) => {
     const fetch = vi.fn();
     vi.stubGlobal('fetch', fetch);
     render(<MediaCard {...defaultProps} locale={locale} plot="Stored English plot." />);
@@ -110,7 +110,7 @@ describe('MediaCard', () => {
     expect(screen.getByRole('img')).toHaveAttribute('src', defaultProps.imageUrl);
   });
 
-  it('uses IMDb links and ratings after auto-fill without deleting legacy metadata', () => {
+  it('keeps previously saved IMDb-provider links and ratings until explicitly enriched with TMDB', () => {
     render(<MediaCard {...defaultProps} tmdbId={278} mediaType="movie" tmdbRating={8.7} metadataSource="omdb" />);
     expect(screen.getByRole('link')).toHaveAttribute('href', 'https://www.imdb.com/title/tt0111161/');
     expect(screen.getByText('IMDb ⭐ 9.3')).toBeInTheDocument();

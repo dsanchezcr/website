@@ -1,6 +1,6 @@
 # ADR-007: Media metadata source — TMDB sync superseded by OMDb auto-fill
 
-- **Status:** TMDB account-sync decision superseded; OMDb replacement accepted
+- **Status:** Superseded by [ADR-008](008-tmdb-media-lookup.md) on 2026-10-23; all decisions below are historical
 - **Date:** 2026-09-16 (original decision: 2026-09-15)
 
 ## Context

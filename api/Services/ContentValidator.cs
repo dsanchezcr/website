@@ -81,10 +81,6 @@ public static class ContentValidator
                 RequireStringArray(doc, "genres", errors);
                 RequireNumberInRange(doc, "imdbRating", 0, 10, errors);
                 RequireNumberInRange(doc, "myRating", 0, 10, errors);
-                if (!IsAbsent(doc["tmdbId"]) && Kind(doc["myRating"]) == JsonValueKind.Number &&
-                    TryGetDouble(doc["myRating"]!, out var mediaRating) &&
-                    (mediaRating < 0.5 || mediaRating * 2 != Math.Truncate(mediaRating * 2)))
-                    errors.Add("TMDB 'myRating' must be 0.5–10 in half-point increments, or null for unrated.");
                 RequireString(doc, "syncSource", errors, required: false);
                 if (!IsAbsent(doc["syncedAt"]) && !DateTimeOffset.TryParse(AsString(doc["syncedAt"]), out _))
                     errors.Add("Field 'syncedAt' must be an ISO-8601 timestamp.");

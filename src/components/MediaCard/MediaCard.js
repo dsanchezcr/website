@@ -3,7 +3,7 @@ import styles from './styles.module.css';
 import { mediaTranslations, resolveMediaText } from './mediaTranslations';
 
 // Metadata comes only from stored Cosmos content; provider keys and metadata
-// requests never reach the browser. Existing TMDB cards remain compatible.
+// requests never reach the browser. Legacy provider records remain compatible.
 const MediaCard = ({
   titleId, tmdbId, mediaType, title, titleTranslations, imageUrl, posterPath,
   year, genres, genresTranslations, overview, plot, tmdbRating, imdbRating, myRating,
@@ -11,7 +11,7 @@ const MediaCard = ({
 }) => {
   const text = mediaTranslations[locale] || mediaTranslations.en;
   const isTmdb = Number.isInteger(tmdbId) && tmdbId > 0 && ['movie', 'tv'].includes(mediaType);
-  const useTmdb = isTmdb && metadataSource !== 'omdb';
+  const useTmdb = isTmdb && (!metadataSource || metadataSource === 'tmdb');
   const displayTitle = resolveMediaText(titleTranslations, locale) || title || titleId || text.untitled;
   const mediaUrl = useTmdb
     ? `https://www.themoviedb.org/${mediaType}/${tmdbId}`
@@ -20,7 +20,8 @@ const MediaCard = ({
     ? `https://image.tmdb.org/t/p/w500${posterPath}` : null);
   const localizedReview = resolveMediaText(review, locale);
   const localizedOverview = resolveMediaText(overview, locale) || plot;
-  const displayGenres = genresTranslations?.[locale] || genresTranslations?.en || genres || [];
+  const displayGenres = genresTranslations?.[locale]?.length ? genresTranslations[locale]
+    : genresTranslations?.en?.length ? genresTranslations.en : genres || [];
   const communityRating = useTmdb ? tmdbRating : imdbRating;
 
   const card = (

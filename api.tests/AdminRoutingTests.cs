@@ -12,14 +12,14 @@ namespace api.tests;
 public class AdminRoutingTests
 {
     [Fact]
-    public async Task OmdbLookupIsNotInterceptedByEarlierCollectionRoute()
+    public async Task TmdbLookupIsNotInterceptedByEarlierCollectionRoute()
     {
-        var result = await Match("/content-admin/omdb", "GET");
-        Assert.Equal("GetOmdbMetadata", result?.Values["function"]);
+        var result = await Match("/content-admin/tmdb", "GET");
+        Assert.Equal("GetTmdbMetadata", result?.Values["function"]);
     }
 
     [Theory]
-    [InlineData("omdb-extra")]
+    [InlineData("tmdb-extra")]
     [InlineData("unknown")]
     [InlineData("movies-extra")]
     [InlineData("extra-movies")]
@@ -59,7 +59,7 @@ public class AdminRoutingTests
     }
 
     [Theory]
-    [InlineData("/content-admin/omdb", "POST")]
+    [InlineData("/content-admin/tmdb", "POST")]
     [InlineData("/content-admin/movies", "DELETE")]
     [InlineData("/content-admin/movies/example-id", "POST")]
     public async Task UnsupportedMethodsDoNotMatch(string path, string method) =>
@@ -74,7 +74,7 @@ public class AdminRoutingTests
         {
             typeof(AdminContent).GetMethod(nameof(AdminContent.Collection))!,
             typeof(AdminContent).GetMethod(nameof(AdminContent.Item))!,
-            typeof(GetOmdbMetadata).GetMethod(nameof(GetOmdbMetadata.Run))!
+            typeof(GetTmdbMetadata).GetMethod(nameof(GetTmdbMetadata.Run))!
         };
 
         // Functions uses first-match routing, so reproduce collection-before-lookup registration.

@@ -63,6 +63,11 @@ describe('stored TMDB media', () => {
     expect(screen.getByRole('img', { name: 'Póster no disponible' })).toBeInTheDocument();
   });
 
+  it('falls back to English genres when a localized array is empty', () => {
+    render(<MediaCard {...item} locale="es" genresTranslations={{ en: ['English genre'], es: [], pt: [] }} />);
+    expect(screen.getByText('English genre')).toBeInTheDocument();
+  });
+
   it('sorts current snapshots newest first while retaining older imported titles', () => {
     const { container } = render(<MediaCardList category="watchlist" items={[
       { ...item, id: 'old', tmdbId: 1, syncedAt: '2026-01-01T00:00:00Z', order: 999 },

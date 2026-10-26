@@ -137,7 +137,7 @@ Build artifacts:
 | `/api/gaming/xbox` | GET | Xbox Live profile, gamerscore, and recent games |
 | `/api/gaming/playstation` | GET | PSN profile, trophies, and recent games |
 | `/api/gaming/refresh` | POST | Admin: trigger gaming data refresh |
-| `/api/content-admin/omdb?imdbId=tt0111161` | GET | Admin-only: movie/series metadata auto-fill; server-side OMDb key |
+| `/api/content-admin/tmdb?tmdbId=550&mediaType=movie` | GET | Admin-only: localized movie/TV metadata; server-side TMDB token |
 
 ## ☁️ Deployment
 
@@ -163,27 +163,28 @@ az deployment group create \
 
 See [infra/README.md](infra/README.md) for complete deployment instructions.
 
-## OMDb Media Auto-fill Configuration
+## TMDB Media Auto-fill Configuration
 
-Set `OMDB_API_KEY` in the managed API's **Azure Static Web Apps application settings**.
-Locally, put `OMDB_API_KEY=<your-key>` in ignored `api/.env`, or use
+Set `TMDB_READ_ACCESS_TOKEN` in the managed API's **Azure Static Web Apps application settings**.
+Locally, put `TMDB_READ_ACCESS_TOKEN=<your-token>` in ignored `api/.env`, or use
 `api/local.settings.json` → `Values`. Existing environment settings take precedence;
 production never loads `.env`. Never use `VITE_*` or client-side keys.
 
-In `/admin`, add/edit a **Movie** or **Series**, enter its IMDb ID, and click
-**Fetch Data**. Review the title, year, plot, director, type, genres, IMDb rating and
-poster URL, then **Save**. Lookup makes no database writes and stores no image files:
-only the external poster URL is saved. Reviews, personal ratings, categories,
-ordering, translations and unknown fields are preserved.
+In `/admin`, add/edit a **Movie** or **Series**, enter its numeric TMDB ID, and click
+**Fetch Data**. Review the localized titles/plots/genres, year, director or creators,
+TMDB rating and poster URL, then **Save**. Lookup makes no database writes and
+downloads no images. It refreshes English metadata and fills missing es/pt
+translations while preserving existing translations, reviews, personal ratings,
+categories, ordering and unknown fields.
 
 The authenticated proxy uses HTTPS, bounded requests and safe errors. See the
-[OMDb setup guide](.github/repo-docs/tmdb-setup.md) for configuration, quotas,
+[TMDB setup guide](.github/repo-docs/tmdb-setup.md) for configuration, quotas,
 troubleshooting and the [API contract](specs/API-003-tmdb-sync.md).
 
-TMDB account syncing and its scheduled workflow are removed. Existing imported
+TMDB account syncing and its scheduled workflow remain retired. Existing imported
 records and attribution remain compatible, with no migration. After rollout,
-remove unused TMDB server/GitHub credentials and disable external sync callers
-as described in the setup guide. No GitHub secret or scheduled job is needed for OMDb.
+remove `OMDB_API_KEY` and obsolete account-sync credentials as described in the
+setup guide. Keep the TMDB read access token; no GitHub secret or scheduled job is needed.
 
 ## 📁 Project Structure
 
@@ -195,7 +196,7 @@ as described in the setup guide. No GitHub secret or scheduled job is needed for
 │   ├── ChatWithOpenAI.cs   # AI chat with RAG
 │   ├── HealthCheck.cs      # Health monitoring
 │   ├── ReindexContent.cs   # Search index updates
-│   ├── GetOmdbMetadata.cs # Admin-only IMDb metadata lookup via OMDb
+│   ├── GetTmdbMetadata.cs # Admin-only localized movie/TV metadata lookup
 │   ├── GetXboxProfile.cs   # Xbox Live profile data
 │   ├── GetPlayStationProfile.cs # PSN profile & trophies
 │   ├── RefreshGamingProfiles.cs # Admin refresh endpoint

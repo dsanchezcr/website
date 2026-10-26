@@ -51,10 +51,10 @@ public class HealthCheck
     private readonly ISearchService _searchService;
     private readonly IGamingCacheService _gamingCacheService;
     private readonly ICosmosContentService _cosmosContentService;
-    private readonly OmdbSettings _omdbSettings;
+    private readonly TmdbSettings _tmdbSettings;
 
-    private bool IsConfigured(string key) => key == "OMDB_API_KEY"
-        ? _omdbSettings.IsConfigured
+    private bool IsConfigured(string key) => key == "TMDB_READ_ACCESS_TOKEN"
+        ? _tmdbSettings.IsConfigured
         : !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(key));
 
     // Orlando, FL coordinates used for weather API health check (matches primary location in GetWeather.cs)
@@ -64,7 +64,7 @@ public class HealthCheck
     // Rate limiting configuration
     private const int MaxHealthCheckRequestsPerMinute = 10;
 
-    public HealthCheck(ILogger<HealthCheck> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache, ITokenStorageService tokenStorage, ISearchService searchService, IGamingCacheService gamingCacheService, ICosmosContentService cosmosContentService, OmdbSettings omdbSettings)
+    public HealthCheck(ILogger<HealthCheck> logger, IHttpClientFactory httpClientFactory, IMemoryCache cache, ITokenStorageService tokenStorage, ISearchService searchService, IGamingCacheService gamingCacheService, ICosmosContentService cosmosContentService, TmdbSettings tmdbSettings)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
@@ -73,7 +73,7 @@ public class HealthCheck
         _searchService = searchService;
         _gamingCacheService = gamingCacheService;
         _cosmosContentService = cosmosContentService;
-        _omdbSettings = omdbSettings;
+        _tmdbSettings = tmdbSettings;
     }
 
     private sealed class RateLimitState
@@ -149,7 +149,7 @@ public class HealthCheck
         
         // Reindex endpoint security
         { "REINDEX_SECRET_KEY", ("Secret key for authenticating reindex API calls from GitHub Actions", false) },
-        { "OMDB_API_KEY", ("Server-only OMDb key for admin IMDb auto-fill", false) },
+        { "TMDB_READ_ACCESS_TOKEN", ("Server-only TMDB read access token for movie/TV metadata", false) },
         
         // Gaming APIs
         { "XBOX_API_KEY", ("OpenXBL API key for Xbox profile data (https://xbl.io)", false) },

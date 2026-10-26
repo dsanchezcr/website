@@ -76,7 +76,7 @@ The following environment variables are configured as app settings for the manag
 | `AZURE_SEARCH_INDEX_NAME` | Azure AI Search index name | No* |
 | `AZURE_STORAGE_CONNECTION_STRING` | Azure Storage connection for Table Storage | No* |
 | `REINDEX_SECRET_KEY` | Secret key for authenticating reindex API calls | No* |
-| `OMDB_API_KEY` | Server-only OMDb key for admin movie/series auto-fill | No* |
+| `TMDB_READ_ACCESS_TOKEN` | Server-only TMDB read access token for movie/TV auto-fill | No* |
 | `WEBSITE_URL` | The public website URL | Yes |
 | `API_URL` | The API endpoint URL (auto-configured) | Auto |
 | `APPLICATIONINSIGHTS_CONNECTION_STRING` | App Insights connection (auto-configured) | Auto |
@@ -95,7 +95,7 @@ After deployment, the following API endpoints will be available:
 | `/api/nlweb/ask` | POST | Chat with AI assistant (uses RAG with Azure AI Search) |
 | `/api/health` | GET | Health check endpoint for monitoring |
 | `/api/reindex` | POST | Update search index (requires X-Reindex-Key header) |
-| `/api/content-admin/omdb?imdbId=tt0111161` | GET | OMDb metadata lookup (SWA admin role required; no writes) |
+| `/api/content-admin/tmdb?tmdbId=550&mediaType=movie` | GET | TMDB metadata lookup (SWA admin role required; no writes) |
 
 ## Post-Deployment Steps
 
@@ -110,13 +110,14 @@ After deployment, the following API endpoints will be available:
 
 4. **Add the website URL** as a GitHub variable named `WEBSITE_URL` (e.g., `https://dsanchezcr.com`)
 
-5. **Configure OMDb auto-fill**:
-   - Add `OMDB_API_KEY` to the SWA managed API application settings, never frontend build variables.
+5. **Configure TMDB auto-fill**:
+   - Add `TMDB_READ_ACCESS_TOKEN` to the SWA managed API application settings, never frontend build variables.
    - No GitHub key, scheduled workflow or new Azure resource is needed.
-   - Sign into `/admin`, fetch by IMDb ID, review, then Save. Only the poster URL is persisted, never image binaries.
-   - Follow the [OMDb setup and retirement guide](../.github/repo-docs/tmdb-setup.md).
-     After rollout, remove unused TMDB server credentials, GitHub `TMDB_SYNC_KEY` and
+   - Sign into `/admin`, fetch by TMDB ID in Movies or Series, review, then Save. Only poster URLs are persisted, never image binaries.
+   - Follow the [TMDB setup and retirement guide](../.github/repo-docs/tmdb-setup.md).
+     After rollout, remove `OMDB_API_KEY`, unused TMDB account-session credentials, GitHub `TMDB_SYNC_KEY` and
      `TMDB_SYNC_MAX_ITEMS`, and disable external sync callers. Existing documents remain unchanged.
+     Keep `TMDB_READ_ACCESS_TOKEN` for the new lookup.
 
 6. **Create the Azure AI Search index** in Azure Portal:
    - Go to Azure AI Search > Indexes > Add Index

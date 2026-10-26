@@ -20,11 +20,12 @@ Read `.github/copilot-instructions.md` and `.github/repo-docs/coding-standards.m
 - **Translations**: `i18n/<locale>/docusaurus-plugin-content-docs-gaming/current/<platform>/index.mdx`
 
 ### Movies & TV
-- **Data files**: `src/data/movies.json` and `src/data/series.json`
-- **Component**: `src/components/MediaCard/` — renders IMDb posters, ratings, reviews
+- **Data**: Cosmos `content-movies` and `content-series`, edited through `/admin`
+- **Component**: `src/components/MediaCard/` — renders saved TMDB metadata, posters, ratings and reviews, with legacy IMDb compatibility
+- **Lookup**: Enter a TMDB ID in Movies/Series, Fetch Data, review localized metadata, then explicitly Save. See FEAT-025 and the TMDB setup guide.
 - **Movie categories**: `recently-watched`, `top-movies`, `watchlist`
 - **TV categories**: `currently-watching`, `completed`, `watchlist`
-- **Entry format**: `{ "titleId": "ttXXXXXXX", "myRating": N, "review": { "en": "...", "es": "...", "pt": "..." }, "category": "..." }`
+- **Entry identity**: `tmdbId` plus `mediaType` (`movie`/`tv`); legacy IMDb `titleId` is still supported. Keep personal `myRating` (0–10 or null), trilingual `review` and `category`.
 - **Translations**: MDX pages in `i18n/<locale>/docusaurus-plugin-content-docs-movies-tv/current/`
 
 ### 3D Printing
@@ -49,7 +50,7 @@ Read `.github/copilot-instructions.md` and `.github/repo-docs/coding-standards.m
 - DO NOT change game status values — only use `completed`, `playing`, `backlog`, `dropped`
 - DO NOT modify component code unless explicitly asked — focus on content
 - DO NOT add content without translations in all 3 locales
-- DO NOT add movie/TV entries without all required fields (titleId, myRating, review with en/es/pt, category)
+- DO NOT add movie/TV entries without TMDB identity (or legacy IMDb ID), personal rating, trilingual review and category
 - DO NOT add gaming images larger than 500KB
 - ONLY use platform constants from `src/components/Gaming/gameCardConstants.js`
 

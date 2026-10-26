@@ -39,7 +39,7 @@ public abstract class ContentDocument
 
 /// <summary>
 /// Stored media metadata shared by movies and series. Legacy IMDb-only documents
-/// remain valid; TMDB imports additionally carry localized metadata.
+/// remain valid; TMDB lookup supplies localized metadata for explicit admin saves.
 /// </summary>
 public abstract class MediaDocument : ContentDocument
 {

@@ -104,9 +104,9 @@ npm --prefix admin run typecheck
 ## Configuration — where settings go
 
 The admin's backend settings live in **`api/local.settings.json`** (the `Values` object) —
-the same file the rest of the API uses. OMDb also supports ignored **`api/.env`** locally:
-`OMDB_API_KEY=<your-key>`. Environment/Functions settings take precedence; production
-uses only SWA application settings. Never put this key in `admin/.env` or `VITE_*`.
+the same file the rest of the API uses. TMDB also supports ignored **`api/.env`** locally:
+`TMDB_READ_ACCESS_TOKEN=<your-token>`. Environment/Functions settings take precedence; production
+uses only SWA application settings. Never put this token in `admin/.env` or `VITE_*`.
 
 | Setting | Needed locally? | Where it's used |
 |---------|-----------------|-----------------|
@@ -116,7 +116,7 @@ uses only SWA application settings. Never put this key in `admin/.env` or `VITE_
 | `AZURE_COSMOS_ENDPOINT` | ✅ Yes | Cosmos connection (already present). |
 | `AZURE_COSMOS_KEY` | ✅ Yes | Cosmos connection (already present). |
 | `AZURE_COSMOS_DATABASE_NAME` | ✅ Yes | Cosmos database (already present). |
-| `OMDB_API_KEY` | For Fetch Data | Server-only OMDb key; lookup works without Cosmos, but Save still requires Cosmos. |
+| `TMDB_READ_ACCESS_TOKEN` | For Fetch Data | Server-only TMDB API Read Access Token; lookup works without Cosmos, but Save still requires Cosmos. |
 
 Set the two `AZURE_CLIENT_*` vars to any dummy value in the terminal before `swa start`
 (the SWA CLI only checks they exist). The Cosmos settings already in `api/local.settings.json`
@@ -139,12 +139,14 @@ are what the admin API actually uses to read/write data.
 
 ## How it fits together
 
-### OMDb auto-fill and media editing
+### TMDB auto-fill and media editing
 
-Open **Movies** or **Series**, add/edit a document, enter an IMDb ID such as
-`tt0111161`, and click **Fetch Data**. The admin-only proxy fetches title, year,
-plot, director, type, genres, IMDb rating and poster URL over HTTPS using the
-server key. Configure it with the [OMDb setup guide](../.github/repo-docs/tmdb-setup.md).
+Open **Movies** or **Series**, add/edit a document, enter a numeric TMDB ID such as
+`550` from `/movie/550`, and click **Fetch Data**. Use Series for `/tv/` IDs;
+the same numeric ID may identify different movies and TV shows. The admin-only
+proxy fetches localized title/plot/genres, year, director or creators, type,
+TMDB community rating, optional IMDb ID and poster URL using the server token.
+Configure it with the [TMDB setup guide](../.github/repo-docs/tmdb-setup.md).
 
 Review the populated fields and explicitly **Save**. Fetch Data only changes the
 draft; it never saves the document or downloads/stores poster binaries. Missing
@@ -156,16 +158,17 @@ wrong movie/series types, unavailable titles, quota limits and provider errors s
 safe messages without changing the draft. No provider key enters the browser.
 
 Lookup preserves personal ratings/reviews, category, order, unknown fields and
-existing translations. OMDb supplies English metadata, not Spanish/Portuguese
-translations; add translations separately. Existing English title/overview values
-are updated when present. `metadataSource: "omdb"` selects IMDb links/ratings on
-public cards without deleting legacy TMDB data.
+existing non-English translations. TMDB refreshes English metadata and fills missing
+Spanish/Portuguese translations. Missing translations fall back to English on public
+cards. `metadataSource: "tmdb"` selects TMDB links/ratings; TMDB does not supply IMDb
+ratings. Missing external IDs or community ratings become null, not stale values.
 
-The TMDB sync panel, endpoint and daily workflow are removed. Existing imported
+The TMDB sync panel, endpoint and daily workflow remain retired. Existing imported
 documents, stored ordering and attribution remain supported; legacy fields are
 available under **Other fields** / **Raw JSON**. **Order** is now editable for
-imported entries too, but lookup does not change it. Legacy TMDB personal ratings
-still use 0.5–10 half-point increments or null. No database migration is required.
+imported entries too, but lookup does not change it. Personal ratings are independent
+of TMDB account ratings: 0–10, including fractional values, or null for unrated.
+No database migration is required. Remove the obsolete `OMDB_API_KEY` after rollout.
 
 ### Gaming connections and ordering
 

@@ -41,12 +41,12 @@ Located in `api/` directory:
 - **UpdatePreferences.cs**: Newsletter frequency update (`/api/newsletter/preferences`) with token authentication
 - **GetSubscriptionStatus.cs**: Newsletter status check (`/api/newsletter/status`) with token authentication
 - **DispatchNewsletter.cs**: Newsletter sending endpoint (`/api/newsletter/dispatch`) called by GitHub Actions cron
-- **GetOmdbMetadata.cs**: `GET /api/content-admin/omdb?imdbId=tt0111161` — SWA `admin` role only, independently checked in the function; no automation key. Fetches one title from fixed HTTPS OMDb using server-only `OMDB_API_KEY`; returns metadata without Cosmos writes or binary image downloads. Replaces the TMDB sync endpoint/service, not existing media documents. See API-003 and [setup](repo-docs/tmdb-setup.md)
+- **GetTmdbMetadata.cs**: `GET /api/content-admin/tmdb?tmdbId=550&mediaType=movie` — SWA `admin` role only, independently checked in the function; no automation key. Fetches localized movie/TV metadata from fixed HTTPS TMDB using server-only `TMDB_READ_ACCESS_TOKEN`; no Cosmos writes or binary image downloads. See FEAT-025/API-003 and [setup](repo-docs/tmdb-setup.md)
 - **AdminContent.cs**: Authenticated content CRUD (`/api/content-admin/{type}` and `/api/content-admin/{type}/{id}`) for the `/admin` SPA; raw-JSON read/write that preserves unknown fields, with server-side validation and an in-function `admin` role check (`admin` is a reserved Functions route prefix, hence `content-admin`)
 - **AdminContentGeneration.cs**: Admin-only AI content generation (`/api/content-admin/ai/generate`) using Microsoft Foundry; expands a brief prompt into localized (`en`/`es`/`pt`) text in the site's tone for the admin editor. Same `admin` role gate as the CRUD endpoints; stateless (nothing persisted)
 - **GetRoles.cs**: SWA `rolesSource` (`/api/auth/roles`); maps allow-listed accounts (`ADMIN_ALLOWED_EMAILS`) to the `admin` role
 - **ClientPrincipal.cs**: Parses the SWA-injected `x-ms-client-principal` header for in-function role checks
-- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, SearchService, GamingCacheService, CosmosContentService, NewsletterService, CosmosAdminService, ContentGenerationService, and OMDb lookup via `AddOmdbLookup()`
+- **Program.cs**: Configures DI with HttpClient, MemoryCache, Application Insights, TokenStorageService, SearchService, GamingCacheService, CosmosContentService, NewsletterService, CosmosAdminService, ContentGenerationService, and TMDB lookup via `AddTmdbLookup()`
 - **LocalizationHelper.cs**: Centralized localization for email templates (contact form + newsletter)
 - **Models/Content/ContentModels.cs**: Data models for Cosmos DB content (movies, series, gaming, parks)
 - **Models/Newsletter/NewsletterModels.cs**: Data models for newsletter subscribers and requests
@@ -58,25 +58,26 @@ Located in `api/` directory:
 - **Services/CosmosAdminService.cs**: Read/write Cosmos DB service for the admin app; generic JSON CRUD over the 5 content containers (preserves unknown fields)
 - **Services/ContentGenerationService.cs**: Foundry-backed service (admin-only) that expands a brief prompt into localized `{ en, es, pt }` text in the site's tone; reuses the existing Foundry settings and returns a Null impl when unconfigured
 - **Services/ContentValidator.cs**: Server-side validation of admin content writes (partition key, localized shape, gaming status enum, numeric ranges)
-- **Services/OmdbLookupService.cs** and **Services/OmdbSettings.cs**: Normalized per-title metadata; fixed HTTPS/no redirects, 10-second request/body timeout, 128 KiB response cap and secret-safe HTTP telemetry. Settings read the environment first, then local-only API-project `.env` via DotNetEnv
+- **Services/TmdbLookupService.cs** and **Services/TmdbSettings.cs**: Three localized detail requests with server Bearer auth, fixed HTTPS/no redirects, 10-second overall request/body deadline, 512 KiB per response and secret-safe HTTP telemetry. Settings read the environment first, then local-only API-project `.env` via DotNetEnv
 
 ### Admin SPA (`admin/`)
 Standalone Vite + React + TypeScript app served at `/admin`, built into `build/admin/` and shipped with the same SWA deploy. Uses `base: '/admin/'` + HashRouter so the SWA serves only `/admin/index.html`. Requires Microsoft Entra ID sign-in + the `admin` role. Provides per-container grids with partition-key filters, a typed + dynamic + raw-JSON form editor, and media previews (image / YouTube / IMDb / map). Localized fields include a "Generate with AI" control that expands a brief prompt into `en`/`es`/`pt` via `/api/content-admin/ai/generate` (Foundry). English-only internal tool (excluded from i18n governance).
 
-**Fetch Data** in `FormEditor.tsx` uses `admin/src/api.ts` and `admin/src/omdb.ts`
-for movie/series editing: enter an IMDb ID,
-review title/year/plot/director/media type/poster URL/genres/IMDb rating, then explicitly
+**Fetch Data** in `FormEditor.tsx` uses `admin/src/api.ts` and `admin/src/tmdb.ts`
+for movie/series editing: enter a numeric TMDB ID in the matching Movies/Series section,
+review localized titles/plots/genres, year, director or creators, poster and TMDB rating, then explicitly
 **Save**. Lookup only changes the draft; it preserves curated review, `myRating`,
-category, order, unknown fields and existing es/pt translations. Missing/`N/A`
-values do not clear existing fields; series year ranges use the first year.
-Successful lookup marks the draft `metadataSource: "omdb"`; the marker is saved
+category, order, unknown fields and nonempty es/pt translations. Missing display
+values do not clear curated fields. IMDb external ID and community rating reflect
+the lookup, including null; personal ratings are independent, 0–10 or null.
+Successful lookup marks the draft `metadataSource: "tmdb"`; the marker is saved
 only with the rest of the document on explicit **Save**.
-OMDb supplies English fallback, updating existing English title/overview values
-but not generating translations. The TMDB connection panel and scheduled account
-sync are removed, not migrated to OMDb.
+TMDB refreshes English metadata and fills missing es/pt translations from localized
+detail requests. Empty translations use public English fallback. Account syncing,
+its connection panel and scheduled workflow remain retired.
 
-Public `MediaCard` uses IMDb links/ratings for saved `metadataSource: "omdb"`
-records without removing legacy TMDB fields. `imageUrl` takes precedence over
+Public `MediaCard` uses TMDB links/ratings for saved `metadataSource: "tmdb"`
+records while retaining historical provider compatibility. `imageUrl` takes precedence over
 legacy `posterPath`; resolved localized `overview` takes precedence over `plot`.
 Unmarked TMDB records keep TMDB links/ratings, attribution and stored ordering.
 
@@ -110,7 +111,7 @@ Use VS Code tasks in `.vscode/tasks.json`:
 2. **Start Function Host**: Run task "func: 4" - starts Functions runtime (depends on build task)
 3. Local endpoint: `http://localhost:7071`
 
-**Important**: Always build the function before running the host. The function host runs from `api/bin/Debug/net8.0/`. For direct local OMDb development, `cd api`, build,
+**Important**: Always build the function before running the host. The function host runs from `api/bin/Debug/net8.0/`. For direct local TMDB development, `cd api`, build,
 then `func start`; local `.env` discovery is anchored to the API project.
 
 ## Project-Specific Patterns
@@ -184,9 +185,9 @@ The `/api/health` endpoint provides comprehensive health monitoring:
 
 **Rate Limiting:** 10 requests/minute per IP to prevent abuse
 
-**OMDb configuration:** `environmentVariables.OMDB_API_KEY` uses the same
-`OmdbSettings` instance as lookup, including local `.env` fallback. This boolean
-reports presence only; health does not validate the provider key or remaining quota.
+**TMDB configuration:** `environmentVariables.TMDB_READ_ACCESS_TOKEN` uses the same
+`TmdbSettings` instance as lookup, including local `.env` fallback. This boolean
+reports presence only; health does not validate the provider token or remaining quota.
 
 ### Token Storage
 Email verification tokens can be persisted to Azure Table Storage for reliability:
@@ -233,7 +234,7 @@ Additional API endpoints (not used by the public UI — backend/CI/admin only):
 - `/api/reindex` — Called by GitHub Actions, requires `X-Reindex-Key` header
 - `/api/gaming/refresh` — Admin panel/manual trigger; SWA `admin` role or `X-Gaming-Refresh-Key`. Fetches immediately and returns per-provider failures without discarding cached profiles
 - `/api/newsletter/dispatch` — Called by GitHub Actions cron, requires `X-Newsletter-Key` header
-- `GET /api/content-admin/omdb?imdbId=tt0111161` — Admin-only per-title lookup, no automation key or persistence. Validates `^tt[0-9]{6,12}$`; 20 valid requests/admin/minute/instance, 10-second provider timeout, 128 KiB response cap. Statuses: 400 invalid/unsupported input, 401 unauthenticated, 403 non-admin, 404 no result, 429 local/provider quota, 502 provider/payload failure, 503 missing/rejected server key, 504 timeout. See [setup](repo-docs/tmdb-setup.md)
+- `GET /api/content-admin/tmdb?tmdbId=550&mediaType=movie` — Admin-only per-title lookup, no automation key or persistence. Positive integer ID through 2147483647, type movie/tv; 20 valid requests/admin/minute/instance, 10-second overall timeout, 512 KiB per response. Statuses: 400 invalid input, 401 unauthenticated, 403 non-admin, 404 no result, 429 quota, 502 provider/payload failure, 503 missing/rejected token, 504 timeout. See [setup](repo-docs/tmdb-setup.md)
 - `/api/content-admin/{type}` and `/api/content-admin/{type}/{id}` — Authenticated content CRUD for the `/admin` SPA (Entra ID + `admin` role). Types: movies, series, gaming, parks, monthly-updates
 - `/api/content-admin/ai/generate` — Admin-only AI content generation (Entra ID + `admin` role); POST a brief prompt, returns localized `{ en, es, pt }` text (Foundry)
 - `/api/auth/roles` — SWA `rolesSource`; maps allow-listed accounts (`ADMIN_ALLOWED_EMAILS`) to the `admin` role
@@ -245,9 +246,9 @@ Single GitHub Actions workflow deploys both frontend and managed API together:
 
 Media enrichment has no scheduled replacement workflow. `tmdb-sync.yml`, the TMDB
 sync endpoint/service, admin panel and anonymous SWA route exception are removed;
-OMDb remains under the admin-only `/api/content-admin/*` route.
-After rollout, operators must remove/revoke unused SWA `TMDB_READ_ACCESS_TOKEN`,
-`TMDB_SESSION_ID`, `TMDB_ACCOUNT_ID`, `TMDB_SYNC_KEY` and GitHub secret
+TMDB lookup remains under the admin-only `/api/content-admin/*` route.
+After rollout, configure `TMDB_READ_ACCESS_TOKEN` and remove/revoke unused
+`OMDB_API_KEY`, `TMDB_SESSION_ID`, `TMDB_ACCOUNT_ID`, `TMDB_SYNC_KEY` and GitHub secret
 `TMDB_SYNC_KEY` / variable `TMDB_SYNC_MAX_ITEMS`. Keep shared `WEBSITE_URL` settings.
 This is a configuration cleanup task, not a cloud write or data migration performed by the code.
 
@@ -262,7 +263,7 @@ This is a configuration cleanup task, not a cloud write or data migration perfor
 - **Google reCAPTCHA v3**: Site key `6LcGaAIsAAAAALzUAxzGFx5R1uJ2Wgxn4RmNsy2I` (client-side) + secret key (server-side)
 - **Google Analytics**: Client-side tracking via `@docusaurus/plugin-google-gtag` (tracking ID: `G-18J431S7WG`)
 - **Giscus**: GitHub-based comments via `@giscus/react`
-- **OMDb (media auto-fill replacement)**: Server-only HTTPS metadata lookup by IMDb ID for the admin editor; public cards use saved Cosmos data. Existing TMDB metadata, ordering, links/posters and attribution remain supported
+- **TMDB (media auto-fill)**: Server-only localized HTTPS metadata lookup by TMDB ID and movie/tv type for the admin editor; public cards use saved Cosmos data. Legacy metadata, ordering, links/posters and attribution remain supported
 - **Custom Package**: `@dsanchezcr/colonesexchangerate` (Costa Rican currency exchange rates)
 
 ### Required Environment Variables (SWA App Settings)
@@ -289,8 +290,8 @@ AZURE_STORAGE_CONNECTION_STRING
 # Search Index Update (Called by GitHub Actions)
 REINDEX_SECRET_KEY
 
-# OMDb per-title admin auto-fill (server only; optional unless Fetch Data is used)
-OMDB_API_KEY
+# TMDB per-title admin auto-fill (server only; optional unless Fetch Data is used)
+TMDB_READ_ACCESS_TOKEN
 
 # Gaming APIs
 XBOX_API_KEY
@@ -315,18 +316,18 @@ ADMIN_ALLOWED_EMAILS  # comma/semicolon-separated allow-list of admin emails
 APPLICATIONINSIGHTS_CONNECTION_STRING
 ```
 
-For local OMDb setup, use `OMDB_API_KEY` in `api/local.settings.json` → `Values`
+For local TMDB setup, use `TMDB_READ_ACCESS_TOKEN` in `api/local.settings.json` → `Values`
 or the Functions process environment. Ignored `api/.env` is a local fallback:
-start Functions from `api/`; `OmdbSettings` locates the API project from the
+start Functions from `api/`; `TmdbSettings` locates the API project from the
 working/application base directory and parses with DotNetEnv without exporting
 other settings. Existing environment/Functions values win, even if empty.
 Fallback is disabled for `WEBSITE_INSTANCE_ID` or `AZURE_FUNCTIONS_ENVIRONMENT=Production`.
 Production uses an SWA application setting, never `VITE_*`, frontend build
-variables or browser calls to OMDb. See [setup](repo-docs/tmdb-setup.md).
+variables or browser calls to TMDB. See [setup](repo-docs/tmdb-setup.md).
 
 ## Common Pitfalls
 
-1. **Function build location**: Functions must be built before running. The host expects binaries in `api/bin/Debug/net8.0/`, not the source directory. Keep local OMDb configuration in the API project's `.env` or Functions settings, not the admin/frontend environment.
+1. **Function build location**: Functions must be built before running. The host expects binaries in `api/bin/Debug/net8.0/`, not the source directory. Keep local TMDB configuration in the API project's `.env` or Functions settings, not the admin/frontend environment.
 2. **CORS**: Azure Static Web Apps handles CORS automatically for managed functions - do not add CORS headers in function code.
 3. **Rate limiting is in-memory**: Restarting the function app clears rate limits. Not suitable for multi-instance deployments without external cache.
 4. **Email verification tokens expire**: 24-hour TTL in MemoryCache. Expired tokens will fail verification.
@@ -366,7 +367,8 @@ Repository-level documentation (architecture, domain, coding standards, ADRs) li
     ├── 003-rag-chatbot.md
     ├── 004-agentic-modernization.md
     ├── 006-web-admin-cosmos-crud.md
-    └── 007-tmdb-account-media-source.md  # TMDB decision superseded by OMDb auto-fill
+    ├── 007-tmdb-account-media-source.md  # Historical provider decisions
+    └── 008-tmdb-media-lookup.md         # Current TMDB per-title lookup
 ```
 
 When making architectural decisions, create a new ADR in `.github/repo-docs/adr/` following the existing format (Status, Date, Context, Decision, Consequences).
@@ -454,8 +456,8 @@ All public user-facing content **must** support English (default), Spanish, and 
 - `i18n/pt/docusaurus-plugin-content-docs-projects/current/`
 
 **Movie/TV data**: Movies and series data is stored in Cosmos DB containers (`content-movies`, `content-series`) and fetched at runtime via `ApiMediaCardList`.
-OMDb auto-fill supplies English title/plot fallback only; retain existing translations
-and never populate es/pt with English text presented as a translation.
+TMDB auto-fill supplies en/es/pt titles, plots and genres; retain existing non-English
+translations and use English fallback when localized data is unavailable.
 
 ### i18n Patterns
 - **MDX content**: Place translated files in the appropriate `i18n/<locale>/docusaurus-plugin-content-*` directory
@@ -481,7 +483,7 @@ and never populate es/pt with English text presented as a translation.
 5. Use established status values: `completed`, `playing`, `backlog`, `dropped`
 
 ### New Movie/TV Entry
-1. In `/admin`, open Movies or Series and add/edit an entry. With the OMDb replacement deployed, enter IMDb `titleId` and click **Fetch Data**; configure the server using [setup](repo-docs/tmdb-setup.md).
+1. In `/admin`, open Movies or Series and add/edit an entry. Enter numeric `tmdbId` from the matching TMDB movie/TV page and click **Fetch Data**; configure the server using [setup](repo-docs/tmdb-setup.md).
 2. Review the draft, curate `myRating`, trilingual `review`, category and order, then **Save** to Cosmos (`content-movies` or `content-series`). `imageUrl` is only a URL string; no binary images are downloaded/stored by lookup. Keep existing unknown fields and es/pt translations.
 3. Existing TMDB records (`tmdbId`, `mediaType`, localized metadata, ratings, ownership/snapshot fields) and manual IMDb records remain compatible. Preserve legacy ordering and public attribution; do not mass-convert documents or re-enable account sync.
 
@@ -492,7 +494,7 @@ and never populate es/pt with English text presented as a translation.
 4. Use `HttpTrigger` with explicit `Route` parameter for consistent naming
 5. Register dependencies in `Program.cs` if needed
 6. Build and test locally before deploying
-7. Add public UI routes to `config.routes` in `src/config/environment.js`; admin-only routes such as OMDb belong in `admin/src/api.ts`
+7. Add public UI routes to `config.routes` in `src/config/environment.js`; admin-only clients such as TMDB belong in `admin/src/api.ts`
 
 ### New React Component
 Place in `src/components/ComponentName/` with index file. Import in pages using `@site/src/components/ComponentName`. Follow existing patterns (see `WeatherWidget/`).
