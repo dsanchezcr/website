@@ -79,9 +79,8 @@ export function mergeTmdbMetadata(doc: Doc, metadata: TmdbMetadata): Doc {
   const next: Doc = {
     ...doc, tmdbId: metadata.tmdbId, mediaType: metadata.mediaType,
     titleId: metadata.titleId, metadataSource: 'tmdb', tmdbRating: metadata.tmdbRating,
-    posterPath: metadata.posterPath,
   };
-  for (const key of ['title', 'year', 'plot', 'director', 'imageUrl'] as const) {
+  for (const key of ['title', 'year', 'plot', 'director', 'imageUrl', 'posterPath'] as const) {
     const value = metadata[key];
     if (value !== null && (typeof value !== 'string' || available(value))) next[key] = value;
   }
