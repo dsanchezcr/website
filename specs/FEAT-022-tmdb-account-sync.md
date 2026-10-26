@@ -1,6 +1,10 @@
-# Feature Specification: OMDb media auto-fill (replaces TMDB sync)
+# Historical Feature Specification: media provider replacements
 
-## Replacement contract — 2026-09-16
+**Superseded by [FEAT-025](FEAT-025-tmdb-media-lookup.md) on 2026-10-23.**
+The active provider is TMDB per-title lookup, not OMDb or account synchronization.
+The following contracts and verification records are historical.
+
+## Historical replacement contract — 2026-09-16
 
 The current implementation replaces account synchronization with explicit, admin-only
 IMDb lookup while adding or editing a movie/series. The TMDB specification below is

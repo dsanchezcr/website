@@ -14,6 +14,12 @@
 
 ---
 
+### [2026-10-23] TMDB Per-title Media Metadata
+**Context**: Replace the active OMDb provider across movie/TV surfaces without losing curation.
+**Decision**: Admin-only TMDB ID/type lookup with server Bearer authentication, en/es/pt metadata, explicit Save, and legacy rendering compatibility. Personal ratings are independent of provider account-rating increments.
+**Rationale**: Restores localized metadata while retaining existing CRUD, availability and data ownership; no bulk import or migration is needed.
+**Spec**: `specs/FEAT-025-tmdb-media-lookup.md`, ADR-008.
+
 ### [2026-03-31] Adopt Agentic Modernization
 **Context**: Website should practice the agent-first patterns advocated in recent blog posts.
 **Decision**: Implement 6-phase agentic modernization: repo foundation, agent team, testing, spec kit, CI/CD, showcase.

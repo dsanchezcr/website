@@ -39,8 +39,8 @@ describe('admin legacy media compatibility', () => {
     [{ imageUrl: 'https://93.184.216.34/image.jpg' }, 'imageUrl'],
     [{ imageUrl: 'https://[::1]/image.jpg' }, 'imageUrl'],
     [{ imageUrl: '   ' }, 'imageUrl'],
-    [{ myRating: 0 }, 'half-point'],
-    [{ myRating: 7.2 }, 'half-point'],
+    [{ myRating: -1 }, 'myRating'],
+    [{ myRating: 11 }, 'myRating'],
     [{ tmdbRating: 11 }, 'tmdbRating'],
     [{ syncedAt: 'invalid' }, 'syncedAt'],
   ])('validates malformed metadata %j', (change, expected) => {
@@ -50,6 +50,7 @@ describe('admin legacy media compatibility', () => {
   it('previews TMDB links without requiring an IMDb ID', () => {
     const { rerender } = render(<MediaPreview doc={doc} />);
     expect(screen.getByRole('link', { name: /Open on TMDB/ })).toHaveAttribute('href', 'https://www.themoviedb.org/movie/550');
+    expect(screen.getByRole('img', { name: 'preview' })).toHaveAttribute('src', 'https://image.tmdb.org/t/p/w500/poster.jpg');
     rerender(<MediaPreview doc={{ tmdbId: 1, mediaType: 'javascript:alert(1)' }} />);
     expect(screen.queryByRole('link', { name: /TMDB/ })).not.toBeInTheDocument();
     rerender(<MediaPreview doc={{ titleId: 'tt1234567' }} />);

@@ -136,9 +136,9 @@ body {
 
 .admin-modal-body { display: flex; gap: 1rem; padding: 1rem; overflow: auto; }
 .admin-editor { flex: 2; min-width: 0; border: 0; padding: 0; margin: 0; }
-.admin-imdb-lookup { display: flex; align-items: center; gap: 0.5rem; }
-.admin-imdb-lookup input { flex: 1; min-width: 0; }
-.admin-imdb-lookup button { flex-shrink: 0; }
+.admin-tmdb-lookup { display: flex; align-items: center; gap: 0.5rem; }
+.admin-tmdb-lookup input { flex: 1; min-width: 0; }
+.admin-tmdb-lookup button { flex-shrink: 0; }
 .admin-side { flex: 1; min-width: 240px; border-left: 1px solid var(--admin-border); padding-left: 1rem; }
 
 .admin-field { margin-bottom: 0.85rem; }

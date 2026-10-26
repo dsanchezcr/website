@@ -1,5 +1,5 @@
 import type { ClientPrincipal, Doc } from './types';
-import { normalizeImdbId, OmdbLookupError, parseOmdbMetadata, type OmdbMetadata } from './omdb';
+import { normalizeTmdbId, TmdbLookupError, parseTmdbMetadata, type TmdbMetadata, type MediaType } from './tmdb';
 
 const BASE = '/api/content-admin';
 
@@ -122,12 +122,12 @@ export async function generateLocalizedText(
 }
 
 /** Same-origin, read-only lookup. No provider URLs, credentials or raw errors reach the UI. */
-export async function fetchOmdbMetadata(imdbId: string, signal?: AbortSignal): Promise<OmdbMetadata> {
-  const titleId = normalizeImdbId(imdbId);
-  if (!titleId) throw new OmdbLookupError('Enter a valid IMDb ID: tt followed by 6–12 digits.');
+export async function fetchTmdbMetadata(tmdbId: number, mediaType: MediaType, signal?: AbortSignal): Promise<TmdbMetadata> {
+  const id = normalizeTmdbId(tmdbId);
+  if (!id || !['movie', 'tv'].includes(mediaType)) throw new TmdbLookupError('Enter a positive TMDB ID and select Movies or Series.');
   signal?.throwIfAborted();
   try {
-    const res = await fetch(`${BASE}/omdb?imdbId=${encodeURIComponent(titleId)}`, {
+    const res = await fetch(`${BASE}/tmdb?tmdbId=${id}&mediaType=${mediaType}`, {
       method: 'GET',
       headers: { accept: 'application/json' },
       cache: 'no-store',
@@ -137,30 +137,30 @@ export async function fetchOmdbMetadata(imdbId: string, signal?: AbortSignal): P
     });
     if (!res.ok) {
       const messages: Record<number, string> = {
-        400: 'Check the IMDb ID and use a movie or series, not an episode.',
+        400: 'Check the TMDB ID and select Movies or Series, not an episode.',
         401: 'Sign in again to fetch metadata.',
         403: 'An admin role is required to fetch metadata.',
-        404: 'Title not found. Check the IMDb ID.',
+        404: 'Title not found. Check the TMDB ID and the Movies or Series section.',
         429: 'Metadata request limit reached. Please wait and try again.',
         502: 'Metadata provider is temporarily unavailable. Please try again.',
         503: 'Metadata lookup is not configured or is unavailable. Contact the administrator.',
         504: 'Metadata lookup timed out. Please try again.',
       };
-      throw new OmdbLookupError(messages[res.status] || 'Unable to fetch metadata. Please try again.');
+      throw new TmdbLookupError(messages[res.status] || 'Unable to fetch metadata. Please try again.');
     }
     let body: unknown;
     try {
       body = await res.json();
     } catch {
-      throw new OmdbLookupError('Invalid metadata response. Please try again.');
+      throw new TmdbLookupError('Invalid metadata response. Please try again.');
     }
     signal?.throwIfAborted();
-    return parseOmdbMetadata(body, titleId);
+    return parseTmdbMetadata(body, id, mediaType);
   } catch (error) {
     // Preserve cancellation, but never expose fetch/parser/provider exception messages.
     signal?.throwIfAborted();
-    if (error instanceof OmdbLookupError) throw error;
-    throw new OmdbLookupError('Unable to fetch metadata. Check your connection and try again.');
+    if (error instanceof TmdbLookupError) throw error;
+    throw new TmdbLookupError('Unable to fetch metadata. Check your connection and try again.');
   }
 }
 

@@ -1,6 +1,29 @@
-# API Specification: OMDb IMDb lookup (replaces TMDB synchronization)
+# API Specification: TMDB movie and TV lookup
 
-## Current contract — 2026-09-16
+## Current contract — 2026-10-23
+
+- **Function/route:** `GetTmdbMetadata`, `GET /api/content-admin/tmdb?tmdbId=550&mediaType=movie`.
+- **Auth:** SWA admin role, independently checked in the function; no automation key.
+- **Input:** exactly one `tmdbId` (trimmed ASCII integer 1..2147483647) and one
+  `mediaType` (`movie` or `tv`). Maximum query length 256 characters.
+- **Output:** camelCase `tmdbId`, `mediaType`, nullable IMDb `titleId`, `title`,
+  nullable `year`, `plot`, `director`, `posterPath`, `imageUrl`, `tmdbRating`,
+  `genres`, plus en/es/pt `titleTranslations`, `overview`, `genresTranslations`.
+- Fixed HTTPS TMDB v3 details for en-US/es-ES/pt-BR; English appends credits and
+  external IDs. Server-only `TMDB_READ_ACCESS_TOKEN` in a Bearer header. No Cosmos
+  dependency/write, binary image download, redirect, browser provider call or cron.
+- **Bounds:** 20 valid lookups/admin/minute/instance; 10-second overall timeout
+  including body reads; 512 KiB per response. Any locale failure rejects the lookup.
+- **Statuses:** 200 success, 400 invalid input, 401 unauthenticated, 403 non-admin,
+  404 not found, 429 quota, 502 provider/payload error, 503 missing/rejected token,
+  504 timeout. Fixed safe JSON errors and `Cache-Control: no-store` on all responses.
+- Identity and metadata are validated before returning the result. Null/empty
+  translations use public English fallback; no-vote scores normalize to null.
+- No old OMDb route remains. Generic collection constraints still exclude the
+  literal provider route. See [FEAT-025](FEAT-025-tmdb-media-lookup.md) and
+  [setup](../.github/repo-docs/tmdb-setup.md) for merging, configuration and tests.
+
+## Historical OMDb contract — 2026-09-16 (removed)
 
 - **Route:** `GET /api/content-admin/omdb?imdbId=tt0111161`
 - **Auth:** SWA `admin` role, independently checked in the function. No automation

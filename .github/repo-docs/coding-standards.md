@@ -57,12 +57,12 @@
 
 ### Movies & TV Content
 - Data stored in Azure Cosmos DB (`content-movies` and `content-series` containers)
-- OMDb replacement (FEAT-022/API-003, 2026-09-16): validate trimmed IMDb `titleId` against `^tt[0-9]{6,12}$` for per-title lookup. Existing `tmdbId` plus `mediaType` (`movie`/`tv`) documents remain valid; never mass-convert records or remove compatibility metadata.
-- **Fetch Data** fills only the movie/series draft's metadata: `title`, `year`, `plot`, `director`, `mediaType`, `imageUrl`, `genres`, `imdbRating`. Map provider `series` to stored `tv`; use the first year of a series range. Normalize optional `N/A`/missing values to null (genres to an empty array) and do not use absent values to clear existing fields.
-- Preserve identity, `review`, `myRating`, `category`, `order`, unknown fields, legacy sync ownership/snapshots and existing es/pt translations. Apply English title/plot fallback rather than inventing translations; update existing `titleTranslations.en` / `overview.en` while retaining other locale values and `genresTranslations`.
+- TMDB lookup (FEAT-025/API-003): require a positive integer `tmdbId` through 2147483647 and `mediaType` (`movie`/`tv`). Existing IMDb-only records remain valid; never mass-convert records or remove compatibility metadata.
+- **Fetch Data** updates only the movie/series draft: localized title/overview/genres, release or first-air year, movie directors or TV creators, image URL/path, TMDB community rating and optional IMDb external ID. Missing optional display values do not erase curation; external ID and community rating reflect the new result, including null. Never relabel IMDb ratings as TMDB.
+- Preserve identity, `review`, `myRating`, `category`, `order`, unknown fields, legacy sync ownership/snapshots and nonempty es/pt translations. Refresh English and fill missing translations from en-US/es-ES/pt-BR detail requests. Absent translations use empty strings/arrays and public English fallback, not fabricated translations.
 - Lookup is stateless: no Cosmos write until explicit **Save** through existing raw-JSON CRUD with ETags. Store only the poster URL string in `imageUrl`; never download/store binary images. Image rendering still depends on the external host.
-- Public cards render stored metadata only. Preserve legacy TMDB links/posters/community ratings, localized attribution and snapshot ordering. Personal TMDB ratings remain 0.5–10 half steps, null if unrated; review stays trilingual.
-- Successful lookup sets `metadataSource: "omdb"` in the draft, persisted only on **Save**. This selects IMDb links/`imdbRating` even when TMDB identity fields remain. Do not erase those fields to switch providers. Public cards prefer `imageUrl` to legacy `posterPath` and resolved localized `overview` to English `plot`; unmarked TMDB records retain their existing link/rating behavior.
+- Public cards render stored metadata only. Preserve legacy links/posters/community ratings, localized TMDB attribution and snapshot ordering. Personal ratings are independent of provider accounts: 0–10 or null; review stays trilingual.
+- Successful lookup sets `metadataSource: "tmdb"` in the draft, persisted only on **Save**. This selects TMDB links/`tmdbRating`. Public cards prefer `imageUrl` to `posterPath` and localized `overview` to English `plot`; historical provider-marked documents and unmarked TMDB records retain compatible behavior.
 - During lookup, disable editing/saving, cancel on close and ignore stale responses; failures must leave the draft intact. Do not reintroduce the removed account-sync panel/client/workflow.
 - Use `ApiMediaCardList` component in MDX pages to fetch and render from the content API
 - Movie categories: `recently-watched`, `top-movies`, `watchlist`
@@ -86,7 +86,7 @@ For React pages with inline translations:
 - Use `[Function("FunctionName")]` attribute with descriptive names
 - Use `HttpTrigger` with explicit `Route` parameter
 - Register dependencies in `Program.cs`
-- Add public UI routes to `src/config/environment.js` (`config.routes`); admin-only routes such as OMDb belong in `admin/src/api.ts`
+- Add public UI routes to `src/config/environment.js` (`config.routes`); admin-only clients such as TMDB belong in `admin/src/api.ts`
 
 ### Security Patterns
 - Validate all inputs at the function boundary
@@ -94,8 +94,8 @@ For React pages with inline translations:
 - Rate limiting via `MemoryCache` (IP-based and resource-based)
 - No CORS headers — Azure SWA handles CORS for managed functions
 - Secrets via environment variables, never hardcoded
-- OMDb lookup uses the SWA `admin` role and an independent in-function check, not an automation key. Validate before contacting the fixed HTTPS provider; disable redirects and bound rate, timeout and response size. Keep `OMDB_API_KEY` server-only, never `VITE_*` or browser OMDb calls.
-- OMDb error responses must be safe and `no-store`: 400 invalid/unsupported input, 401 unauthenticated, 403 non-admin, 404 not found, 429 local/provider quota, 502 upstream/payload failure, 503 missing/rejected server key, 504 timeout. Never expose credentials, upstream URLs, raw provider errors/bodies or query strings in responses/logs. See [setup](tmdb-setup.md) for backend rollout details.
+- TMDB lookup uses the SWA `admin` role and an independent function check, not an automation key. Validate before contacting fixed HTTPS TMDB; disable redirects and bound rate, timeout and response size. Keep `TMDB_READ_ACCESS_TOKEN` in server Bearer headers, never query strings, `VITE_*` or browser provider calls.
+- Metadata errors must be safe and `no-store`: 400 invalid input, 401 unauthenticated, 403 non-admin, 404 not found, 429 quota, 502 provider/payload failure, 503 missing/rejected token, 504 timeout. Never expose credentials or raw provider exceptions/bodies. See [setup](tmdb-setup.md).
 
 ### Service Patterns
 - Use constructor injection for services

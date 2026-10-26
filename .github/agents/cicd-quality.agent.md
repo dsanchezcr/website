@@ -34,7 +34,7 @@ Supporting workflows:
 ### Content Validation
 - Validate blog post frontmatter has required fields (title, description, tags, authors)
 - Check that blog posts have translations in both `i18n/es/` and `i18n/pt/`
-- Validate movie/TV JSON data schema (titleId, myRating, review with en/es/pt, category)
+- Validate stored movie/TV schema (tmdbId + mediaType or legacy titleId, myRating, review with en/es/pt, category); mock the admin TMDB provider
 - Verify referenced images exist in `static/img/`
 
 ### Workflow Best Practices

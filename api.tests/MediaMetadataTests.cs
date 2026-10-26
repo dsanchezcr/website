@@ -11,13 +11,14 @@ public class MediaMetadataTests
     [Theory]
     [InlineData("movies")]
     [InlineData("series")]
-    public void OmdbOptionalStringsRoundTripWithoutChangingOtherFields(string slug)
+    public void TmdbMetadataRoundTripsWithoutChangingCuratedFields(string slug)
     {
         var doc = new JsonObject
         {
             ["titleId"] = "tt0111161", ["category"] = "watchlist", ["plot"] = "English plot",
             ["director"] = "Director", ["custom"] = new JsonObject { ["keep"] = true },
-            ["metadataSource"] = "omdb",
+            ["tmdbId"] = 550, ["mediaType"] = slug == "movies" ? "movie" : "tv",
+            ["metadataSource"] = "tmdb",
             ["review"] = new JsonObject { ["en"] = "Review", ["es"] = "Reseña", ["pt"] = "Resenha" }, ["order"] = 3
         };
         var original = doc.ToJsonString();
@@ -28,8 +29,9 @@ public class MediaMetadataTests
             : JsonSerializer.Deserialize<SeriesDocument>(original)!;
         Assert.Equal("English plot", media.Plot);
         Assert.Equal("Director", media.Director);
-        Assert.Equal("omdb", media.MetadataSource);
-        Assert.Contains("\"metadataSource\":\"omdb\"", JsonSerializer.Serialize(media));
+        Assert.Equal("tmdb", media.MetadataSource);
+        Assert.Equal(550, media.TmdbId);
+        Assert.Contains("\"metadataSource\":\"tmdb\"", JsonSerializer.Serialize(media));
         Assert.Contains("\"plot\":\"English plot\"", JsonSerializer.Serialize(media));
         foreach (var field in new[] { "plot", "director", "metadataSource" })
         {
@@ -58,12 +60,14 @@ public class MediaMetadataTests
     [Theory]
     [InlineData("movies", "movie")]
     [InlineData("series", "tv")]
-    public void MediaValidationSupportsTmdbWithoutImdbAndHalfPointRatings(string type, string mediaType)
+    public void MediaValidationSupportsTmdbWithoutImdbAndIndependentPersonalRatings(string type, string mediaType)
     {
         var doc = new JsonObject { ["category"] = "watchlist", ["tmdbId"] = 5, ["mediaType"] = mediaType, ["myRating"] = 0.5 };
         Assert.Empty(ContentValidator.Validate(AdminContentTypes.All[type], doc));
         doc["myRating"] = 8.3;
-        Assert.Contains(ContentValidator.Validate(AdminContentTypes.All[type], doc), e => e.Contains("half-point"));
+        Assert.Empty(ContentValidator.Validate(AdminContentTypes.All[type], doc));
+        doc["myRating"] = 0;
+        Assert.Empty(ContentValidator.Validate(AdminContentTypes.All[type], doc));
         doc["myRating"] = new JsonObject();
         Assert.NotEmpty(ContentValidator.Validate(AdminContentTypes.All[type], doc));
         doc["tmdbId"] = -5;

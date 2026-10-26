@@ -27,8 +27,8 @@ Read `.github/repo-docs/coding-standards.md` and `.specify/memory/constitution.m
 - **Config tests**: `src/config/__tests__/*.test.js`
 - **Patterns**:
   - Test component rendering and behavior, not implementation details
-  - Mock external APIs (weather, gaming profiles, IMDb)
-  - Validate JSON data schemas (`movies.json`, `series.json`, `src/data/gaming/*.json`) for required fields
+  - Mock external APIs (weather, gaming profiles, TMDB admin lookup)
+  - Validate stored Cosmos movie/series schemas and `src/data/gaming/*.json` for required fields; retain legacy media compatibility
   - Validate gaming image references in `src/data/gaming/*.json` map to real files under `static/img/`
   - Test i18n — verify all translation keys exist for en/es/pt
 

@@ -15,7 +15,7 @@ describe('environment config', () => {
         'xboxProfile',
         'playstationProfile',
         'gamingRefresh',
-        'adminOmdb',
+        'adminTmdb',
       ];
 
       for (const route of requiredRoutes) {
@@ -30,13 +30,14 @@ describe('environment config', () => {
       }
     });
 
-    it('protects OMDb with the admin rule rather than the anonymous API fallback', () => {
+    it('protects TMDB with the admin rule rather than the anonymous API fallback', () => {
       const route = swa.routes.find(rule =>
-        rule.route === config.routes.adminOmdb ||
-        (rule.route.endsWith('*') && config.routes.adminOmdb.startsWith(rule.route.slice(0, -1))));
+        rule.route === config.routes.adminTmdb ||
+        (rule.route.endsWith('*') && config.routes.adminTmdb.startsWith(rule.route.slice(0, -1))));
       expect(route.allowedRoles).toEqual(['admin']);
       expect(swa.routes.some(rule => rule.route.includes('/tmdb/'))).toBe(false);
       expect(config.routes).not.toHaveProperty('adminTmdbSync');
+      expect(config.routes).not.toHaveProperty('adminOmdb');
     });
   });
 

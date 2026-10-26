@@ -4,8 +4,8 @@ import { DynamicField, FieldInput, localizedToText } from './fields';
 import MediaPreview from './MediaPreview';
 import AiGenerate from './AiGenerate';
 import { validate } from '../validation';
-import { fetchOmdbMetadata, getSample, type LocalizedText } from '../api';
-import { mergeOmdbMetadata, normalizeImdbId, OmdbLookupError } from '../omdb';
+import { fetchTmdbMetadata, getSample, type LocalizedText } from '../api';
+import { mergeTmdbMetadata, normalizeTmdbId, TmdbLookupError } from '../tmdb';
 
 interface Props {
   type: ContentTypeDef;
@@ -52,11 +52,11 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
 
   const fetchMetadata = async () => {
     if (!isMedia || lookup.current || saving) return;
-    const titleId = normalizeImdbId(doc.titleId);
+    const tmdbId = normalizeTmdbId(doc.tmdbId);
     setLookupError(null);
     setLookupStatus('');
-    if (!titleId) {
-      setLookupError('Enter a valid IMDb ID: tt followed by 6–12 digits.');
+    if (!tmdbId) {
+      setLookupError('Enter a positive TMDB ID between 1 and 2147483647.');
       return;
     }
     const controller = new AbortController();
@@ -64,21 +64,14 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
     setFetching(true);
     setLookupStatus('Fetching metadata…');
     try {
-      const metadata = await fetchOmdbMetadata(titleId, controller.signal);
+      const metadata = await fetchTmdbMetadata(tmdbId, type.slug === 'movies' ? 'movie' : 'tv', controller.signal);
       if (lookup.current !== controller || controller.signal.aborted) return;
-      const expectedType = type.slug === 'movies' ? 'movie' : 'series';
-      if (metadata.type !== expectedType) {
-        throw new OmdbLookupError(
-          `This IMDb ID belongs to a ${metadata.type === 'series' ? 'TV series' : 'movie'}. ` +
-          `Use the ${metadata.type === 'series' ? 'Series' : 'Movies'} section or enter a different IMDb ID.`,
-        );
-      }
-      setDoc(previous => mergeOmdbMetadata(previous, metadata));
-      setLookupStatus('Metadata fetched. Review the English fields, then Save to store changes.');
+      setDoc(previous => mergeTmdbMetadata(previous, metadata));
+      setLookupStatus('Metadata fetched from TMDB. Review the fields and translations, then Save to store changes.');
     } catch (error) {
       if (lookup.current !== controller || controller.signal.aborted) return;
       setLookupStatus('');
-      setLookupError(error instanceof OmdbLookupError ? error.message : 'Unable to fetch metadata. Please try again.');
+      setLookupError(error instanceof TmdbLookupError ? error.message : 'Unable to fetch metadata. Please try again.');
     } finally {
       if (lookup.current === controller) {
         lookup.current = null;
@@ -92,7 +85,7 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
 
   const setField = (key: string, value: unknown) => {
     if (lookup.current || saving) return;
-    if (key === 'titleId') {
+    if (key === 'tmdbId') {
       setLookupError(null);
       setLookupStatus('');
     }
@@ -191,15 +184,15 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
                       {f.label}
                       {f.partitionKey && <span className="admin-pk-badge">partition key</span>}
                     </label>
-                    <div className={isMedia && f.key === 'titleId' ? 'admin-imdb-lookup' : undefined}>
+                    <div className={isMedia && f.key === 'tmdbId' ? 'admin-tmdb-lookup' : undefined}>
                       <FieldInput field={f} value={doc[f.key]} isNew={isNew} onChange={(v) => setField(f.key, v)} />
-                      {isMedia && f.key === 'titleId' && (
+                      {isMedia && f.key === 'tmdbId' && (
                         <button type="button" className="admin-btn" onClick={fetchMetadata} disabled={fetching || saving}>
                           Fetch Data
                         </button>
                       )}
                     </div>
-                    {isMedia && f.key === 'titleId' && (
+                    {isMedia && f.key === 'tmdbId' && (
                       <>
                         <div role="status" aria-live="polite">{lookupStatus}</div>
                         {lookupError && <div className="admin-error" role="alert">{lookupError}</div>}
@@ -230,7 +223,7 @@ export default function FormEditor({ type, initialDoc, isNew, onSave, onClose }:
                     <h3>Other fields</h3>
                     {isMedia && (
                       <p className="admin-field-help">
-                        Legacy TMDB metadata and other stored fields remain editable and are preserved.
+                        Ownership metadata and other stored fields remain editable and are preserved.
                         Use Raw JSON for nested objects or arrays. Fetch Data does not remove these values.
                       </p>
                     )}

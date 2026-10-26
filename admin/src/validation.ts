@@ -67,7 +67,7 @@ export function validate(type: ContentTypeDef, doc: Doc): string[] {
       if (!hasTmdbId && (typeof titleId !== 'string' || titleId.trim() === '')) {
         errors.push("Field 'titleId' is required.");
       }
-      for (const field of ['titleId', 'title', 'plot', 'director', 'imageUrl', 'syncSource']) {
+      for (const field of ['titleId', 'title', 'plot', 'director', 'imageUrl', 'syncSource', 'metadataSource']) {
         if (!isAbsent(doc[field]) && typeof doc[field] !== 'string') errors.push(`Field '${field}' must be a string.`);
       }
       if (typeof doc.imageUrl === 'string' && !isExternalHttpsUrl(doc.imageUrl)) {
@@ -107,15 +107,11 @@ export function validate(type: ContentTypeDef, doc: Doc): string[] {
           }
         }
       }
-      const r = doc.myRating;
       for (const field of ['myRating', 'imdbRating', 'tmdbRating']) {
         const rating = doc[field];
         if (!isAbsent(rating) && (typeof rating !== 'number' || !Number.isFinite(rating) || rating < 0 || rating > 10)) {
           errors.push(`Field '${field}' must be between 0 and 10.`);
         }
-      }
-      if (hasTmdbId && typeof r === 'number' && (r < 0.5 || !Number.isInteger(r * 2))) {
-        errors.push("TMDB 'myRating' must be 0.5–10 in half-point increments, or null for unrated.");
       }
       if (!isAbsent(doc.syncedAt) && (typeof doc.syncedAt !== 'string' || !Number.isFinite(Date.parse(doc.syncedAt)))) {
         errors.push("Field 'syncedAt' must be an ISO-8601 timestamp.");

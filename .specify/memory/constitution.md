@@ -28,7 +28,7 @@
 - **Mandatory locales**: English (default), Spanish, Portuguese
 - **Coverage rule**: ALL user-facing content must support all 3 locales
 - **Blog posts**: Translations required in `i18n/es/` and `i18n/pt/` before merging
-- **Data files**: `movies.json` and `series.json` reviews must include `en`, `es`, `pt` keys
+- **Movie/TV data**: Saved Cosmos movie/series reviews must include `en`, `es`, `pt` keys
 - **Component text**: Use `Translate` component, `translate()`, or inline translation objects
 - **Game statuses**: Values (`completed`, `playing`, `backlog`, `dropped`) are code-level constants — never translate the values themselves
 
@@ -66,7 +66,7 @@
 - **Blog frontmatter**: Must include `title`, `description`, `tags`, `authors`
 - **Images**: Organized by section in `static/img/<section>/`, reasonable file sizes (< 500KB)
 - **Game images**: `static/img/gaming/<platform>/<title-slug>.jpg`
-- **Movie/TV entries**: Must include `titleId` (IMDb), `myRating` (1-10), trilingual `review`, `category`
+- **Movie/TV entries**: Use `tmdbId` with `mediaType` (`movie`/`tv`), or legacy IMDb `titleId`; personal `myRating` is 0-10 or null. Keep trilingual `review` and `category`. See ADR-008.
 
 ## Architectural Boundaries
 

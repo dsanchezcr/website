@@ -47,7 +47,10 @@ function sanitizeId(value: unknown, disallowed: RegExp): string {
  * for TMDB, IMDb and OpenStreetMap (opened in a new tab — no iframe needed).
  */
 export default function MediaPreview({ doc }: { doc: Doc }) {
-  const image = safeHttpUrl(firstString(doc, IMAGE_KEYS));
+  const posterPath = typeof doc.posterPath === 'string' &&
+    /^\/[a-zA-Z0-9_-]+\.(jpg|png|webp)$/.exec(doc.posterPath)?.[0] === doc.posterPath ? doc.posterPath : null;
+  const image = safeHttpUrl(firstString(doc, IMAGE_KEYS)) ||
+    (posterPath ? `https://image.tmdb.org/t/p/w500${posterPath}` : undefined);
   const youtubeId = sanitizeId(doc.youtubeVideoId, /[^A-Za-z0-9_-]/g);
   const titleId = sanitizeId(doc.titleId, /[^A-Za-z0-9]/g);
   const tmdbUrl = safeTmdbUrl(doc.mediaType, doc.tmdbId);
