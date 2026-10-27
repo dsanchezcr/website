@@ -116,6 +116,12 @@ For React pages with inline translations:
 - Pass secrets via deployment-time parameters
 - Always run `what-if` before deploying changes
 
+## npm Dependency Maintenance
+
+- The site and `admin/` have independent manifests and lockfiles. Update and audit both, including development dependencies: `npm audit` and `npm audit --prefix admin`.
+- Keep security overrides in the root `package.json` until upstream dependency ranges include patched releases. In particular, Docusaurus still requests older Tinypool and PostCSS selector parser majors; the overrides select patched worker-pool and CSS-parser releases. The serializer, Undici, and brace-expansion overrides also enforce patched versions. Keep brace-expansion 2.x consumers on the patched 2.x line; `serve-handler` uses the 5.x line.
+- After changing overrides, run `npm test`, `npm run build` (all locales), `npm run typecheck --prefix admin`, and `npm run build --prefix admin`. The production site build exercises rendering, serialization, and CSS minification. For Tinypool upgrades, also check a build with `future.faster.ssgWorkerThreads: true` in a temporary config and `DOCUSAURUS_SSG_WORKER_THREAD_COUNT=2`; the normal config does not enable worker rendering.
+
 ## CI/CD (GitHub Actions)
 
 - Single workflow deploys frontend + API together (`azure-static-web-app.yml`)
