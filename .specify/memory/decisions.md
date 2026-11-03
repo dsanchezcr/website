@@ -14,6 +14,12 @@
 
 ---
 
+### [2026-11-03] Optional 404 Memory Game
+**Context**: Make missing pages engaging without blocking recovery navigation.
+**Decision**: Override Docusaurus NotFound content with a trilingual, keyboard/touch memory game. Track moves, pairs, streak-based points and a browser-only best completed score. Keep mismatches visible until the next selection instead of using a timer.
+**Rationale**: Native buttons and untimed play keep the game accessible and lightweight. Retaining the Docusaurus wrapper preserves error-page metadata and routing; a hydrated URL-prefix override localizes game content when SWA serves the root fallback document for a localized missing URL. Recovery links use native anchors to load the destination locale's application rather than remaining in the root fallback's router. No backend, account or game telemetry is required.
+**Spec**: `specs/FEAT-026-404-memory-game.md`
+
 ### [2026-10-23] TMDB Per-title Media Metadata
 **Context**: Replace the active OMDb provider across movie/TV surfaces without losing curation.
 **Decision**: Admin-only TMDB ID/type lookup with server Bearer authentication, en/es/pt metadata, explicit Save, and legacy rendering compatibility. Personal ratings are independent of provider account-rating increments.
