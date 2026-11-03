@@ -1,0 +1,267 @@
+.page {
+  width: min(100% - 2rem, 1100px);
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 5rem) 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.intro h1 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+  margin: 1rem 0 1.5rem;
+}
+
+.eyebrow {
+  color: var(--ifm-color-primary-dark);
+  font: 700 0.85rem var(--ifm-font-family-monospace);
+  letter-spacing: 0.08em;
+}
+
+.description {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--ifm-color-emphasis-700);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-top: 1.75rem;
+  font-weight: 700;
+}
+
+.links a {
+  color: var(--ifm-color-primary-darker);
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.links .homeLink {
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 0.75rem;
+  color: var(--ifm-font-color-base);
+  background: var(--ifm-background-surface-color);
+}
+
+.game {
+  padding: clamp(1rem, 3vw, 1.75rem);
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 1.5rem;
+  background: linear-gradient(145deg, rgba(13, 148, 136, 0.09), transparent 60%), var(--ifm-background-surface-color);
+  box-shadow: 0 16px 48px rgba(13, 50, 60, 0.08);
+}
+
+.gameHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.gameHeading h2 {
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  margin: 0;
+}
+
+.tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ifm-color-emphasis-700);
+  margin: 0 0 0.35rem;
+}
+
+.badge {
+  font: 700 1.5rem var(--ifm-font-family-monospace);
+  color: var(--ifm-color-primary-dark);
+  white-space: nowrap;
+}
+
+.instructions {
+  margin: 1rem 0;
+  line-height: 1.6;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 1.25rem 0;
+}
+
+.stats > div {
+  padding: 0.65rem 0.25rem;
+  border-radius: 0.75rem;
+  background: var(--ifm-color-emphasis-100);
+  text-align: center;
+}
+
+.stats dt {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ifm-color-emphasis-700);
+  overflow-wrap: anywhere;
+}
+
+.stats dd {
+  font: 700 1.45rem var(--ifm-font-family-monospace);
+  margin: 0.2rem 0 0;
+}
+
+.stats dd span {
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1.15;
+  min-height: 48px;
+  min-width: 0;
+  padding: 0.5rem;
+  border: 2px solid #285866;
+  border-radius: 0.75rem;
+  background: linear-gradient(145deg, #163c4a, #102733);
+  color: #d3efec;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 140ms ease, background-color 140ms ease;
+}
+
+.symbol {
+  font: 700 clamp(1.2rem, 3vw, 1.8rem) var(--ifm-font-family-monospace);
+}
+
+.card:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.card.revealed {
+  background: var(--ifm-background-surface-color);
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-font-color-base);
+}
+
+.card.matched {
+  background: #d1fae5;
+  border-color: #047857;
+  color: #065f46;
+  cursor: default;
+}
+
+.check {
+  position: absolute;
+  top: 0.1rem;
+  right: 0.3rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.status {
+  min-height: 3.5em;
+  margin: 1rem 0 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.complete {
+  font-weight: 700;
+  color: var(--ifm-color-primary-darker);
+}
+
+.playButton {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 0.75rem;
+  padding: 0.8rem 1rem;
+  font: inherit;
+  font-weight: 700;
+  background: #0f766e;
+  color: #fff;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.playButton:hover {
+  background: #115e59;
+}
+
+.card:focus-visible,
+.playButton:focus-visible,
+.links a:focus-visible {
+  outline: 3px solid var(--ifm-color-primary);
+  outline-offset: 4px;
+}
+
+.help,
+.storage {
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: var(--ifm-color-emphasis-700);
+  margin: 0.85rem 0 0;
+}
+
+.storage {
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+  padding-top: 0.85rem;
+}
+
+[data-theme='dark'] .card.matched {
+  background: #064e3b;
+  border-color: #34d399;
+  color: #d1fae5;
+}
+
+[data-theme='dark'] .eyebrow,
+[data-theme='dark'] .badge,
+[data-theme='dark'] .complete,
+[data-theme='dark'] .links a:not(.homeLink) {
+  color: var(--ifm-color-primary-light);
+}
+
+@media (hover: hover) {
+  .card:not(:disabled):not([aria-disabled='true']):hover {
+    transform: translateY(-2px);
+    border-color: var(--ifm-color-primary);
+  }
+}
+
+@media (max-width: 800px) {
+  .page {
+    max-width: 540px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .intro h1 {
+    max-width: 12ch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+
+  .card:not(:disabled):not([aria-disabled='true']):hover {
+    transform: none;
+  }
+}
