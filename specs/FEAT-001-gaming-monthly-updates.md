@@ -96,3 +96,62 @@ Monthly posts use decreasing `sidebar_position` values (for example, April 2026 
 - Automated fetching of release dates or trailer URLs from external APIs
 - Comments/discussion per individual monthly post (uses the shared Giscus discussion)
 - Video thumbnails or preview images in the post
+
+## November 2026 Content Update
+
+Use the current Cosmos-backed monthly format: one `meta` document and exactly
+three `upcoming` documents in `scripts/monthly-updates/2026-11.json`, with thin
+MDX shells rendering `ApiMonthlyReleases` for `month="2026-11"`.
+
+### Content and Sources
+
+- **The Legend of Zelda: Ocarina of Time**: interpret the requested "Zelda" as the
+  November 5 Nintendo Switch 2 release described by
+  [Nintendo](https://www.nintendo.com/ph/news/article/3Uvp2H1iPLLLSnR4MJgmq1).
+  Use the supplied trailer ID `rz1B4B2yBZY`.
+- **Don Memo**: the [Steam listing](https://store.steampowered.com/app/3934180/Don_Memo/)
+  announces November 6, 2026 for PC. Describe its Costa Rican setting and
+  development, and the owner's stated support, NPC appearance, credits mention,
+  and pride in contributing. Use the supplied trailer ID `6qUMXhnnSrQ`, matched
+  to Bear Sneeze's "Don Memo - Trailer Oficial".
+- **Grand Theft Auto VI**: [Rockstar's announcement](https://www.rockstargames.com/newswire/article/5171972o3ak5oa/pre-order-grand-theft-auto-vi-on-june-25)
+  gives November 19 for PlayStation 5 and Xbox Series X|S. Use the supplied
+  trailer ID `8v8eDMh1o3g`.
+
+Sources checked November 3, 2026. Direct YouTube metadata retrieval was unavailable;
+the Zelda and GTA video titles could not be independently matched. Preserve the
+user's game-to-video mapping without claiming these embeds are official trailers.
+Phrase launch dates as scheduled, not guaranteed.
+
+### Affected Files
+
+- `scripts/monthly-updates/2026-11.json`: import-ready Cosmos document array.
+- `gaming/monthly-updates/november-2026.mdx`: English shell.
+- `i18n/es/docusaurus-plugin-content-docs-gaming/current/monthly-updates/november-2026.mdx`: Spanish shell.
+- `i18n/pt/docusaurus-plugin-content-docs-gaming/current/monthly-updates/november-2026.mdx`: Portuguese shell.
+
+### Acceptance Criteria
+
+- Exactly three games with the supplied video IDs; no event or playing sections.
+- One `meta` document at order `0`, followed by unique game orders `1` through `3`.
+- All localized titles, descriptions, trailer labels, and intro text include
+  nonempty `en`, `es`, and `pt` strings; game titles remain untranslated.
+- Intro humor suggests other releases might be avoiding GTA 6, without presenting
+  that joke as a factual claim about publishers' scheduling.
+- Don Memo's description includes the personal story in all three languages.
+- The shells share `sidebar_position: 992`, the November partition, and localized
+  comments prompts. The hub intro and each shell intro match.
+- No fabricated hero image URL or unrequested image generation.
+- Validate the JSON shape, locale parity, video IDs, and production MDX build.
+
+### Publishing
+
+The seed file is not imported by the site build. After deployment, upload the JSON
+array through Cosmos Data Explorer to `content-monthly-updates` (partition key
+`/month`), or save each document through `/admin` → Monthly Updates using the raw
+JSON editor. Review existing `2026-11` documents before writing to avoid replacing
+curated content.
+
+The importer mentioned in the agent guide is not implemented in this checkout.
+Use local read-only validation for this content change; do not add import tooling,
+modify older months, or write to Cosmos without an explicit import request.
