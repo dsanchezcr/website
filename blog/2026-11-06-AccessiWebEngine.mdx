@@ -1,0 +1,35 @@
+---
+title: "AccessiWeb Engine: AI-Assisted Web Accessibility"
+description: "How I built AccessiWeb Engine for the Meta AI Hackathon to turn accessibility findings into GitHub issues and human-reviewed code changes."
+slug: accessiweb-engine-meta-ai-hackathon
+authors: [dsanchezcr]
+tags: [Accessibility, AI, GitHub, Hackathon]
+enableComments: true
+hide_table_of_contents: true
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-11-06-accessiweb-engine/accessiweb-engine.jpg
+date: 2026-11-06T10:00
+---
+
+I built **AccessiWeb Engine** for the [Meta Global AI Developer Hackathon](https://cerebralvalley.ai/e/meta-ai-developer-hackathon). The goal is practical: help developers identify accessibility barriers and turn findings into reviewable work in GitHub.
+
+{/* truncate */}
+
+![A web interface connects accessibility findings to proposed code changes and a human review checkpoint.](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-11-06-accessiweb-engine/accessiweb-engine.jpg)
+
+## The use case
+
+Consider a small team preparing to launch a website. Missing image descriptions, unlabeled form fields, and confusing heading structure can make everyday tasks harder for people using assistive technology. The team needs to understand what to fix and where to start.
+
+AccessiWeb Engine accepts a public web page URL or a small public GitHub repository. It returns structured findings with severity, references to the Web Content Accessibility Guidelines (WCAG), and suggested fixes. Repository findings can point to files and lines, connecting the report to the code developers maintain.
+
+## From findings to reviewable changes
+
+The application combines static HTML checks with Meta AI analysis. Optional, user-provided screenshots add visual context. Findings from saved repository scans can become GitHub issues in authorized repositories.
+
+A gated remediation preview goes further: it prepares a patch plan for explicit approval before opening a pull request in a bot-owned public fork. It does not push changes upstream or merge them automatically.
+
+This supports accessibility work; it is not a compliance certificate. Static scans cannot replace keyboard testing, screen-reader checks, or evaluation with people with disabilities.
+
+My focus is making accessibility easier to act on within the development workflow, while keeping developers accountable for the result.
+
+[Explore AccessiWeb Engine on GitHub](https://github.com/dsanchezcr/accessiWebEngine).

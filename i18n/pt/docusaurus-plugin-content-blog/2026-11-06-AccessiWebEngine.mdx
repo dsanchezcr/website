@@ -1,0 +1,35 @@
+---
+title: "AccessiWeb Engine: acessibilidade web com IA"
+description: "Como criei o AccessiWeb Engine para o Meta AI Hackathon, conectando problemas de acessibilidade a issues no GitHub e alterações revisadas por pessoas."
+slug: accessiweb-engine-meta-ai-hackathon
+authors: [dsanchezcr]
+tags: [Accessibility, AI, GitHub, Hackathon]
+enableComments: true
+hide_table_of_contents: true
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-11-06-accessiweb-engine/accessiweb-engine.jpg
+date: 2026-11-06T10:00
+---
+
+Criei o **AccessiWeb Engine** para o [Meta Global AI Developer Hackathon](https://cerebralvalley.ai/e/meta-ai-developer-hackathon). O objetivo é prático: ajudar desenvolvedores a identificar barreiras de acessibilidade e transformar os resultados em tarefas que possam revisar no GitHub.
+
+{/* truncate */}
+
+![Uma interface web conecta problemas de acessibilidade a propostas de alterações no código e a uma etapa de revisão humana.](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-11-06-accessiweb-engine/accessiweb-engine.jpg)
+
+## O caso de uso
+
+Imagine uma equipe pequena se preparando para lançar um site. Imagens sem descrição, campos de formulário sem rótulos e uma estrutura confusa de títulos podem dificultar tarefas cotidianas para quem usa tecnologias assistivas. A equipe precisa entender o que corrigir e por onde começar.
+
+O AccessiWeb Engine aceita a URL de uma página web pública ou um pequeno repositório público do GitHub. Ele retorna resultados estruturados com níveis de gravidade, referências às Diretrizes de Acessibilidade para Conteúdo Web (WCAG) e sugestões de correção. Os resultados da análise do repositório podem indicar arquivos e linhas, conectando o relatório ao código que a equipe mantém.
+
+## Dos resultados a alterações revisáveis
+
+A aplicação combina verificações de HTML estático com análise do Meta AI. Capturas de tela opcionais, fornecidas pelo usuário, acrescentam contexto visual. Os relatórios salvos de análises de repositórios permitem criar issues no GitHub em repositórios autorizados.
+
+Um recurso de correção em versão preliminar, com acesso restrito, vai além: prepara um plano de alterações para aprovação explícita antes de abrir um pull request em um fork público controlado por um bot. Ele não envia alterações ao repositório original nem as integra automaticamente.
+
+Isso apoia o trabalho de acessibilidade; não é um certificado de conformidade. Análises estáticas não substituem testes com teclado, verificações com leitores de tela ou avaliações com pessoas com deficiência.
+
+Meu foco é facilitar melhorias de acessibilidade no fluxo de desenvolvimento, mantendo a responsabilidade dos desenvolvedores pelo resultado.
+
+[Explore o AccessiWeb Engine no GitHub](https://github.com/dsanchezcr/accessiWebEngine).
