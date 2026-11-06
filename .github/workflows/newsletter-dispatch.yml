@@ -75,6 +75,11 @@ jobs:
             local POSTS="[]"
             for file in ${BLOG_DIR}/*.mdx; do
               if [ ! -f "$file" ]; then continue; fi
+
+              if awk 'NR == 1 { if ($0 !~ /^---\r?$/) exit; next } /^---\r?$/ { exit } { print }' "$file" |
+                grep -Eq '^draft:[[:space:]]*(true|True|TRUE)([[:space:]]+#.*)?[[:space:]]*$'; then
+                continue
+              fi
               
               # Get file modification date from git
               FILE_DATE=$(git log -1 --format="%cs" -- "$file" 2>/dev/null || echo "")

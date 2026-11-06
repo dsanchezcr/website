@@ -366,6 +366,8 @@ function extractBlogPosts() {
       const content = fs.readFileSync(filePath, 'utf-8');
       const { frontmatter, body } = parseFrontmatter(content);
       
+      if (/^true(?:\s+#.*)?$/i.test(frontmatter.draft || '')) continue;
+
       // Extract date from filename (YYYY-MM-DD-Title.mdx)
       const dateMatch = file.match(/^(\d{4}-\d{2}-\d{2})/);
       const dateStr = dateMatch ? dateMatch[1] : null;
