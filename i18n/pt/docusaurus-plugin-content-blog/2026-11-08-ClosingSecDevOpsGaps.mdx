@@ -1,0 +1,197 @@
+---
+title: "Fechando as lacunas de SecDevOps na era da IA agêntica"
+description: "Alinhe GHAS, Docker Scout, OWASP e controles complementares em todo o SDLC, com controles de CI/CD e proteção para agentes de IA."
+slug: closing-secdevops-gaps-agentic-ai
+authors: [dsanchezcr]
+tags: [Security, DevSecOps, Agentic AI, GitHub Advanced Security, Docker, OWASP, CI/CD]
+enableComments: true
+hide_table_of_contents: true
+image: https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2026-11-08-closing-secdevops-gaps/secdevops-security-loop.webp
+date: 2026-11-08T10:00
+---
+
+Um agente de IA atualiza uma API, adiciona uma dependência e reconstrói seu contêiner. A análise de código passa. A imagem não apresenta vulnerabilidades que bloqueiem a entrega. O deploy é concluído.
+
+Isso não demonstra que um cliente não consiga ler os registros de outro, que o executor de build não tenha exposto uma credencial ou que ninguém possa convencer o agente implantado a usar indevidamente uma ferramenta autorizada.
+
+**A lacuna de segurança nem sempre é um scanner ausente. Muitas vezes falta a conexão entre um risco, um controle, a evidência e alguém responsável por agir.**
+
+{/* truncate */}
+
+![Controles de segurança conectados ao longo de um ciclo de entrega de software, com um agente de IA em um espaço delimitado e feedback de operações para desenvolvimento](https://raw.githubusercontent.com/dsanchezcr/website/refs/heads/main/static/img/blog/2026-11-08-closing-secdevops-gaps/secdevops-security-loop.webp)
+
+*Documentação revisada em 8 de novembro de 2026. Recursos, licenças e plataformas compatíveis mudam; consulte a documentação vinculada para seu ambiente. Este é um modelo operacional recomendado, não uma afirmação de que alguma combinação de ferramentas elimina todas as vulnerabilidades.*
+
+## Comece pela cobertura, não por uma lista de compras
+
+Você pode chamar de SecDevOps ou DevSecOps: o objetivo é integrar segurança ao ciclo de vida do desenvolvimento de software, ou SDLC. Antecipar um scanner é útil. Antecipar requisitos de segurança, modelagem de ameaças e definição de responsabilidades é mais importante.
+
+Agentes de IA aumentam o volume e a velocidade das mudanças. Também introduzem ambientes de execução, integrações de ferramentas e identidades de máquina que precisam de controles próprios. A engenharia de segurança existente continua válida; ela precisa cobrir esses novos caminhos.
+
+Eu começaria com quatro perguntas para cada risco importante:
+
+1. O que precisa ser prevenido, detectado ou contido?
+2. Qual controle trata esse risco e onde ele é executado?
+3. Qual evidência comprova que o controle foi executado sobre a mudança que será entregue?
+4. Quem corrige um achado, aprova uma exceção ou responde a um incidente?
+
+Antecipe a segurança onde o feedback puder ser rápido e útil. Mantenha verificação e monitoramento nas etapas posteriores, onde a configuração implantada e o comportamento real ficam visíveis.
+
+## Um mapa de cobertura do SDLC
+
+Este é um ponto de partida, não uma lista universal de conformidade. Atribua equipes reais à coluna de responsáveis e documente qualquer área descoberta.
+
+| Etapa e risco | Controles principais e ferramentas adequadas | Evidência a manter | Responsável |
+|---|---|---|---|
+| Design: limites de confiança inseguros e exposição de dados | Modelagem de ameaças, requisitos do OWASP ASVS, revisão de privacidade | Fluxos de dados, casos de abuso, requisitos de segurança verificáveis | Equipe de produto com AppSec |
+| Programação: lógica vulnerável e vazamento de segredos | Análise de código e segredos do GHAS, proteção de push, revisão | Análise do commit, achados revisados, registros de revogação de segredos | Equipe de desenvolvimento |
+| Dependências: pacotes vulneráveis ou não confiáveis | Revisão de dependências, Dependabot, fontes de pacotes aprovadas | Mudanças de dependências, lockfiles, origem dos pacotes, decisões de correção | Equipe de desenvolvimento |
+| Infraestrutura e CI: privilégios excessivos ou configuração insegura | Verificações de IaC, revisão de workflows, isolamento de executores, privilégio mínimo | Resultados de políticas e mudanças aprovadas de identidade/rede | Equipe de plataforma |
+| Build: artefatos vulneráveis ou substituídos | Docker Scout, SBOM, proveniência do build, ambiente de build protegido | Digest da imagem, inventário de componentes, resultados da análise, proveniência | Equipe de build/plataforma |
+| Integração: autorização falha e APIs expostas | DAST autenticado, testes negativos de API, testes manuais de segurança | Papéis, rotas e limites entre clientes testados, com seus resultados | Equipe de desenvolvimento com AppSec |
+| Comportamento do agente: uso indevido de ferramentas e injeção de prompt | Ferramentas restritas, autorização externa, avaliações adversariais | Testes de ações negadas e versões de modelos/ferramentas/políticas | Responsável pelo serviço de agentes |
+| Entrega: artefato não verificado ou controles ignorados | Verificação de atestações, política de deploy, ambientes protegidos | Digest do artefato aprovado, decisão do controle, aprovador | Equipe de entrega/plataforma |
+| Operações: desvios, novas vulnerabilidades e abuso | Avaliação contínua de vulnerabilidades, postura de segurança na nuvem, monitoramento em execução | Inventário implantado, alertas, registros de correção e resposta | SRE/operações de segurança |
+| Desativação: acessos órfãos e dados mantidos | Revogar identidades, remover integrações, aplicar políticas de exclusão/retenção | Lista de desativação e remoção de acesso verificada | Responsáveis pelo serviço e pelos dados |
+
+Um scanner pode fornecer evidência para uma linha. Ele não assume a responsabilidade por essa linha.
+
+## O que GHAS, Docker Scout e OWASP realmente cobrem
+
+### GHAS: código, segredos e feedback a partir do repositório
+
+[GitHub Advanced Security](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security) não é uma única análise. A divisão atual dos produtos distingue **GitHub Code Security**, que inclui análise de código e revisão de dependências, de **GitHub Secret Protection**, que inclui análise de segredos e proteção de push.
+
+Alguns recursos são gratuitos para repositórios públicos. A disponibilidade para repositórios privados e internos depende do recurso, do plano e da licença. O grafo de dependências e os alertas do Dependabot estão incluídos em todos os planos; não apresente toda a segurança de dependências como um recurso pago do GHAS.
+
+Use CodeQL para testes estáticos de segurança de aplicações, SAST, em código compatível e confira se as linguagens, a configuração de build e os caminhos previstos foram analisados. O GitHub também documenta AI Scan para ampliar a cobertura de linguagens e frameworks. Avalie essa cobertura em vez de presumir que qualquer um dos mecanismos compreende todos os comportamentos da aplicação.
+
+A análise de segredos detecta tipos de segredos compatíveis e padrões configurados. A proteção de push pode impedir vazamentos compatíveis antes de entrarem no repositório. Nenhum desses recursos é um sistema geral de prevenção de perda de dados para prompts, arquivos ou tráfego de rede de um agente. Se uma credencial foi exposta, revogue-a ou faça sua rotação; apagar a linha não resolve a exposição.
+
+Copilot Autofix e agentes de programação podem propor correções. A proposta continua precisando de revisão e verificação independente.
+
+### Docker Scout: inspecione o artefato que você realmente entrega
+
+[Docker Scout](https://docs.docker.com/scout/) inventaria os componentes de uma imagem em uma lista de materiais de software, ou SBOM, e correlaciona esse inventário com informações de vulnerabilidades. Isso complementa as verificações de dependências do código-fonte, porque uma imagem também contém pacotes da imagem base e do sistema operacional.
+
+Scout ajuda a identificar camadas afetadas e atualizações de imagens base. Suas [verificações de políticas](https://docs.docker.com/scout/policy/) também cobrem critérios como imagens base aprovadas, usuários padrão diferentes de root e presença de atestações da cadeia de suprimentos.
+
+Observe os requisitos de evidência. Algumas políticas de imagens base precisam de informações de proveniência e mostram **No data** quando elas faltam. Isso não equivale a conformidade. Da mesma forma, uma imagem configurada com usuário padrão diferente de root ainda pode ser implantada com uma configuração de execução insegura.
+
+A [análise contínua de imagens](https://docs.docker.com/scout/explore/analysis/) exige habilitar os repositórios e as integrações correspondentes. Uma análise pontual pela CLI não estabelece monitoramento contínuo. Scout não é SAST de aplicações, teste de autorização, sandbox para agentes nem detecção de intrusões em execução.
+
+### OWASP: requisitos e orientação, não um único produto
+
+"Rodamos OWASP" não descreve uma cobertura concreta. Selecione o projeto pertinente:
+
+- [OWASP ASVS](https://asvs.owasp.org/) fornece requisitos verificáveis de segurança de aplicações. Transforme os requisitos aplicáveis em critérios de aceitação, incluindo testes negativos.
+- [OWASP SAMM](https://owaspsamm.org/model/) ajuda a avaliar e melhorar as práticas de segurança da organização em governança, design, implementação, verificação e operações.
+- [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/) ajuda a estruturar a análise de ameaças específicas de agentes. Use-o junto com as orientações de segurança de aplicações e LLMs, não no lugar delas.
+
+Listas Top 10 são pontos de partida para conhecer riscos, não planos de teste exaustivos nem certificações. [NIST SSDF](https://csrc.nist.gov/Projects/ssdf) pode fornecer uma estrutura mais ampla de desenvolvimento seguro quando as equipes precisam de um vocabulário comum para práticas e evidências.
+
+## Adicione ferramentas somente para uma lacuna definida
+
+Para um serviço em contêineres centrado no GitHub, eu começaria com GHAS, Docker Scout, requisitos derivados do OWASP, verificações de infraestrutura como código, IaC, testes dinâmicos autenticados de segurança de aplicações, DAST, verificação de artefatos e controles de execução adequados à plataforma de hospedagem.
+
+É um conjunto de capacidades, não a obrigação de comprar um produto para cada célula.
+
+| Lacuna ou restrição | Opção a avaliar | Critério de seleção |
+|---|---|---|
+| Outra cobertura de SAST ou modelo de hospedagem | [Semgrep](https://docs.semgrep.dev/) | Compare suporte a linguagens, regras, profundidade da análise e recursos comerciais versus comunitários com seu código. |
+| Verificações portáveis de segredos e dependências | [Gitleaks](https://github.com/gitleaks/gitleaks) e [OSV-Scanner](https://google.github.io/osv-scanner/) | Eles tratam problemas diferentes. Um hook local de segredos pode ser ignorado; mantenha um controle no servidor. Verificações de dependências dependem do inventário e dos ecossistemas compatíveis. |
+| Outro scanner de imagens | [Trivy](https://github.com/aquasecurity/trivy) | Avalie a cobertura de imagens/pacotes e a atualização da base de dados. Habilite explicitamente os scanners necessários; nem todo modo inclui verificações de configuração. |
+| Verificações de políticas de infraestrutura | [Checkov](https://www.checkov.io/) ou uma integração existente do Trivy | Confira o suporte aos formatos reais dos seus templates e à configuração gerada. Analisar código-fonte não comprova que o estado implantado na nuvem corresponde a ele. |
+| Comportamento de aplicações web/APIs em execução | [ZAP Automation Framework](https://www.zaproxy.org/docs/automate/automation-framework/) | Configure autenticação, descoberta da aplicação e definições de API. Adicione testes explícitos de lógica de negócio e autorização. |
+| Identidade de artefatos fora de um fluxo exclusivo do GitHub | [Verificação com Sigstore Cosign](https://docs.sigstore.dev/cosign/verifying/verify/) | Verifique identidade e emissor confiáveis, além do digest do artefato. Uma assinatura válida, sozinha, não determina sua segurança. |
+| Detecção em execução | [Falco](https://falco.org/docs/) ou proteção de workloads da plataforma de hospedagem | Ajuste os recursos ao ambiente. Monitorar eventos de Linux/contêineres não cobre universalmente serviços gerenciados ou serverless. |
+
+Teste as alternativas com aplicações representativas e casos conhecidos. Compare achados acionáveis, falsos positivos, esforço de integração, licenças, manutenção e onde código-fonte ou metadados são processados. Por exemplo, Gitleaks informa atualmente que as próximas versões se limitarão a patches de segurança; considere esse modelo de manutenção ao escolhê-lo. Não envie material sensível a um novo serviço de análise sem autorização.
+
+Dois scanners sobrepostos podem ser justificados por cobertura adicional demonstrada. Três scanners porque cada um tem um painel diferente, não.
+
+## Transforme o mapa em um fluxo de CI/CD obrigatório
+
+O pipeline deve conectar evidência à autoridade para entregar. Meu [artigo anterior sobre CI/CD](/blog/cicd-pipelines-agentic-era) aborda verificação; a ampliação fundamental aqui é verificar toda a cadeia de entrega.
+
+1. **Antes da implementação:** defina casos de abuso e critérios de aceitação de segurança. Para uma tarefa de agente, especifique os repositórios, ferramentas, dados e ações permitidos. Identifique mudanças que exigem revisão de segurança.
+2. **No pull request:** execute verificações de código, segredos, dependências e configuração com permissões mínimas. Mantenha código não confiável longe de credenciais de produção e executores privilegiados. Exija revisão independente para mudanças em workflows, políticas, identidades e infraestrutura.
+3. **Em um build protegido:** compile o commit revisado em um ambiente limpo e controlado. Produza o artefato de entrega, sua SBOM e as informações de proveniência. Analise esse artefato exato. Separe a execução do build da autoridade de deploy.
+4. **Em um ambiente de teste isolado:** implante o artefato candidato com dados sintéticos. Execute DAST autenticado, testes de autorização de API e avaliações de agentes aplicáveis. Verifique se a autenticação funcionou e os endpoints previstos foram alcançados; um rastreamento vazio significa falta de evidência. Análises ativas exigem autorização e podem alterar o estado da aplicação; use um ambiente de teste descartável.
+5. **Na promoção:** verifique a evidência e aprove o mesmo digest imutável do artefato, em vez de reconstruí-lo a partir de uma tag mutável. Aplique a política de entrega pela plataforma de deploy, não como uma sugestão no PR.
+6. **Após o deploy:** registre o digest em execução, reavalie novas vulnerabilidades, detecte desvios de configuração e abuso e incorpore os achados aos requisitos e testes de regressão.
+
+O próprio pipeline faz parte da superfície de ataque. Siga a [orientação de uso seguro do GitHub Actions](https://docs.github.com/en/actions/reference/security/secure-use): evite executar código de PRs não confiáveis em contextos privilegiados de `pull_request_target` ou `workflow_run` e não presuma que artefatos ou caches de jobs não confiáveis sejam seguros.
+
+Use [lockfiles de dependências de workflows](https://docs.github.com/en/actions/concepts/security/workflow-dependency-lockfiles), quando disponíveis, para fixar dependências diretas e transitivas de actions. Eles não fixam chamadas a workflows reutilizáveis; referencie esses workflows por SHAs completos de commits e gerencie as dependências no repositório do workflow chamado. Onde lockfiles não estiverem disponíveis, fixe actions em SHAs completos revisados. Mantenha essas dependências revisadas atualizadas em vez de congelá-las indefinidamente.
+
+Use [federação OIDC](https://docs.github.com/en/actions/concepts/security/openid-connect) no lugar de credenciais de nuvem de longa duração, quando houver suporte. Restrinja a confiança ao repositório, workflow/referência ou ambiente protegido previsto usando as condições aceitas pelo provedor e conceda à identidade resultante somente as permissões necessárias. Credenciais de curta duração com um papel amplo demais continuam excessivamente privilegiadas.
+
+[Atestações de artefatos](https://docs.github.com/en/actions/concepts/security/artifact-attestations) conectam um artefato à origem do seu build. Verifique o emissor confiável, a identidade do signatário/workflow, a revisão do código e o digest do artefato conforme a política. Apenas anexar uma SBOM ou assinatura não demonstra que o artefato é seguro.
+
+## Defina o que bloqueia uma entrega
+
+O código de saída de um scanner e sua decisão de entrega não são automaticamente a mesma coisa. Configure a integração para aplicar a política e teste se uma verificação com falha realmente impede a promoção.
+
+Esta é uma política de exemplo a adaptar ao risco da aplicação:
+
+| Condição | Decisão padrão |
+|---|---|
+| Uma credencial recém-exposta | Interromper a promoção; revogar ou fazer a rotação da credencial e investigar a exposição. |
+| Um teste com falha de isolamento entre clientes, autorização ou ação proibida de ferramenta | Interromper a promoção; tratar como requisito não atendido, mesmo sem uma CVE. |
+| Um novo achado crítico/alto que atenda aos critérios de risco documentados pela equipe | Bloquear até a correção ou aceitação explícita pelo processo de exceções. |
+| Uma análise obrigatória falha, está incompleta ou desatualizada ou não fornece dados | Bloquear porque a evidência necessária é desconhecida, não limpa. |
+| Não é possível verificar a identidade do artefato ou sua proveniência confiável | Rejeitar o artefato. |
+
+Combine gravidade com exposição, possibilidade de exploração, sensibilidade dos dados e evidências de exploração. Desconhecer se um caminho é alcançável não significa que seja inalcançável. "Não há correção disponível" não significa "aceitável"; pode ser necessário conter o risco ou desativar o recurso afetado.
+
+Não isente silenciosamente o backlog existente. Atribua prazos de correção e escale exposições urgentes mesmo quando a vulnerabilidade não foi introduzida pelo PR atual.
+
+Exceções precisam de um responsável pelo risco identificado, uma justificativa, escopo restrito, controles compensatórios, data de expiração e tarefa de correção acompanhada. Agentes não devem aprovar as próprias exceções nem alterar a política que avalia seu resultado. Restrinja a autoridade para ignorar controles e registre seu uso.
+
+Para cada entrega, mantenha o commit de origem, digest do artefato, versões dos scanners e das políticas, atualidade dos dados de vulnerabilidades, achados, decisões e aprovações. Defina a validade da evidência por controle: a proveniência imutável de um build e uma avaliação de vulnerabilidades envelhecem de formas diferentes. Colete evidências de jobs confiáveis; um arquivo JSON escrito por um agente que afirma "passed" não é verificação.
+
+Normalize os achados em uma fila de correção com responsáveis. Preserve as evidências específicas de cada scanner e elimine duplicações por componente, versão afetada, vulnerabilidade ou regra e contexto do artefato. SARIF é útil para achados de análise de código; não é um formato universal para SBOMs, atestações ou telemetria de execução.
+
+## Trate os dois tipos de risco agêntico
+
+### Agentes que participam do desenvolvimento
+
+Um agente de programação pode encontrar instruções em arquivos do repositório, issues, dependências e respostas de ferramentas. Trate essas entradas como dados não confiáveis, não como permissão para mudar sua tarefa ou autoridade.
+
+Dê ao agente um ambiente de execução delimitado, acesso restrito à rede e credenciais limitadas à tarefa. Não exponha segredos de produção. Minha [comparação de sandboxes](/blog/sandboxing-coding-agents-copilot-docker) explica por que isolamento, conectividade e identidade são controles separados.
+
+Verifique os nomes dos pacotes adicionados pelo agente, a identidade do publicador/origem, as versões e o comportamento de instalação. Um pacote existir não o torna automaticamente confiável, e um resultado limpo em uma base de vulnerabilidades não comprova que ele seja benigno.
+
+Exija revisão do diff e evidências independentes de CI. Aplique o mesmo padrão de segurança às mudanças humanas e de agentes; adicione controles conforme a autoridade e o comportamento envolvidos, não com base em uma suposição sobre o nome do autor de um commit.
+
+### Agentes que operam dentro da aplicação
+
+Um agente de aplicação pode recuperar documentos, manter memória, chamar APIs ou usar servidores do Model Context Protocol, MCP. Analisar o contêiner da aplicação não demonstra que essas ações estejam autorizadas.
+
+Aplique autorização fora do modelo, para cada ação de ferramenta e recurso de destino. Preserve os limites do usuário e do cliente solicitantes em vez de dar a todas as solicitações uma identidade de serviço compartilhada e irrestrita. Valide os argumentos das ferramentas no servidor e exija aprovação explícita para ações de alto impacto.
+
+Mantenha um inventário de servidores MCP, ferramentas, provedores de modelos e fontes de dados. Revise mudanças em suas capacidades, permissões e proveniência. Trate conteúdo recuperado e respostas de ferramentas como potencialmente hostis, incluindo conteúdo salvo na memória para uso posterior.
+
+Teste casos adversariais controlados: um documento recuperado pedindo ao agente que exceda seu escopo, uma resposta de ferramenta tentando redirecionar a tarefa, uma solicitação não autorizada entre clientes e uma ação fora da lista permitida. Verifique se o controle externo nega a ação, não apenas se o modelo diz que recusou.
+
+Limite chamadas de ferramentas, tempo de execução e gastos. Registre os metadados necessários das ações sem manter indiscriminadamente prompts, segredos ou dados de clientes. Mantenha um mecanismo de emergência para desativar ou revogar acessos e exercite-o. Repita os testes quando modelos, prompts, ferramentas, fontes de recuperação ou políticas mudarem, mesmo sem mudanças no código da aplicação.
+
+Esses controles reduzem o risco. Eles não tornam a injeção de prompt um problema resolvido.
+
+## Meça as conexões e depois amplie
+
+Comece com um serviço representativo. Estabeleça requisitos, responsáveis e uma linha de base de cobertura. Adicione os controles ausentes, teste os caminhos de falha e transforme o pipeline resultante em um padrão reutilizável revisado antes de expandi-lo.
+
+Meça se o sistema funciona, não quantos alertas ele gera:
+
+- **Cobertura:** proporção de repositórios, linguagens, artefatos e serviços implantados dentro do escopo com evidência completa e atual. Conte explicitamente os alvos incompatíveis ou ignorados.
+- **Resposta:** tempo para corrigir exposições importantes, idade das exceções e decisões de risco vencidas.
+- **Defeitos que chegaram à produção:** incidentes e defeitos de segurança descobertos após a entrega e se eles se tornam novas verificações preventivas.
+- **Aplicação dos controles:** se a falta de evidência, ações não autorizadas de agentes e artefatos inválidos são realmente barrados.
+
+Quando surgir um achado em execução, conecte-o ao artefato implantado, serviço responsável, mudança de código e controle ausente. É assim que antecipar a segurança se torna um ciclo de feedback em vez de uma implantação anual de scanners.
+
+GHAS ajuda a proteger mudanças no repositório. Docker Scout acrescenta visibilidade dos artefatos. OWASP ajuda a definir o que verificar e como amadurecer a prática. Testes complementares, controles da cadeia de suprimentos, limites de identidade e operações cobrem riscos que essas ferramentas não resolvem.
+
+O objetivo não é um painel verde em cada produto. É uma decisão de entrega que você consiga explicar com evidências, controles cuja aplicação possa comprovar e pessoas que assumam o risco restante.
