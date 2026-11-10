@@ -1,9 +1,9 @@
 ---
 title: "Cerrar las brechas de DevSecOps en la era de la IA agéntica"
-description: "Alinea GHAS, Docker Scout, OWASP y controles complementarios en todo el SDLC, con controles de CI/CD y protección para agentes de IA."
+description: "Alinea GHAS, Docker Scout, OWASP y Microsoft Defender for Cloud en el SDLC, desde los controles de CI/CD hasta la protección en producción."
 slug: closing-devsecops-gaps-agentic-ai
 authors: [dsanchezcr]
-tags: [Security, DevSecOps, Agentic AI, GitHub Advanced Security, Docker, OWASP, CI/CD]
+tags: [Security, DevSecOps, Agentic AI, GitHub Advanced Security, Docker, OWASP, CI/CD, Microsoft Defender for Cloud]
 enableComments: true
 hide_table_of_contents: true
 image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-11-08-closing-devsecops-gaps/devsecops-security-loop.webp
@@ -20,7 +20,7 @@ Eso no demuestra que un cliente no pueda leer los registros de otro, que el ejec
 
 ![Controles de seguridad conectados a lo largo de un ciclo de entrega de software, con un agente de IA en un espacio delimitado y retroalimentación de operaciones a desarrollo](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-11-08-closing-devsecops-gaps/devsecops-security-loop.webp)
 
-*Documentación revisada el 8 de noviembre de 2026. Las funciones, licencias y plataformas compatibles cambian; consulta la documentación enlazada para tu entorno. Este es un modelo operativo recomendado, no una afirmación de que una combinación de herramientas elimina todas las vulnerabilidades.*
+*Documentación revisada entre el 8 y el 10 de noviembre de 2026. Las funciones, licencias y plataformas compatibles cambian; consulta la documentación enlazada para tu entorno. Este es un modelo operativo recomendado, no una afirmación de que una combinación de herramientas elimina todas las vulnerabilidades.*
 
 ## Empieza por la cobertura, no por una lista de compras
 
@@ -51,7 +51,7 @@ Este es un punto de partida, no una lista universal de cumplimiento. Asigna equi
 | Integración: autorización defectuosa y API expuestas | DAST autenticado, pruebas negativas de API, pruebas manuales de seguridad | Roles, rutas y límites entre clientes probados, con sus resultados | Equipo de desarrollo con AppSec |
 | Comportamiento del agente: uso indebido de herramientas e inyección de instrucciones | Herramientas restringidas, autorización externa, evaluaciones adversariales | Pruebas de acciones denegadas y versiones de modelos/herramientas/políticas | Responsable del servicio de agentes |
 | Entrega: artefacto no verificado o controles omitidos | Verificación de atestaciones, política de despliegue, entornos protegidos | Digest del artefacto aprobado, decisión del control, persona que aprueba | Equipo de entrega/plataforma |
-| Operaciones: desviaciones, nuevas vulnerabilidades y abuso | Evaluación continua de vulnerabilidades, postura de seguridad en la nube, supervisión en ejecución | Inventario desplegado, alertas, registros de corrección y respuesta | SRE/operaciones de seguridad |
+| Operaciones: desviaciones, nuevas vulnerabilidades y abuso | Microsoft Defender for Cloud para postura y protección de cargas compatibles; evaluación continua de vulnerabilidades | Inventario desplegado, recomendaciones, alertas, registros de corrección y respuesta | SRE/operaciones de seguridad |
 | Retirada: accesos huérfanos y datos conservados | Revocar identidades, eliminar integraciones, aplicar políticas de eliminación/retención | Lista de retirada y eliminación de accesos verificada | Responsables del servicio y de los datos |
 
 Un escáner puede aportar evidencia para una fila. No asume la responsabilidad de esa fila.
@@ -94,6 +94,8 @@ Las listas Top 10 son puntos de partida para conocer riesgos, no planes de prueb
 
 Para un servicio en contenedores centrado en GitHub, empezaría con GHAS, Docker Scout, requisitos derivados de OWASP, comprobaciones de infraestructura como código, IaC, pruebas dinámicas autenticadas de seguridad de aplicaciones, DAST, verificación de artefactos y controles de ejecución apropiados para la plataforma de alojamiento.
 
+En Azure, evaluaría Microsoft Defender for Cloud para la capa de operaciones.
+
 Es un conjunto de capacidades, no la obligación de comprar un producto para cada casilla.
 
 | Brecha o restricción | Opción que evaluar | Criterio de selección |
@@ -104,6 +106,7 @@ Es un conjunto de capacidades, no la obligación de comprar un producto para cad
 | Comprobaciones de políticas de infraestructura | [Checkov](https://www.checkov.io/) o una integración existente de Trivy | Verifica la compatibilidad con los formatos reales de tus plantillas y la configuración generada. Analizar el código fuente no demuestra que coincida con el estado desplegado en la nube. |
 | Comportamiento de aplicaciones web/API en ejecución | [ZAP Automation Framework](https://www.zaproxy.org/docs/automate/automation-framework/) | Configura la autenticación, el descubrimiento de la aplicación y las definiciones de API. Añade pruebas explícitas de lógica de negocio y autorización. |
 | Identidad de artefactos fuera de un flujo exclusivo de GitHub | [Verificación con Sigstore Cosign](https://docs.sigstore.dev/cosign/verifying/verify/) | Verifica la identidad y el emisor confiables, además del digest del artefacto. Una firma válida por sí sola no determina su seguridad. |
+| Postura en la nube y protección de cargas de trabajo | [Microsoft Defender for Cloud](https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-cloud-introduction) | Selecciona por separado los planes de postura y de cargas; verifica los recursos compatibles y la telemetría necesaria. |
 | Detección en ejecución | [Falco](https://falco.org/docs/) o protección de cargas de la plataforma de alojamiento | Ajusta las capacidades al entorno. Supervisar eventos de Linux/contenedores no cubre universalmente servicios administrados o sin servidor. |
 
 Prueba las alternativas con aplicaciones representativas y casos conocidos. Compara los hallazgos accionables, falsos positivos, esfuerzo de integración, licencias, mantenimiento y dónde se procesan el código fuente o los metadatos. Por ejemplo, Gitleaks indica actualmente que sus próximas versiones se limitarán a parches de seguridad; considera ese modelo de mantenimiento al elegirlo. No envíes material sensible a un nuevo servicio de análisis sin autorización.
@@ -179,6 +182,23 @@ Limita las llamadas a herramientas, el tiempo de ejecución y el gasto. Registra
 
 Estos controles reducen el riesgo. No convierten la inyección de instrucciones en un problema resuelto.
 
+## Cierra la brecha de operaciones con Microsoft Defender for Cloud
+
+Una compilación sin hallazgos no garantiza que el entorno desplegado siga siendo seguro. Microsoft Defender for Cloud aporta visibilidad de la configuración de los recursos desplegados y de las amenazas que afectan a cargas compatibles. Complementa las comprobaciones del repositorio de GHAS y el análisis de artefactos de Docker Scout, no los sustituye.
+
+Separa dos tareas:
+
+- **Gestión de la postura de seguridad en la nube (CSPM):** [Foundational CSPM](https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-cloud-security-posture-management) ofrece evaluaciones y recomendaciones de postura gratuitas. El plan de pago Defender CSPM añade capacidades como el análisis de rutas de ataque cuando se cumplen sus requisitos, lo que ayuda a priorizar combinaciones de exposición, vulnerabilidades y debilidades de configuración. Una recomendación de postura identifica una debilidad, no demuestra un ataque activo.
+- **Protección de cargas de trabajo:** habilita los planes adecuados para tus recursos, como Defender for Servers o Defender for Containers. Consulta las [matrices de compatibilidad](https://learn.microsoft.com/en-us/azure/defender-for-cloud/support-matrix-defender-for-cloud), los requisitos de incorporación y las capacidades con sensores o sin agente. Habilitar un plan a nivel de suscripción no demuestra que todas las cargas tengan cobertura efectiva de detección, especialmente entre servicios administrados y sin servidor.
+
+Cuando sea compatible, la [integración con GHAS](https://learn.microsoft.com/en-us/azure/defender-for-cloud/github-advanced-security-overview) conecta los hallazgos del repositorio con el contexto de la nube para priorizar correcciones según la exposición en producción. Requiere un conector de GitHub, una licencia de GHAS adecuada y Defender CSPM, además de los requisitos documentados de entorno y permisos. Valida las correspondencias; conserva registros de despliegue y digests de artefactos para servicios fuera de esa cobertura.
+
+Dirige las [alertas de seguridad](https://learn.microsoft.com/en-us/azure/defender-for-cloud/manage-respond-alerts) al equipo que investiga y responde, mediante integraciones compatibles como Microsoft Sentinel cuando corresponda. Asigna un responsable, un plazo de evaluación y un procedimiento de respuesta. Los equipos de plataforma deben asumir las correcciones de configuración; los desarrolladores, las de código y dependencias. Ensaya la entrega de alertas y la contención con escenarios de prueba aprobados en lugar de suponer que un panel con datos implica que alguien actuará.
+
+Por ejemplo, una carga expuesta que ejecuta una imagen vulnerable necesita algo más que otro análisis. Combina el contexto de recursos y exposición de Defender con los hallazgos de paquetes de Scout y tu inventario de digests de imágenes. Operaciones investiga y contiene posibles compromisos; desarrollo corrige, recompila, vuelve a analizar y promueve el digest de reemplazo. Corrige las desviaciones de configuración tanto en IaC como en el recurso activo, verifica la solución y añade una comprobación preventiva.
+
+Defender for Cloud no sustituye las pruebas de autorización de aplicaciones ni los controles externos de herramientas de agentes. Una puntuación de seguridad mayor o una cola de alertas vacía no demuestran seguridad. El objetivo operativo es una cobertura verificada, una respuesta eficaz y retroalimentación que evite repetir la misma exposición.
+
 ## Mide las conexiones y después amplía
 
 Empieza con un servicio representativo. Establece requisitos, responsables y una línea base de cobertura. Añade los controles que falten, prueba las rutas de fallo y convierte el pipeline resultante en un patrón reutilizable revisado antes de extenderlo.
@@ -192,6 +212,6 @@ Mide si el sistema funciona, no cuántas alertas genera:
 
 Cuando aparezca un hallazgo en ejecución, conéctalo con el artefacto desplegado, el servicio responsable, el cambio de código y el control ausente. Así, adelantar la seguridad se convierte en un ciclo de retroalimentación y no en un despliegue anual de escáneres.
 
-GHAS ayuda a proteger los cambios del repositorio. Docker Scout añade visibilidad de los artefactos. OWASP ayuda a definir qué verificar y cómo madurar la práctica. Las pruebas complementarias, los controles de la cadena de suministro, los límites de identidad y las operaciones cubren riesgos que esas herramientas no resuelven.
+GHAS ayuda a proteger los cambios del repositorio. Docker Scout añade visibilidad de los artefactos. OWASP ayuda a definir qué verificar y cómo madurar la práctica. Microsoft Defender for Cloud extiende el modelo a la postura en la nube y la protección de cargas de trabajo. Las pruebas complementarias, los controles de la cadena de suministro, los límites de identidad y la respuesta operativa cubren riesgos que esas herramientas no resuelven.
 
 El objetivo no es un panel verde en cada producto. Es una decisión de entrega que puedas explicar con evidencia, controles cuya aplicación puedas demostrar y personas que asuman el riesgo restante.
