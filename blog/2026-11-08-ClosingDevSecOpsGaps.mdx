@@ -1,0 +1,217 @@
+---
+title: "Closing the DevSecOps Gaps in the Agentic AI Era"
+description: "Align GHAS, Docker Scout, OWASP, and Microsoft Defender for Cloud across the SDLC, from CI/CD gates to runtime protection and AI-agent safeguards."
+slug: closing-devsecops-gaps-agentic-ai
+authors: [dsanchezcr]
+tags: [Security, DevSecOps, Agentic AI, GitHub Advanced Security, Docker, OWASP, CI/CD, Microsoft Defender for Cloud]
+enableComments: true
+hide_table_of_contents: true
+image: https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-11-08-closing-devsecops-gaps/devsecops-security-loop.webp
+date: 2026-11-08T10:00
+---
+
+An AI agent updates an API, adds a dependency, and rebuilds its container. Code scanning passes. The image has no blocking vulnerability findings. The deployment succeeds.
+
+That does not tell you whether one customer can read another customer's records, whether the build runner exposed a credential, or whether the deployed agent can be persuaded to misuse an authorized tool.
+
+**The security gap is not necessarily a missing scanner. It is often a missing connection between a risk, a control, evidence, and someone responsible for acting on it.**
+
+{/* truncate */}
+
+![Connected security checkpoints across a software delivery loop, with an AI agent inside a bounded workspace and feedback from operations to development](https://dsanchezcrwebsite.blob.core.windows.net/images/blog/2026-11-08-closing-devsecops-gaps/devsecops-security-loop.webp)
+
+*Documentation reviewed November 8-10, 2026. Features, licensing, and platform support change; check the linked documentation for your environment. This is a recommended operating model, not a claim that any tool combination eliminates every vulnerability.*
+
+## Start with coverage, not a shopping list
+
+The objective of DevSecOps is to integrate security into the software development lifecycle, or SDLC. Moving a scanner earlier is useful. Moving security requirements, threat modeling, and ownership earlier is more important.
+
+AI agents increase the volume and speed of changes. They also introduce execution environments, tool integrations, and machine identities that need controls of their own. Existing security engineering still applies; it needs to cover those additional paths.
+
+I would start with four questions for each important risk:
+
+1. What must be prevented, detected, or contained?
+2. Which control addresses it, and where does that control run?
+3. What evidence proves the control ran against the change being released?
+4. Who fixes a finding, approves an exception, or responds to an incident?
+
+Shift left where feedback can be fast and useful. Keep verification and monitoring on the right, where deployed configuration and actual behavior become visible.
+
+## An SDLC coverage map
+
+This is a starting map, not a universal compliance checklist. Assign actual teams to the owner column and document any uncovered area.
+
+| Stage and risk | Primary controls and tool fit | Evidence to retain | Accountable owner |
+|---|---|---|---|
+| Design: unsafe trust boundaries, data exposure | Threat modeling, OWASP ASVS requirements, privacy review | Data flows, abuse cases, testable security requirements | Product team with AppSec |
+| Coding: vulnerable logic and leaked secrets | GHAS code scanning, secret scanning, push protection, review | Analysis for the commit, reviewed findings, secret revocation records | Development team |
+| Dependencies: vulnerable or untrusted packages | Dependency review, Dependabot, approved package sources | Dependency changes, lockfiles, package origin, remediation decisions | Development team |
+| Infrastructure and CI: excessive privilege or unsafe configuration | IaC checks, workflow review, runner isolation, least privilege | Policy results and approved identity/network changes | Platform team |
+| Build: vulnerable or substituted artifacts | Docker Scout, SBOM, build provenance, protected build environment | Image digest, component inventory, scan results, provenance | Build/platform team |
+| Integration: broken authorization and exposed APIs | Authenticated DAST, negative API tests, manual security testing | Tested roles, routes, tenant boundaries, and results | Development team with AppSec |
+| Agent behavior: tool misuse and prompt injection | Restricted tools, external authorization, adversarial evaluations | Denied-action tests and model/tool/policy versions | Agent service owner |
+| Release: unverified artifact or bypassed checks | Attestation verification, deployment policy, protected environments | Approved artifact digest, gate decision, approver | Release/platform team |
+| Operations: drift, newly disclosed vulnerabilities, abuse | Microsoft Defender for Cloud for posture and supported workload protection; continuous vulnerability assessment | Deployed inventory, recommendations, alerts, remediation and response records | SRE/security operations |
+| Retirement: orphaned access and retained data | Revoke identities, remove integrations, apply deletion/retention policy | Decommission checklist and verified removal of access | Service and data owners |
+
+A scanner can provide evidence for a row. It does not own the row.
+
+## What GHAS, Docker Scout, and OWASP actually cover
+
+### GHAS: code, secrets, and repository-centered feedback
+
+[GitHub Advanced Security](https://docs.github.com/en/get-started/learning-about-github/about-github-advanced-security) is not one scan. GitHub's current product split distinguishes **GitHub Code Security**, including code scanning and dependency review, from **GitHub Secret Protection**, including secret scanning and push protection.
+
+Some capabilities are available free for public repositories. Private and internal repository availability depends on the feature, plan, and license. Dependency graph and Dependabot alerts are included across plans; do not describe all dependency security as a paid GHAS feature.
+
+Use CodeQL for static application security testing (SAST) on supported code and verify that the intended languages, build configuration, and paths were analyzed. GitHub also documents AI Scan for additional language/framework coverage. Evaluate that coverage rather than assuming either engine understands every application behavior.
+
+Secret scanning detects supported secret types and configured patterns. Push protection can prevent supported leaks before they enter the repository. Neither is a general data-loss-prevention system for an agent's prompts, files, or network traffic. If a credential was exposed, revoke or rotate it; deleting the line is not remediation.
+
+Copilot Autofix and coding agents can propose repairs. The proposed repair still needs review and independent verification.
+
+### Docker Scout: inspect the artifact you actually ship
+
+[Docker Scout](https://docs.docker.com/scout/) inventories image components in a software bill of materials, or SBOM, and correlates that inventory with vulnerability information. This complements source dependency checks because an image also contains base-image and operating-system packages.
+
+Scout can help identify affected layers and base-image updates. Its [policy checks](https://docs.docker.com/scout/policy/) also cover criteria such as approved base images, default non-root users, and the presence of supply-chain attestations.
+
+Watch the evidence requirements. Some base-image policies need provenance and report **No data** when it is missing. That is not equivalent to compliance. Likewise, an image configured with a non-root default can still be deployed with an unsafe runtime configuration.
+
+[Continuous image analysis](https://docs.docker.com/scout/explore/analysis/) requires enabling the relevant repositories and integrations. A one-off CLI analysis does not establish ongoing monitoring. Scout is not application SAST, an authorization test, a coding-agent sandbox, or runtime intrusion detection.
+
+### OWASP: requirements and guidance, not a single product
+
+"We run OWASP" is not a meaningful coverage statement. Select the relevant project:
+
+- [OWASP ASVS](https://asvs.owasp.org/) supplies verifiable application security requirements. Turn applicable requirements into acceptance criteria, including negative tests.
+- [OWASP SAMM](https://owaspsamm.org/model/) helps assess and improve the organization's security practices across governance, design, implementation, verification, and operations.
+- [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/) helps structure agent-specific threat analysis. Use it alongside application and LLM security guidance, not instead of them.
+
+Top 10 lists are starting points for risk awareness, not exhaustive test plans or certifications. [NIST SSDF](https://csrc.nist.gov/Projects/ssdf) can provide a broader secure-development framework when teams need a common vocabulary for practices and evidence.
+
+## Add tools only for a defined gap
+
+For a GitHub-centered container service, my starting combination would be GHAS, Docker Scout, OWASP-derived requirements, infrastructure-as-code (IaC) checks, authenticated dynamic application security testing (DAST), artifact verification, and runtime controls appropriate to the hosting platform.
+
+On Azure, I would evaluate Microsoft Defender for Cloud for the operations layer.
+
+That is a set of capabilities, not a requirement to buy a product for every cell.
+
+| Gap or constraint | Option to evaluate | Selection boundary |
+|---|---|---|
+| Different SAST coverage or hosting model | [Semgrep](https://docs.semgrep.dev/) | Compare language support, rules, analysis depth, and commercial versus community capabilities against your code. |
+| Portable secret and dependency checks | [Gitleaks](https://github.com/gitleaks/gitleaks) and [OSV-Scanner](https://google.github.io/osv-scanner/) | They address different problems. A local secret hook is bypassable; keep a server-side gate. Dependency checks depend on supported ecosystems and inventory. |
+| An alternative image scanner | [Trivy](https://github.com/aquasecurity/trivy) | Evaluate image/package coverage and database freshness. Enable needed scanners explicitly; not every scan mode includes misconfiguration checks. |
+| Infrastructure policy checks | [Checkov](https://www.checkov.io/) or an existing Trivy integration | Verify support for your actual template formats and rendered configuration. Source checks do not prove deployed cloud state matches. |
+| Running web/API behavior | [ZAP Automation Framework](https://www.zaproxy.org/docs/automate/automation-framework/) | Configure authentication, application discovery, and API definitions. Add explicit business-logic and authorization tests. |
+| Artifact identity outside a GitHub-only flow | [Sigstore Cosign verification](https://docs.sigstore.dev/cosign/verifying/verify/) | Verify trusted identity and issuer as well as the artifact digest. A valid signature alone is not a security verdict. |
+| Cloud posture and workload protection | [Microsoft Defender for Cloud](https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-cloud-introduction) | Select posture and workload plans separately; verify supported resources and required telemetry. |
+| Runtime detection | [Falco](https://falco.org/docs/) or the hosting platform's workload protection | Match capabilities to the runtime. Linux/container event monitoring is not universal coverage for managed or serverless services. |
+
+Pilot alternatives against representative applications and known test cases. Compare actionable findings, false positives, integration effort, licensing, maintenance, and where source code or metadata is processed. For example, Gitleaks currently describes future releases as security patches only; account for that maintenance model when selecting it. Do not send sensitive material to a new scanning service without approval.
+
+Running two overlapping scanners may be justified by demonstrated additional coverage. Running three because each has a different dashboard is not.
+
+## Turn the map into an enforceable CI/CD flow
+
+The pipeline should connect evidence to release authority. My [earlier CI/CD article](/blog/cicd-pipelines-agentic-era) discusses verification; the critical extension here is to verify the whole delivery chain.
+
+1. **Before implementation:** define the abuse cases and security acceptance criteria. For an agent task, specify allowed repositories, tools, data, and actions. Identify changes that require a security reviewer.
+2. **At the pull request:** run code, secret, dependency, and configuration checks with minimal permissions. Keep untrusted code away from production credentials and privileged runners. Require independent review for workflow, policy, identity, and infrastructure changes.
+3. **In a protected build:** build the reviewed commit in a clean, controlled environment. Produce the release artifact, its SBOM, and provenance. Analyze that exact artifact. Keep build execution separate from deployment authority.
+4. **In an isolated preview:** deploy the candidate artifact with synthetic data. Run authenticated DAST, API authorization tests, and applicable agent evaluations. Verify login succeeded and intended endpoints were reached; an empty crawl is missing evidence. Active scans require authorization and can alter application state; use a disposable test environment.
+5. **At promotion:** verify the evidence and approve the same immutable artifact digest, rather than rebuilding from a moving tag. Enforce the release policy through the deployment platform, not a suggestion in the PR.
+6. **After deployment:** inventory the running digest, reassess new vulnerabilities, detect configuration drift and abuse, and feed findings into requirements and regression tests.
+
+The pipeline itself is part of the attack surface. Follow [GitHub Actions secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use): avoid executing untrusted PR code in privileged `pull_request_target` or `workflow_run` contexts, and do not assume artifacts or caches from untrusted jobs are safe.
+
+Use [workflow dependency lockfiles](https://docs.github.com/en/actions/concepts/security/workflow-dependency-lockfiles) where available to lock direct and transitive action dependencies. They do not pin reusable workflow calls; pin those to full commit SHAs and manage dependencies in the called workflow's repository. Where lockfiles are unavailable, pin actions to reviewed full SHAs. Keep those reviewed dependencies updated rather than freezing them indefinitely.
+
+Use [OIDC federation](https://docs.github.com/en/actions/concepts/security/openid-connect) instead of long-lived cloud credentials where supported. Restrict trust to the intended repository, workflow/ref or protected environment using the provider's supported conditions, and give the resulting identity only the required permissions. Short-lived credentials with an overly broad role are still overly privileged.
+
+[Artifact attestations](https://docs.github.com/en/actions/concepts/security/artifact-attestations) connect an artifact to its build origin. Verify the trusted issuer, signer/workflow identity, source revision, and artifact digest against policy. Merely attaching an SBOM or a signature does not establish that the artifact is safe.
+
+## Define what blocks a release
+
+A scanner's exit status and your release decision are not automatically the same thing. Configure the integration to enforce policy and test that a failing check really prevents promotion.
+
+Here is an example policy to adapt to the application's risk:
+
+| Condition | Default decision |
+|---|---|
+| A newly exposed credential | Stop promotion; revoke or rotate the credential and investigate exposure. |
+| A failed tenant-isolation, authorization, or prohibited-tool-action test | Stop promotion; treat this as a failed requirement, even without a CVE. |
+| A new critical/high finding that meets the team's documented risk criteria | Block until fixed or explicitly accepted through the exception process. |
+| A required scan fails, is incomplete or stale, or provides no data | Block because the required evidence is unknown, not clean. |
+| Artifact identity or trusted provenance cannot be verified | Reject the artifact. |
+
+Use severity together with exposure, exploitability, data sensitivity, and evidence of exploitation. Unknown reachability does not mean unreachable. "No fix available" does not mean "acceptable"; containment or disabling the affected feature may be necessary.
+
+Do not silently grandfather the existing backlog. Assign remediation deadlines and escalate urgent exposure even when the vulnerability was not introduced by the current PR.
+
+Exceptions need a named risk owner, a reason, a narrowly defined scope, compensating controls, an expiry date, and a tracked remediation task. Agents should not approve their own exceptions or edit the policy that judges their output. Restrict bypass authority and record its use.
+
+For each release, retain the source commit, artifact digest, scanner and policy versions, vulnerability-data freshness, findings, decisions, and approvals. Define evidence freshness per control: immutable build provenance and a vulnerability assessment age differently. Collect evidence from trusted jobs; an agent-authored JSON file claiming "passed" is not verification.
+
+Normalize findings into an owned remediation queue. Preserve scanner-specific evidence and deduplicate by component, affected version, vulnerability or rule, and artifact context. SARIF is useful for code-scanning findings; it is not a universal format for SBOMs, attestations, or runtime telemetry.
+
+## Address both kinds of agentic risk
+
+### Agents participating in development
+
+A coding agent can encounter instructions in repository files, issues, dependencies, and tool responses. Treat those inputs as untrusted data, not permission to change its task or authority.
+
+Give the agent a bounded execution environment, narrow network access, and task-scoped credentials. Do not expose production secrets. My [sandboxing comparison](/blog/sandboxing-coding-agents-copilot-docker) explains why isolation, connectivity, and identity are separate controls.
+
+Verify agent-added package names, publisher/source identity, versions, and installation behavior. A package that exists is not automatically trustworthy, and a clean vulnerability database result is not proof that a package is benign.
+
+Require review of the diff and independent CI evidence. Apply the same security standard to human and agent changes; add controls according to the authority and behavior involved, not a guess based on a commit author's name.
+
+### Agents operating inside the application
+
+An application agent may retrieve documents, retain memory, call APIs, or use Model Context Protocol (MCP) servers. Scanning the application's container does not establish that those actions are authorized.
+
+Enforce authorization outside the model, for each tool action and target resource. Preserve the requesting user's and tenant's boundaries instead of giving every request a shared, unrestricted service identity. Validate tool arguments server-side and require explicit approval for high-impact actions.
+
+Inventory MCP servers, tools, model providers, and data sources. Review changes to their capabilities, permissions, and provenance. Treat retrieved content and tool responses as potentially hostile, including content saved into memory for later use.
+
+Test with controlled adversarial cases: a retrieved document asking the agent to exceed its scope, a tool response trying to redirect the task, an unauthorized cross-tenant request, and an attempted action outside the allowlist. Assert that the external control denies the action, not merely that the model says it refused.
+
+Bound tool calls, execution time, and spending. Log necessary action metadata without indiscriminately retaining prompts, secrets, or customer data. Maintain an emergency disable/revoke path and exercise it. Retest when models, prompts, tools, retrieval sources, or policies change, even if the application code does not.
+
+These controls reduce risk. They do not make prompt injection a solved problem.
+
+## Close the operations gap with Microsoft Defender for Cloud
+
+A clean build does not ensure the deployed environment stays secure. Microsoft Defender for Cloud adds visibility into deployed resource configuration and threats affecting supported workloads. It complements GHAS's repository checks and Docker Scout's artifact analysis rather than replacing them.
+
+Separate two jobs:
+
+- **Cloud security posture management (CSPM):** [Foundational CSPM](https://learn.microsoft.com/en-us/azure/defender-for-cloud/concept-cloud-security-posture-management) provides free posture assessments and recommendations. The paid Defender CSPM plan adds capabilities such as attack-path analysis when prerequisites are met, helping prioritize combinations of exposure, vulnerabilities, and configuration weaknesses. A posture recommendation identifies a weakness, not proof of an active attack.
+- **Workload protection:** enable the plans appropriate to your resources, such as Defender for Servers or Defender for Containers. Check the [support matrices](https://learn.microsoft.com/en-us/azure/defender-for-cloud/support-matrix-defender-for-cloud), onboarding requirements, and sensor or agentless capabilities. Enabling a subscription-level plan does not prove every workload has effective detection coverage, especially across managed and serverless services.
+
+Where supported, the [GHAS integration](https://learn.microsoft.com/en-us/azure/defender-for-cloud/github-advanced-security-overview) connects repository findings with cloud context to prioritize fixes based on production exposure. It requires a GitHub connector, an appropriate GHAS license, and Defender CSPM, alongside the documented environment and permission prerequisites. Validate the mappings; retain deployment records and artifact digests for services outside that coverage.
+
+Route [security alerts](https://learn.microsoft.com/en-us/azure/defender-for-cloud/manage-respond-alerts) to the team that investigates and responds, using supported integrations such as Microsoft Sentinel when appropriate. Assign an owner, triage deadline, and response playbook. Platform teams should own configuration remediation; developers should own code and dependency fixes. Exercise alert delivery and containment with approved test scenarios instead of assuming a populated dashboard means someone will act.
+
+For example, an exposed workload running a vulnerable image needs more than another scan. Combine Defender's resource and exposure context with Scout's package findings and your image-digest inventory. Operations investigates and contains suspected compromise; developers patch, rebuild, rescan, and promote the replacement digest. Correct configuration drift in IaC as well as the live resource, then verify the fix and add a preventive check.
+
+Defender for Cloud does not replace application authorization tests or external controls on agent tools. A higher secure score or an empty alert queue is not proof of safety. The operational goal is verified coverage, an effective response, and feedback that prevents the same exposure from returning.
+
+## Measure the connections, then expand
+
+Start with one representative service. Establish requirements, owners, and a coverage baseline. Add missing controls, test the failure paths, and turn the resulting pipeline into a reviewed reusable pattern before rolling it out widely.
+
+Track whether the system works, not how many alerts it generates:
+
+- **Coverage:** the proportion of in-scope repositories, languages, artifacts, and deployed services with complete, current evidence. Count unsupported or skipped targets explicitly.
+- **Response:** time to remediate important exposure, exception age, and overdue risk decisions.
+- **Escapes:** incidents and security defects discovered after release, and whether they become new preventive checks.
+- **Enforcement:** whether missing evidence, unauthorized agent actions, and invalid artifacts are actually denied.
+
+When a runtime finding appears, connect it to the deployed artifact, owning service, source change, and missing control. That is how shifting left becomes a feedback loop rather than an annual scanner rollout.
+
+GHAS helps secure repository changes. Docker Scout adds artifact visibility. OWASP helps define what to verify and how to mature the practice. Microsoft Defender for Cloud extends the model into cloud posture and workload protection. Complementary testing, supply-chain controls, identity boundaries, and operational response cover risks those tools do not resolve.
+
+The goal is not a green dashboard from every product. It is a release decision you can explain with evidence, controls you can prove are enforced, and people who own the remaining risk.
