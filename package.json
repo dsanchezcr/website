@@ -59,7 +59,7 @@
     ]
   },
   "devDependencies": {
-    "@azure/cosmos": "^4.10.1",
+    "@azure/cosmos": "^4.10.2",
     "@azure/storage-blob": "^12.34.0",
     "@docusaurus/module-type-aliases": "^3.10.2",
     "@docusaurus/types": "^3.10.2",
