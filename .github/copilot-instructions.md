@@ -334,6 +334,7 @@ variables or browser calls to TMDB. See [setup](repo-docs/tmdb-setup.md).
 5. **i18n content sync**: When adding blog posts or pages, remember to check if translations exist in `i18n/es/` and `i18n/pt/`.
 6. **SWA API runtime**: Managed functions use .NET 8 isolated worker. Ensure `api.csproj` targets `net8.0`.
 7. **ApplicationInsights compatibility**: `Microsoft.Azure.Functions.Worker.ApplicationInsights` (2.x) is incompatible with `Microsoft.ApplicationInsights.WorkerService` 3.x due to removed `ITelemetryInitializer` types. Use WorkerService 3.x directly with `AddApplicationInsightsTelemetryWorkerService()` only. When a compatible Functions AI package is released, re-add it.
+8. **OpenTelemetry compatibility**: Keep the explicit `OpenTelemetry` SDK and `OpenTelemetry.Api` references aligned. `System.Diagnostics.DiagnosticSource` 11, brought in by the API and Microsoft.Extensions updates, requires OpenTelemetry 1.21 or later to avoid `ActivityCreationOptions.TraceState` binary incompatibility. Retain the telemetry-suppression test when updating these packages.
 
 ## Dependency Management Policy
 
