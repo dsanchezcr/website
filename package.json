@@ -59,7 +59,7 @@
     ]
   },
   "devDependencies": {
-    "@azure/cosmos": "^4.10.1",
+    "@azure/cosmos": "^4.10.2",
     "@azure/storage-blob": "^12.34.0",
     "@docusaurus/module-type-aliases": "^3.10.2",
     "@docusaurus/types": "^3.10.2",
@@ -69,9 +69,9 @@
     "@tsconfig/docusaurus": "^2.0.9",
     "@vitest/coverage-v8": "^5.1.0",
     "babel-plugin-module-resolver": "^5.0.3",
-    "jsdom": "^31.0.0",
+    "jsdom": "^31.0.1",
     "typescript": "^7.0.2",
-    "vite": "^8.3.6",
+    "vite": "^8.3.8",
     "vitest": "^5.1.0"
   },
   "overrides": {
